@@ -4,6 +4,30 @@ from pyorama.core.app import *
 from pyorama.core.system import *
 from pyorama.core.world import *
 
+"""
+GraphicsMeshComp:
+GraphicsMaterialComp:
+
+graphics_mesh_init(
+graphics_mesh_free(
+graphics_mesh_set_vertices(
+graphics_mesh_update(
+
+graphics_material_init(
+graphics_material_free(
+
+AudioDataComp:
+AudioSourceComp:
+AudioListenerComp:
+
+PhysicsBodyComp:
+PhysicsSpaceComp:
+
+InputKeyboardComp:
+InputMouseComp:
+InputControllerComp:
+"""
+
 class EnemySystem(System):
 
     def init(self):
@@ -35,7 +59,6 @@ class Game(App):
 
         self.world.register_comp_type(COMP_A, 1000, 32, b"4Q")
         self.world.register_comp_type(COMP_B, 1000, 8, b"Q")
-
         self.world.register_comp_group_type(COMP_GROUP, [COMP_A, COMP_B])
 
         ent_a = self.world.create_entity()

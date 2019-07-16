@@ -1,0 +1,7 @@
+*.c
+*.h
+*.so
+*.dll
+*.html
+build/
+.vscode/
