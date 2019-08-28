@@ -1,0 +1,31 @@
+cdef class GraphicsManager:
+    
+    def __cinit__(self):
+        item_slot_map_init(&self.buffers, ItemSizes.BUFFER_SIZE, ItemTypes.BUFFER)
+        item_slot_map_init(&self.buffer_views, ItemSizes.BUFFER_VIEW_SIZE, ItemTypes.BUFFER_VIEW)
+        item_slot_map_init(&self.accessors, ItemSizes.ACCESSOR_SIZE, ItemTypes.ACCESSOR)
+        item_slot_map_init(&self.samplers, ItemSizes.SAMPLER_SIZE, ItemTypes.SAMPLER)
+        item_slot_map_init(&self.images, ItemSizes.IMAGE_SIZE, ItemTypes.IMAGE)
+        item_slot_map_init(&self.textures, ItemSizes.TEXTURE_SIZE, ItemTypes.TEXTURE)
+        item_slot_map_init(&self.materials, ItemSizes.MATERIAL_SIZE, ItemTypes.MATERIAL)
+        item_slot_map_init(&self.animations, ItemSizes.ANIMATION_SIZE, ItemTypes.ANIMATION)
+        item_slot_map_init(&self.meshes, ItemSizes.MESH_SIZE, ItemTypes.MESH)
+        item_slot_map_init(&self.cameras, ItemSizes.CAMERA_SIZE, ItemTypes.CAMERA)
+        item_slot_map_init(&self.skins, ItemSizes.SKIN_SIZE, ItemTypes.SKIN)
+        item_slot_map_init(&self.nodes, ItemSizes.NODE_SIZE, ItemTypes.NODE)
+        item_slot_map_init(&self.scenes, ItemSizes.SCENE_SIZE, ItemTypes.SCENE)
+
+    def __dealloc__(self):
+        item_slot_map_free(&self.buffers)
+        item_slot_map_free(&self.buffer_views)
+        item_slot_map_free(&self.accessors)
+        item_slot_map_free(&self.samplers)
+        item_slot_map_free(&self.images)
+        item_slot_map_free(&self.textures)
+        item_slot_map_free(&self.materials)
+        item_slot_map_free(&self.animations)
+        item_slot_map_free(&self.meshes)
+        item_slot_map_free(&self.cameras)
+        item_slot_map_free(&self.skins)
+        item_slot_map_free(&self.nodes)
+        item_slot_map_free(&self.scenes)
