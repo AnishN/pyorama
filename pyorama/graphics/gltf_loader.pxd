@@ -1,6 +1,7 @@
 from pyorama.core.item cimport *
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.libs.sdl2 cimport *
+from pyorama.math3d cimport *
 
 cdef class GLTFLoader:
     
@@ -19,5 +20,5 @@ cdef class GLTFLoader:
     cdef dict _parse_meshes(self, dict data, GraphicsManager graphics)
     cdef dict _parse_cameras(self, dict data, GraphicsManager graphics)
     cdef dict _parse_skins(self, dict data, GraphicsManager graphics)
-    cdef dict _parse_nodes(self, dict data, GraphicsManager graphics)
-    cdef dict _parse_scenes(self, dict data, GraphicsManager graphics)
+    cdef dict _parse_nodes(self, dict data, GraphicsManager graphics, dict mesh_ids, dict camera_ids, dict skin_ids)
+    cdef dict _parse_scenes(self, dict data, GraphicsManager graphics, dict node_ids)

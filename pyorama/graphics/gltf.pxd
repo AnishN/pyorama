@@ -79,54 +79,43 @@ ctypedef struct TextureInfoC:
     uint8_t tex_coord
     #The set index of texture's TEXCOORD attribute used for texture coordinate mapping
     #default tex_coord = 0, min = 0
-"""
-This integer value is used to construct a string in the format `TEXCOORD_<set index>` 
-which is a reference to a key in mesh.primitives.attributes (e.g. A value of `0` corresponds to `TEXCOORD_0`). 
-Mesh must have corresponding texture coordinate attributes for the material to be applicable to it."
-"""
 
 ctypedef struct NormalTextureInfoC:
     Handle index
     uint8_t tex_coord
     float scale#default = 1.0
-"""
-The scalar multiplier applied to each normal vector of the texture. 
-This value scales the normal vector using the formula: 
-`scaledNormal =  normalize((<sampled normal texture value> * 2.0 - 1.0) * vec3(<normal scale>, <normal scale>, 1.0))`. 
-This value is ignored if normalTexture is not specified. This value is linear.
-"""
 
-#Material PBR Metallic Roughness
-#aka pbrMetallicRoughness
-ctypedef struct MaterialPBRC:
+ctypedef struct OcclusionTextureInfoC:
+    Handle index
+    uint8_t tex_coord
+    float strength#default = 1.0
+
+ctypedef struct PBRMetallicRoughnessC:
     Vec4C base_color_factor#default = (1, 1, 1, 1)
     TextureInfoC base_color_texture
     float metallic_factor#(0, 1), default = 1.0
     float roughness_factor#(0, 1), default = 1.0
     TextureInfoC metallic_roughness_texture
 
-ctypedef struct MaterialC:
-    float x
+cpdef enum AlphaMode:
+    OPAQUE#default
+    MASK
+    BLEND
 
+ctypedef struct MaterialC:
+    PBRMetallicRoughnessC pbr_metallic_roughness
+    NormalTextureInfoC normal_texture
+    OcclusionTextureInfoC occlusion_texture
+    TextureInfoC emissive_texture
+    Vec3C emissive_factor
+    AlphaMode alpha_mode
+    float alpha_cutoff#default = 0.5, min = 0.0
+    bint double_sided#default = False
+
+#Incomplete
 ctypedef struct AnimationC:
     float x
 
-ctypedef struct MeshC:
-    float x
-
-ctypedef struct CameraC:
-    float x
-
-ctypedef struct SkinC:
-    float x
-
-ctypedef struct NodeC:
-    float x
-
-ctypedef struct SceneC:
-    float x
-
-"""
 cpdef enum PrimitiveMode:
     POINTS
     LINES
@@ -145,24 +134,55 @@ ctypedef struct PrimitiveC:
     Handle indices
     Handle material
     PrimitiveMode mode
-    #targets
-    #extensions
-    #extras
+    ItemVectorC targets
 
-ctypedef struct ImageC:
-    Handle buffer_view
+ctypedef struct MeshC:
+    ItemVectorC primitives
+    ItemVectorC weights
 
-ctypedef struct TextureC:
-    Handle sampler
-    Handle source
+cpdef enum CameraType:
+    ORTHOGRAPHIC
+    PERSPECTIVE
 
-ctypedef struct SceneC:
-    ItemVectorC nodes
+ctypedef struct OrthographicCameraC:
+    float x_mag
+    float y_mag
+    float z_far
+    float z_near
+
+ctypedef struct PerspectiveCameraC:
+    float aspect_ratio
+    float y_fov
+    float z_far
+    float z_near
+
+ctypedef union CameraDataC:
+    OrthographicCameraC orthographic
+    PerspectiveCameraC perspective
+
+ctypedef struct CameraC:
+    CameraType type
+    CameraDataC data
+
+#Imcomplete
+ctypedef struct SkinC:
+    float x
+
+cpdef enum NodeType:
+    EMPTY_NODE
+    MESH_NODE
+    CAMERA_NODE
+    SKIN_NODE
 
 ctypedef struct NodeC:
     ItemVectorC children
+    bint use_matrix
     Mat4C matrix
     Vec3C translation
     QuatC rotation
     Vec3C scale
-"""
+    NodeType type
+    Handle handle
+
+ctypedef struct SceneC:
+    ItemVectorC nodes

@@ -26,6 +26,11 @@ gltf = GLTFLoader()
 
 gltf_base_path = "./models/glTF-Sample-Models/2.0/*/glTF/*.gltf"
 gltf_file_paths = sorted(glob.glob(gltf_base_path))
+
+start = time.time()
 for gltf_path in gltf_file_paths:
     print(gltf_path)
     gltf.load_gltf_json_file(gltf_path, graphics)
+end = time.time()
+delta = end - start
+print(delta / len(gltf_file_paths))
