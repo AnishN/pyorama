@@ -1,1 +1,0 @@
-cdef PrimitiveMode PRIMITIVE_MODE_DEFAULT = PrimitiveMode.TRIANGLES

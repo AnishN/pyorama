@@ -17,4 +17,4 @@ cdef void item_slot_map_init(ItemSlotMapC *self, size_t item_size, ItemType item
 cdef void item_slot_map_free(ItemSlotMapC *self) nogil
 cdef void item_slot_map_create(ItemSlotMapC *self, Handle *item_id) except *
 cdef void item_slot_map_delete(ItemSlotMapC *self, Handle item_id) except *
-cdef void item_slot_map_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr)
+cdef void item_slot_map_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil

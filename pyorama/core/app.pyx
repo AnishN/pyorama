@@ -31,7 +31,6 @@ cdef class App:
 
     def quit(self):
         #Tries to undo state changes from c_init in reverse order
-        SDL_GL_MakeCurrent(self.root_window, NULL)
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
         IMG_Quit()

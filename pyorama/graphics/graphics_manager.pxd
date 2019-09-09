@@ -1,6 +1,10 @@
 from pyorama.core.item cimport *
 from pyorama.core.item_slot_map cimport *
-from pyorama.graphics.gltf cimport *
+from pyorama.graphics.common cimport *
+from pyorama.graphics.sampler cimport *
+from pyorama.graphics.image cimport *
+from pyorama.graphics.texture cimport *
+from pyorama.graphics.shader cimport *
 
 cdef class GraphicsManager:
     cdef ItemSlotMapC buffers
@@ -16,3 +20,4 @@ cdef class GraphicsManager:
     cdef ItemSlotMapC skins
     cdef ItemSlotMapC nodes
     cdef ItemSlotMapC scenes
+    cdef ItemSlotMapC shaders

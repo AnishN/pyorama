@@ -81,7 +81,7 @@ cdef void item_slot_map_delete(ItemSlotMapC *self, Handle item_id) except *:
     item_vector_pop_empty(&self.items)
     item_vector_pop_empty(&self.erase)
 
-cdef void item_slot_map_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr):
+cdef void item_slot_map_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil:
     cdef Handle inner_id
 
     if not _is_item_id_valid(self, item_id):
