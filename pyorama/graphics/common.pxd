@@ -207,3 +207,11 @@ ctypedef struct ShaderC:
     ShaderType type
     char *source
     size_t source_len
+
+ctypedef struct ProgramC:
+    uint32_t id
+    ItemVectorC attributes
+    ItemVectorC uniforms
+    ItemVectorC textures
+    Handle vertex_shader
+    Handle fragment_shader

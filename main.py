@@ -8,7 +8,7 @@ from pyorama.graphics.image import *
 from pyorama.graphics.sampler import *
 from pyorama.graphics.texture import *
 from pyorama.graphics.shader import *
-
+from pyorama.graphics.program import *
 
 class Game(App):
         
@@ -16,81 +16,72 @@ class Game(App):
         super().init()
         self.prev_time = time.time()
         self.curr_time = self.prev_time
+        self.graphics = GraphicsManager()
+        self.create_graphics()
+        self.init_graphics()
         
+    def create_graphics(self):
+        self.graphics.init()
+        self.image = self.graphics.create_image()
+        self.sampler = self.graphics.create_sampler()
+        self.texture = self.graphics.create_texture()
+        self.vs = self.graphics.create_shader()
+        self.fs = self.graphics.create_shader()
+        self.program = self.graphics.create_program()
+
+    def quit_graphics(self):
+        self.graphics.delete_image(self.image)
+        self.graphics.delete_sampler(self.sampler)
+        self.graphics.delete_texture(self.texture)
+        self.graphics.delete_shader(self.vs)
+        self.graphics.delete_shader(self.fs)
+        self.graphics.delete_program(self.program)
+        self.graphics.quit()
+
+    def init_graphics(self):
+        self.image.init_from_file("test.png")
+        self.sampler.init()
+        self.texture.init(self.sampler, self.image)
+
+        self.vs_source = b"""
+        #version 120
+        void main()
+        {
+            gl_Position = gl_Vertex;
+        }
+        """
+        self.vs.init(ShaderType.SHADER_TYPE_VERTEX, self.vs_source)
+        self.vs.compile()
+        self.fs_source = b"""
+        #version 120
+        void main()
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+        """
+        self.fs.init(ShaderType.SHADER_TYPE_FRAGMENT, self.fs_source)
+        self.fs.compile()
+        self.program.init(self.vs, self.fs)
+        self.program.compile()
+
+    def clear_graphics(self):
+        self.image.clear()
+        self.sampler.clear()
+        self.texture.clear()
+        self.vs.clear()
+        self.fs.clear()
+        self.program.clear()        
+
     def quit(self):
+        self.clear_graphics()
+        self.quit_graphics()
         super().quit()
 
     def update(self):
         self.curr_time = time.time()
         print(self.curr_time - self.prev_time)
+        #a = np.random.rand(10000000)#lag function :)
         self.prev_time = self.curr_time
 
-game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
-game.init()
-
-graphics = GraphicsManager()
-graphics.init()
-
-img = graphics.create_image()
-img.init_from_file("test.png")
-img.clear()
-graphics.delete_image(img)
-
-samp = graphics.create_sampler()
-samp.init()
-samp.clear()
-graphics.delete_sampler(samp)
-
-tex = graphics.create_texture()
-tex.init(samp, img)
-graphics.delete_texture(tex)
-
-vs = graphics.create_shader()
-vs_source = b"""
-#version 120
-void main()
-{
-    gl_Position = gl_Vertex;
-}
-"""
-vs.init(ShaderType.SHADER_TYPE_VERTEX, vs_source)
-vs.compile()
-vs.clear()
-graphics.delete_shader(vs)
-
-fs = graphics.create_shader()
-fs_source = b"""
-#version 120
-void main()
-{
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-}
-"""
-fs.init(ShaderType.SHADER_TYPE_FRAGMENT, fs_source)
-fs.compile()
-fs.clear()
-graphics.delete_shader(fs)
-
-"""
-render_pass = RenderPass.create(graphics)
-RenderPass.init(graphics, render_pass)
-RenderPass.set_attribute(
-RenderPass.set_uniform(
-"""
-
-"""
-ctypedef struct RenderPassC:
-    uint32_t id
-    ItemVectorC attributes
-    ItemVectorC uniforms
-    ItemVectorC textures
-    Handle vertex_shader
-    Handle fragment_shader
-
-RenderPass.get_uniform_loc(graphics, rp, "POSITION")
-RenderPass.get_attribute_loc(graphics, rp, "MVP")
-RenderPass.attach_attribute(0, x)
-"""
-
-graphics.free()
-game.quit()
+game = Game(use_sleep=False, use_vsync=True, ms_per_update=1000.0/60.0)
+game.run()

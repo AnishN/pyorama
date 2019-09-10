@@ -15,8 +15,9 @@ cdef class GraphicsManager:
         item_slot_map_init(&self.nodes, ITEM_SIZE_NODE, ITEM_TYPE_NODE)
         item_slot_map_init(&self.scenes, ITEM_SIZE_SCENE, ITEM_TYPE_SCENE)
         item_slot_map_init(&self.shaders, ITEM_SIZE_SHADER, ITEM_TYPE_SHADER)#done
+        item_slot_map_init(&self.programs, ITEM_SIZE_PROGRAM, ITEM_TYPE_PROGRAM)#done
 
-    def free(self):
+    def quit(self):
         item_slot_map_free(&self.buffers)
         item_slot_map_free(&self.buffer_views)
         item_slot_map_free(&self.accessors)
@@ -31,6 +32,7 @@ cdef class GraphicsManager:
         item_slot_map_free(&self.nodes)
         item_slot_map_free(&self.scenes)
         item_slot_map_free(&self.shaders)
+        item_slot_map_free(&self.programs)
 
     def create_sampler(self):
         cdef:
@@ -91,3 +93,18 @@ cdef class GraphicsManager:
         if shader.graphics != self:
             raise ValueError("GraphicsManager: cannot delete unowned Shader object")
         item_slot_map_delete(&self.shaders, shader.handle)
+
+    def create_program(self):
+        cdef:
+            Program program
+            Handle handle
+        item_slot_map_create(&self.programs, &handle)
+        program = Program.__new__(Program)
+        program.graphics = self
+        program.handle = handle
+        return program
+    
+    def delete_program(self, Program program):
+        if program.graphics != self:
+            raise ValueError("GraphicsManager: cannot delete unowned Program object")
+        item_slot_map_delete(&self.programs, program.handle)

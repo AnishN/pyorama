@@ -28,6 +28,7 @@ cdef class App:
         self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
         self.root_context = SDL_GL_CreateContext(self.root_window)
         glewInit()
+        #SDL_GL_MakeCurrent(self.root_window, self.root_context)
 
     def quit(self):
         #Tries to undo state changes from c_init in reverse order
@@ -74,8 +75,8 @@ cdef class App:
                 start_time = self.c_get_current_time()
                 self.update()
                 end_time = self.c_get_current_time()
-                delta = end_time - start_time
-                delay = <uint32_t>(self.ms_per_update - delta)
+                self.delta = end_time - start_time
+                delay = <uint32_t>(self.ms_per_update - self.delta)
                 SDL_Delay(delay)
                 SDL_GL_MakeCurrent(self.root_window, self.root_context)
                 SDL_GL_SetSwapInterval(self.use_vsync)

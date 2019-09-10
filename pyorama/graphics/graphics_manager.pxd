@@ -5,6 +5,7 @@ from pyorama.graphics.sampler cimport *
 from pyorama.graphics.image cimport *
 from pyorama.graphics.texture cimport *
 from pyorama.graphics.shader cimport *
+from pyorama.graphics.program cimport *
 
 cdef class GraphicsManager:
     cdef ItemSlotMapC buffers
@@ -21,3 +22,4 @@ cdef class GraphicsManager:
     cdef ItemSlotMapC nodes
     cdef ItemSlotMapC scenes
     cdef ItemSlotMapC shaders
+    cdef ItemSlotMapC programs

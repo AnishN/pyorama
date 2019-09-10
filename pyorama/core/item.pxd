@@ -15,6 +15,7 @@ cpdef enum ItemType:
     ITEM_TYPE_NODE
     ITEM_TYPE_SCENE
     ITEM_TYPE_SHADER
+    ITEM_TYPE_PROGRAM
 
 cpdef enum ItemSize:
     ITEM_SIZE_BUFFER = sizeof(BufferC)
@@ -31,3 +32,4 @@ cpdef enum ItemSize:
     ITEM_SIZE_NODE = sizeof(NodeC)
     ITEM_SIZE_SCENE = sizeof(SceneC)
     ITEM_SIZE_SHADER = sizeof(ShaderC)
+    ITEM_SIZE_PROGRAM = sizeof(ProgramC)

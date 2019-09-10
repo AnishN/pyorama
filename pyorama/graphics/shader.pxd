@@ -6,13 +6,15 @@ cdef class Shader:
     cdef readonly GraphicsManager graphics
     cdef readonly Handle handle
 
+    @staticmethod
+    cdef ShaderC *c_get_ptr(GraphicsManager graphics, Handle shader) nogil
     cdef ShaderC *c_get_checked_ptr(self) except *
 
     @staticmethod
-    cdef void c_init(ShaderC *shader_ptr, ShaderType type_, char *source, size_t source_len) nogil
+    cdef void c_init(GraphicsManager graphics, Handle shader, ShaderType type_, char *source, size_t source_len) nogil
 
     @staticmethod
-    cdef void c_clear(ShaderC *shader_ptr)
+    cdef void c_clear(GraphicsManager graphics, Handle shader)
 
     @staticmethod
-    cdef bint c_compile(ShaderC *shader_ptr) nogil
+    cdef bint c_compile(GraphicsManager graphics, Handle shader) nogil
