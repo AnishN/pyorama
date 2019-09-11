@@ -1,4 +1,5 @@
 import atexit as py_atexit
+import time
 
 cdef class App:
 
@@ -42,7 +43,7 @@ cdef class App:
             double start_time
             double end_time
             double delta
-            uint32_t delay
+            double delay
             SDL_Event e
 
         self.init()
@@ -65,16 +66,16 @@ cdef class App:
                 #SDL_GL_MakeCurrent(NULL, self.root_context)
         else:
             while self.is_running:
-                start_time = self.c_get_current_time()
                 #hack/debug - just empty queue
+                start_time = self.c_get_current_time()
                 while SDL_PollEvent(&e):
                     pass
                 self.update()
-                end_time = self.c_get_current_time()
+                end_time = self.c_get_current_time() 
                 self.delta = end_time - start_time
-                delay = <uint32_t>(self.ms_per_update - self.delta)
-                
-                SDL_Delay(delay)
+                delay = (self.ms_per_update/1000) - self.delta
+                delay = max(delay, 0.0)
+                time.sleep(delay)
                 #SDL_GL_MakeCurrent(self.root_window, self.root_context)
                 #SDL_GL_SetSwapInterval(self.use_vsync)
                 #SDL_GL_MakeCurrent(NULL, self.root_context)

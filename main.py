@@ -98,5 +98,5 @@ class Game(App):
         self.prev_time = self.curr_time
 
 #game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
-game = Game(use_sleep=False, use_vsync=True, ms_per_update=1000.0/60.0)
+game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
 game.run()
