@@ -1,6 +1,7 @@
 from pyorama.core.item cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.graphics.common cimport *
+from pyorama.graphics.window cimport *
 from pyorama.graphics.sampler cimport *
 from pyorama.graphics.image cimport *
 from pyorama.graphics.texture cimport *
@@ -8,6 +9,10 @@ from pyorama.graphics.shader cimport *
 from pyorama.graphics.program cimport *
 
 cdef class GraphicsManager:
+    cdef SDL_Window *root_window
+    cdef SDL_GLContext root_context
+
+    cdef ItemSlotMapC windows
     cdef ItemSlotMapC buffers
     cdef ItemSlotMapC buffer_views
     cdef ItemSlotMapC accessors

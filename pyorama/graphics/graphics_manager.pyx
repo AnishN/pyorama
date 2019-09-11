@@ -1,6 +1,10 @@
 cdef class GraphicsManager:
     
     def init(self):
+        self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
+        self.root_context = SDL_GL_CreateContext(self.root_window)
+        glewInit()
+        item_slot_map_init(&self.windows, ITEM_SIZE_WINDOW, ITEM_TYPE_WINDOW)
         item_slot_map_init(&self.buffers, ITEM_SIZE_BUFFER, ITEM_TYPE_BUFFER)
         item_slot_map_init(&self.buffer_views, ITEM_SIZE_BUFFER_VIEW, ITEM_TYPE_BUFFER_VIEW)
         item_slot_map_init(&self.accessors, ITEM_SIZE_ACCESSOR, ITEM_TYPE_ACCESSOR)
@@ -18,6 +22,9 @@ cdef class GraphicsManager:
         item_slot_map_init(&self.programs, ITEM_SIZE_PROGRAM, ITEM_TYPE_PROGRAM)#done
 
     def quit(self):
+        SDL_GL_DeleteContext(self.root_context)
+        SDL_DestroyWindow(self.root_window)
+        item_slot_map_free(&self.windows)
         item_slot_map_free(&self.buffers)
         item_slot_map_free(&self.buffer_views)
         item_slot_map_free(&self.accessors)
@@ -33,6 +40,21 @@ cdef class GraphicsManager:
         item_slot_map_free(&self.scenes)
         item_slot_map_free(&self.shaders)
         item_slot_map_free(&self.programs)
+
+    def create_window(self):
+        cdef:
+            Window window
+            Handle handle
+        item_slot_map_create(&self.windows, &handle)
+        window = Window.__new__(Window)
+        window.graphics = self
+        window.handle = handle
+        return window
+    
+    def delete_window(self, Window window):
+        if window.graphics != self:
+            raise ValueError("GraphicsManager: cannot delete unowned Window object")
+        item_slot_map_delete(&self.windows, window.handle)
 
     def create_sampler(self):
         cdef:

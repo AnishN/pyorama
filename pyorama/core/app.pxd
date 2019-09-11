@@ -13,8 +13,6 @@ cdef class App:
         readonly bint is_running
         readonly bint use_vsync
         readonly bint use_sleep
-        cdef SDL_Window *root_window
-        cdef SDL_GLContext root_context
     
     cdef double c_get_current_time(self) nogil
     

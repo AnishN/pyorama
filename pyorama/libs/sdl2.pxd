@@ -68,6 +68,7 @@ cdef extern from "SDL2/SDL.h" nogil:
     SDL_GLContext SDL_GL_CreateContext(SDL_Window* window)
     uint32_t SDL_GetWindowFlags(SDL_Window* window)
     uint32_t SDL_GetWindowID(SDL_Window* window)
+    SDL_Window* SDL_GetWindowFromID(uint32_t id)
     void SDL_SetWindowResizable(SDL_Window* window, bint resizable)
     void SDL_SetWindowFullscreen(SDL_Window* window, uint32_t flags)
     void SDL_SetWindowBordered(SDL_Window* window, bint bordered)

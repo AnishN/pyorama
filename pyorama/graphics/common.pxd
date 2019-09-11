@@ -2,6 +2,13 @@ from pyorama.core.handle cimport *
 from pyorama.core.item_vector cimport *
 from pyorama.math3d.common cimport *
 
+ctypedef struct WindowC:
+    uint32_t id
+    size_t width
+    size_t height
+    char *title
+    size_t title_len
+
 ctypedef struct BufferC:
     char *bytes
     size_t byte_length

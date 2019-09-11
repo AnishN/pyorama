@@ -1,6 +1,7 @@
 from pyorama.graphics.common cimport *
 
 cpdef enum ItemType:
+    ITEM_TYPE_WINDOW
     ITEM_TYPE_BUFFER
     ITEM_TYPE_BUFFER_VIEW
     ITEM_TYPE_ACCESSOR
@@ -18,6 +19,7 @@ cpdef enum ItemType:
     ITEM_TYPE_PROGRAM
 
 cpdef enum ItemSize:
+    ITEM_SIZE_WINDOW = sizeof(WindowC)
     ITEM_SIZE_BUFFER = sizeof(BufferC)
     ITEM_SIZE_BUFFER_VIEW = sizeof(BufferViewC)
     ITEM_SIZE_ACCESSOR = sizeof(AccessorC)

@@ -25,15 +25,8 @@ cdef class App:
         self.previous_time = self.current_time
         self.is_running = True
 
-        self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
-        self.root_context = SDL_GL_CreateContext(self.root_window)
-        glewInit()
-        #SDL_GL_MakeCurrent(self.root_window, self.root_context)
-
     def quit(self):
         #Tries to undo state changes from c_init in reverse order
-        SDL_GL_DeleteContext(self.root_context)
-        SDL_DestroyWindow(self.root_window)
         IMG_Quit()
         SDL_Quit()
         self.is_running = False
@@ -67,20 +60,24 @@ cdef class App:
                 while self.accumulated_time > self.ms_per_update/1000:
                     self.update()
                     self.accumulated_time -= self.ms_per_update/1000
-                SDL_GL_MakeCurrent(self.root_window, self.root_context)
-                SDL_GL_SetSwapInterval(self.use_vsync)
-                SDL_GL_MakeCurrent(NULL, self.root_context)
+                #SDL_GL_MakeCurrent(self.root_window, self.root_context)
+                #SDL_GL_SetSwapInterval(self.use_vsync)
+                #SDL_GL_MakeCurrent(NULL, self.root_context)
         else:
             while self.is_running:
                 start_time = self.c_get_current_time()
+                #hack/debug - just empty queue
+                while SDL_PollEvent(&e):
+                    pass
                 self.update()
                 end_time = self.c_get_current_time()
                 self.delta = end_time - start_time
                 delay = <uint32_t>(self.ms_per_update - self.delta)
+                
                 SDL_Delay(delay)
-                SDL_GL_MakeCurrent(self.root_window, self.root_context)
-                SDL_GL_SetSwapInterval(self.use_vsync)
-                SDL_GL_MakeCurrent(NULL, self.root_context)
+                #SDL_GL_MakeCurrent(self.root_window, self.root_context)
+                #SDL_GL_SetSwapInterval(self.use_vsync)
+                #SDL_GL_MakeCurrent(NULL, self.root_context)
 
     cdef double c_get_current_time(self) nogil:
         cdef:
