@@ -50,7 +50,7 @@ cdef class Image:
 
     cdef ImageC *c_get_checked_ptr(self) except *:
         cdef ImageC *image_ptr
-        item_slot_map_get_ptr(&self.graphics.images, self.handle, <void **>&image_ptr)
+        ItemSlotMap.c_get_ptr(&self.graphics.images, self.handle, <void **>&image_ptr)
         if image_ptr == NULL:
             raise MemoryError("Image: cannot get ptr from invalid handle")
         return image_ptr

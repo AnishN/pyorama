@@ -44,7 +44,7 @@ cdef class Sampler:
 
     cdef SamplerC *c_get_checked_ptr(self) except *:
         cdef SamplerC *sampler_ptr
-        item_slot_map_get_ptr(&self.graphics.samplers, self.handle, <void **>&sampler_ptr)
+        ItemSlotMap.c_get_ptr(&self.graphics.samplers, self.handle, <void **>&sampler_ptr)
         if sampler_ptr == NULL:
             raise MemoryError("Sampler: cannot get ptr from invalid handle")
         return sampler_ptr

@@ -85,7 +85,7 @@ cdef class Program:
     @staticmethod
     cdef ProgramC *c_get_ptr(GraphicsManager graphics, Handle program) nogil:
         cdef ProgramC *program_ptr
-        item_slot_map_get_ptr(&graphics.programs, program, <void **>&program_ptr)
+        ItemSlotMap.c_get_ptr(&graphics.programs, program, <void **>&program_ptr)
         return program_ptr
 
     cdef ProgramC *c_get_checked_ptr(self) except *:

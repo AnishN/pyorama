@@ -29,7 +29,7 @@ cdef class Shader:
     @staticmethod
     cdef ShaderC *c_get_ptr(GraphicsManager graphics, Handle shader) nogil:
         cdef ShaderC *shader_ptr
-        item_slot_map_get_ptr(&graphics.shaders, shader, <void **>&shader_ptr)
+        ItemSlotMap.c_get_ptr(&graphics.shaders, shader, <void **>&shader_ptr)
         return shader_ptr
 
     cdef ShaderC *c_get_checked_ptr(self) except *:

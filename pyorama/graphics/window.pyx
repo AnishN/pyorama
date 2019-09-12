@@ -23,7 +23,7 @@ cdef class Window:
     @staticmethod
     cdef WindowC *c_get_ptr(GraphicsManager graphics, Handle window) nogil:
         cdef WindowC *window_ptr
-        item_slot_map_get_ptr(&graphics.windows, window, <void **>&window_ptr)
+        ItemSlotMap.c_get_ptr(&graphics.windows, window, <void **>&window_ptr)
         return window_ptr
 
     cdef WindowC *c_get_checked_ptr(self) except *:

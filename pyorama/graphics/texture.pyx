@@ -15,7 +15,7 @@ cdef class Texture:
 
     cdef TextureC *c_get_checked_ptr(self) except *:
         cdef TextureC *texture_ptr
-        item_slot_map_get_ptr(&self.graphics.textures, self.handle, <void **>&texture_ptr)
+        ItemSlotMap.c_get_ptr(&self.graphics.textures, self.handle, <void **>&texture_ptr)
         if texture_ptr == NULL:
             raise MemoryError("Texture: cannot get ptr from invalid handle")
         return texture_ptr
