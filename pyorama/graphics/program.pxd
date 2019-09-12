@@ -17,3 +17,15 @@ cdef class Program:
 
     @staticmethod
     cdef bint c_compile(GraphicsManager graphics, Handle program) nogil
+
+    @staticmethod
+    cdef bint _c_compile_gl(ProgramC *program_ptr, ShaderC *vs_ptr, ShaderC *fs_ptr) nogil
+
+    @staticmethod
+    cdef bint _c_setup_attributes(ProgramC *program_ptr) nogil
+
+    @staticmethod
+    cdef void c_bind(GraphicsManager graphics, Handle program) nogil
+        
+    @staticmethod
+    cdef void c_unbind(GraphicsManager graphics, Handle program) nogil

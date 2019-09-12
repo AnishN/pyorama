@@ -62,13 +62,14 @@ class Game(App):
         #version 120
         void main()
         {
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);
         }
         """
         self.fs.init(ShaderType.SHADER_TYPE_FRAGMENT, self.fs_source)
         self.fs.compile()
         self.program.init(self.vs, self.fs)
         self.program.compile()
+        self.program.setup_attributes()
 
     def clear_graphics(self):
         self.window.clear()
@@ -86,17 +87,26 @@ class Game(App):
 
     def update(self):
         self.curr_time = time.time()
-        #print(self.curr_time - self.prev_time)
-        #a = np.random.rand(10000000)#lag function :)
-        #self.window.erase()
         self.window.bind()
-        glClearColor(1.0, 0.0, 0.0, 1.0)
+        self.program.bind()
+        glClearColor(0.0, 0.0, 0.0, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        #self.program.set_attribute(
+        #self.program.set_uniform(
+        
+        glBegin(GL_TRIANGLES)
+        glVertex3f(-1, -1, 0)
+        glVertex3f(0, 1, 0)
+        glVertex3f(1, -1, 0)
+        glEnd()
+        
         self.window.swap_buffers()
+        self.program.unbind()
         self.window.unbind()
         print(self.curr_time - self.prev_time)
         self.prev_time = self.curr_time
 
-#game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
+#game = Game(use_sleep=False, use_vsync=True, ms_per_update=1000.0/60.0)
 game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
 game.run()
