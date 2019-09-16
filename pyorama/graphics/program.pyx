@@ -24,6 +24,13 @@ cdef class Program:
             raise ValueError("Program: cannot link; {0}".format(error))
         elif check == ERROR_INVALID_HANDLE:#one of the shaders must be invalid
             raise MemoryError("Program: invalid associated shader handle(s)")
+        
+        check = Program.c_setup_attributes(self.graphics, self.handle)
+        if check == ERROR_OUT_OF_MEMORY:
+            raise MemoryError("Program: cannot allocate memory for attributes")
+        check = Program.c_setup_uniforms(self.graphics, self.handle)
+        if check == ERROR_OUT_OF_MEMORY:
+            raise MemoryError("Program: cannot allocate memory for uniforms")
 
     def bind(self):
         Program.c_bind(self.graphics, self.handle)
@@ -127,9 +134,8 @@ cdef class Program:
         glGetProgramInfoLog(program_ptr.id, error_len[0], <GLsizei *>error_len, error[0])
         return ERROR_NONE
 
-    """
     @staticmethod
-    cdef bint c_setup_attributes(GraphicsManager graphics, Handle program) nogil:
+    cdef Error c_setup_attributes(GraphicsManager graphics, Handle program):# nogil:
         cdef:
             ProgramC *program_ptr
             size_t i
@@ -141,31 +147,33 @@ cdef class Program:
             char *names
             char *name
             AttributeC attribute
+            Error check
 
         program_ptr = Program.c_get_ptr(graphics, program)
         if program_ptr == NULL:
-            return False
+            return ERROR_INVALID_HANDLE
         glGetProgramiv(program_ptr.id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &max_name_len)
         glGetProgramiv(program_ptr.id, GL_ACTIVE_ATTRIBUTES, &count)
         ItemVector.c_init(&program_ptr.attributes, sizeof(AttributeC))
         names = <char *>calloc(count, max_name_len)
         if names == NULL:
-            return False
+            return ERROR_OUT_OF_MEMORY
         name = names
         for i in range(count):
-            glGetActiveAttrib(program_ptr.id, i, 256, <GLsizei *>&name_len, <GLint *>&size, &type_, name)
+            glGetActiveAttrib(program_ptr.id, i, max_name_len, <GLsizei *>&name_len, <GLint *>&size, &type_, name)
             attribute.name = name
             attribute.name_len = name_len
             attribute.size = size
-            attribute.type = <AttributeType>type_#wrong
-            printf("%d\n", type_)
+            attribute.type = <ShaderDataType>type_#wrong
             attribute.location = i
             name += max_name_len
-        free(names)
-        return True
+            check = ItemVector.c_push(&program_ptr.attributes, &attribute)
+            if check == ERROR_OUT_OF_MEMORY:
+                return check
+        return ERROR_NONE
 
     @staticmethod
-    cdef bint c_setup_uniforms(GraphicsManager graphics, Handle program) nogil:
+    cdef Error c_setup_uniforms(GraphicsManager graphics, Handle program):# nogil:
         cdef:
             ProgramC *program_ptr
             size_t i
@@ -177,29 +185,30 @@ cdef class Program:
             char *names
             char *name
             UniformC uniform
+            Error check
 
         program_ptr = Program.c_get_ptr(graphics, program)
         if program_ptr == NULL:
-            return False
+            return ERROR_INVALID_HANDLE
         glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_name_len)
         glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORMS, &count)
         ItemVector.c_init(&program_ptr.uniforms, sizeof(UniformC))
         names = <char *>calloc(count, max_name_len)
         if names == NULL:
-            return False
+            return ERROR_OUT_OF_MEMORY
         name = names
         for i in range(count):
-            glGetActiveUniform(program_ptr.id, i, 256, <GLsizei *>&name_len, <GLint *>&size, &type_, name)
+            glGetActiveUniform(program_ptr.id, i, max_name_len, <GLsizei *>&name_len, <GLint *>&size, &type_, name)
             uniform.name = name
             uniform.name_len = name_len
             uniform.size = size
-            uniform.type = <UniformType>type_#wrong
-            printf("%d\n", type_)
+            uniform.type = <ShaderDataType>type_#wrong
             uniform.location = i
             name += max_name_len
-        free(names)
-        return True
-    """
+            check = ItemVector.c_push(&program_ptr.uniforms, &uniform)
+            if check == ERROR_OUT_OF_MEMORY:
+                return check
+        return ERROR_NONE
 
     @staticmethod
     cdef void c_bind(GraphicsManager graphics, Handle program) nogil:

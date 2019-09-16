@@ -222,3 +222,50 @@ ctypedef struct ProgramC:
     ItemVectorC textures
     Handle vertex_shader
     Handle fragment_shader
+
+"""
+5120 (BYTE), 
+5121 (UNSIGNED_BYTE), 
+5122 (SHORT), 
+5123 (UNSIGNED_SHORT), 
+5124 (INT), 
+5125 (UNSIGNED_INT), 
+5126 (FLOAT), 
+35664 (FLOAT_VEC2), 
+35665 (FLOAT_VEC3), 
+35666 (FLOAT_VEC4), 
+35667 (INT_VEC2), 
+35668 (INT_VEC3), 
+35669 (INT_VEC4), 
+35670 (BOOL), 
+35671 (BOOL_VEC2), 
+35672 (BOOL_VEC3), 
+35673 (BOOL_VEC4), 
+35674 (FLOAT_MAT2), 
+35675 (FLOAT_MAT3), 
+35676 (FLOAT_MAT4), 
+and 35678 (SAMPLER_2D),
+"""
+
+ctypedef enum ShaderDataType:
+    SHADER_DATA_TYPE_FLOAT = 5216
+    SHADER_DATA_TYPE_VEC2 = 35664
+    SHADER_DATA_TYPE_VEC3 = 35665
+    SHADER_DATA_TYPE_VEC4 = 35666
+    SHADER_DATA_TYPE_MAT2 = 35674
+    SHADER_DATA_TYPE_MAT3 = 35675
+    SHADER_DATA_TYPE_MAT4 = 35676
+
+ctypedef struct AttributeC:
+    char *name
+    size_t name_len
+    ShaderDataType type
+    size_t size
+    size_t location
+
+ctypedef struct UniformC:
+    char *name
+    size_t name_len
+    ShaderDataType type
+    size_t size
+    size_t location
