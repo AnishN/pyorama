@@ -1,13 +1,14 @@
 cdef class ItemArray:
 
     @staticmethod
-    cdef void c_init(ItemArrayC *self, size_t item_size, size_t max_items) except *:
+    cdef Error c_init(ItemArrayC *self, size_t item_size, size_t max_items) nogil:
         self.max_items = max_items
         self.item_size = item_size
         self.items = <char *>calloc(self.max_items, self.item_size)
         if self.items == NULL:
-            raise MemoryError("ItemArrayC: cannot allocate memory")
-
+            return ERROR_OUT_OF_MEMORY
+        return ERROR_NONE
+    
     @staticmethod
     cdef void c_free(ItemArrayC *self) nogil:
         self.max_items = 0

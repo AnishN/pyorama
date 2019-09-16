@@ -11,20 +11,25 @@ cdef class Shader:
 
     def compile(self):
         cdef:
-            bint success
+            Error check
             ShaderC *shader_ptr
-            char *info_log
-            size_t info_len
+            char *error
+            size_t error_len
 
-        success = Shader.c_compile(self.graphics, self.handle)
-        if not success:
-            shader_ptr = self.c_get_checked_ptr()
-            glGetShaderiv(shader_ptr.id, GL_INFO_LOG_LENGTH, <GLint *>&info_len)
-            info_log = <char *>calloc(info_len, sizeof(char))
-            if info_log == NULL:
-                raise MemoryError("Shader: cannot alloc memory for compile error")
-            glGetShaderInfoLog(shader_ptr.id, info_len, <GLsizei *>&info_len, info_log)
-            raise ValueError("Shader: cannot compile\n{0}".format(info_log))
+        check = Shader.c_compile(self.graphics, self.handle)
+        if check == ERROR_INVALID_HANDLE:
+            raise MemoryError("Shader: invalid handle")
+        elif check == ERROR_SHADER_COMPILE:
+            check = Shader.c_get_compile_error(self.graphics, self.handle, &error, &error_len)
+            if check == ERROR_OUT_OF_MEMORY:
+                raise MemoryError("Shader: cannot allocate memory for compile error")
+            raise ValueError("Shader: cannot compile; {0}".format(error))
+
+    @property
+    def source(self):
+        cdef ShaderC *shader_ptr
+        shader_ptr = self.c_get_checked_ptr()
+        return shader_ptr.source
 
     @staticmethod
     cdef ShaderC *c_get_ptr(GraphicsManager graphics, Handle shader) nogil:
@@ -33,10 +38,12 @@ cdef class Shader:
         return shader_ptr
 
     cdef ShaderC *c_get_checked_ptr(self) except *:
-        cdef ShaderC *shader_ptr
-        shader_ptr = Shader.c_get_ptr(self.graphics, self.handle)
-        if shader_ptr == NULL:
-            raise MemoryError("Shader: cannot get ptr from invalid handle")
+        cdef:
+            ShaderC *shader_ptr
+            Error check
+        check = ItemSlotMap.c_get_ptr(&self.graphics.shaders, self.handle, <void **>&shader_ptr)
+        if check == ERROR_INVALID_HANDLE:
+            raise MemoryError("Shader: invalid handle")
         return shader_ptr
     
     @staticmethod
@@ -66,15 +73,30 @@ cdef class Shader:
         shader_ptr.source_len = 0
 
     @staticmethod
-    cdef bint c_compile(GraphicsManager graphics, Handle shader) nogil:
+    cdef Error c_compile(GraphicsManager graphics, Handle shader) nogil:
         cdef:
             bint success
             ShaderC *shader_ptr
-        
         shader_ptr = Shader.c_get_ptr(graphics, shader)
         if shader_ptr == NULL:
-            return False
+            return ERROR_INVALID_HANDLE
         glShaderSource(shader_ptr.id, 1, &shader_ptr.source, <GLint *>&shader_ptr.source_len)
         glCompileShader(shader_ptr.id)
         glGetShaderiv(shader_ptr.id, GL_COMPILE_STATUS, <GLint *>&success)
-        return success
+        if not success:
+            return ERROR_SHADER_COMPILE
+        return ERROR_NONE
+
+    @staticmethod
+    cdef Error c_get_compile_error(GraphicsManager graphics, Handle shader, char **error, size_t *error_len) nogil:
+        cdef ShaderC *shader_ptr
+        shader_ptr = Shader.c_get_ptr(graphics, shader)
+        if shader_ptr == NULL:
+            return ERROR_INVALID_HANDLE
+        glGetShaderiv(shader_ptr.id, GL_INFO_LOG_LENGTH, <GLint *>error_len)
+        printf("%d\n", error_len[0])
+        error[0] = <char *>calloc(error_len[0], sizeof(char))
+        if error[0] == NULL:
+            return ERROR_OUT_OF_MEMORY
+        glGetShaderInfoLog(shader_ptr.id, error_len[0], <GLsizei *>error_len, error[0])
+        return ERROR_NONE

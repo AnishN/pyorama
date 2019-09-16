@@ -14,48 +14,15 @@ cdef class Program:
         success = Program.c_compile(self.graphics, self.handle)
         if not success:
             raise ValueError("Program: cannot compile")
-
+        success = Program.c_setup_attributes(self.graphics, self.handle)
+        if not success:
+            raise ValueError("Program: cannot setup attributes")
+    
     def bind(self):
         Program.c_bind(self.graphics, self.handle)
     
     def unbind(self):
         Program.c_unbind(self.graphics, self.handle)
-    
-    def setup_attributes(self):
-        pass
-        
-        """
-        GLint i;
-        GLint count;
-        GLint size; // size of the variable
-        GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-        const GLsizei bufSize = 16; // maximum name length
-        GLchar name[bufSize]; // variable name in GLSL
-        GLsizei length; // name length
-
-        //Attributes
-        glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &count);
-        printf("Active Attributes: %d\n", count);
-
-        for (i = 0; i < count; i++)
-        {
-            glGetActiveAttrib(program, (GLuint)i, bufSize, &length, &size, &type, name);
-
-            printf("Attribute #%d Type: %u Name: %s\n", i, type, name);
-        }
-
-        //Uniforms
-        glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &count);
-        printf("Active Uniforms: %d\n", count);
-
-        for (i = 0; i < count; i++)
-        {
-            glGetActiveUniform(program, (GLuint)i, bufSize, &length, &size, &type, name);
-
-            printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
-        }
-        """
     
     def setup_uniforms(self):
         pass
@@ -89,10 +56,12 @@ cdef class Program:
         return program_ptr
 
     cdef ProgramC *c_get_checked_ptr(self) except *:
-        cdef ProgramC *program_ptr
-        program_ptr = Program.c_get_ptr(self.graphics, self.handle)
-        if program_ptr == NULL:
-            raise MemoryError("Program: cannot get ptr from invalid handle")
+        cdef:
+            ProgramC *program_ptr
+            Error check
+        check = ItemSlotMap.c_get_ptr(&self.graphics.programs, self.handle, <void **>&program_ptr)
+        if check == ERROR_INVALID_HANDLE:
+            raise MemoryError("Program: invalid handle")
         return program_ptr
     
     @staticmethod
@@ -130,24 +99,16 @@ cdef class Program:
         fs_ptr = Shader.c_get_ptr(graphics, program_ptr.fragment_shader)
         if vs_ptr == NULL or fs_ptr == NULL:
             return False
-        success = Program._c_compile_gl(program_ptr, vs_ptr, fs_ptr)
-        if not success:
-            return False
-        success = Program._c_setup_attributes(program_ptr)
-        return success
-
-    @staticmethod
-    cdef bint _c_compile_gl(ProgramC *program_ptr, ShaderC *vs_ptr, ShaderC *fs_ptr) nogil:
-        cdef bint success
         glAttachShader(program_ptr.id, vs_ptr.id)
         glAttachShader(program_ptr.id, fs_ptr.id)
         glLinkProgram(program_ptr.id)
         glGetProgramiv(program_ptr.id, GL_LINK_STATUS, <GLint *>&success)
         return success
-    
+
     @staticmethod
-    cdef bint _c_setup_attributes(ProgramC *program_ptr) nogil:
+    cdef bint c_setup_attributes(GraphicsManager graphics, Handle program) nogil:
         cdef:
+            ProgramC *program_ptr
             size_t i
             GLint count
             size_t size
@@ -156,21 +117,65 @@ cdef class Program:
             GLint name_len#does not include NULL terminator
             char *names
             char *name
+            AttributeC attribute
 
+        program_ptr = Program.c_get_ptr(graphics, program)
+        if program_ptr == NULL:
+            return False
         glGetProgramiv(program_ptr.id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &max_name_len)
         glGetProgramiv(program_ptr.id, GL_ACTIVE_ATTRIBUTES, &count)
-        """
+        ItemVector.c_init(&program_ptr.attributes, sizeof(AttributeC))
         names = <char *>calloc(count, max_name_len)
         if names == NULL:
             return False
         name = names
         for i in range(count):
             glGetActiveAttrib(program_ptr.id, i, 256, <GLsizei *>&name_len, <GLint *>&size, &type_, name)
-            #print(i, count, name, name_len, size)
+            attribute.name = name
+            attribute.name_len = name_len
+            attribute.size = size
+            attribute.type = <AttributeType>type_#wrong
+            printf("%d\n", type_)
+            attribute.location = i
             name += max_name_len
         free(names)
         return True
-        """
+
+    @staticmethod
+    cdef bint c_setup_uniforms(GraphicsManager graphics, Handle program) nogil:
+        cdef:
+            ProgramC *program_ptr
+            size_t i
+            GLint count
+            size_t size
+            GLenum type_
+            GLint max_name_len#includes NULL terminator
+            GLint name_len#does not include NULL terminator
+            char *names
+            char *name
+            UniformC uniform
+
+        program_ptr = Program.c_get_ptr(graphics, program)
+        if program_ptr == NULL:
+            return False
+        glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_name_len)
+        glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORMS, &count)
+        ItemVector.c_init(&program_ptr.uniforms, sizeof(UniformC))
+        names = <char *>calloc(count, max_name_len)
+        if names == NULL:
+            return False
+        name = names
+        for i in range(count):
+            glGetActiveUniform(program_ptr.id, i, 256, <GLsizei *>&name_len, <GLint *>&size, &type_, name)
+            uniform.name = name
+            uniform.name_len = name_len
+            uniform.size = size
+            uniform.type = <UniformType>type_#wrong
+            printf("%d\n", type_)
+            uniform.location = i
+            name += max_name_len
+        free(names)
+        return True
     
     @staticmethod
     cdef void c_bind(GraphicsManager graphics, Handle program) nogil:

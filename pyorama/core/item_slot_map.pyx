@@ -1,13 +1,21 @@
 cdef class ItemSlotMap:
     
     @staticmethod
-    cdef void c_init(ItemSlotMapC *self, size_t item_size, ItemType item_type) except *:
-        ItemVector.c_init(&self.items, item_size)
-        ItemVector.c_init(&self.indices, sizeof(Handle))
-        ItemVector.c_init(&self.erase, sizeof(uint32_t))
+    cdef Error c_init(ItemSlotMapC *self, size_t item_size, ItemType item_type) nogil:
+        cdef Error check
+        check = ItemVector.c_init(&self.items, item_size)
+        if check == ERROR_OUT_OF_MEMORY:
+            return check
+        check = ItemVector.c_init(&self.indices, sizeof(Handle))
+        if check == ERROR_OUT_OF_MEMORY:
+            return check
+        check = ItemVector.c_init(&self.erase, sizeof(uint32_t))
+        if check == ERROR_OUT_OF_MEMORY:
+            return check
         self.item_type = item_type
         self.free_list_front = <uint32_t>0xFFFFFFFF
         self.free_list_back = <uint32_t>0xFFFFFFFF
+        return ERROR_NONE
 
     @staticmethod
     cdef void c_free(ItemSlotMapC *self) nogil:
@@ -19,17 +27,20 @@ cdef class ItemSlotMap:
         self.free_list_back = <uint32_t>0xFFFFFFFF
 
     @staticmethod
-    cdef void c_create(ItemSlotMapC *self, Handle *item_id) except *:
+    cdef Error c_create(ItemSlotMapC *self, Handle *item_id) nogil:
         cdef:
             Handle outer_id = 0
             Handle inner_id = 0
             uint32_t outer_index
+            Error check
         
         if ItemSlotMap._c_is_free_list_empty(self):
             handle_set(&inner_id, self.items.num_items, 1, self.item_type, 0)
             outer_id = inner_id
             handle_set_index(&outer_id, self.indices.num_items)
-            ItemVector.c_push(&self.indices, &inner_id)
+            check = ItemVector.c_push(&self.indices, &inner_id)
+            if check == ERROR_OUT_OF_MEMORY:
+                return check
         else:
             outer_index = self.free_list_front
             ItemVector.c_get(&self.indices, outer_index, &inner_id)
@@ -42,22 +53,28 @@ cdef class ItemSlotMap:
             handle_set_index(&outer_id, outer_index)
             ItemVector.c_set(&self.indices, outer_index, &inner_id)
 
-        ItemVector.c_push_empty(&self.items)
+        check = ItemVector.c_push_empty(&self.items)
+        if check == ERROR_OUT_OF_MEMORY:
+            return check
         outer_index = handle_get_index(&outer_id)
-        ItemVector.c_push(&self.erase, &outer_index)
+        check = ItemVector.c_push(&self.erase, &outer_index)
+        if check == ERROR_OUT_OF_MEMORY:
+            return check
         item_id[0] = outer_id
+        return ERROR_NONE
 
     @staticmethod
-    cdef void c_delete(ItemSlotMapC *self, Handle item_id) except *:
+    cdef Error c_delete(ItemSlotMapC *self, Handle item_id) nogil:
         cdef:
             Handle inner_id
             Handle free_id
             Handle outer_id
             uint32_t inner_index
             uint32_t outer_index
+            Error check
         
         if not ItemSlotMap._c_is_item_id_valid(self, item_id):
-            return
+            return ERROR_INVALID_HANDLE
         ItemVector.c_get(&self.indices, handle_get_index(&item_id), &inner_id)
         inner_index = handle_get_index(&inner_id)
         handle_set_free(&inner_id, True)
@@ -82,18 +99,24 @@ cdef class ItemSlotMap:
             handle_set_index(&outer_id, inner_index)
             ItemVector.c_set(&self.indices, outer_index, &outer_id)
 
-        ItemVector.c_pop_empty(&self.items)
-        ItemVector.c_pop_empty(&self.erase)
+        check = ItemVector.c_pop_empty(&self.items)
+        if check == ERROR_POP_EMPTY:
+            return check
+        check = ItemVector.c_pop_empty(&self.erase)
+        if check == ERROR_POP_EMPTY:
+            return check
+        return ERROR_NONE
 
     @staticmethod
-    cdef void c_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil:
+    cdef Error c_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil:
         cdef Handle inner_id
-
         if not ItemSlotMap._c_is_item_id_valid(self, item_id):
             item_ptr[0] = NULL
+            return ERROR_INVALID_HANDLE
         else:
             ItemVector.c_get(&self.indices, handle_get_index(&item_id), &inner_id)
-            ItemVector.c_get_ptr(&self.items, handle_get_index(&inner_id), item_ptr)
+            ItemVector.c_get_ptr(&self.items, handle_get_index(&inner_id), item_ptr)    
+        return ERROR_NONE
         
     @staticmethod
     cdef bint _c_is_free_list_empty(ItemSlotMapC *self) nogil:

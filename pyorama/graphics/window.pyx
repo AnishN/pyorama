@@ -27,10 +27,12 @@ cdef class Window:
         return window_ptr
 
     cdef WindowC *c_get_checked_ptr(self) except *:
-        cdef WindowC *window_ptr
-        window_ptr = Window.c_get_ptr(self.graphics, self.handle)
-        if window_ptr == NULL:
-            raise MemoryError("Window: cannot get ptr from invalid handle")
+        cdef:
+            WindowC *window_ptr
+            Error check
+        check = ItemSlotMap.c_get_ptr(&self.graphics.windows, self.handle, <void **>&window_ptr)
+        if check == ERROR_INVALID_HANDLE:
+            raise MemoryError("Window: invalid handle")
         return window_ptr
     
     @staticmethod

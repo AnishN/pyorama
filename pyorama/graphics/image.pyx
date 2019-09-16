@@ -8,10 +8,14 @@ cdef class Image:
         image_ptr = self.c_get_checked_ptr()
         Image.c_init(image_ptr, width, height, &pixels[0])
 
-    def init_from_file(self, str file_path):
-        cdef ImageC *image_ptr
+    def init_from_file(self, bytes file_path):
+        cdef:
+            ImageC *image_ptr
+            Error check
         image_ptr = self.c_get_checked_ptr()
-        Image.c_init_from_file(image_ptr, file_path)
+        check = Image.c_init_from_file(image_ptr, file_path)
+        if check == ERROR_LOAD_FILE:
+            raise ValueError("Image: cannot load file")
 
     def clear(self):
         cdef ImageC *image_ptr
@@ -49,12 +53,14 @@ cdef class Image:
         return <uint8_t[:h * w * 4]>image_ptr.pixels
 
     cdef ImageC *c_get_checked_ptr(self) except *:
-        cdef ImageC *image_ptr
-        ItemSlotMap.c_get_ptr(&self.graphics.images, self.handle, <void **>&image_ptr)
-        if image_ptr == NULL:
-            raise MemoryError("Image: cannot get ptr from invalid handle")
+        cdef:
+            ImageC *image_ptr
+            Error check
+        check = ItemSlotMap.c_get_ptr(&self.graphics.images, self.handle, <void **>&image_ptr)
+        if check == ERROR_INVALID_HANDLE:
+            raise MemoryError("Image: invalid handle")
         return image_ptr
-
+    
     @staticmethod
     cdef void c_init(ImageC *image_ptr, size_t width, size_t height, uint8_t *pixels) nogil:
         image_ptr.width = width
@@ -62,20 +68,21 @@ cdef class Image:
         image_ptr.pixels = pixels
 
     @staticmethod
-    cdef void c_init_from_file(ImageC *image_ptr, str file_path) except *:
+    cdef Error c_init_from_file(ImageC *image_ptr, char *file_path) nogil:
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
-        b_file_path = file_path.encode("utf-8")
-        surface = IMG_Load(b_file_path)
+        surface = IMG_Load(file_path)
         if surface == NULL:
-            raise ValueError("Image: cannot load file")
+            return ERROR_LOAD_FILE
         converted_surface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA8888, 0)
         if converted_surface == NULL:
-            raise ValueError("Image: cannot convert to RGBA8888 format")
+            SDL_FreeSurface(surface)#free the surface at this exit point
+            return ERROR_LOAD_FILE
         image_ptr.pixels = <uint8_t *>converted_surface.pixels
         image_ptr.width = converted_surface.w
         image_ptr.height = converted_surface.h
         SDL_FreeSurface(surface)
         free(converted_surface)#free the struct, not the void *pixels data!
+        return ERROR_NONE
 
     @staticmethod
     cdef void c_clear(ImageC *image_ptr) nogil:

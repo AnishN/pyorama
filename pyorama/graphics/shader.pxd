@@ -17,4 +17,7 @@ cdef class Shader:
     cdef void c_clear(GraphicsManager graphics, Handle shader)
 
     @staticmethod
-    cdef bint c_compile(GraphicsManager graphics, Handle shader) nogil
+    cdef Error c_compile(GraphicsManager graphics, Handle shader) nogil
+
+    @staticmethod
+    cdef Error c_get_compile_error(GraphicsManager graphics, Handle shader, char **error, size_t *error_len) nogil

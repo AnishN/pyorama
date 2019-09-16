@@ -42,13 +42,13 @@ class Game(App):
         self.graphics.delete_shader(self.fs)
         self.graphics.delete_program(self.program)
         self.graphics.quit()
-
+    
     def init_graphics(self):
         self.window.init(800, 600, "Hello, world!")
-        self.image.init_from_file("test.png")
+        self.image.init_from_file(b"test.png")
         self.sampler.init()
         self.texture.init(self.sampler, self.image)
-
+        
         self.vs_source = b"""
         #version 120
         void main()
@@ -69,7 +69,6 @@ class Game(App):
         self.fs.compile()
         self.program.init(self.vs, self.fs)
         self.program.compile()
-        self.program.setup_attributes()
 
     def clear_graphics(self):
         self.window.clear()
@@ -110,3 +109,6 @@ class Game(App):
 #game = Game(use_sleep=False, use_vsync=True, ms_per_update=1000.0/60.0)
 game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
 game.run()
+
+#TODO: need to use error codes for all cdef nogil functions
+#TODO 2: need to use python exceptions for all def functions

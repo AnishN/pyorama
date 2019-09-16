@@ -1,4 +1,5 @@
 from cpython.buffer cimport *
+from pyorama.core.error cimport *
 from pyorama.core.handle cimport *
 from pyorama.core.item_vector cimport *
 from pyorama.libs.c cimport *
@@ -16,30 +17,22 @@ ctypedef struct ItemSlotMapC:
 cdef class ItemSlotMap:
 
     @staticmethod
-    cdef void c_init(ItemSlotMapC *self, size_t item_size, ItemType item_type) except *
+    cdef Error c_init(ItemSlotMapC *self, size_t item_size, ItemType item_type) nogil
 
     @staticmethod
     cdef void c_free(ItemSlotMapC *self) nogil
 
     @staticmethod
-    cdef void c_create(ItemSlotMapC *self, Handle *item_id) except *
+    cdef Error c_create(ItemSlotMapC *self, Handle *item_id) nogil
 
     @staticmethod
-    cdef void c_delete(ItemSlotMapC *self, Handle item_id) except *
+    cdef Error c_delete(ItemSlotMapC *self, Handle item_id) nogil
 
     @staticmethod
-    cdef void c_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil
+    cdef Error c_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil
 
     @staticmethod
     cdef bint _c_is_free_list_empty(ItemSlotMapC *self) nogil
 
     @staticmethod
     cdef bint _c_is_item_id_valid(ItemSlotMapC *self, Handle item_id) nogil
-
-"""
-cdef void item_slot_map_init(ItemSlotMapC *self, size_t item_size, ItemType item_type) except *
-cdef void item_slot_map_free(ItemSlotMapC *self) nogil
-cdef void item_slot_map_create(ItemSlotMapC *self, Handle *item_id) except *
-cdef void item_slot_map_delete(ItemSlotMapC *self, Handle item_id) except *
-cdef void item_slot_map_get_ptr(ItemSlotMapC *self, Handle item_id, void **item_ptr) nogil
-"""

@@ -1,5 +1,23 @@
 from pyorama.core.handle cimport *
+from pyorama.core.item_vector cimport *
 from pyorama.graphics.graphics_manager cimport *
+
+ctypedef AccessorType AttributeType
+ctypedef AccessorType UniformType
+
+ctypedef struct AttributeC:
+    char *name
+    size_t name_len
+    AttributeType type
+    size_t size
+    size_t location
+
+ctypedef struct UniformC:
+    char *name
+    size_t name_len
+    UniformType type
+    size_t size
+    size_t location
 
 cdef class Program:
     cdef readonly GraphicsManager graphics
@@ -19,10 +37,10 @@ cdef class Program:
     cdef bint c_compile(GraphicsManager graphics, Handle program) nogil
 
     @staticmethod
-    cdef bint _c_compile_gl(ProgramC *program_ptr, ShaderC *vs_ptr, ShaderC *fs_ptr) nogil
+    cdef bint c_setup_attributes(GraphicsManager graphics, Handle program) nogil
 
     @staticmethod
-    cdef bint _c_setup_attributes(ProgramC *program_ptr) nogil
+    cdef bint c_setup_uniforms(GraphicsManager graphics, Handle program) nogil
 
     @staticmethod
     cdef void c_bind(GraphicsManager graphics, Handle program) nogil
