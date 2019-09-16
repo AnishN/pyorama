@@ -9,15 +9,22 @@ cdef class Program:
     def clear(self):
         Program.c_clear(self.graphics, self.handle)
     
-    def compile(self):
-        cdef bint success
-        success = Program.c_compile(self.graphics, self.handle)
-        if not success:
-            raise ValueError("Program: cannot compile")
-        success = Program.c_setup_attributes(self.graphics, self.handle)
-        if not success:
-            raise ValueError("Program: cannot setup attributes")
-    
+    def link(self):
+        cdef:
+            Error check
+            char *error
+            size_t error_len
+
+        self.c_get_checked_ptr()#partially avoid ERROR_INVALID_HANDLE error checking later
+        check = Program.c_link(self.graphics, self.handle)
+        if check == ERROR_PROGRAM_LINK:
+            check = Program.c_get_link_error(self.graphics, self.handle, &error, &error_len)
+            if check == ERROR_OUT_OF_MEMORY:
+                raise MemoryError("Program: cannot allocate memory for link error")
+            raise ValueError("Program: cannot link; {0}".format(error))
+        elif check == ERROR_INVALID_HANDLE:#one of the shaders must be invalid
+            raise MemoryError("Program: invalid associated shader handle(s)")
+
     def bind(self):
         Program.c_bind(self.graphics, self.handle)
     
@@ -85,7 +92,7 @@ cdef class Program:
         program_ptr.fragment_shader = 0
 
     @staticmethod
-    cdef bint c_compile(GraphicsManager graphics, Handle program) nogil:
+    cdef Error c_link(GraphicsManager graphics, Handle program) nogil:
         cdef:
             ProgramC *program_ptr
             ShaderC *vs_ptr
@@ -94,17 +101,33 @@ cdef class Program:
         
         program_ptr = Program.c_get_ptr(graphics, program)
         if program_ptr == NULL:
-            return False
+            return ERROR_INVALID_HANDLE
         vs_ptr = Shader.c_get_ptr(graphics, program_ptr.vertex_shader)
         fs_ptr = Shader.c_get_ptr(graphics, program_ptr.fragment_shader)
         if vs_ptr == NULL or fs_ptr == NULL:
-            return False
+            return ERROR_INVALID_HANDLE
         glAttachShader(program_ptr.id, vs_ptr.id)
         glAttachShader(program_ptr.id, fs_ptr.id)
         glLinkProgram(program_ptr.id)
         glGetProgramiv(program_ptr.id, GL_LINK_STATUS, <GLint *>&success)
-        return success
+        if not success:
+            return ERROR_PROGRAM_LINK
+        return ERROR_NONE
 
+    @staticmethod
+    cdef Error c_get_link_error(GraphicsManager graphics, Handle program, char **error, size_t *error_len) nogil:
+        cdef ProgramC *program_ptr
+        program_ptr = Program.c_get_ptr(graphics, program)
+        if program_ptr == NULL:
+            return ERROR_INVALID_HANDLE
+        glGetProgramiv(program_ptr.id, GL_INFO_LOG_LENGTH, <GLint *>error_len)
+        error[0] = <char *>calloc(error_len[0], sizeof(char))
+        if error[0] == NULL:
+            return ERROR_OUT_OF_MEMORY
+        glGetProgramInfoLog(program_ptr.id, error_len[0], <GLsizei *>error_len, error[0])
+        return ERROR_NONE
+
+    """
     @staticmethod
     cdef bint c_setup_attributes(GraphicsManager graphics, Handle program) nogil:
         cdef:
@@ -176,7 +199,8 @@ cdef class Program:
             name += max_name_len
         free(names)
         return True
-    
+    """
+
     @staticmethod
     cdef void c_bind(GraphicsManager graphics, Handle program) nogil:
         cdef ProgramC *program_ptr

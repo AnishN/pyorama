@@ -68,7 +68,7 @@ class Game(App):
         self.fs.init(ShaderType.SHADER_TYPE_FRAGMENT, self.fs_source)
         self.fs.compile()
         self.program.init(self.vs, self.fs)
-        self.program.compile()
+        self.program.link()
 
     def clear_graphics(self):
         self.window.clear()
@@ -109,6 +109,3 @@ class Game(App):
 #game = Game(use_sleep=False, use_vsync=True, ms_per_update=1000.0/60.0)
 game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
 game.run()
-
-#TODO: need to use error codes for all cdef nogil functions
-#TODO 2: need to use python exceptions for all def functions

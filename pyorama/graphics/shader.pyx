@@ -12,14 +12,12 @@ cdef class Shader:
     def compile(self):
         cdef:
             Error check
-            ShaderC *shader_ptr
             char *error
             size_t error_len
 
+        self.c_get_checked_ptr()#avoid ERROR_INVALID_HANDLE error checking later
         check = Shader.c_compile(self.graphics, self.handle)
-        if check == ERROR_INVALID_HANDLE:
-            raise MemoryError("Shader: invalid handle")
-        elif check == ERROR_SHADER_COMPILE:
+        if check == ERROR_SHADER_COMPILE:
             check = Shader.c_get_compile_error(self.graphics, self.handle, &error, &error_len)
             if check == ERROR_OUT_OF_MEMORY:
                 raise MemoryError("Shader: cannot allocate memory for compile error")
@@ -94,7 +92,6 @@ cdef class Shader:
         if shader_ptr == NULL:
             return ERROR_INVALID_HANDLE
         glGetShaderiv(shader_ptr.id, GL_INFO_LOG_LENGTH, <GLint *>error_len)
-        printf("%d\n", error_len[0])
         error[0] = <char *>calloc(error_len[0], sizeof(char))
         if error[0] == NULL:
             return ERROR_OUT_OF_MEMORY
