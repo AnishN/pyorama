@@ -38,79 +38,103 @@ def setup_program(graphics):
     program = graphics.program_create()
     graphics.program_init(program, vs, fs)
     graphics.program_compile(program)
-    return program
+    return vs, fs, program
 
-app = App()
-app.init()
-graphics = GraphicsManager()
-width = 800
-height = 600
-title = b"Test"
-window = graphics.window_create()
-graphics.window_init(window, width, height, title)
+def cleanup_program(graphics, vs, fs, program):
+    graphics.program_free(program)
+    graphics.program_delete(program)
+    graphics.shader_free(vs)
+    graphics.shader_delete(vs)
+    graphics.shader_free(fs)
+    graphics.shader_delete(fs)
 
-"""
-#Texture Setup
-image = graphics.image_create()
-graphics.image_init_from_file(image, b"./resources/images/science.jpg")
-image_width = graphics.image_get_width(image)
-image_height = graphics.image_get_height(image)
-sampler = graphics.sampler_create()
-texture = graphics.texture_create()
-graphics.sampler_init(sampler)
-graphics.texture_init(texture, sampler, image)
-graphics.texture_bind(texture, upload_sampler=True, upload_image=True)
-graphics.texture_unbind()
-"""
+def setup_batch(graphics):
+    #Mesh Setup
+    mesh_format = graphics.mesh_format_create()
+    graphics.mesh_format_init(mesh_format, [
+        (0, b"vertices", MATH_TYPE_VEC3), 
+        (1, b"tex_coords", MATH_TYPE_VEC3),
+    ])
 
+    mesh = graphics.mesh_create()
+    graphics.mesh_init(mesh, mesh_format)
+    mesh_data = np.array([
+        #triangle 1
+        -1, -1, 0, 0, 1, 0,
+        1, 1, 0, 1, 0, 1,
+        1, -1, 0, 1, 1, 1,
+        #triangle 2
+        -1, -1, 0, 0, 1, 1,
+        1, 1, 0, 1, 0, 0, 
+        -1, 1, 0, 1, 1, 1,
+    ], dtype=np.float32)
+    graphics.mesh_set_data(mesh, mesh_data)
+    batch = graphics.mesh_batch_create()
+    meshes = np.array([mesh], dtype=np.uint64)
+    graphics.mesh_batch_init(batch, mesh_format, meshes)
+    return meshes, mesh_format, batch
 
-#Mesh Setup
-mesh_format = graphics.mesh_format_create()
-graphics.mesh_format_init(mesh_format, [
-    (0, b"vertices", MATH_TYPE_VEC3), 
-    (1, b"tex_coords", MATH_TYPE_VEC3),
-])
+def cleanup_batch(graphics, meshes, mesh_format, batch):
+    graphics.mesh_batch_free(batch)
+    graphics.mesh_batch_delete(batch)
+    graphics.mesh_format_free(mesh_format)
+    graphics.mesh_format_delete(mesh_format)
+    for mesh in meshes:
+        graphics.mesh_free(mesh)
+        graphics.mesh_delete(mesh)
 
-mesh = graphics.mesh_create()
-graphics.mesh_init(mesh, mesh_format)
-mesh_data = np.array([
-    -1, -1, 0, 0, 1, 0,
-    1, 1, 0, 1, 0, 1,
-    1, -1, 0, 1, 1, 1,
+if __name__ == "__main__":
+    app = App()
+    app.init()
+    graphics = GraphicsManager()
+    width = 800
+    height = 600
+    title = b"Test"
+    window = graphics.window_create()
+    graphics.window_init(window, width, height, title)
 
-    -1, -1, 0, 0, 1, 1,
-    1, 1, 0, 1, 0, 0, 
-    -1, 1, 0, 1, 1, 1,
+    """
+    #Texture Setup
+    image = graphics.image_create()
+    graphics.image_init_from_file(image, b"./resources/images/science.jpg")
+    image_width = graphics.image_get_width(image)
+    image_height = graphics.image_get_height(image)
+    sampler = graphics.sampler_create()
+    texture = graphics.texture_create()
+    graphics.sampler_init(sampler)
+    graphics.texture_init(texture, sampler, image)
+    graphics.texture_bind(texture, upload_sampler=True, upload_image=True)
+    graphics.texture_unbind()
+    """
 
-], dtype=np.float32)
-graphics.mesh_set_data(mesh, mesh_data)
-batch = graphics.mesh_batch_create()
-meshes = np.array([mesh], dtype=np.uint64)
-graphics.mesh_batch_init(batch, mesh_format, meshes)
-program = setup_program(graphics)
-mv = Mat4()
-Mat4.translate(mv, mv, Vec3(0, 0, 0))
+    model_view = Mat4()
+    Mat4.translate(model_view, model_view, Vec3(0, 0, 0))
+    meshes, mesh_format, batch = setup_batch(graphics)
+    vs, fs, program = setup_program(graphics)
 
-while True:
-    start = time.time()
-    graphics.window_bind(window)
-    graphics.window_clear()
-    graphics.program_bind(program)
-    graphics.program_set_uniform(program, b"model_view", mv)
-    graphics.mesh_batch_render(batch)
-    graphics.program_unbind()
-    graphics.window_swap_buffers(window)
-    graphics.window_unbind()
-    end = time.time()
-    #print(end - start)
+    while True:
+        start = time.time()
+        graphics.window_bind(window)
+        graphics.window_clear()
+        graphics.program_bind(program)
+        graphics.program_set_uniform(program, b"model_view", model_view)
+        graphics.mesh_batch_render(batch)
+        graphics.program_unbind()
+        graphics.window_swap_buffers(window)
+        graphics.window_unbind()
+        end = time.time()
+        #print(end - start)
+        #break
 
-"""
-graphics.image_free(image)
-graphics.sampler_free(sampler)
-graphics.texture_free(texture)
-graphics.window_free(window)
-graphics.image_delete(image)
-graphics.sampler_delete(sampler)
-graphics.texture_delete(texture)
-graphics.window_delete(window)
-"""
+    cleanup_program(graphics, vs, fs, program)
+    cleanup_batch(graphics, meshes, mesh_format, batch)
+    """
+    graphics.image_free(image)
+    graphics.sampler_free(sampler)
+    graphics.texture_free(texture)
+    graphics.window_free(window)
+    graphics.image_delete(image)
+    graphics.sampler_delete(sampler)
+    graphics.texture_delete(texture)
+    graphics.window_delete(window)
+    """
