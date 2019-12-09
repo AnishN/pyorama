@@ -1,6 +1,7 @@
 from pyorama.core.app import *
 from pyorama.graphics import *
 from pyorama.math3d.vec3 import Vec3
+from pyorama.math3d.vec4 import Vec4
 from pyorama.math3d.mat4 import Mat4
 import time
 import numpy as np
@@ -26,9 +27,10 @@ def setup_program(graphics):
     #version 330 core
     in vec3 out_colors;
     out vec4 frag_color;
+    uniform vec4 base_color;
     void main()
     {
-        frag_color = vec4(out_colors, 1.0);
+        frag_color = vec4(out_colors, 1.0) + base_color;
     }
     """
     fs = graphics.shader_create()
@@ -112,12 +114,15 @@ if __name__ == "__main__":
     meshes, mesh_format, batch = setup_batch(graphics)
     vs, fs, program = setup_program(graphics)
 
+    base_color = Vec4(0.5, 0.0, 0.0, 1.0)
+
     while True:
         start = time.time()
         graphics.window_bind(window)
         graphics.window_clear()
         graphics.program_bind(program)
         graphics.program_set_uniform(program, b"model_view", model_view)
+        #graphics.program_set_uniform(program, b"base_color", base_color)
         graphics.mesh_batch_render(batch)
         graphics.program_unbind()
         graphics.window_swap_buffers(window)

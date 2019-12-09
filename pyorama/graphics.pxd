@@ -5,6 +5,13 @@ from pyorama.core.item_hash_map cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.libs.gl cimport *
 from pyorama.libs.sdl2 cimport *
+
+from pyorama.math3d.vec2 cimport *
+from pyorama.math3d.vec3 cimport *
+from pyorama.math3d.vec4 cimport *
+from pyorama.math3d.quat cimport *
+from pyorama.math3d.mat2 cimport *
+from pyorama.math3d.mat3 cimport *
 from pyorama.math3d.mat4 cimport *
 
 ctypedef struct WindowC:
@@ -44,24 +51,29 @@ ctypedef struct TextureC:
     Handle image
 
 cpdef enum MathType:
-    MATH_TYPE_FLOAT
-    MATH_TYPE_VEC2
-    MATH_TYPE_VEC3
-    MATH_TYPE_VEC4
-    MATH_TYPE_MAT2
-    MATH_TYPE_MAT3
-    MATH_TYPE_MAT4
+    MATH_TYPE_FLOAT = GL_FLOAT
+    MATH_TYPE_VEC2 = GL_FLOAT_VEC2
+    MATH_TYPE_VEC3 = GL_FLOAT_VEC3
+    MATH_TYPE_VEC4 = GL_FLOAT_VEC4
+    MATH_TYPE_MAT2 = GL_FLOAT_MAT2
+    MATH_TYPE_MAT3 = GL_FLOAT_MAT3
+    MATH_TYPE_MAT4 = GL_FLOAT_MAT4
 
-ctypedef struct MeshAttributeC:
+ctypedef struct AttributeC:
     uint32_t index
     MathType type
     size_t size
     size_t offset
 
+ctypedef struct UniformC:
+    uint32_t index
+    MathType type
+    size_t size
+
 ctypedef struct MeshFormatC:
     size_t num_attributes
     PyObject *attribute_map
-    MeshAttributeC attribute_info[16]
+    AttributeC attribute_info[16]
     size_t stride
 
 ctypedef struct MeshC:
@@ -92,6 +104,9 @@ ctypedef struct ProgramC:
     uint32_t id
     Handle vs
     Handle fs
+    size_t num_uniforms
+    PyObject *uniform_map
+    UniformC uniform_info[16]
 
 @cython.final
 cdef class GraphicsManager:

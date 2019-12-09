@@ -266,7 +266,7 @@ cdef class GraphicsManager:
             size_t index
             bytes name
             MathType type
-            MeshAttributeC *info
+            AttributeC *info
             size_t num_attributes
             ItemHashMap attribute_map
             size_t offset = 0
@@ -349,7 +349,7 @@ cdef class GraphicsManager:
             MeshBatchC *mesh_batch_ptr
             MeshFormatC *mesh_format_ptr
             MeshC *mesh_ptr
-            MeshAttributeC *info
+            AttributeC *info
             size_t i, j, k
             size_t stride
             size_t offset
@@ -517,7 +517,17 @@ cdef class GraphicsManager:
             uint32_t link_status
             char *log
             int log_length
-        
+
+            int max_u_name_length
+            int u_name_length
+            int u_size
+            size_t i
+            GLenum u_type
+            char *u_name
+            UniformC *info
+            ItemHashMap uniform_map
+
+        #Compile OpenGL program object
         program_ptr = self.c_program_get_ptr(program)
         gl_id = program_ptr.id
         vs = self.c_shader_get_ptr(program_ptr.vs)
@@ -532,37 +542,48 @@ cdef class GraphicsManager:
             glGetProgramInfoLog(gl_id, log_length, NULL, log)
             raise ValueError("Program: failed to compile:\n{0}".format(log))
 
+        #Setup uniform dict mapping
+        uniform_map = ItemHashMap()
+        glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORMS, <int *>&program_ptr.num_uniforms)
+        glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_u_name_length)
+        #print("max_len", max_u_name_length)
+        if program_ptr.num_uniforms > 16:
+            raise ValueError("Program: > 16 uniforms is not supported")
+        for i in range(program_ptr.num_uniforms):
+            u_name = <char *>calloc(max_u_name_length, sizeof(char))
+            if u_name == NULL:
+                raise MemoryError("Program: cannot allocate uniform name")
+            glGetActiveUniform(program_ptr.id, i, max_u_name_length, &u_name_length, &u_size, &u_type, u_name);
+            info = &program_ptr.uniform_info[i]
+            info.index = glGetUniformLocation(program_ptr.id, u_name)
+            info.type = <MathType>u_type
+            info.size = u_size
+            uniform_map.c_append(u_name, i)
+        program_ptr.uniform_map = <PyObject *>uniform_map
+        Py_XINCREF(program_ptr.uniform_map)#TODO: need decompile decref equivalent
+
     def program_set_uniform(self, Handle program, bytes name, value):
         cdef:
             ProgramC *program_ptr
-            size_t loc#location
+            size_t i
+            UniformC *info
             uint32_t type
-
+            PairC *pair
+        
         program_ptr = self.c_program_get_ptr(program)
-        loc = glGetUniformLocation(program_ptr.id, name)
-        #type = 
-        """
-            void glUniform1f(GLint location, GLfloat v0)
-            void glUniform2f(GLint location, GLfloat v0, GLfloat v1)
-            void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
-            void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
-            void glUniform1i(GLint location, GLint v0)
-            void glUniform2i(GLint location, GLint v0, GLint v1)
-            void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2)
-            void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
-            void glUniform1fv(GLint location, GLsizei count, GLfloat *value)
-            void glUniform2fv(GLint location, GLsizei count, GLfloat *value)
-            void glUniform3fv(GLint location, GLsizei count, GLfloat *value)
-            void glUniform4fv(GLint location, GLsizei count, GLfloat *value)
-            void glUniform1iv(GLint location, GLsizei count, GLint *value)
-            void glUniform2iv(GLint location, GLsizei count, GLint *value)
-            void glUniform3iv(GLint location, GLsizei count, GLint *value)
-            void glUniform4iv(GLint location, GLsizei count, GLint *value)
-            void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value)
-            void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value)
-            void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value)
-        """
-
-        #glUniform3fv(loc, 1, (<Mat3>value).ptr)
-        glUniformMatrix4fv(loc, 1, False, <float *>(<Mat4>value).ptr)
-        #program_ptr.
+        i = (<ItemHashMap>program_ptr.uniform_map).c_get(name)
+        info = &program_ptr.uniform_info[i]
+        if info.type == MATH_TYPE_FLOAT:
+            glUniform1f(info.index, <float>value)
+        elif info.type == MATH_TYPE_VEC2:
+            glUniform2fv(info.index, 1, <float *>(<Vec2>value).ptr)
+        elif info.type == MATH_TYPE_VEC3:
+            glUniform3fv(info.index, 1, <float *>(<Vec3>value).ptr)
+        elif info.type == MATH_TYPE_VEC4:
+            glUniform4fv(info.index, 1, <float *>(<Vec4>value).ptr)
+        elif info.type == MATH_TYPE_MAT2:
+            glUniformMatrix2fv(info.index, 1, False, <float *>(<Mat2>value).ptr)
+        elif info.type == MATH_TYPE_MAT3:
+            glUniformMatrix3fv(info.index, 1, False, <float *>(<Mat3>value).ptr)
+        elif info.type == MATH_TYPE_MAT4:
+            glUniformMatrix4fv(info.index, 1, False, <float *>(<Mat4>value).ptr)

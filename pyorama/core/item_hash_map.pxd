@@ -1,4 +1,5 @@
 cimport cython
+from cpython.ref cimport *
 from pyorama.libs.c cimport *
 from pyorama.core.item_vector cimport *
 

@@ -86,13 +86,20 @@ cdef class ItemHashMap:
             size_t i
             PairC pair
             size_t old_max_items
+            char *key_data
         
         if self.num_items > self.max_items * HASH_MAP_LOAD_FACTOR:
-            self._c_resize(<size_t>(self.max_items * HASH_MAP_GROWTH_RATE))        
-        pair.key = self.c_get_key_data(key)
+            self._c_resize(<size_t>(self.max_items * HASH_MAP_GROWTH_RATE))
+        
+        
         pair.key_length = self.c_get_key_length(key)
         pair.key_hash = self.c_get_key_hash(key)
         pair.value = value
+        key_data = self.c_get_key_data(key)
+        pair.key = <char *>calloc(pair.key_length, sizeof(char))
+        if pair.key == NULL:
+            raise MemoryError("ItemHashMap: cannot allocate key")
+        memcpy(pair.key, key_data, pair.key_length * sizeof(char))
         self._c_insert(&pair)
         self.num_items += 1
 
@@ -152,8 +159,8 @@ cdef class ItemHashMap:
         pair = self._c_get_pair(key)
         if pair == NULL:
             raise INVALID_KEY_ERROR
+        free(pair.key)
         memset(pair, 0, sizeof(PairC))
-
 
     cdef uint64_t c_get(self, bytes key) except *: 
         cdef PairC *pair
