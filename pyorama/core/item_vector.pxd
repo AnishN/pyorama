@@ -1,51 +1,22 @@
-from cython cimport view
-from cpython.buffer cimport *
-from pyorama.core.error cimport *
+cimport cython
 from pyorama.libs.c cimport *
 
-ctypedef struct ItemVectorC:
-    char *items
-    size_t max_items
-    size_t item_size
-    size_t num_items
-
+@cython.final
 cdef class ItemVector:
-
-    @staticmethod
-    cdef Error c_init(ItemVectorC *self, size_t item_size) nogil
-
-    @staticmethod
-    cdef void c_free(ItemVectorC *self) nogil
-
-    @staticmethod
-    cdef Error c_push_empty(ItemVectorC *self) nogil
-
-    @staticmethod
-    cdef Error c_pop_empty(ItemVectorC *self) nogil
-
-    @staticmethod
-    cdef Error c_push(ItemVectorC *self, void *item) nogil
-
-    @staticmethod
-    cdef Error c_pop(ItemVectorC *self, void *item) nogil
-
-    @staticmethod
-    cdef void c_get_ptr(ItemVectorC *self, size_t index, void **item_ptr) nogil
-
-    @staticmethod
-    cdef void c_get(ItemVectorC *self, size_t index, void *item) nogil
-
-    @staticmethod
-    cdef void c_set(ItemVectorC *self, size_t index, void *item) nogil
-
-    @staticmethod
-    cdef void c_clear(ItemVectorC *self, size_t index) nogil
-
-    @staticmethod
-    cdef void c_clear_all(ItemVectorC *self) nogil
-
-    @staticmethod
-    cdef void c_swap(ItemVectorC *self, size_t a, size_t b) nogil
-
-    @staticmethod
-    cdef Error c_resize(ItemVectorC *self, size_t new_max_items) nogil
+    cdef:
+        char *items
+        size_t max_items
+        size_t item_size
+        size_t num_items
+    
+    cdef void c_push_empty(self) except *
+    cdef void c_pop_empty(self) except *
+    cdef void c_push(self, void *item) except *
+    cdef void c_pop(self, void *item) except *
+    cdef void *c_get_ptr(self, size_t index) except *
+    cdef void c_get(self, size_t index, void *item) except *
+    cdef void c_set(self, size_t index, void *item) except *
+    cdef void c_clear(self, size_t index) except *
+    cdef void c_clear_all(self) nogil
+    cdef void c_swap(self, size_t a, size_t b) except *
+    cdef void c_resize(self, size_t new_max_items) except *

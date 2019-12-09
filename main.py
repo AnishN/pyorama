@@ -1,111 +1,116 @@
-from OpenGL.GL import *
-
-import glob
+from pyorama.core.app import *
+from pyorama.graphics import *
+from pyorama.math3d.vec3 import Vec3
+from pyorama.math3d.mat4 import Mat4
 import time
 import numpy as np
-from pyorama.core.app import *
-from pyorama.graphics.common import *
-from pyorama.graphics.graphics_manager import *
-from pyorama.graphics.window import *
-from pyorama.graphics.image import *
-from pyorama.graphics.sampler import *
-from pyorama.graphics.texture import *
-from pyorama.graphics.shader import *
-from pyorama.graphics.program import *
 
-class Game(App):
-        
-    def init(self):
-        super().init()
-        self.prev_time = time.time()
-        self.curr_time = self.prev_time
-        self.graphics = GraphicsManager()
-        self.create_graphics()
-        self.init_graphics()
-        
-    def create_graphics(self):
-        self.graphics.init()
-        self.window = self.graphics.create_window()
-        self.image = self.graphics.create_image()
-        self.sampler = self.graphics.create_sampler()
-        self.texture = self.graphics.create_texture()
-        self.vs = self.graphics.create_shader()
-        self.fs = self.graphics.create_shader()
-        self.program = self.graphics.create_program()
-    
-    def quit_graphics(self):
-        self.graphics.delete_window(self.window)
-        self.graphics.delete_image(self.image)
-        self.graphics.delete_sampler(self.sampler)
-        self.graphics.delete_texture(self.texture)
-        self.graphics.delete_shader(self.vs)
-        self.graphics.delete_shader(self.fs)
-        self.graphics.delete_program(self.program)
-        self.graphics.quit()
-    
-    def init_graphics(self):
-        self.window.init(800, 600, "Hello, world!")
-        self.image.init_from_file(b"test.png")
-        self.sampler.init()
-        self.texture.init(self.sampler, self.image)
-        
-        self.vs_source = b"""
-        #version 120
-        void main()
-        {
-            gl_Position = gl_Vertex;
-        }
-        """
-        self.vs.init(ShaderType.SHADER_TYPE_VERTEX, self.vs_source)
-        self.vs.compile()
-        self.fs_source = b"""
-        #version 120
-        void main()
-        {
-            gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);
-        }
-        """
-        self.fs.init(ShaderType.SHADER_TYPE_FRAGMENT, self.fs_source)
-        self.fs.compile()
-        self.program.init(self.vs, self.fs)
-        self.program.link()
+def setup_program(graphics):
+    vs_source = b"""
+    #version 330 core
+    layout (location = 0) in vec3 vertices;
+    layout (location = 1) in vec3 colors;
+    out vec3 out_colors;
+    uniform mat4 model_view;
+    void main()
+    {
+        gl_Position = model_view * vec4(vertices, 1.0);
+        out_colors = colors;
+    }
+    """
+    vs = graphics.shader_create()
+    graphics.shader_init(vs, SHADER_TYPE_VERTEX, vs_source)
+    graphics.shader_compile(vs)
 
-    def clear_graphics(self):
-        self.window.clear()
-        self.image.clear()
-        self.sampler.clear()
-        self.texture.clear()
-        self.vs.clear()
-        self.fs.clear()
-        self.program.clear()
+    fs_source = b"""
+    #version 330 core
+    in vec3 out_colors;
+    out vec4 frag_color;
+    void main()
+    {
+        frag_color = vec4(out_colors, 1.0);
+    }
+    """
+    fs = graphics.shader_create()
+    graphics.shader_init(fs, SHADER_TYPE_FRAGMENT, fs_source)
+    graphics.shader_compile(fs)
 
-    def quit(self):
-        self.clear_graphics()
-        self.quit_graphics()
-        super().quit()
+    program = graphics.program_create()
+    graphics.program_init(program, vs, fs)
+    graphics.program_compile(program)
+    return program
 
-    def update(self):
-        self.curr_time = time.time()
-        self.window.bind()
-        self.program.bind()
-        glClearColor(0.0, 0.0, 0.0, 1.0)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+app = App()
+app.init()
+graphics = GraphicsManager()
+width = 800
+height = 600
+title = b"Test"
+window = graphics.window_create()
+graphics.window_init(window, width, height, title)
 
-        #self.program.set_attribute(
-        #self.program.set_uniform(
-        
-        glBegin(GL_TRIANGLES)
-        glVertex3f(-1, -1, 0)
-        glVertex3f(0, 1, 0)
-        glVertex3f(1, -1, 0)
-        glEnd()
-        
-        self.window.swap_buffers()
-        self.program.unbind()
-        self.window.unbind()
-        print(self.curr_time - self.prev_time)
-        self.prev_time = self.curr_time
+"""
+#Texture Setup
+image = graphics.image_create()
+graphics.image_init_from_file(image, b"./resources/images/science.jpg")
+image_width = graphics.image_get_width(image)
+image_height = graphics.image_get_height(image)
+sampler = graphics.sampler_create()
+texture = graphics.texture_create()
+graphics.sampler_init(sampler)
+graphics.texture_init(texture, sampler, image)
+graphics.texture_bind(texture, upload_sampler=True, upload_image=True)
+graphics.texture_unbind()
+"""
 
-#game = Game(use_sleep=False, use_vsync=True, ms_per_update=1000.0/60.0)
-game = Game(use_sleep=True, use_vsync=False, ms_per_update=1000.0/60.0)
-game.run()
+
+#Mesh Setup
+mesh_format = graphics.mesh_format_create()
+graphics.mesh_format_init(mesh_format, [
+    (0, b"vertices", MATH_TYPE_VEC3), 
+    (1, b"tex_coords", MATH_TYPE_VEC3),
+])
+
+mesh = graphics.mesh_create()
+graphics.mesh_init(mesh, mesh_format)
+mesh_data = np.array([
+    -1, -1, 0, 0, 1, 0,
+    1, 1, 0, 1, 0, 1,
+    1, -1, 0, 1, 1, 1,
+
+    -1, -1, 0, 0, 1, 1,
+    1, 1, 0, 1, 0, 0, 
+    -1, 1, 0, 1, 1, 1,
+
+], dtype=np.float32)
+graphics.mesh_set_data(mesh, mesh_data)
+batch = graphics.mesh_batch_create()
+meshes = np.array([mesh], dtype=np.uint64)
+graphics.mesh_batch_init(batch, mesh_format, meshes)
+program = setup_program(graphics)
+mv = Mat4()
+Mat4.translate(mv, mv, Vec3(0, 0, 0))
+
+while True:
+    start = time.time()
+    graphics.window_bind(window)
+    graphics.window_clear()
+    graphics.program_bind(program)
+    graphics.program_set_uniform(program, b"model_view", mv)
+    graphics.mesh_batch_render(batch)
+    graphics.program_unbind()
+    graphics.window_swap_buffers(window)
+    graphics.window_unbind()
+    end = time.time()
+    #print(end - start)
+
+"""
+graphics.image_free(image)
+graphics.sampler_free(sampler)
+graphics.texture_free(texture)
+graphics.window_free(window)
+graphics.image_delete(image)
+graphics.sampler_delete(sampler)
+graphics.texture_delete(texture)
+graphics.window_delete(window)
+"""
