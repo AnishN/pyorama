@@ -561,7 +561,7 @@ cdef class GraphicsManager:
             uniform_map.c_append(u_name, i)
         program_ptr.uniform_map = <PyObject *>uniform_map
         Py_XINCREF(program_ptr.uniform_map)#TODO: need decompile decref equivalent
-
+    
     def program_set_uniform(self, Handle program, bytes name, value):
         cdef:
             ProgramC *program_ptr
