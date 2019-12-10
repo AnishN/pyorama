@@ -1,4 +1,4 @@
-from pyorama.core.app import *
+from pyorama.core.app import App
 from pyorama.graphics import *
 from pyorama.math3d.vec3 import Vec3
 from pyorama.math3d.vec4 import Vec4
@@ -9,13 +9,12 @@ import numpy as np
 class Game(App):
 
     def init(self):
-        super().init()
+        super().init(use_vsync=False, use_sleep=True)
         self.graphics = GraphicsManager()
         self.window = self.setup_window()
         self.vs, self.fs, self.program = self.setup_program()
         self.meshes, self.mesh_format, self.batch = self.setup_batch()
         self.image, self.sampler, self.texture = self.setup_texture()
-
         self.model_view = Mat4()
         Mat4.translate(self.model_view, self.model_view, Vec3(0, 0, 0))
 
@@ -101,6 +100,7 @@ class Game(App):
             1, 1, 0, 1, 0, 
             -1, 1, 0, 1, 1,
         ], dtype=np.float32)
+        
         self.graphics.mesh_set_data(mesh, mesh_data)
         batch = self.graphics.mesh_batch_create()
         meshes = np.array([mesh], dtype=np.uint64)

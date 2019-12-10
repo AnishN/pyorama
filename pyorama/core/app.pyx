@@ -3,12 +3,11 @@ import time
 
 cdef class App:
 
-    def __init__(self, double ms_per_update=1000.0/60.0, bint use_vsync=True, bint use_sleep=False):
+    def init(self, double ms_per_update=1000.0/60.0, bint use_vsync=True, bint use_sleep=False):
         self.ms_per_update = ms_per_update
         self.use_vsync = use_vsync
         self.use_sleep = use_sleep
 
-    def init(self):
         py_atexit.register(self.quit)
         SDL_Init(SDL_INIT_EVERYTHING)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
