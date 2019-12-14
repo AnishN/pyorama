@@ -37,32 +37,16 @@ class Game(App):
         self.graphics.window_delete(self.window)
 
     def setup_program(self):
-        vs_source = b"""
-        #version 330 core
-        layout (location = 0) in vec3 vertices;
-        layout (location = 1) in vec2 tex_coords;
-        out vec2 v_tex_coords;
-        uniform mat4 model_view;
-        void main()
-        {
-            gl_Position = model_view * vec4(vertices, 1.0);
-            v_tex_coords = tex_coords;
-        }
-        """
+        vs_file = open("./resources/shaders/basic.vert", "rb")
+        vs_source = vs_file.read()
+        vs_file.close()
         vs = self.graphics.shader_create()
         self.graphics.shader_init(vs, SHADER_TYPE_VERTEX, vs_source)
         self.graphics.shader_compile(vs)
 
-        fs_source = b"""
-        #version 330 core
-        uniform sampler2D sampler;
-        in vec2 v_tex_coords;
-        out vec4 frag_color;
-        void main()
-        {
-            frag_color = texture2D(sampler, v_tex_coords);
-        }
-        """
+        fs_file = open("./resources/shaders/basic.frag", "rb")
+        fs_source = fs_file.read()
+        fs_file.close()
         fs = self.graphics.shader_create()
         self.graphics.shader_init(fs, SHADER_TYPE_FRAGMENT, fs_source)
         self.graphics.shader_compile(fs)
@@ -88,22 +72,26 @@ class Game(App):
             (1, b"tex_coords", MATH_TYPE_VEC2),
         ])
 
-        mesh = self.graphics.mesh_create()
-        self.graphics.mesh_init(mesh, mesh_format)
-        mesh_data = np.array([
-            #triangle 1
+        mesh_a = self.graphics.mesh_create()
+        self.graphics.mesh_init(mesh_a, mesh_format)
+        mesh_data_a = np.array([
             -1, -1, 0, 0, 1,
             1, 1, 0, 1, 0,
             1, -1, 0, 1, 1,
-            #triangle 2
+        ], dtype=np.float32)
+        self.graphics.mesh_set_data(mesh_a, mesh_data_a)
+
+        mesh_b = self.graphics.mesh_create()
+        self.graphics.mesh_init(mesh_b, mesh_format)
+        mesh_data_b = np.array([
             -1, -1, 0, 0, 1,
             1, 1, 0, 1, 0, 
             -1, 1, 0, 1, 1,
         ], dtype=np.float32)
+        self.graphics.mesh_set_data(mesh_b, mesh_data_b)
         
-        self.graphics.mesh_set_data(mesh, mesh_data)
         batch = self.graphics.mesh_batch_create()
-        meshes = np.array([mesh], dtype=np.uint64)
+        meshes = np.array([mesh_a, mesh_b], dtype=np.uint64)
         self.graphics.mesh_batch_init(batch, mesh_format, meshes)
         return meshes, mesh_format, batch
 
@@ -118,7 +106,7 @@ class Game(App):
 
     def setup_texture(self):
         image = self.graphics.image_create()
-        self.graphics.image_init_from_file(image, b"./resources/images/science.jpg")
+        self.graphics.image_init_from_file(image, b"./resources/images/city.jpg")
         image_width = self.graphics.image_get_width(image)
         image_height = self.graphics.image_get_height(image)
         sampler = self.graphics.sampler_create()
