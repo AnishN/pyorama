@@ -413,6 +413,7 @@ cdef extern from "GL/glew.h" nogil:
     enum: GL_ALPHA
     enum: GL_RGB
     enum: GL_RGBA
+    enum: GL_R32F
     enum: GL_RGB32F
     enum: GL_RGBA32F
     enum: GL_LUMINANCE
@@ -835,6 +836,7 @@ cdef extern from "GL/glew.h" nogil:
     enum: GL_COLOR_ARRAY_BUFFER_BINDING
     enum: GL_INDEX_ARRAY_BUFFER_BINDING
     enum: GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING
+    enum: GL_TEXTURE_BUFFER
     enum: GL_EDGE_FLAG_ARRAY_BUFFER_BINDING
     enum: GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING
     enum: GL_FOG_COORD_ARRAY_BUFFER_BINDING
@@ -1300,6 +1302,7 @@ cdef extern from "GL/glew.h" nogil:
     void glStencilFunc(GLenum func, GLint ref, GLuint mask)
     void glStencilMask(GLuint mask)
     void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass)
+    void glTexBuffer(GLenum mode, GLenum type, GLuint id)# TODO: rename these params per spec
     void glTexCoord1d(GLdouble s)
     void glTexCoord1dv(GLdouble *v)
     void glTexCoord1f(GLfloat s)

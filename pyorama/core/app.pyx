@@ -1,4 +1,4 @@
-import atexit as py_atexit
+#import atexit as py_atexit
 import time
 
 cdef class App:
@@ -8,7 +8,7 @@ cdef class App:
         self.use_vsync = use_vsync
         self.use_sleep = use_sleep
 
-        py_atexit.register(self.quit)
+        #py_atexit.register(self.quit)
         SDL_Init(SDL_INIT_EVERYTHING)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
         #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
@@ -33,8 +33,16 @@ cdef class App:
         IMG_Quit()
         SDL_Quit()
         self.is_running = False
+        #self.graphics = None
+        #self.events = None
 
-    def update(self):
+    def pre_update(self):
+        pass
+
+    def update(self, double delta):
+        pass
+
+    def post_update(self):
         pass
 
     def trigger_quit(self):
@@ -46,42 +54,33 @@ cdef class App:
             double end_time
             double delta
             double delay
-            SDL_Event e
 
         self.init()
         if not self.use_sleep:
             while self.is_running:
                 self.current_time = self.c_get_current_time()
                 self.delta = self.current_time - self.previous_time
-                self.previous_time = self.current_time
                 self.accumulated_time += self.delta
-
-                #hack/debug - just empty queue
-                while SDL_PollEvent(&e):
-                    pass
-
+                self.pre_update()
                 while self.accumulated_time > self.ms_per_update/1000:
-                    self.update()
+                    self.update(self.accumulated_time)
                     self.accumulated_time -= self.ms_per_update/1000
-                #SDL_GL_MakeCurrent(self.root_window, self.root_context)
-                #SDL_GL_SetSwapInterval(self.use_vsync)
-                #SDL_GL_MakeCurrent(NULL, self.root_context)
+                self.post_update()
+                self.previous_time = self.current_time
         else:
             while self.is_running:
-                #hack/debug - just empty queue
+                self.current_time = self.c_get_current_time()
+                self.delta = self.current_time - self.previous_time
                 start_time = self.c_get_current_time()
-                while SDL_PollEvent(&e):
-                    pass
-                self.update()
-                end_time = self.c_get_current_time() 
-                self.delta = end_time - start_time
-                delay = (self.ms_per_update/1000) - self.delta
+                self.pre_update()
+                self.update(self.delta)
+                self.post_update()
+                end_time = self.c_get_current_time()
+                delay = (self.ms_per_update/1000) - (end_time - start_time)
                 delay = max(delay, 0.0)
                 time.sleep(delay)
-                #SDL_GL_MakeCurrent(self.root_window, self.root_context)
-                #SDL_GL_SetSwapInterval(self.use_vsync)
-                #SDL_GL_MakeCurrent(NULL, self.root_context)
-
+                self.previous_time = self.current_time
+                
     cdef double c_get_current_time(self) nogil:
         cdef:
             double counter

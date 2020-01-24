@@ -11,9 +11,10 @@ cdef class GraphicsManager:
         self.images = ItemSlotMap(sizeof(ImageC), ITEM_TYPE_IMAGE)
         self.samplers = ItemSlotMap(sizeof(SamplerC), ITEM_TYPE_SAMPLER)
         self.textures = ItemSlotMap(sizeof(TextureC), ITEM_TYPE_TEXTURE)
-        self.mesh_formats = ItemSlotMap(sizeof(MeshFormatC), ITEM_TYPE_MESH_FORMAT)
+        #self.mesh_formats = ItemSlotMap(sizeof(MeshFormatC), ITEM_TYPE_MESH_FORMAT)
         self.meshes = ItemSlotMap(sizeof(MeshC), ITEM_TYPE_MESH)
-        self.mesh_batches = ItemSlotMap(sizeof(MeshBatchC), ITEM_TYPE_MESH_BATCH)
+        self.models = ItemSlotMap(sizeof(ModelC), ITEM_TYPE_MODEL)
+        self.model_batches = ItemSlotMap(sizeof(ModelBatchC), ITEM_TYPE_MODEL_BATCH)
         self.shaders = ItemSlotMap(sizeof(ShaderC), ITEM_TYPE_SHADER)
         self.programs = ItemSlotMap(sizeof(ProgramC), ITEM_TYPE_PROGRAM)
 
@@ -86,6 +87,28 @@ cdef class GraphicsManager:
         sdl_window = SDL_GetWindowFromID(window_ptr.id)
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(sdl_window)
+
+    def window_get_width(self, Handle window):
+        cdef WindowC *window_ptr = self.c_window_get_ptr(window)
+        return window_ptr.width
+
+    def window_get_height(self, Handle window):
+        cdef WindowC *window_ptr = self.c_window_get_ptr(window)
+        return window_ptr.height
+
+    def window_get_title(self, Handle window):
+        cdef WindowC *window_ptr = self.c_window_get_ptr(window)
+        return window_ptr.title
+    
+    def window_set_title(self, Handle window, bytes title):
+        cdef:
+            WindowC *window_ptr
+            SDL_Window *sdl_window
+            
+        window_ptr = self.c_window_get_ptr(window)
+        sdl_window = SDL_GetWindowFromID(window_ptr.id)
+        window_ptr.title = title
+        SDL_SetWindowTitle(sdl_window, window_ptr.title)
 
     #Image
     def image_create(self):
@@ -227,7 +250,15 @@ cdef class GraphicsManager:
         texture_ptr.sampler = 0
         texture_ptr.image = 0
     
-    def texture_bind(self, Handle texture, bint upload_sampler=False, bint upload_image=False):
+    def texture_bind(self, Handle texture):
+        cdef TextureC *texture_ptr
+        texture_ptr = self.c_texture_get_ptr(texture)
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.id)
+    
+    def texture_unbind(self):
+        glBindTexture(GL_TEXTURE_2D, 0)
+
+    def texture_upload(self, Handle texture, bint upload_sampler=True, bint upload_image=True):
         cdef:
             TextureC *texture_ptr
             SamplerC *sampler_ptr
@@ -236,8 +267,6 @@ cdef class GraphicsManager:
         texture_ptr = self.c_texture_get_ptr(texture)
         sampler_ptr = self.c_sampler_get_ptr(texture_ptr.sampler)
         image_ptr = self.c_image_get_ptr(texture_ptr.image)
-
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.id)
         if upload_sampler:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampler_ptr.mag_filter)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampler_ptr.min_filter)
@@ -245,64 +274,6 @@ cdef class GraphicsManager:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, sampler_ptr.wrap_t)
         if upload_image:
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.pixels)
-    
-    def texture_unbind(self):
-        glBindTexture(GL_TEXTURE_2D, 0)
-
-    #MeshFormat
-    def mesh_format_create(self):
-        return self.mesh_formats.c_create()
-    
-    def mesh_format_delete(self, Handle mesh_format):
-        self.mesh_formats.c_delete(mesh_format)
-    
-    cdef MeshFormatC *c_mesh_format_get_ptr(self, Handle mesh_format) except *:
-        return <MeshFormatC *>self.mesh_formats.c_get_ptr(mesh_format)
-
-    def mesh_format_init(self, Handle mesh_format, list mesh_format_info):
-        cdef:
-            MeshFormatC *mesh_format_ptr
-            size_t i
-            size_t index
-            bytes name
-            MathType type
-            AttributeC *info
-            size_t num_attributes
-            ItemHashMap attribute_map
-            size_t offset = 0
-
-        attribute_map = ItemHashMap()
-        mesh_format_ptr = self.c_mesh_format_get_ptr(mesh_format)
-        mesh_format_ptr.stride = 0
-        num_attributes = len(mesh_format_info)
-        if num_attributes > 16:
-            raise ValueError("MeshFormat: Only up to 16 attribute are supported")
-        for i in range(num_attributes):
-            index, name, type = mesh_format_info[i]
-            info = &mesh_format_ptr.attribute_info[i]
-            info.index = index
-            info.type = type
-            if info.type == MATH_TYPE_FLOAT: info.size = 1 * sizeof(float)
-            elif info.type == MATH_TYPE_VEC2: info.size = 2 * sizeof(float)
-            elif info.type == MATH_TYPE_VEC3: info.size = 3 * sizeof(float)
-            elif info.type == MATH_TYPE_VEC4: info.size = 4 * sizeof(float)
-            elif info.type == MATH_TYPE_MAT2: info.size = 4 * sizeof(float)
-            elif info.type == MATH_TYPE_MAT3: info.size = 9 * sizeof(float)
-            elif info.type == MATH_TYPE_MAT4: info.size = 16 * sizeof(float)
-            else: raise ValueError("MeshFormat: invalid attribute type")
-            info.offset = offset
-            offset += info.size
-            attribute_map.c_append(name, i)
-        mesh_format_ptr.stride = offset
-        mesh_format_ptr.attribute_map = <PyObject *>attribute_map
-        Py_XINCREF(mesh_format_ptr.attribute_map)
-        mesh_format_ptr.num_attributes = num_attributes
-    
-    def mesh_format_free(self, Handle mesh_format):
-        cdef MeshFormatC *mesh_format_ptr
-        mesh_format_ptr = self.c_mesh_format_get_ptr(mesh_format)
-        Py_XDECREF(mesh_format_ptr.attribute_map)
-        mesh_format_ptr.attribute_map = NULL
 
     #Mesh
     def mesh_create(self):
@@ -314,118 +285,182 @@ cdef class GraphicsManager:
     cdef MeshC *c_mesh_get_ptr(self, Handle mesh) except *:
         return <MeshC *>self.meshes.c_get_ptr(mesh)
 
-    def mesh_init(self, Handle mesh, Handle format):
-        cdef:
-            MeshC *mesh_ptr
-
-        mesh_ptr = self.c_mesh_get_ptr(mesh)
-        mesh_ptr.format = format
-    
-    def mesh_free(self, Handle mesh):
-        cdef:
-            MeshC *mesh_ptr
-        
-        mesh_ptr = self.c_mesh_get_ptr(mesh)
-        mesh_ptr.format = 0
-
-    def mesh_set_data(self, Handle mesh, float[:] data):
+    def mesh_init(self, Handle mesh):
         cdef MeshC *mesh_ptr
         mesh_ptr = self.c_mesh_get_ptr(mesh)
-        mesh_ptr.data = &data[0]
-        mesh_ptr.length = data.shape[0]
+        mesh_ptr.vertices_data = NULL
+        mesh_ptr.vertices_length = 0
+        mesh_ptr.indices_data = NULL
+        mesh_ptr.indices_length = 0
+    
+    def mesh_free(self, Handle mesh):
+        cdef MeshC *mesh_ptr
+        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr.vertices_data = NULL
+        mesh_ptr.vertices_length = 0
+        mesh_ptr.indices_data = NULL
+        mesh_ptr.indices_length = 0
+
+    def mesh_set_vertices_data(self, Handle mesh, float[:] data):
+        cdef MeshC *mesh_ptr
+        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr.vertices_data = &data[0]
+        mesh_ptr.vertices_length = data.shape[0]
+
+    def mesh_set_indices_data(self, Handle mesh, uint32_t[:] data):
+        cdef MeshC *mesh_ptr
+        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr.indices_data = &data[0]
+        mesh_ptr.indices_length = data.shape[0]
+
+    #Model
+    def model_create(self):
+        return self.models.c_create()
+    
+    def model_delete(self, Handle model):
+        self.models.c_delete(model)
+    
+    cdef ModelC *c_model_get_ptr(self, Handle model) except *:
+        return <ModelC *>self.models.c_get_ptr(model)
+
+    def model_init(self, Handle model, Handle mesh, Vec3 translation, Quat rotation, Vec3 scale):
+        cdef ModelC *model_ptr
+        model_ptr = self.c_model_get_ptr(model)
+        model_ptr.mesh = mesh
+        memcpy(&model_ptr.translation[0], <Vec3C *>translation.ptr, sizeof(Vec3C))
+        memcpy(&model_ptr.rotation[0], <QuatC *>rotation.ptr, sizeof(QuatC))
+        memcpy(&model_ptr.scale[0], <Vec3C *>scale.ptr, sizeof(Vec3C))
+    
+    def model_free(self, Handle model):
+        cdef ModelC *model_ptr
+        model_ptr = self.c_model_get_ptr(model)
+        model_ptr.mesh = 0
+        memset(model_ptr.translation, 0, sizeof(Vec3C))
+        memset(model_ptr.rotation, 0, sizeof(QuatC))
+        memset(model_ptr.scale, 0, sizeof(Vec3C))
 
     #MeshBatch
-    def mesh_batch_create(self):
-        return self.mesh_batches.c_create()
+    def model_batch_create(self):
+        return self.model_batches.c_create()
     
-    def mesh_batch_delete(self, Handle mesh_batch):
-        self.mesh_batches.c_delete(mesh_batch)
+    def model_batch_delete(self, Handle model_batch):
+        self.model_batches.c_delete(model_batch)
     
-    cdef MeshBatchC *c_mesh_batch_get_ptr(self, Handle mesh_batch) except *:
-        return <MeshBatchC *>self.mesh_batches.c_get_ptr(mesh_batch)
+    cdef ModelBatchC *c_model_batch_get_ptr(self, Handle model_batch) except *:
+        return <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
 
-    def mesh_batch_init(self, Handle mesh_batch, Handle mesh_format, Handle[:] meshes):
+    def model_batch_init(self, Handle model_batch, Handle[:] models):
         cdef:
-            MeshBatchC *mesh_batch_ptr
-            MeshFormatC *mesh_format_ptr
+            ModelBatchC *model_batch_ptr
+            ModelC *model_ptr
             MeshC *mesh_ptr
-            AttributeC *info
-            size_t i, j, k
-            size_t stride
+            size_t i
+            float *v_ptr
+            uint32_t *i_ptr
             size_t offset
 
-        mesh_batch_ptr = self.c_mesh_batch_get_ptr(mesh_batch)
-        glGenVertexArrays(1, &mesh_batch_ptr.vao_id)
-        glGenBuffers(1, &mesh_batch_ptr.vbo_id)
-        mesh_batch_ptr.format = mesh_format
-        mesh_batch_ptr.meshes = &meshes[0]
-        mesh_batch_ptr.num_meshes = meshes.shape[0]
-        mesh_format_ptr = self.c_mesh_format_get_ptr(mesh_format)
+        model_batch_ptr = self.c_model_batch_get_ptr(model_batch)
+        glGenVertexArrays(1, &model_batch_ptr.vao_id)
+        glGenBuffers(1, &model_batch_ptr.vbo_id)
+        glGenBuffers(1, &model_batch_ptr.ibo_id)
+        glGenBuffers(1, &model_batch_ptr.tbo_id)
+        glGenTextures(1, &model_batch_ptr.tbo_tex_id)
 
-        #Reset cumulative lengths per MeshBatch attribute data
-        for i in range(16):
-            mesh_batch_ptr.length = 0
+        model_batch_ptr.num_models = models.shape[0]
+        model_batch_ptr.vertices_length = 0
+        model_batch_ptr.indices_length = 0
+        for i in range(model_batch_ptr.num_models):
+            model_ptr = self.c_model_get_ptr(models[i])
+            mesh_ptr = self.c_mesh_get_ptr(model_ptr.mesh)
+            model_batch_ptr.vertices_length += mesh_ptr.vertices_length
+            model_batch_ptr.indices_length += mesh_ptr.indices_length
 
-        #Accumulate meshes together into single array of data
-        #Also validate that each mesh's format matches the batch's format
-        for i in range(mesh_batch_ptr.num_meshes):
-            mesh_ptr = self.c_mesh_get_ptr(meshes[i])
-            if mesh_ptr.format != mesh_format:
-                raise ValueError("MeshBatch: Mesh has wrong MeshFormat")
-            mesh_batch_ptr.length += mesh_ptr.length
-        
-        #Allocate contiguous memory storing all attibutes
-        #Fill this buffer with interleaved attribute data (since mesh data is already interleaved)
-        mesh_batch_ptr.data = <float *>malloc(mesh_batch_ptr.length * sizeof(float))
-        j = 0
-        for i in range(mesh_batch_ptr.num_meshes):
-            mesh_ptr = self.c_mesh_get_ptr(meshes[i])
-            memcpy(
-                &mesh_batch_ptr.data[j],
-                mesh_ptr.data, 
-                mesh_ptr.length * sizeof(float),
-            )
-            j += mesh_ptr.length
+        model_batch_ptr.vertices_data = <float *>calloc(model_batch_ptr.vertices_length, sizeof(float))
+        if model_batch_ptr.vertices_data == NULL:
+            raise MemoryError("Model Batch: cannot allocate vertices data")
+        v_ptr = model_batch_ptr.vertices_data
+        model_batch_ptr.indices_data = <uint32_t *>calloc(model_batch_ptr.indices_length, sizeof(uint32_t))
+        if model_batch_ptr.indices_data == NULL:
+            raise MemoryError("Model Batch: cannot allocate indices data")
+        i_ptr = model_batch_ptr.indices_data
+
+        for i in range(model_batch_ptr.num_models):
+            model_ptr = self.c_model_get_ptr(models[i])
+            mesh_ptr = self.c_mesh_get_ptr(model_ptr.mesh)
+            memcpy(v_ptr, mesh_ptr.vertices_data, mesh_ptr.vertices_length * sizeof(float))
+            memcpy(i_ptr, mesh_ptr.indices_data, mesh_ptr.indices_length * sizeof(uint32_t))
+            v_ptr += mesh_ptr.vertices_length * sizeof(float)
+            i_ptr += mesh_ptr.indices_length * sizeof(uint32_t)
 
         #Fill the batch's single vbo with the interleaved data
         #Bind each attribute for the corresponding vao (matching format)
-        glBindVertexArray(mesh_batch_ptr.vao_id)
-        glBindBuffer(GL_ARRAY_BUFFER, mesh_batch_ptr.vbo_id)
-        glBufferData(
-            GL_ARRAY_BUFFER, 
-            mesh_batch_ptr.length * sizeof(float), 
-            mesh_batch_ptr.data, 
-            GL_STATIC_DRAW,
-        )
-        stride = mesh_format_ptr.stride
-        for i in range(mesh_format_ptr.num_attributes):
-            info = &mesh_format_ptr.attribute_info[i]
-            offset = info.offset
-            if info.type == MATH_TYPE_VEC2:
-                glVertexAttribPointer(info.index, 2, GL_FLOAT, False, stride, <void *>offset)
-            elif info.type == MATH_TYPE_VEC3:
-                glVertexAttribPointer(info.index, 3, GL_FLOAT, False, stride, <void *>offset)
-            elif info.type == MATH_TYPE_VEC4:
-                glVertexAttribPointer(info.index, 4, GL_FLOAT, False, stride, <void *>offset)
-            glEnableVertexAttribArray(info.index)
+        glBindVertexArray(model_batch_ptr.vao_id)
+        glBindBuffer(GL_ARRAY_BUFFER, model_batch_ptr.vbo_id)
+        glBufferData(GL_ARRAY_BUFFER, model_batch_ptr.vertices_length * sizeof(float), model_batch_ptr.vertices_data, GL_STATIC_DRAW)
+        offset = 0
+        glVertexAttribPointer(0, 3, GL_FLOAT, False, 8 * sizeof(float), <void *>offset)
+        glEnableVertexAttribArray(0)
+        offset += 3 * sizeof(float)
+        glVertexAttribPointer(1, 2, GL_FLOAT, False, 8 * sizeof(float), <void *>offset)
+        glEnableVertexAttribArray(1)
+        offset += 2 * sizeof(float)
+        glVertexAttribPointer(2, 3, GL_FLOAT, False, 8 * sizeof(float), <void *>offset)
+        glEnableVertexAttribArray(2)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glBindVertexArray(0)
 
-    def mesh_batch_free(self, Handle mesh_batch):
-        cdef MeshBatchC *mesh_batch_ptr
-        mesh_batch_ptr = self.c_mesh_batch_get_ptr(mesh_batch)
-        glDeleteVertexArrays(1, &mesh_batch_ptr.vao_id)
-        mesh_batch_ptr.vao_id = 0
-        glDeleteBuffers(1, &mesh_batch_ptr.vbo_id)
-        mesh_batch_ptr.vbo_id = 0
+        #Fill the tbo with per-mesh data
+        cdef:
+            Mat4C transform
+            Mat4C rotation_mat
+            Vec3C *translation
+            QuatC *rotation
+            Vec3C *scale
+            Mat4C *t_ptr
 
-    def mesh_batch_render(self, Handle mesh_batch):
-        cdef MeshBatchC *mesh_batch_ptr
-        mesh_batch_ptr = self.c_mesh_batch_get_ptr(mesh_batch)
-        glBindVertexArray(mesh_batch_ptr.vao_id)
-        glDrawArrays(GL_TRIANGLES, 0, mesh_batch_ptr.length / 5)
+        model_batch_ptr.transform_length = model_batch_ptr.num_models * 16
+        model_batch_ptr.transform_data = <float *>calloc(model_batch_ptr.transform_length, sizeof(float))
+        if model_batch_ptr.transform_data == NULL:
+            raise MemoryError("Model Batch: cannot allocate transform data")
+        
+        t_ptr = <Mat4C *>model_batch_ptr.transform_data
+        for i in range(model_batch_ptr.num_models):
+            model_ptr = self.c_model_get_ptr(models[i])
+            translation = &model_ptr.translation
+            rotation = &model_ptr.rotation
+            scale = &model_ptr.scale
+            Mat4.c_from_translation(&transform, translation)
+            Mat4.c_from_quat(&rotation_mat, rotation)
+            Mat4.c_dot(&transform, &transform, &rotation_mat)
+            Mat4.c_scale(&transform, &transform, scale)
+            memcpy(t_ptr, &transform, sizeof(Mat4C))
+            t_ptr += 1
+
+        glBindBuffer(GL_TEXTURE_BUFFER, model_batch_ptr.tbo_id)
+        glBufferData(GL_TEXTURE_BUFFER, model_batch_ptr.transform_length * sizeof(float), model_batch_ptr.transform_data, GL_STATIC_DRAW)
+        glBindBuffer(GL_TEXTURE_BUFFER, 0)
+
+    def model_batch_free(self, Handle model_batch):
+        cdef ModelBatchC *model_batch_ptr
+        model_batch_ptr = self.c_model_batch_get_ptr(model_batch)
+        glDeleteVertexArrays(1, &model_batch_ptr.vao_id)
+        model_batch_ptr.vao_id = 0
+        glDeleteBuffers(1, &model_batch_ptr.vbo_id)
+        model_batch_ptr.vbo_id = 0
+
+    def model_batch_render(self, Handle model_batch):
+        cdef ModelBatchC *model_batch_ptr
+        model_batch_ptr = self.c_model_batch_get_ptr(model_batch)
+        glEnable(GL_DEPTH_TEST)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
+        glBindVertexArray(model_batch_ptr.vao_id)
+        glBindTexture(GL_TEXTURE_BUFFER, model_batch_ptr.tbo_tex_id)
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, model_batch_ptr.tbo_id)
+        glDrawElements(GL_TRIANGLES, model_batch_ptr.indices_length, GL_UNSIGNED_INT, model_batch_ptr.indices_data)
+        #glDrawArrays(GL_TRIANGLES, 0, model_batch_ptr.vertices_length / 8)
+        glBindTexture(GL_TEXTURE_BUFFER, 0)
         glBindVertexArray(0)
-
+    
     #Shader
     def shader_create(self):
         return self.shaders.c_create()
@@ -541,7 +576,7 @@ cdef class GraphicsManager:
             log = <char*>malloc(log_length * sizeof(char))
             glGetProgramInfoLog(gl_id, log_length, NULL, log)
             raise ValueError("Program: failed to compile:\n{0}".format(log))
-
+        
         #Setup uniform dict mapping
         uniform_map = ItemHashMap()
         glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORMS, <int *>&program_ptr.num_uniforms)
@@ -568,7 +603,6 @@ cdef class GraphicsManager:
             size_t i
             UniformC *info
             uint32_t type
-            PairC *pair
         
         program_ptr = self.c_program_get_ptr(program)
         i = (<ItemHashMap>program_ptr.uniform_map).c_get(name)

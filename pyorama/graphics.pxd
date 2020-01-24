@@ -6,6 +6,7 @@ from pyorama.core.item_slot_map cimport *
 from pyorama.libs.gl cimport *
 from pyorama.libs.sdl2 cimport *
 
+from pyorama.math3d.common cimport *
 from pyorama.math3d.vec2 cimport *
 from pyorama.math3d.vec3 cimport *
 from pyorama.math3d.vec4 cimport *
@@ -70,25 +71,39 @@ ctypedef struct UniformC:
     MathType type
     size_t size
 
-ctypedef struct MeshFormatC:
-    size_t num_attributes
-    PyObject *attribute_map
-    AttributeC attribute_info[16]
-    size_t stride
-
 ctypedef struct MeshC:
-    Handle format
-    float *data
-    size_t length
+    float *vertices_data
+    size_t vertices_length
+    uint32_t *indices_data
+    size_t indices_length
 
-ctypedef struct MeshBatchC:
+ctypedef struct ModelC:
+    Handle mesh
+    Vec3C translation
+    QuatC rotation
+    Vec3C scale
+
+ctypedef struct ModelBatchC:
     uint32_t vao_id
     uint32_t vbo_id
-    Handle format
-    Handle *meshes
-    size_t num_meshes
-    float *data
-    size_t length
+    uint32_t ibo_id
+    uint32_t tbo_id
+    uint32_t tbo_tex_id
+    float *vertices_data
+    size_t vertices_length
+    uint32_t *indices_data
+    size_t indices_length
+    float *transform_data
+    size_t transform_length
+    size_t num_models
+
+ctypedef struct TransformC:
+    Vec3C translation
+    QuatC rotation
+    Vec3C scale
+
+ctypedef struct CameraC:
+    TransformC transform
 
 cpdef enum ShaderType:
     SHADER_TYPE_VERTEX
@@ -117,9 +132,9 @@ cdef class GraphicsManager:
     cdef ItemSlotMap images
     cdef ItemSlotMap samplers
     cdef ItemSlotMap textures
-    cdef ItemSlotMap mesh_formats
     cdef ItemSlotMap meshes
-    cdef ItemSlotMap mesh_batches
+    cdef ItemSlotMap models
+    cdef ItemSlotMap model_batches
     cdef ItemSlotMap shaders
     cdef ItemSlotMap programs
     
@@ -127,8 +142,8 @@ cdef class GraphicsManager:
     cdef ImageC *c_image_get_ptr(self, Handle image) except *
     cdef SamplerC *c_sampler_get_ptr(self, Handle sampler) except *
     cdef TextureC *c_texture_get_ptr(self, Handle texture) except *
-    cdef MeshFormatC *c_mesh_format_get_ptr(self, Handle mesh_format) except *
     cdef MeshC *c_mesh_get_ptr(self, Handle mesh) except *
-    cdef MeshBatchC *c_mesh_batch_get_ptr(self, Handle mesh_batch) except *
+    cdef ModelC *c_model_get_ptr(self, Handle model) except *
+    cdef ModelBatchC *c_model_batch_get_ptr(self, Handle model_batch) except *
     cdef ShaderC *c_shader_get_ptr(self, Handle shader) except *
     cdef ProgramC *c_program_get_ptr(self, Handle program) except *
