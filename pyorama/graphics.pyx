@@ -17,7 +17,7 @@ cdef class GraphicsManager:
         self.model_batches = ItemSlotMap(sizeof(ModelBatchC), ITEM_TYPE_MODEL_BATCH)
         self.shaders = ItemSlotMap(sizeof(ShaderC), ITEM_TYPE_SHADER)
         self.programs = ItemSlotMap(sizeof(ProgramC), ITEM_TYPE_PROGRAM)
-
+    
     def __dealloc__(self):
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)

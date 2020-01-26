@@ -13,39 +13,36 @@ import numpy as np
 class Game(App):
 
     def init(self):
-        #super().init(use_vsync=False, use_sleep=True)
-        super().init(use_vsync=True, use_sleep=False)
-        self.graphics = GraphicsManager()
-        self.events = EventManager()
+        super().init(use_vsync=False, use_sleep=True)
+        #super().init(use_vsync=True, use_sleep=False)
 
         self.width = 800
         self.height = 600
         self.title = b"Test"
         self.window = self.setup_window()
-        
+
         self.vs, self.fs, self.program = self.setup_program()
         self.meshes, self.models, self.batch = self.setup_batch()
         self.image, self.sampler, self.texture = self.setup_texture()
-        self.projection = Mat4()
-
-        """
-        listener = self.events.listener_create()
-        self.events.listener_init(listener, WINDOW_QUIT, self.quit, None)
-        self.events.listener_init(
-        """
+        self.listeners = self.setup_listeners()
         
+        self.projection = Mat4()
         #Mat4.ortho(self.projection, -5, 5, -5, 5, -5, 5)
-        Mat4.ortho(self.projection, -50, 50, -50, 50, -50, 50)
-        #Mat4.ortho(self.projection, -500, 500, -500, 500, -500, 500)
+        #Mat4.ortho(self.projection, -50, 50, -50, 50, -50, 50)
+        Mat4.ortho(self.projection, -500, 500, -500, 500, -500, 500)
         #Mat4.perspective(self.projection, math.radians(90.0), float(width)/height, -100, 100)
         #self.renderer = Renderer(self.graphics)
     
-    def quit(self, event):
+    def quit(self):
         self.cleanup_program()
         self.cleanup_batch()
         self.cleanup_texture()
+        self.cleanup_listeners()
         super().quit()
-
+    
+    def on_event(self, event_data, user_data):
+        print(event_data, user_data)
+    
     def setup_window(self):
         window = self.graphics.window_create()
         self.graphics.window_init(window, self.width, self.height, self.title)
@@ -75,6 +72,12 @@ class Game(App):
         self.graphics.program_compile(program)
         return vs, fs, program
 
+    def setup_listeners(self):
+        mouse_down = self.events.listener_create()
+        self.events.listener_init(mouse_down, EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_event, None)
+        listeners = [mouse_down]
+        return listeners
+    
     def cleanup_program(self):
         self.graphics.program_free(self.program)
         self.graphics.program_delete(self.program)
@@ -97,9 +100,9 @@ class Game(App):
         """
         #v_data, i_data = OBJLoader.load_file(b"../sphere.obj")
         #v_data, i_data = OBJLoader.load_file(b"../cube.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../banana/Banana.obj")
+        v_data, i_data = OBJLoader.load_file(b"../banana/Banana.obj")
         #v_data, i_data = OBJLoader.load_file(b"../monkey/monkey.obj")
-        v_data, i_data = OBJLoader.load_file(b"../dog/dog.obj")
+        #v_data, i_data = OBJLoader.load_file(b"../dog/dog.obj")
         #v_data, i_data = OBJLoader.load_file(b"../jburkardt/airboat.obj")
         #v_data, i_data = OBJLoader.load_file(b"../obj_files/teapot.obj")
         #print(np.asarray(v_data))
@@ -131,9 +134,9 @@ class Game(App):
         image = self.graphics.image_create()
         #self.graphics.image_init_from_file(image, b"../gltfJsonStructure.png")
         #self.graphics.image_init_from_file(image, b"../monkey/albedo.png")
-        self.graphics.image_init_from_file(image, b"../dog/dog.jpg")
+        #self.graphics.image_init_from_file(image, b"../dog/dog.jpg")
         #self.graphics.image_init_from_file(image, b"../monkey/Suzanne.jpg")
-        #self.graphics.image_init_from_file(image, b"../banana/tex/Banana.jpg")
+        self.graphics.image_init_from_file(image, b"../banana/tex/Banana.jpg")
         image_width = self.graphics.image_get_width(image)
         image_height = self.graphics.image_get_height(image)
         sampler = self.graphics.sampler_create()
@@ -153,14 +156,18 @@ class Game(App):
         self.graphics.sampler_delete(self.sampler)
         self.graphics.texture_delete(self.texture)
     
-    def pre_update(self):
-        pass
-    
+    def cleanup_listeners(self):
+        for listener in self.listeners:
+            self.events.listener_free(listener)
+            self.events.listener_delete(listener)
+
     def update(self, delta):
         fps = round(1.0/delta, 1)
         fps_title = "{0} (FPS: {1})".format(self.title.decode("utf-8"), fps).encode("utf-8")
         self.graphics.window_set_title(self.window, fps_title)
         
+        self.events.update()
+
         self.graphics.window_bind(self.window)
         self.graphics.window_clear()
         self.graphics.program_bind(self.program)
@@ -172,9 +179,6 @@ class Game(App):
         self.graphics.program_unbind()
         self.graphics.window_swap_buffers(self.window)
         self.graphics.window_unbind()
-
-    def post_update(self):
-        pass
     
 if __name__ == "__main__":
     game = Game()

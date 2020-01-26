@@ -27,22 +27,18 @@ cdef class App:
         self.current_time = self.c_get_current_time()
         self.previous_time = self.current_time
         self.is_running = True
+        self.graphics = GraphicsManager()
+        self.events = EventManager()
 
     def quit(self):
         #Tries to undo state changes from c_init in reverse order
         IMG_Quit()
         SDL_Quit()
         self.is_running = False
-        #self.graphics = None
-        #self.events = None
-
-    def pre_update(self):
-        pass
+        self.graphics = None
+        self.events = None
 
     def update(self, double delta):
-        pass
-
-    def post_update(self):
         pass
 
     def trigger_quit(self):
@@ -61,20 +57,21 @@ cdef class App:
                 self.current_time = self.c_get_current_time()
                 self.delta = self.current_time - self.previous_time
                 self.accumulated_time += self.delta
-                self.pre_update()
+                
+                #self.pre_update()
                 while self.accumulated_time > self.ms_per_update/1000:
                     self.update(self.accumulated_time)
                     self.accumulated_time -= self.ms_per_update/1000
-                self.post_update()
+                #self.post_update()
                 self.previous_time = self.current_time
         else:
             while self.is_running:
                 self.current_time = self.c_get_current_time()
                 self.delta = self.current_time - self.previous_time
                 start_time = self.c_get_current_time()
-                self.pre_update()
+                #self.pre_update()
                 self.update(self.delta)
-                self.post_update()
+                #self.post_update()
                 end_time = self.c_get_current_time()
                 delay = (self.ms_per_update/1000) - (end_time - start_time)
                 delay = max(delay, 0.0)

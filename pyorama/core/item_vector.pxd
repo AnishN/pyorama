@@ -20,3 +20,5 @@ cdef class ItemVector:
     cdef void c_clear_all(self) nogil
     cdef void c_swap(self, size_t a, size_t b) except *
     cdef void c_resize(self, size_t new_max_items) except *
+    cdef void c_remove_empty(self, size_t index) except *
+    cdef void c_remove(self, size_t index, void *item) except *

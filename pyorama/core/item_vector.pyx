@@ -29,7 +29,6 @@ cdef class ItemVector:
     cdef void c_push_empty(self) except *:
         cdef:
             size_t new_max_items
-            char *new_items
             char *item
         if self.num_items >= self.max_items:
             new_max_items = <size_t>(self.max_items * VECTOR_GROWTH_RATE)
@@ -41,7 +40,6 @@ cdef class ItemVector:
     cdef void c_pop_empty(self) except *:
         cdef:
             size_t new_max_items
-            char *new_items
         if self.num_items <= 0:
             raise POP_EMPTY_ERROR
         elif self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
@@ -52,7 +50,6 @@ cdef class ItemVector:
     cdef void c_push(self, void *item) except *:
         cdef:
             size_t new_max_items
-            char *new_items
         if self.num_items >= self.max_items:
             new_max_items = <size_t>(self.max_items * VECTOR_GROWTH_RATE)
             self.c_resize(new_max_items)
@@ -62,7 +59,6 @@ cdef class ItemVector:
     cdef void c_pop(self, void *item) except *:
         cdef:
             size_t new_max_items
-            char *new_items
         if self.num_items <= 0:
             raise POP_EMPTY_ERROR
         elif self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
@@ -131,3 +127,42 @@ cdef class ItemVector:
             memset(clear_start, 0, clear_size)
         self.items = new_items
         self.max_items = new_max_items
+
+
+    cdef void c_remove_empty(self, size_t index) except *:
+        cdef:
+            size_t new_max_items
+            void *dest
+            void *src
+            size_t size
+        
+        if self.num_items <= 0:
+            raise POP_EMPTY_ERROR
+        dest = self.c_get_ptr(index)
+        src = self.c_get_ptr(index)
+        size = (self.num_items - index - 1) * self.item_size
+        memmove(dest, src, size)
+        if self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
+            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
+            self.c_resize(new_max_items)
+        self.num_items -= 1
+
+    
+    cdef void c_remove(self, size_t index, void *item) except *:
+        cdef:
+            size_t new_max_items
+            void *dest
+            void *src
+            size_t size
+        
+        if self.num_items <= 0:
+            raise POP_EMPTY_ERROR
+        self.c_get(index, item)
+        dest = self.c_get_ptr(index)
+        src = self.c_get_ptr(index)
+        size = (self.num_items - index - 1) * self.item_size
+        memmove(dest, src, size)
+        if self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
+            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
+            self.c_resize(new_max_items)
+        self.num_items -= 1

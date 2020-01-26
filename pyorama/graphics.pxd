@@ -102,7 +102,14 @@ ctypedef struct TransformC:
     QuatC rotation
     Vec3C scale
 
+cpdef enum CameraType:
+    CAMERA_ORTHOGRAPHIC
+    CAMERA_PERSPECTIVE
+
 ctypedef struct CameraC:
+    CameraType type
+    float z_near
+    float z_far
     TransformC transform
 
 cpdef enum ShaderType:
