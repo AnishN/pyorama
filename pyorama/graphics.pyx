@@ -174,6 +174,7 @@ cdef class GraphicsManager:
         camera_ptr = self.c_camera3d_get_ptr(camera)
         Vec3.c_add(&camera_ptr.position, &camera_ptr.position, translation.ptr)
         Vec3.c_add(&camera_ptr.target, &camera_ptr.target, translation.ptr)
+        # TODO: this implemetation is completely wrong. In a pan, the camera does not move!
 
     def camera_3d_get_target(self, Handle camera):
         cdef:
