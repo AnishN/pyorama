@@ -44,8 +44,8 @@ cdef class Vec3:
         def __set__(self, float new_y): self.ptr[0][1] = new_y
         
     property z:
-        def __get__(self): return self.ptr[0][0]
-        def __set__(self, float new_z): self.ptr[0][0] = new_z
+        def __get__(self): return self.ptr[0][2]
+        def __set__(self, float new_z): self.ptr[0][2] = new_z
     
     @staticmethod
     def add(Vec3 out, Vec3 a, Vec3 b):

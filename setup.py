@@ -21,7 +21,7 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native", "-fno-var-tracking-assignments"]
 link_args = ["-std=c11"]
 annotate = True
 quiet = False

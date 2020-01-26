@@ -8,6 +8,7 @@ cdef class GraphicsManager:
         glEnable(GL_TEXTURE_2D)
 
         self.windows = ItemSlotMap(sizeof(WindowC), ITEM_TYPE_WINDOW)
+        self.cameras_3d = ItemSlotMap(sizeof(Camera3dC), ITEM_TYPE_CAMERA_3D)
         self.images = ItemSlotMap(sizeof(ImageC), ITEM_TYPE_IMAGE)
         self.samplers = ItemSlotMap(sizeof(SamplerC), ITEM_TYPE_SAMPLER)
         self.textures = ItemSlotMap(sizeof(TextureC), ITEM_TYPE_TEXTURE)
@@ -109,6 +110,96 @@ cdef class GraphicsManager:
         sdl_window = SDL_GetWindowFromID(window_ptr.id)
         window_ptr.title = title
         SDL_SetWindowTitle(sdl_window, window_ptr.title)
+
+    #Camera3d
+    def camera_3d_create(self):
+        return self.cameras_3d.c_create()
+
+    def camera_3d_delete(self, Handle camera):
+        self.cameras_3d.c_delete(camera)
+
+    cdef Camera3dC *c_camera3d_get_ptr(self, Handle camera) except *:
+        return <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+
+    def camera_3d_init(self, Handle camera, 
+            float fovy, float aspect, float near, float far,
+            Vec3 position=Vec3(),
+            Vec3 target=Vec3(),
+            Vec3 forward=Vec3(0.0, 0.0, -1.0), 
+            Vec3 up=Vec3(0.0, 1.0, 0.0), 
+            Vec3 right=Vec3(1.0, 0.0, 0.0)):
+        cdef Camera3dC *camera_ptr
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        self.camera_3d_set_projection(camera, fovy, aspect, near, far)
+        Vec3.c_copy(&camera_ptr.forward, forward.ptr)
+        Vec3.c_copy(&camera_ptr.up, up.ptr)
+        Vec3.c_copy(&camera_ptr.right, right.ptr)
+
+        #cdef inline void c_look_at(Mat4C *out, Vec3C *eye, Vec3C *center, Vec3C *up) nogil
+
+    def camera_3d_free(self, Handle camera):
+        self.camera_3d_set_projection(camera, 0.0, 0.0, 0.0, 0.0)
+
+    def camera_3d_set_projection(self, Handle camera, float fovy, float aspect, float near, float far):
+        cdef Camera3dC *camera_ptr
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr.fovy = fovy
+        camera_ptr.aspect = aspect
+        camera_ptr.near = near
+        camera_ptr.far = far
+
+    def camera_3d_get_projection(self, Handle camera):
+        cdef:
+            Camera3dC *camera_ptr
+            Mat4 projection = Mat4()
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Mat4.c_perspective(projection.ptr, camera_ptr.fovy, camera_ptr.aspect, camera_ptr.near, camera_ptr.far)
+        return projection
+    
+    def camera_3d_get_position(self, Handle camera):
+        cdef:
+            Camera3dC *camera_ptr
+            Vec3 position = Vec3()
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Vec3.c_copy(position.ptr, &camera_ptr.position)
+        return position
+
+    def camera_3d_set_position(self, Handle camera, Vec3 position=Vec3()):
+        cdef Camera3dC *camera_ptr
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Vec3.c_copy(&camera_ptr.position, position.ptr)
+
+    def camera_3d_pan(self, Handle camera, Vec3 translation=Vec3()):
+        cdef Camera3dC *camera_ptr
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Vec3.c_add(&camera_ptr.position, &camera_ptr.position, translation.ptr)
+        Vec3.c_add(&camera_ptr.target, &camera_ptr.target, translation.ptr)
+
+    def camera_3d_get_target(self, Handle camera):
+        cdef:
+            Camera3dC *camera_ptr
+            Vec3 target = Vec3()
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Vec3.c_copy(target.ptr, &camera_ptr.target)
+        return target
+
+    def camera_3d_set_target(self, Handle camera, Vec3 target=Vec3()):
+        cdef Camera3dC *camera_ptr
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Vec3.c_copy(&camera_ptr.target, target.ptr)
+
+    def camera_3d_get_view(self, Handle camera):
+        cdef:
+            Camera3dC *camera_ptr
+            Mat4 view = Mat4()
+        camera_ptr = self.c_camera3d_get_ptr(camera)
+        Mat4.c_look_at(
+            view.ptr, 
+            &camera_ptr.position, 
+            &camera_ptr.target,
+            &camera_ptr.up,
+        )
+        return view
 
     #Image
     def image_create(self):

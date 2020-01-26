@@ -1,5 +1,6 @@
 from pyorama.core.app import App
 from pyorama.event import *
+from pyorama.keyboard import *
 from pyorama.graphics import *
 from pyorama.loaders.obj import *
 from pyorama.math3d.vec3 import Vec3
@@ -25,13 +26,14 @@ class Game(App):
         self.meshes, self.models, self.batch = self.setup_batch()
         self.image, self.sampler, self.texture = self.setup_texture()
         self.listeners = self.setup_listeners()
-        
-        self.projection = Mat4()
-        #Mat4.ortho(self.projection, -5, 5, -5, 5, -5, 5)
-        #Mat4.ortho(self.projection, -50, 50, -50, 50, -50, 50)
-        Mat4.ortho(self.projection, -500, 500, -500, 500, -500, 500)
-        #Mat4.perspective(self.projection, math.radians(90.0), float(width)/height, -100, 100)
-        #self.renderer = Renderer(self.graphics)
+        self.camera = self.setup_camera()
+
+        """
+        self.camera = self.graphics.camera_create()
+        self.grpahics.camera_init(self.camera,
+        self.graphics.camera_look_at(self.camera,
+        self.graphics.camera_
+        """
     
     def quit(self):
         self.cleanup_program()
@@ -40,8 +42,24 @@ class Game(App):
         self.cleanup_listeners()
         super().quit()
     
-    def on_event(self, event_data, user_data):
-        print(event_data, user_data)
+    def on_key_down(self, event_data, user_data):
+        scan_code = event_data["scan_code"]
+        shift = Vec3()
+        if scan_code == SCAN_CODE_LEFT:
+            shift = Vec3(-1.0, 0.0, 0.0)
+        elif scan_code == SCAN_CODE_RIGHT:
+            shift = Vec3(+1.0, 0.0, 0.0)
+        elif scan_code == SCAN_CODE_UP:
+            shift = Vec3(0.0, +1.0, 0.0)
+        elif scan_code == SCAN_CODE_DOWN:
+            shift = Vec3(0.0, -1.0, 0.0)
+        
+        position = self.graphics.camera_3d_get_position(self.camera)
+        target = self.graphics.camera_3d_get_target(self.camera)
+        Vec3.add(position, position, shift)
+        #print(position.x, position.y, position.z)
+        self.graphics.camera_3d_set_position(self.camera, position)
+        #self.graphics.camera_3d_pan(self.camera, shift)
     
     def setup_window(self):
         window = self.graphics.window_create()
@@ -73,10 +91,17 @@ class Game(App):
         return vs, fs, program
 
     def setup_listeners(self):
-        mouse_down = self.events.listener_create()
-        self.events.listener_init(mouse_down, EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_event, None)
-        listeners = [mouse_down]
+        key_down = self.events.listener_create()
+        self.events.listener_init(key_down, EVENT_TYPE_KEY_DOWN, self.on_key_down, None)
+        listeners = [key_down]
         return listeners
+
+    def setup_camera(self):
+        camera = self.graphics.camera_3d_create()
+        self.graphics.camera_3d_init(camera, math.radians(90.0), float(self.width)/self.height, 0.0, 1000)
+        #self.graphics.camera_3d_set_position(camera, Vec3(0.0, 0.0, -1000))
+        #self.graphics.camera_3d_set_target(
+        return camera
     
     def cleanup_program(self):
         self.graphics.program_free(self.program)
@@ -100,9 +125,9 @@ class Game(App):
         """
         #v_data, i_data = OBJLoader.load_file(b"../sphere.obj")
         #v_data, i_data = OBJLoader.load_file(b"../cube.obj")
-        v_data, i_data = OBJLoader.load_file(b"../banana/Banana.obj")
+        #v_data, i_data = OBJLoader.load_file(b"../banana/Banana.obj")
         #v_data, i_data = OBJLoader.load_file(b"../monkey/monkey.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../dog/dog.obj")
+        v_data, i_data = OBJLoader.load_file(b"../dog/dog.obj")
         #v_data, i_data = OBJLoader.load_file(b"../jburkardt/airboat.obj")
         #v_data, i_data = OBJLoader.load_file(b"../obj_files/teapot.obj")
         #print(np.asarray(v_data))
@@ -134,9 +159,9 @@ class Game(App):
         image = self.graphics.image_create()
         #self.graphics.image_init_from_file(image, b"../gltfJsonStructure.png")
         #self.graphics.image_init_from_file(image, b"../monkey/albedo.png")
-        #self.graphics.image_init_from_file(image, b"../dog/dog.jpg")
+        self.graphics.image_init_from_file(image, b"../dog/dog.jpg")
         #self.graphics.image_init_from_file(image, b"../monkey/Suzanne.jpg")
-        self.graphics.image_init_from_file(image, b"../banana/tex/Banana.jpg")
+        #self.graphics.image_init_from_file(image, b"../banana/tex/Banana.jpg")
         image_width = self.graphics.image_get_width(image)
         image_height = self.graphics.image_get_height(image)
         sampler = self.graphics.sampler_create()
@@ -161,6 +186,10 @@ class Game(App):
             self.events.listener_free(listener)
             self.events.listener_delete(listener)
 
+    def cleanup_camera(self):
+        self.graphics.camera_3d_delete(self.camera)
+        self.camera = None
+
     def update(self, delta):
         fps = round(1.0/delta, 1)
         fps_title = "{0} (FPS: {1})".format(self.title.decode("utf-8"), fps).encode("utf-8")
@@ -171,7 +200,13 @@ class Game(App):
         self.graphics.window_bind(self.window)
         self.graphics.window_clear()
         self.graphics.program_bind(self.program)
-        self.graphics.program_set_uniform(self.program, b"projection", self.projection)
+
+        projection = self.graphics.camera_3d_get_projection(self.camera)
+        self.graphics.program_set_uniform(self.program, b"projection", projection)
+
+        view = self.graphics.camera_3d_get_view(self.camera)
+        self.graphics.program_set_uniform(self.program, b"view", view)
+        
         self.graphics.program_set_uniform(self.program, b"sampler", 0)
         self.graphics.texture_bind(self.texture)
         self.graphics.model_batch_render(self.batch)

@@ -3,6 +3,8 @@ from pyorama.graphics cimport *
 cpdef enum ItemType:
     ITEM_TYPE_NONE
     ITEM_TYPE_WINDOW
+    ITEM_TYPE_CAMERA_3D
+    ITEM_TYPE_CAMERA_2D
     ITEM_TYPE_IMAGE
     ITEM_TYPE_SAMPLER
     ITEM_TYPE_TEXTURE

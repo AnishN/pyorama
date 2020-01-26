@@ -4,6 +4,7 @@ from pyorama.core.item cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.core.item_vector cimport *
 from pyorama.libs.sdl2 cimport *
+from pyorama.keyboard cimport *
 
 ctypedef struct ListenerC:
     EventTypes event_type

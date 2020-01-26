@@ -22,6 +22,37 @@ ctypedef struct WindowC:
     char *title
     size_t title_len
 
+"""
+ctypedef struct TransformC:
+    Vec3C translation
+    QuatC rotation
+    Vec3C scale
+"""
+
+ctypedef struct Camera3dC:
+    float fovy
+    float aspect
+    float near
+    float far
+
+    Vec3C forward
+    Vec3C up
+    Vec3C right
+    Vec3C position
+    Vec3C target
+
+"""
+ctypedef struct Camera2dC:
+    float left
+    float right
+    float bottom
+    float top
+    float near
+    float far
+pan
+zoom
+"""
+
 ctypedef struct ImageC:
     int width
     int height
@@ -97,21 +128,6 @@ ctypedef struct ModelBatchC:
     size_t transform_length
     size_t num_models
 
-ctypedef struct TransformC:
-    Vec3C translation
-    QuatC rotation
-    Vec3C scale
-
-cpdef enum CameraType:
-    CAMERA_ORTHOGRAPHIC
-    CAMERA_PERSPECTIVE
-
-ctypedef struct CameraC:
-    CameraType type
-    float z_near
-    float z_far
-    TransformC transform
-
 cpdef enum ShaderType:
     SHADER_TYPE_VERTEX
     SHADER_TYPE_FRAGMENT
@@ -136,6 +152,7 @@ cdef class GraphicsManager:
     cdef SDL_GLContext root_context
 
     cdef ItemSlotMap windows
+    cdef ItemSlotMap cameras_3d
     cdef ItemSlotMap images
     cdef ItemSlotMap samplers
     cdef ItemSlotMap textures
@@ -146,6 +163,7 @@ cdef class GraphicsManager:
     cdef ItemSlotMap programs
     
     cdef WindowC *c_window_get_ptr(self, Handle window) except *
+    cdef Camera3dC *c_camera3d_get_ptr(self, Handle camera) except *
     cdef ImageC *c_image_get_ptr(self, Handle image) except *
     cdef SamplerC *c_sampler_get_ptr(self, Handle sampler) except *
     cdef TextureC *c_texture_get_ptr(self, Handle texture) except *

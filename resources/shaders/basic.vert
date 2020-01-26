@@ -4,6 +4,7 @@ layout (location = 1) in vec2 tex_coords;
 layout (location = 2) in vec3 normals;
 uniform usamplerBuffer transform;
 uniform mat4 projection;
+uniform mat4 view;
 out vec2 v_tex_coords;
 
 void main()
@@ -17,6 +18,6 @@ void main()
         model_view[i] = texelFetch(transform, transform_index + i);
     }
     */
-    gl_Position = projection * vec4(vertices, 1.0);
+    gl_Position = projection * view * vec4(vertices, 1.0);
     v_tex_coords = tex_coords;
 }

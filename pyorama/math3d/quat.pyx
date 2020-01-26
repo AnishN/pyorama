@@ -44,12 +44,12 @@ cdef class Quat:
         def __set__(self, float new_y): self.ptr[0][1] = new_y
         
     property z:
-        def __get__(self): return self.ptr[0][0]
-        def __set__(self, float new_z): self.ptr[0][0] = new_z
+        def __get__(self): return self.ptr[0][2]
+        def __set__(self, float new_z): self.ptr[0][2] = new_z
         
     property w:
-        def __get__(self): return self.ptr[0][0]
-        def __set__(self, float new_w): self.ptr[0][0] = new_w
+        def __get__(self): return self.ptr[0][3]
+        def __set__(self, float new_w): self.ptr[0][3] = new_w
         
     @staticmethod
     def add(Quat out, Quat a, Quat b): pass
