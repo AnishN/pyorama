@@ -166,7 +166,7 @@ class Game(App):
     def cleanup_camera(self):
         self.graphics.camera_3d_delete(self.camera)
         self.camera = None
-
+    
     def update(self, delta):
         fps = round(1.0/delta, 1)
         fps_title = "{0} (FPS: {1})".format(self.title.decode("utf-8"), fps).encode("utf-8")
