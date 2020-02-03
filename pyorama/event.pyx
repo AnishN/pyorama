@@ -20,7 +20,6 @@ cdef class EventManager:
     
     def __dealloc__(self):
         self.listener_map = None
-        self.events = None
 
     def user_event_type_create(self):
         cdef EventType event_type

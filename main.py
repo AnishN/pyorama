@@ -1,8 +1,8 @@
 from pyorama.core.app import App
+from pyorama.asset import *
 from pyorama.event import *
 from pyorama.keyboard import *
 from pyorama.graphics import *
-from pyorama.loaders.obj import *
 from pyorama.math3d.vec3 import Vec3
 from pyorama.math3d.vec4 import Vec4
 from pyorama.math3d.quat import Quat
@@ -63,13 +63,13 @@ class Game(App):
         scan_code = event_data["scan_code"]
         shift = Vec3()
         if scan_code == SCAN_CODE_LEFT:
-            shift = Vec3(-1.0, 0.0, 0.0)
+            shift = Vec3(-0.1, 0.0, 0.0)
         elif scan_code == SCAN_CODE_RIGHT:
-            shift = Vec3(+1.0, 0.0, 0.0)
+            shift = Vec3(+0.1, 0.0, 0.0)
         elif scan_code == SCAN_CODE_UP:
-            shift = Vec3(0.0, +1.0, 0.0)
+            shift = Vec3(0.0, +0.1, 0.0)
         elif scan_code == SCAN_CODE_DOWN:
-            shift = Vec3(0.0, -1.0, 0.0)
+            shift = Vec3(0.0, -0.1, 0.0)
         
         position = self.graphics.camera_3d_get_position(self.camera)
         target = self.graphics.camera_3d_get_target(self.camera)
@@ -132,8 +132,8 @@ class Game(App):
         for mesh in self.meshes:
             self.graphics.mesh_delete(mesh)
         for model in self.models:
-            self.graphics.mesh_delete(mesh)
-
+            self.graphics.model_delete(model)
+    
     def setup_texture(self):
         #self.image = self.graphics.image_create()
         #self.graphics.image_init_from_file(self.image, b"../gltfJsonStructure.png")
