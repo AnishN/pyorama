@@ -8,7 +8,7 @@ cdef class App:
         self.use_vsync = use_vsync
         self.use_sleep = use_sleep
 
-        py_atexit.register(self.quit)
+        py_atexit.register(App.quit, self)
         SDL_Init(SDL_INIT_EVERYTHING)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
         #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)

@@ -62,14 +62,15 @@ class Game(App):
     def on_key_down(self, event_data, user_data):
         scan_code = event_data["scan_code"]
         shift = Vec3()
+        speed = 0.01
         if scan_code == SCAN_CODE_LEFT:
-            shift = Vec3(-0.1, 0.0, 0.0)
+            shift = Vec3(-speed, 0.0, 0.0)
         elif scan_code == SCAN_CODE_RIGHT:
-            shift = Vec3(+0.1, 0.0, 0.0)
+            shift = Vec3(+speed, 0.0, 0.0)
         elif scan_code == SCAN_CODE_UP:
-            shift = Vec3(0.0, +0.1, 0.0)
+            shift = Vec3(0.0, +speed, 0.0)
         elif scan_code == SCAN_CODE_DOWN:
-            shift = Vec3(0.0, -0.1, 0.0)
+            shift = Vec3(0.0, -speed, 0.0)
         
         position = self.graphics.camera_3d_get_position(self.camera)
         target = self.graphics.camera_3d_get_target(self.camera)
@@ -81,7 +82,7 @@ class Game(App):
         self.height = 600
         self.title = b"Test"
         self.window = self.graphics.window_create(self.width, self.height, self.title)
-    
+
     def cleanup_window(self):
         self.graphics.window_delete(self.window)
 
@@ -108,7 +109,6 @@ class Game(App):
 
     def setup_batch(self):
         mesh = self.graphics.mesh_create()
-
         #v_data, i_data = t.load_from_file(b"../banana/Banana.obj")
         #v_data, i_data = OBJLoader.load_file(b"../sphere.obj")
         #v_data, i_data = OBJLoader.load_file(b"../cube.obj")
@@ -133,7 +133,7 @@ class Game(App):
             self.graphics.mesh_delete(mesh)
         for model in self.models:
             self.graphics.model_delete(model)
-    
+
     def setup_texture(self):
         #self.image = self.graphics.image_create()
         #self.graphics.image_init_from_file(self.image, b"../gltfJsonStructure.png")
