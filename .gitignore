@@ -1,5 +1,7 @@
 *.c
 *.h
+*.cpp
+*.hpp
 *.so
 *.dll
 *.html
