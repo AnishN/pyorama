@@ -12,7 +12,7 @@ libraries = {
         "SDL2", "SDL2_image", "SDL2_mixer", 
         "openal", 
         "ogg", "vorbis", "vorbisfile", "vorbisenc",
-        "opusfile", "FLAC", "chipmunk",
+        "opusfile", "FLAC", "chipmunk", "assimp",
     ],
     "Windows": [
         "opengl32", "libglew32", 

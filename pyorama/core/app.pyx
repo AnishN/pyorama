@@ -1,4 +1,4 @@
-#import atexit as py_atexit
+import atexit as py_atexit
 import time
 
 cdef class App:
@@ -8,7 +8,7 @@ cdef class App:
         self.use_vsync = use_vsync
         self.use_sleep = use_sleep
 
-        #py_atexit.register(self.quit)
+        py_atexit.register(self.quit)
         SDL_Init(SDL_INIT_EVERYTHING)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
         #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
@@ -27,6 +27,7 @@ cdef class App:
         self.current_time = self.c_get_current_time()
         self.previous_time = self.current_time
         self.is_running = True
+        self.assets = AssetManager()
         self.graphics = GraphicsManager()
         self.events = EventManager()
 
@@ -35,6 +36,7 @@ cdef class App:
         IMG_Quit()
         SDL_Quit()
         self.is_running = False
+        self.assets = None
         self.graphics = None
         self.events = None
 

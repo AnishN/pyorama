@@ -53,21 +53,16 @@ cdef class EventManager:
         SDL_PushEvent(&event)
     
     #Listener
-    def listener_create(self):
-        return self.listeners.c_create()
-
-    def listener_delete(self, Handle listener):
-        return self.listeners.c_delete(listener)
-
     cdef ListenerC *c_listener_get_ptr(self, Handle listener) except *:
         return <ListenerC *>self.listeners.c_get_ptr(listener)
 
-    def listener_init(self, Handle listener, EventTypes event_type, object callback, dict user_data):
+    def listener_create(self, EventTypes event_type, object callback, dict user_data):
         cdef:
+            Handle listener
             ListenerC *listener_ptr
             size_t index
             ItemVector listeners
-
+        listener = self.listeners.c_create()
         listener_ptr = self.c_listener_get_ptr(listener)
         listeners = <ItemVector>(self.listener_map[event_type])
         listener_ptr.event_type = event_type
@@ -77,8 +72,9 @@ cdef class EventManager:
         Py_XINCREF(<PyObject *>callback)
         Py_XINCREF(<PyObject *>user_data)
         listeners.c_push(&listener)
+        return listener
 
-    def listener_free(self, Handle listener):
+    def listener_delete(self, Handle listener):
         cdef:
             ListenerC *listener_ptr
             size_t index
@@ -94,6 +90,7 @@ cdef class EventManager:
         listener_ptr.callback = NULL
         listener_ptr.user_data = NULL
         listeners.c_remove_empty(index)
+        self.listeners.c_delete(listener)
     
     cdef dict c_parse_window_event(self, SDL_WindowEvent *event, double time_stamp):
         cdef dict event_data = {
