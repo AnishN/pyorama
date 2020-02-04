@@ -20,6 +20,17 @@ cdef class AssetManager:
         free(converted_surface)#free the struct, not the void *pixels data!
         return image
 
+    def shader_load_from_file(self, GraphicsManager graphics, ShaderType type, bytes file_name):
+        cdef:
+            Handle shader
+            object shader_file
+            bytes shader_source
+        shader_file = open(file_name, "rb")
+        shader_source = shader_file.read()
+        shader_file.close()
+        shader = graphics.shader_create(type, shader_source)
+        return shader
+
     def scene_load_from_file(self, GraphicsManager graphics, bytes file_name):
         cdef:
             uint32_t flags

@@ -71,7 +71,6 @@ class Game(App):
             shift = Vec3(0.0, +speed, 0.0)
         elif scan_code == SCAN_CODE_DOWN:
             shift = Vec3(0.0, -speed, 0.0)
-        
         position = self.graphics.camera_3d_get_position(self.camera)
         target = self.graphics.camera_3d_get_target(self.camera)
         Vec3.add(position, position, shift)
@@ -87,16 +86,18 @@ class Game(App):
         self.graphics.window_delete(self.window)
 
     def setup_program(self):
-        vs_file = open("./resources/shaders/basic.vert", "rb")
-        vs_source = vs_file.read()
-        vs_file.close()
-        self.vs = self.graphics.shader_create(SHADER_TYPE_VERTEX, vs_source)
+        self.vs = self.assets.shader_load_from_file(
+            self.graphics, 
+            SHADER_TYPE_VERTEX, 
+            b"./resources/shaders/basic.vert"
+        )
         self.graphics.shader_compile(self.vs)
 
-        fs_file = open("./resources/shaders/basic.frag", "rb")
-        fs_source = fs_file.read()
-        fs_file.close()
-        self.fs = self.graphics.shader_create(SHADER_TYPE_FRAGMENT, fs_source)
+        self.fs = self.assets.shader_load_from_file(
+            self.graphics, 
+            SHADER_TYPE_FRAGMENT, 
+            b"./resources/shaders/basic.frag"
+        )
         self.graphics.shader_compile(self.fs)
 
         self.program = self.graphics.program_create(self.vs, self.fs)
@@ -120,9 +121,7 @@ class Game(App):
         #v_data, i_data = OBJLoader.load_file(b"../obj_files/teapot.obj")
         self.graphics.mesh_set_vertices_data(mesh, v_data)
         self.graphics.mesh_set_indices_data(mesh, i_data)
-        
         model = self.graphics.model_create(mesh, Vec3(0.5, 0.0, 0.0), Quat(), Vec3())
-
         self.meshes = np.array([mesh], dtype=np.uint64)
         self.models = np.array([model], dtype=np.uint64)
         self.batch = self.graphics.model_batch_create(self.models)
@@ -177,21 +176,17 @@ class Game(App):
         fps_title = "{0} (FPS: {1})".format(self.title.decode("utf-8"), fps).encode("utf-8")
         self.graphics.window_set_title(self.window, fps_title)
         self.events.update()
-
         self.graphics.window_bind(self.window)
         self.graphics.window_clear()
         self.graphics.program_bind(self.program)
-
         projection = self.graphics.camera_3d_get_projection(self.camera)
         self.graphics.program_set_uniform(self.program, b"projection", projection)
         view = self.graphics.camera_3d_get_view(self.camera)
         self.graphics.program_set_uniform(self.program, b"view", view)
         self.graphics.program_set_uniform(self.program, b"sampler", 0)
-
         self.graphics.texture_bind(self.texture)
         self.graphics.model_batch_render(self.batch)
         self.graphics.texture_unbind()
-        
         self.graphics.program_unbind()
         self.graphics.window_swap_buffers(self.window)
         self.graphics.window_unbind()
