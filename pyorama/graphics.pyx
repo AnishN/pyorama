@@ -19,15 +19,13 @@ cdef class GraphicsManager:
         self.model_batches = ItemSlotMap(sizeof(ModelBatchC), ITEM_TYPE_MODEL_BATCH)
         self.shaders = ItemSlotMap(sizeof(ShaderC), ITEM_TYPE_SHADER)
         self.programs = ItemSlotMap(sizeof(ProgramC), ITEM_TYPE_PROGRAM)
+        self.materials = ItemSlotMap(sizeof(MaterialC), ITEM_TYPE_MATERIAL)
     
     def __dealloc__(self):
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
 
-    #Window    
-    cdef WindowC *c_window_get_ptr(self, Handle window) except *:
-        return <WindowC *>self.windows.c_get_ptr(window)
-    
+    #Window
     def window_create(self, int width, int height, bytes title):
         cdef:
             Handle window
@@ -37,7 +35,7 @@ cdef class GraphicsManager:
             int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
         
         window = self.windows.c_create()
-        window_ptr = self.c_window_get_ptr(window)
+        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         sdl_window = SDL_CreateWindow(title, center, center, width, height, flags)
         window_ptr.id = SDL_GetWindowID(sdl_window)
         window_ptr.width = width
@@ -51,7 +49,7 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             SDL_Window *sdl_window
 
-        window_ptr = self.c_window_get_ptr(window)
+        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         sdl_window = SDL_GetWindowFromID(window_ptr.id)
         SDL_DestroyWindow(sdl_window)
         window_ptr.id = 0
@@ -69,7 +67,7 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             SDL_Window *sdl_window
 
-        window_ptr = self.c_window_get_ptr(window)
+        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         sdl_window = SDL_GetWindowFromID(window_ptr.id)
         SDL_GL_MakeCurrent(sdl_window, self.root_context)
         glViewport(0, 0, window_ptr.width, window_ptr.height)
@@ -83,21 +81,21 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             SDL_Window *sdl_window
 
-        window_ptr = self.c_window_get_ptr(window)
+        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         sdl_window = SDL_GetWindowFromID(window_ptr.id)
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(sdl_window)
 
     def window_get_width(self, Handle window):
-        cdef WindowC *window_ptr = self.c_window_get_ptr(window)
+        cdef WindowC *window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         return window_ptr.width
 
     def window_get_height(self, Handle window):
-        cdef WindowC *window_ptr = self.c_window_get_ptr(window)
+        cdef WindowC *window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         return window_ptr.height
 
     def window_get_title(self, Handle window):
-        cdef WindowC *window_ptr = self.c_window_get_ptr(window)
+        cdef WindowC *window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         return window_ptr.title
     
     def window_set_title(self, Handle window, bytes title):
@@ -105,15 +103,12 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             SDL_Window *sdl_window
             
-        window_ptr = self.c_window_get_ptr(window)
+        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
         sdl_window = SDL_GetWindowFromID(window_ptr.id)
         window_ptr.title = title
         SDL_SetWindowTitle(sdl_window, window_ptr.title)
 
     #Camera3d
-    cdef Camera3dC *c_camera3d_get_ptr(self, Handle camera) except *:
-        return <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
-
     def camera_3d_create(self, 
             float fovy, float aspect, float near, float far,
             Vec3 position=Vec3(),
@@ -125,7 +120,7 @@ cdef class GraphicsManager:
             Handle camera
             Camera3dC *camera_ptr
         camera = self.cameras_3d.c_create()
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         self.camera_3d_set_projection(camera, fovy, aspect, near, far)
         Vec3.c_copy(&camera_ptr.forward, forward.ptr)
         Vec3.c_copy(&camera_ptr.up, up.ptr)
@@ -138,7 +133,7 @@ cdef class GraphicsManager:
 
     def camera_3d_set_projection(self, Handle camera, float fovy, float aspect, float near, float far):
         cdef Camera3dC *camera_ptr
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         camera_ptr.fovy = fovy
         camera_ptr.aspect = aspect
         camera_ptr.near = near
@@ -148,7 +143,7 @@ cdef class GraphicsManager:
         cdef:
             Camera3dC *camera_ptr
             Mat4 projection = Mat4()
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Mat4.c_perspective(projection.ptr, camera_ptr.fovy, camera_ptr.aspect, camera_ptr.near, camera_ptr.far)
         return projection
     
@@ -156,18 +151,18 @@ cdef class GraphicsManager:
         cdef:
             Camera3dC *camera_ptr
             Vec3 position = Vec3()
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(position.ptr, &camera_ptr.position)
         return position
 
     def camera_3d_set_position(self, Handle camera, Vec3 position=Vec3()):
         cdef Camera3dC *camera_ptr
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(&camera_ptr.position, position.ptr)
 
     def camera_3d_pan(self, Handle camera, Vec3 translation=Vec3()):
         cdef Camera3dC *camera_ptr
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_add(&camera_ptr.position, &camera_ptr.position, translation.ptr)
         Vec3.c_add(&camera_ptr.target, &camera_ptr.target, translation.ptr)
         # TODO: this implemetation is completely wrong. In a pan, the camera does not move!
@@ -176,20 +171,20 @@ cdef class GraphicsManager:
         cdef:
             Camera3dC *camera_ptr
             Vec3 target = Vec3()
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(target.ptr, &camera_ptr.target)
         return target
 
     def camera_3d_set_target(self, Handle camera, Vec3 target=Vec3()):
         cdef Camera3dC *camera_ptr
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(&camera_ptr.target, target.ptr)
 
     def camera_3d_get_view(self, Handle camera):
         cdef:
             Camera3dC *camera_ptr
             Mat4 view = Mat4()
-        camera_ptr = self.c_camera3d_get_ptr(camera)
+        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
         Mat4.c_look_at(
             view.ptr, 
             &camera_ptr.position, 
@@ -199,15 +194,12 @@ cdef class GraphicsManager:
         return view
 
     #Image    
-    cdef ImageC *c_image_get_ptr(self, Handle image) except *:
-        return <ImageC *>self.images.c_get_ptr(image)
-    
     def image_create(self, int width, int height):
         cdef:
             Handle image
             ImageC *image_ptr
         image = self.images.c_create()
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         image_ptr.width = width
         image_ptr.height = height
         image_ptr.pixels = <uint8_t *>calloc(height * width * 4, sizeof(uint8_t))
@@ -218,7 +210,7 @@ cdef class GraphicsManager:
             Handle image
             ImageC *image_ptr
         image = self.images.c_create()
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         image_ptr.width = pixels.shape[1]
         image_ptr.height = pixels.shape[0]
         image_ptr.pixels = &pixels[0, 0, 0]
@@ -226,7 +218,7 @@ cdef class GraphicsManager:
 
     def image_delete(self, Handle image):
         cdef ImageC *image_ptr
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         image_ptr.width = 0
         image_ptr.height = 0
         free(image_ptr.pixels)
@@ -235,12 +227,12 @@ cdef class GraphicsManager:
 
     def image_get_width(self, Handle image):
         cdef ImageC *image_ptr
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         return image_ptr.width
 
     def image_get_height(self, Handle image):
         cdef ImageC *image_ptr
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         return image_ptr.height
 
     def image_get_pixels(self, Handle image):
@@ -250,7 +242,7 @@ cdef class GraphicsManager:
             int w
             int h
 
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         w = image_ptr.width
         h = image_ptr.height
         pixels = <uint8_t[:h, :w, :4]>image_ptr.pixels
@@ -262,7 +254,7 @@ cdef class GraphicsManager:
             int w
             int h
 
-        image_ptr = self.c_image_get_ptr(image)
+        image_ptr = <ImageC *>self.images.c_get_ptr(image)
         w = image_ptr.width
         h = image_ptr.height
         if pixels.shape[0] != h or pixels.shape[1] != w or pixels.shape[2] != 4:
@@ -270,9 +262,6 @@ cdef class GraphicsManager:
         image_ptr.pixels = &pixels[0, 0, 0]
 
     #Sampler
-    cdef SamplerC *c_sampler_get_ptr(self, Handle sampler) except *:
-        return <SamplerC *>self.samplers.c_get_ptr(sampler)
-
     def sampler_create(self, 
             SamplerFilter mag_filter=SAMPLER_FILTER_LINEAR,
             SamplerFilter min_filter=SAMPLER_FILTER_LINEAR,
@@ -283,7 +272,7 @@ cdef class GraphicsManager:
             Handle sampler
             SamplerC *sampler_ptr
         sampler = self.samplers.c_create()
-        sampler_ptr = self.c_sampler_get_ptr(sampler)
+        sampler_ptr = <SamplerC *>self.samplers.c_get_ptr(sampler)
         sampler_ptr.mag_filter = mag_filter
         sampler_ptr.min_filter = min_filter
         sampler_ptr.wrap_s = wrap_s
@@ -292,7 +281,7 @@ cdef class GraphicsManager:
 
     def sampler_delete(self, Handle sampler):
         cdef SamplerC *sampler_ptr
-        sampler_ptr = self.c_sampler_get_ptr(sampler)
+        sampler_ptr = <SamplerC *>self.samplers.c_get_ptr(sampler)
         sampler_ptr.mag_filter = SAMPLER_FILTER_LINEAR
         sampler_ptr.min_filter = SAMPLER_FILTER_LINEAR
         sampler_ptr.wrap_s = SAMPLER_WRAP_REPEAT
@@ -300,15 +289,12 @@ cdef class GraphicsManager:
         self.samplers.c_delete(sampler)
     
     #Texture
-    cdef TextureC *c_texture_get_ptr(self, Handle texture) except *:
-        return <TextureC *>self.textures.c_get_ptr(texture)
-
     def texture_create(self, Handle sampler, Handle image):
         cdef:
             Handle texture
             TextureC *texture_ptr
         texture = self.textures.c_create()
-        texture_ptr = self.c_texture_get_ptr(texture)
+        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
         glGenTextures(1, &texture_ptr.id)
         texture_ptr.sampler = sampler
         texture_ptr.image = image
@@ -316,7 +302,7 @@ cdef class GraphicsManager:
 
     def texture_delete(self, Handle texture):
         cdef TextureC *texture_ptr
-        texture_ptr = self.c_texture_get_ptr(texture)
+        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
         glDeleteTextures(1, &texture_ptr.id)
         texture_ptr.id = 0
         texture_ptr.sampler = 0
@@ -325,7 +311,7 @@ cdef class GraphicsManager:
     
     def texture_bind(self, Handle texture):
         cdef TextureC *texture_ptr
-        texture_ptr = self.c_texture_get_ptr(texture)
+        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
         glBindTexture(GL_TEXTURE_2D, texture_ptr.id)
     
     def texture_unbind(self):
@@ -337,9 +323,9 @@ cdef class GraphicsManager:
             SamplerC *sampler_ptr
             ImageC *image_ptr
 
-        texture_ptr = self.c_texture_get_ptr(texture)
-        sampler_ptr = self.c_sampler_get_ptr(texture_ptr.sampler)
-        image_ptr = self.c_image_get_ptr(texture_ptr.image)
+        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
+        sampler_ptr = <SamplerC *>self.samplers.c_get_ptr(texture_ptr.sampler)
+        image_ptr = <ImageC *>self.images.c_get_ptr(texture_ptr.image)
         if upload_sampler:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampler_ptr.mag_filter)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampler_ptr.min_filter)
@@ -347,17 +333,14 @@ cdef class GraphicsManager:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, sampler_ptr.wrap_t)
         if upload_image:
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.pixels)
-
+        
     #Mesh
-    cdef MeshC *c_mesh_get_ptr(self, Handle mesh) except *:
-        return <MeshC *>self.meshes.c_get_ptr(mesh)
-
     def mesh_create(self):
         cdef:
             Handle mesh
             MeshC *mesh_ptr
         mesh = self.meshes.c_create()
-        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
         mesh_ptr.vertices_data = NULL
         mesh_ptr.vertices_length = 0
         mesh_ptr.indices_data = NULL
@@ -366,7 +349,7 @@ cdef class GraphicsManager:
     
     def mesh_delete(self, Handle mesh):
         cdef MeshC *mesh_ptr
-        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
         mesh_ptr.vertices_data = NULL
         mesh_ptr.vertices_length = 0
         mesh_ptr.indices_data = NULL
@@ -375,26 +358,23 @@ cdef class GraphicsManager:
 
     def mesh_set_vertices_data(self, Handle mesh, float[:] data):
         cdef MeshC *mesh_ptr
-        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
         mesh_ptr.vertices_data = &data[0]
         mesh_ptr.vertices_length = data.shape[0]
 
     def mesh_set_indices_data(self, Handle mesh, uint32_t[:] data):
         cdef MeshC *mesh_ptr
-        mesh_ptr = self.c_mesh_get_ptr(mesh)
+        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
         mesh_ptr.indices_data = &data[0]
         mesh_ptr.indices_length = data.shape[0]
 
     #Model
-    cdef ModelC *c_model_get_ptr(self, Handle model) except *:
-        return <ModelC *>self.models.c_get_ptr(model)
-
     def model_create(self, Handle mesh, Vec3 translation, Quat rotation, Vec3 scale):
         cdef:
             Handle model
             ModelC *model_ptr
         model = self.models.c_create()
-        model_ptr = self.c_model_get_ptr(model)
+        model_ptr = <ModelC *>self.models.c_get_ptr(model)
         model_ptr.mesh = mesh
         memcpy(&model_ptr.translation[0], <Vec3C *>translation.ptr, sizeof(Vec3C))
         memcpy(&model_ptr.rotation[0], <QuatC *>rotation.ptr, sizeof(QuatC))
@@ -403,7 +383,7 @@ cdef class GraphicsManager:
     
     def model_delete(self, Handle model):
         cdef ModelC *model_ptr
-        model_ptr = self.c_model_get_ptr(model)
+        model_ptr = <ModelC *>self.models.c_get_ptr(model)
         model_ptr.mesh = 0
         memset(model_ptr.translation, 0, sizeof(Vec3C))
         memset(model_ptr.rotation, 0, sizeof(QuatC))
@@ -411,9 +391,6 @@ cdef class GraphicsManager:
         self.models.c_delete(model)
 
     #ModelBatch
-    cdef ModelBatchC *c_model_batch_get_ptr(self, Handle model_batch) except *:
-        return <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
-
     def model_batch_create(self, Handle[:] models):
         cdef:
             Handle model_batch
@@ -426,7 +403,7 @@ cdef class GraphicsManager:
             size_t offset
 
         model_batch = self.model_batches.c_create()
-        model_batch_ptr = self.c_model_batch_get_ptr(model_batch)
+        model_batch_ptr = <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
         glGenVertexArrays(1, &model_batch_ptr.vao_id)
         glGenBuffers(1, &model_batch_ptr.vbo_id)
         glGenBuffers(1, &model_batch_ptr.ibo_id)
@@ -437,8 +414,8 @@ cdef class GraphicsManager:
         model_batch_ptr.vertices_length = 0
         model_batch_ptr.indices_length = 0
         for i in range(model_batch_ptr.num_models):
-            model_ptr = self.c_model_get_ptr(models[i])
-            mesh_ptr = self.c_mesh_get_ptr(model_ptr.mesh)
+            model_ptr = <ModelC *>self.models.c_get_ptr(models[i])
+            mesh_ptr = <MeshC *>self.meshes.c_get_ptr(model_ptr.mesh)
             model_batch_ptr.vertices_length += mesh_ptr.vertices_length
             model_batch_ptr.indices_length += mesh_ptr.indices_length
 
@@ -452,8 +429,8 @@ cdef class GraphicsManager:
         i_ptr = model_batch_ptr.indices_data
 
         for i in range(model_batch_ptr.num_models):
-            model_ptr = self.c_model_get_ptr(models[i])
-            mesh_ptr = self.c_mesh_get_ptr(model_ptr.mesh)
+            model_ptr = <ModelC *>self.models.c_get_ptr(models[i])
+            mesh_ptr = <MeshC *>self.meshes.c_get_ptr(model_ptr.mesh)
             memcpy(v_ptr, mesh_ptr.vertices_data, mesh_ptr.vertices_length * sizeof(float))
             memcpy(i_ptr, mesh_ptr.indices_data, mesh_ptr.indices_length * sizeof(uint32_t))
             v_ptr += mesh_ptr.vertices_length * sizeof(float)
@@ -492,7 +469,7 @@ cdef class GraphicsManager:
         
         t_ptr = <Mat4C *>model_batch_ptr.transform_data
         for i in range(model_batch_ptr.num_models):
-            model_ptr = self.c_model_get_ptr(models[i])
+            model_ptr = <ModelC *>self.models.c_get_ptr(models[i])
             translation = &model_ptr.translation
             rotation = &model_ptr.rotation
             scale = &model_ptr.scale
@@ -510,7 +487,7 @@ cdef class GraphicsManager:
 
     def model_batch_delete(self, Handle model_batch):
         cdef ModelBatchC *model_batch_ptr
-        model_batch_ptr = self.c_model_batch_get_ptr(model_batch)
+        model_batch_ptr = <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
         glDeleteVertexArrays(1, &model_batch_ptr.vao_id)
         model_batch_ptr.vao_id = 0
         glDeleteBuffers(1, &model_batch_ptr.vbo_id)
@@ -519,7 +496,7 @@ cdef class GraphicsManager:
 
     def model_batch_render(self, Handle model_batch):
         cdef ModelBatchC *model_batch_ptr
-        model_batch_ptr = self.c_model_batch_get_ptr(model_batch)
+        model_batch_ptr = <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
         glEnable(GL_DEPTH_TEST)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
         glBindVertexArray(model_batch_ptr.vao_id)
@@ -531,15 +508,12 @@ cdef class GraphicsManager:
         glBindVertexArray(0)
     
     #Shader
-    cdef ShaderC *c_shader_get_ptr(self, Handle shader) except *:
-        return <ShaderC *>self.shaders.c_get_ptr(shader)
-
     def shader_create(self, ShaderType type, bytes source):
         cdef:
             Handle shader
             ShaderC *shader_ptr
         shader = self.shaders.c_create()
-        shader_ptr = self.c_shader_get_ptr(shader)
+        shader_ptr = <ShaderC *>self.shaders.c_get_ptr(shader)
 
         if type == SHADER_TYPE_VERTEX:
             shader_ptr.id = glCreateShader(GL_VERTEX_SHADER)
@@ -554,7 +528,7 @@ cdef class GraphicsManager:
     
     def shader_delete(self, Handle shader):
         cdef ShaderC *shader_ptr
-        shader_ptr = self.c_shader_get_ptr(shader)
+        shader_ptr = <ShaderC *>self.shaders.c_get_ptr(shader)
         glDeleteShader(shader_ptr.id)
         shader_ptr.id = 0
         self.shaders.c_delete(shader)
@@ -567,7 +541,7 @@ cdef class GraphicsManager:
             char *log
             int log_length
 
-        shader_ptr = self.c_shader_get_ptr(shader)
+        shader_ptr = <ShaderC *>self.shaders.c_get_ptr(shader)
         gl_id = shader_ptr.id
         glShaderSource(gl_id, 1, &shader_ptr.source, <GLint*>&shader_ptr.source_length)
         glCompileShader(gl_id)
@@ -581,15 +555,12 @@ cdef class GraphicsManager:
             raise ValueError("Shader: failed to compile:\n{0}".format(log))
 
     #Program
-    cdef ProgramC *c_program_get_ptr(self, Handle program) except *:
-        return <ProgramC *>self.programs.c_get_ptr(program)
-
     def program_create(self, Handle vs, Handle fs):
         cdef:
             Handle program
             ProgramC *program_ptr
         program = self.programs.c_create()
-        program_ptr = self.c_program_get_ptr(program)
+        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
         program_ptr.id = glCreateProgram()
         program_ptr.vs = vs
         program_ptr.fs = fs
@@ -597,14 +568,14 @@ cdef class GraphicsManager:
     
     def program_delete(self, Handle program):
         cdef ProgramC *program_ptr
-        program_ptr = self.c_program_get_ptr(program)
+        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
         glDeleteProgram(program_ptr.id)
         program_ptr.id = 0
         self.programs.c_delete(program)
 
     def program_bind(self, Handle program):
         cdef ProgramC *program_ptr
-        program_ptr = self.c_program_get_ptr(program)
+        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
         glUseProgram(program_ptr.id)
 
     def program_unbind(self):
@@ -630,10 +601,10 @@ cdef class GraphicsManager:
             ItemHashMap uniform_map
 
         #Compile OpenGL program object
-        program_ptr = self.c_program_get_ptr(program)
+        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
         gl_id = program_ptr.id
-        vs = self.c_shader_get_ptr(program_ptr.vs)
-        fs = self.c_shader_get_ptr(program_ptr.fs)
+        vs = <ShaderC *>self.shaders.c_get_ptr(program_ptr.vs)
+        fs = <ShaderC *>self.shaders.c_get_ptr(program_ptr.fs)
         glAttachShader(gl_id, vs.id)
         glAttachShader(gl_id, fs.id)
         glLinkProgram(gl_id)
@@ -671,7 +642,7 @@ cdef class GraphicsManager:
             UniformC *info
             uint32_t type
         
-        program_ptr = self.c_program_get_ptr(program)
+        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
         i = (<ItemHashMap>program_ptr.uniform_map).c_get(name)
         info = &program_ptr.uniform_info[i]
         if info.type == MATH_TYPE_FLOAT:
@@ -688,3 +659,5 @@ cdef class GraphicsManager:
             glUniformMatrix3fv(info.index, 1, False, <float *>(<Mat3>value).ptr)
         elif info.type == MATH_TYPE_MAT4:
             glUniformMatrix4fv(info.index, 1, False, <float *>(<Mat4>value).ptr)
+
+    #Material

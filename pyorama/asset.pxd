@@ -5,4 +5,4 @@ from pyorama.libs.c cimport *
 from pyorama.math3d.common cimport *
 
 cdef class AssetManager:
-    pass
+    cdef void c_scene_parse_material(self, aiScene ai_scene, GraphicsManager graphics, Handle material) except *

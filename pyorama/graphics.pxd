@@ -146,6 +146,16 @@ ctypedef struct ProgramC:
     PyObject *uniform_map
     UniformC uniform_info[16]
 
+ctypedef struct MaterialC:
+    char *name
+    size_t name_len
+    Vec3C ambient
+    Vec3C diffuse
+    Vec3C specular
+
+ctypedef struct NodeC:
+    Mat4C transform
+
 @cython.final
 cdef class GraphicsManager:
     cdef SDL_Window *root_window
@@ -161,14 +171,4 @@ cdef class GraphicsManager:
     cdef ItemSlotMap model_batches
     cdef ItemSlotMap shaders
     cdef ItemSlotMap programs
-    
-    cdef WindowC *c_window_get_ptr(self, Handle window) except *
-    cdef Camera3dC *c_camera3d_get_ptr(self, Handle camera) except *
-    cdef ImageC *c_image_get_ptr(self, Handle image) except *
-    cdef SamplerC *c_sampler_get_ptr(self, Handle sampler) except *
-    cdef TextureC *c_texture_get_ptr(self, Handle texture) except *
-    cdef MeshC *c_mesh_get_ptr(self, Handle mesh) except *
-    cdef ModelC *c_model_get_ptr(self, Handle model) except *
-    cdef ModelBatchC *c_model_batch_get_ptr(self, Handle model_batch) except *
-    cdef ShaderC *c_shader_get_ptr(self, Handle shader) except *
-    cdef ProgramC *c_program_get_ptr(self, Handle program) except *
+    cdef ItemSlotMap materials

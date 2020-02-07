@@ -58,5 +58,3 @@ cdef class EventManager:
     cdef dict c_parse_mouse_motion_event(self, SDL_MouseMotionEvent *event, double time_stamp)
     cdef dict c_parse_mouse_wheel_event(self, SDL_MouseWheelEvent *event, double time_stamp)
     cdef dict c_parse_user_event(self, SDL_UserEvent *event, double time_stamp)
-    #cdef dict listener_types#maps listener Handles to EventTypes
-    cdef ListenerC *c_listener_get_ptr(self, Handle listener) except *

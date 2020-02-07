@@ -52,9 +52,6 @@ cdef class EventManager:
         SDL_PushEvent(&event)
     
     #Listener
-    cdef ListenerC *c_listener_get_ptr(self, Handle listener) except *:
-        return <ListenerC *>self.listeners.c_get_ptr(listener)
-
     def listener_create(self, EventTypes event_type, object callback, dict user_data):
         cdef:
             Handle listener
@@ -62,7 +59,7 @@ cdef class EventManager:
             size_t index
             ItemVector listeners
         listener = self.listeners.c_create()
-        listener_ptr = self.c_listener_get_ptr(listener)
+        listener_ptr = <ListenerC *>self.listeners.c_get_ptr(listener)
         listeners = <ItemVector>(self.listener_map[event_type])
         listener_ptr.event_type = event_type
         listener_ptr.index = listeners.num_items
@@ -79,7 +76,7 @@ cdef class EventManager:
             size_t index
             ItemVector listeners
 
-        listener_ptr = self.c_listener_get_ptr(listener)
+        listener_ptr = <ListenerC *>self.listeners.c_get_ptr(listener)
         listeners = <ItemVector>(self.listener_map[listener_ptr.event_type])
         listener_ptr.event_type = EVENT_TYPE_NONE
         index = listener_ptr.index
@@ -235,7 +232,7 @@ cdef class EventManager:
                 listeners = <ItemVector>self.listener_map[event_type]
                 for i in range(listeners.num_items):
                     listeners.c_get(i, &listener)
-                    listener_ptr = self.c_listener_get_ptr(listener)
+                    listener_ptr = <ListenerC *>self.listeners.c_get_ptr(listener)
                     callback = <object>listener_ptr.callback
                     user_data = <object>listener_ptr.user_data
                     callback(event_data, user_data)

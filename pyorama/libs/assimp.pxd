@@ -2,7 +2,15 @@ from pyorama.math3d.common cimport *
 
 ctypedef Vec2C aiVector2D
 ctypedef Vec3C aiVector3D
-ctypedef Vec4C aiColor4D
+cdef struct aiColor3D:
+    float x
+    float y
+    float z
+cdef struct aiColor4D:
+    float r
+    float g
+    float b
+    float a
 ctypedef QuatC aiQuaternion
 ctypedef Mat3C aiMatrix3x3
 ctypedef Mat4C aiMatrix4x4
@@ -23,30 +31,29 @@ cdef extern from "assimp/version.h":
 cdef extern from "assimp/types.h":
     const size_t MAXLEN = 1024
     ctypedef Vec4C aiPlane
-    ctypedef struct aiRay:
+    cdef struct aiRay:
         aiVector3D pos
         aiVector3D dir
-    ctypedef Vec3C aiColor3D
-    ctypedef struct aiString:
+    cdef struct aiString:
         size_t length
         char data[MAXLEN]
-    ctypedef enum aiReturn:
+    cdef enum aiReturn:
         aiReturn_SUCCESS = 0x0
         aiReturn_FAILURE = -0x1
         aiReturn_OUTOFMEMORY = -0x3
         _AI_ENFORCE_ENUM_SIZE = 0x7fffffff
-    ctypedef enum aiOrigin:
+    cdef enum aiOrigin:
         aiOrigin_SET = 0x0
         aiOrigin_CUR = 0x1
         aiOrigin_END = 0x2
         _AI_ORIGIN_ENFORCE_ENUM_SIZE = 0x7fffffff
-    ctypedef enum aiDefaultLogStream:
+    cdef enum aiDefaultLogStream:
         aiDefaultLogStream_FILE = 0x1
         aiDefaultLogStream_STDOUT = 0x2
         aiDefaultLogStream_STDERR = 0x4
         aiDefaultLogStream_DEBUGGER = 0x8
         _AI_DLS_ENFORCE_ENUM_SIZE = 0x7fffffff
-    ctypedef struct aiMemoryInfo:
+    cdef struct aiMemoryInfo:
         unsigned int textures
         unsigned int materials
         unsigned int meshes
@@ -57,13 +64,13 @@ cdef extern from "assimp/types.h":
         unsigned int total
 
 cdef extern from "assimp/importerdesc.h":
-    ctypedef enum aiImporterFlags:
+    cdef enum aiImporterFlags:
         aiImporterFlags_SupportTextFlavour = 0x1
         aiImporterFlags_SupportBinaryFlavour = 0x2
         aiImporterFlags_SupportCompressedFlavour = 0x4
         aiImporterFlags_LimitedSupport = 0x8
         aiImporterFlags_Experimental = 0x10
-    ctypedef struct aiImporterDesc:
+    cdef struct aiImporterDesc:
         const char* mName
         const char* mAuthor
         const char* mMaintainer
@@ -77,7 +84,7 @@ cdef extern from "assimp/importerdesc.h":
     const aiImporterDesc* aiGetImporterDesc(const char *extension)
 
 cdef extern from "assimp/metadata.h":
-    ctypedef enum aiMetadataType:
+    cdef enum aiMetadataType:
         AI_BOOL = 0
         AI_INT32 = 1
         AI_UINT64 = 2
@@ -85,35 +92,35 @@ cdef extern from "assimp/metadata.h":
         AI_DOUBLE = 4
         AI_AISTRING = 5
         AI_AIVECTOR3D = 6
-    ctypedef struct aiMetadataEntry:
+    cdef struct aiMetadataEntry:
         aiMetadataType mType
         void* mData
-    ctypedef struct aiMetadata:
+    cdef struct aiMetadata:
         unsigned int mNumProperties
         aiString* mKeys
         aiMetadataEntry* mValues
 
 cdef extern from "assimp/anim.h":
-    ctypedef struct aiVectorKey:
+    cdef struct aiVectorKey:
         double mTime
         aiVector3D mValue
-    ctypedef struct aiQuatKey:
+    cdef struct aiQuatKey:
         double mTime
         aiQuaternion mValue
-    ctypedef struct aiMeshKey:
+    cdef struct aiMeshKey:
         double mTime
         unsigned int mValue
-    ctypedef struct aiMeshMorphKey:
+    cdef struct aiMeshMorphKey:
         double mTime
         unsigned int *mValues
         double *mWeights
         unsigned int mNumValuesAndWeights
-    ctypedef enum aiAnimBehaviour:
+    cdef enum aiAnimBehaviour:
         aiAnimBehaviour_DEFAULT = 0x0
         aiAnimBehaviour_CONSTANT = 0x1
         aiAnimBehaviour_LINEAR = 0x2
         aiAnimBehaviour_REPEAT = 0x3
-    ctypedef struct aiNodeAnim:
+    cdef struct aiNodeAnim:
         aiString mNodeName
         unsigned int mNumPositionKeys
         aiVectorKey* mPositionKeys
@@ -123,15 +130,15 @@ cdef extern from "assimp/anim.h":
         aiVectorKey* mScalingKeys
         aiAnimBehaviour mPreState
         aiAnimBehaviour mPostState
-    ctypedef struct aiMeshAnim:
+    cdef struct aiMeshAnim:
         aiString mName
         unsigned int mNumKeys
         aiMeshKey* mKeys
-    ctypedef struct aiMeshMorphAnim:
+    cdef struct aiMeshMorphAnim:
         aiString mName
         unsigned int mNumKeys
         aiMeshMorphKey* mKeys
-    ctypedef struct aiAnimation:
+    cdef struct aiAnimation:
         aiString mName
         double mDuration
         double mTicksPerSecond
@@ -143,7 +150,7 @@ cdef extern from "assimp/anim.h":
         aiMeshMorphAnim **mMorphMeshChannels
 
 cdef extern from "assimp/camera.h":
-    ctypedef struct aiCamera:
+    cdef struct aiCamera:
         aiString mName
         aiVector3D mPosition
         aiVector3D mUp
@@ -154,14 +161,14 @@ cdef extern from "assimp/camera.h":
         float mAspect
 
 cdef extern from "assimp/light.h":
-    ctypedef enum aiLightSourceType:
+    cdef enum aiLightSourceType:
         aiLightSource_UNDEFINED = 0x0
         aiLightSource_DIRECTIONAL = 0x1
         aiLightSource_POINT = 0x2
         aiLightSource_SPOT = 0x3
         aiLightSource_AMBIENT = 0x4
         aiLightSource_AREA = 0x5
-    ctypedef struct aiLight:
+    cdef struct aiLight:
         aiString mName
         aiLightSourceType mType
         aiVector3D mPosition
@@ -179,26 +186,26 @@ cdef extern from "assimp/light.h":
 
 cdef extern from "assimp/material.h":
     cdef const char *AI_DEFAULT_MATERIAL_NAME = b"DefaultMaterial"
-    ctypedef enum aiTextureOp:
+    cdef enum aiTextureOp:
         aiTextureOp_Multiply = 0x0
         aiTextureOp_Add = 0x1
         aiTextureOp_Subtract = 0x2
         aiTextureOp_Divide = 0x3
         aiTextureOp_SmoothAdd = 0x4
         aiTextureOp_SignedAdd = 0x5
-    ctypedef enum aiTextureMapMode:
+    cdef enum aiTextureMapMode:
         aiTextureMapMode_Wrap = 0x0
         aiTextureMapMode_Clamp = 0x1
         aiTextureMapMode_Decal = 0x3
         aiTextureMapMode_Mirror = 0x2
-    ctypedef enum aiTextureMapping:
+    cdef enum aiTextureMapping:
         aiTextureMapping_UV = 0x0
         aiTextureMapping_SPHERE = 0x1
         aiTextureMapping_CYLINDER = 0x2
         aiTextureMapping_BOX = 0x3
         aiTextureMapping_PLANE = 0x4
         aiTextureMapping_OTHER = 0x5
-    ctypedef enum aiTextureType:
+    cdef enum aiTextureType:
         aiTextureType_NONE = 0x0
         aiTextureType_DIFFUSE = 0x1
         aiTextureType_SPECULAR = 0x2
@@ -214,7 +221,7 @@ cdef extern from "assimp/material.h":
         aiTextureType_UNKNOWN = 0xC
     cdef enum:
         AI_TEXTURE_TYPE_MAX = aiTextureType_UNKNOWN
-    ctypedef enum aiShadingMode:
+    cdef enum aiShadingMode:
         aiShadingMode_Flat = 0x1
         aiShadingMode_Gouraud = 0x2
         aiShadingMode_Phong = 0x3
@@ -225,39 +232,39 @@ cdef extern from "assimp/material.h":
         aiShadingMode_CookTorrance = 0x8
         aiShadingMode_NoShading = 0x9
         aiShadingMode_Fresnel = 0xa
-    ctypedef enum aiTextureFlags:
+    cdef enum aiTextureFlags:
         aiTextureFlags_Invert = 0x1
         aiTextureFlags_UseAlpha = 0x2
         aiTextureFlags_IgnoreAlpha = 0x4
-    ctypedef enum aiBlendMode:
+    cdef enum aiBlendMode:
         aiBlendMode_Default = 0x0
         aiBlendMode_Additive = 0x1
-    ctypedef struct aiUVTransform:
+    cdef struct aiUVTransform:
         aiVector2D mTranslation
         aiVector2D mScaling
         float mRotation
-    ctypedef enum aiPropertyTypeInfo:
+    cdef enum aiPropertyTypeInfo:
         aiPTI_Float = 0x1
         aiPTI_Double = 0x2
         aiPTI_String = 0x3
         aiPTI_Integer = 0x4
         aiPTI_Buffer = 0x5
-    ctypedef struct aiMaterialProperty:
+    cdef struct aiMaterialProperty:
         aiString mKey
         unsigned int mSemantic
         unsigned int mIndex
         unsigned int mDataLength
         aiPropertyTypeInfo mType
         char* mData
-    ctypedef struct aiMaterial:
+    cdef struct aiMaterial:
         aiMaterialProperty** mProperties
         unsigned int mNumProperties
         unsigned int mNumAllocated
     aiReturn aiGetMaterialProperty(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, const aiMaterialProperty** pPropOut)
     aiReturn aiGetMaterialFloatArray(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, float* pOut, unsigned int* pMax)
-    aiReturn aiGetMaterialFloat(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, float* pOut)
+    #aiReturn aiGetMaterialFloat(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, float* pOut)
     aiReturn aiGetMaterialIntegerArray(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, int* pOut, unsigned int* pMax)
-    aiReturn aiGetMaterialInteger(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, int* pOut)
+    #aiReturn aiGetMaterialInteger(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, int* pOut)
     aiReturn aiGetMaterialColor(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, aiColor4D* pOut)
     aiReturn aiGetMaterialUVTransform(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, aiUVTransform* pOut)
     aiReturn aiGetMaterialString(const aiMaterial* pMat, const char* pKey, unsigned int type, unsigned int index, aiString* pOut)
@@ -274,20 +281,20 @@ cdef extern from "assimp/mesh.h":
     cdef struct aiFace:
         unsigned int mNumIndices
         unsigned int* mIndices
-    ctypedef struct aiVertexWeight:
+    cdef struct aiVertexWeight:
         unsigned int mVertexId
         float mWeight
-    ctypedef struct aiBone:
+    cdef struct aiBone:
         aiString mName
         unsigned int mNumWeights
         aiVertexWeight* mWeights
         aiMatrix4x4 mOffsetMatrix
-    ctypedef enum aiPrimitiveType:
+    cdef enum aiPrimitiveType:
         aiPrimitiveType_POINT = 0x1
         aiPrimitiveType_LINE = 0x2
         aiPrimitiveType_TRIANGLE = 0x4
         aiPrimitiveType_POLYGON = 0x8
-    ctypedef struct aiAnimMesh:
+    cdef struct aiAnimMesh:
         aiVector3D* mVertices
         aiVector3D* mNormals
         aiVector3D* mTangents
@@ -296,7 +303,7 @@ cdef extern from "assimp/mesh.h":
         aiVector3D* mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS]
         unsigned int mNumVertices
         float mWeight
-    ctypedef enum aiMorphingMethod:
+    cdef enum aiMorphingMethod:
         aiMorphingMethod_VERTEX_BLEND = 0x1
         aiMorphingMethod_MORPH_NORMALIZED = 0x2
         aiMorphingMethod_MORPH_RELATIVE = 0x3
@@ -321,16 +328,16 @@ cdef extern from "assimp/mesh.h":
         unsigned int mMethod
 
 cdef extern from "assimp/texture.h":
-    ctypedef struct aiTexel:
+    cdef struct aiTexel:
         unsigned char b,g,r,a
-    ctypedef struct aiTexture:
+    cdef struct aiTexture:
         unsigned int mWidth
         unsigned int mHeight
         char achFormatHint[9]
         aiTexel* pcData
 
 cdef extern from "assimp/scene.h":
-    ctypedef struct aiNode:
+    cdef struct aiNode:
         aiString mName
         aiMatrix4x4 mTransformation
         aiNode* mParent
@@ -363,8 +370,8 @@ cdef extern from "assimp/scene.h":
         aiCamera** mCameras
 
 cdef extern from "assimp/cfileio.h":
-    ctypedef struct aiFileIO
-    ctypedef struct aiFile
+    cdef struct aiFileIO
+    cdef struct aiFile
     ctypedef size_t (*aiFileWriteProc) (aiFile*, const char*, size_t, size_t)
     ctypedef size_t (*aiFileReadProc) (aiFile*, char*, size_t,size_t)
     ctypedef size_t (*aiFileTellProc) (aiFile*)
@@ -373,11 +380,11 @@ cdef extern from "assimp/cfileio.h":
     ctypedef aiFile* (*aiFileOpenProc) (aiFileIO*, const char*, const char*)
     ctypedef void (*aiFileCloseProc) (aiFileIO*, aiFile*)
     ctypedef char* aiUserData
-    ctypedef struct aiFileIO:
+    cdef struct aiFileIO:
         aiFileOpenProc OpenProc
         aiFileCloseProc CloseProc
         aiUserData UserData
-    ctypedef struct aiFile:
+    cdef struct aiFile:
         aiFileReadProc ReadProc
         aiFileWriteProc WriteProc
         aiFileTellProc TellProc
@@ -387,7 +394,7 @@ cdef extern from "assimp/cfileio.h":
         aiUserData UserData
 
 cdef extern from "assimp/cexport.h":
-    ctypedef struct aiExportFormatDesc:
+    cdef struct aiExportFormatDesc:
         const char* id
         const char* description
         const char* fileExtension
@@ -398,7 +405,7 @@ cdef extern from "assimp/cexport.h":
     void aiFreeScene(const aiScene* pIn)
     aiReturn aiExportScene(const aiScene* pScene, const char* pFormatId, const char* pFileName, unsigned int pPreprocessing)
     aiReturn aiExportSceneEx(const aiScene* pScene, const char* pFormatId, const char* pFileName, aiFileIO* pIO, unsigned int pPreprocessing)
-    ctypedef struct aiExportDataBlob:
+    cdef struct aiExportDataBlob:
         size_t size
         void* data
         aiString name
@@ -408,10 +415,10 @@ cdef extern from "assimp/cexport.h":
 
 cdef extern from "assimp/cimport.h":
     ctypedef void (*aiLogStreamCallback)(const char*, char*)
-    ctypedef struct aiLogStream:
+    cdef struct aiLogStream:
         aiLogStreamCallback callback
         char* user
-    ctypedef struct aiPropertyStore:
+    cdef struct aiPropertyStore:
         char sentinel
     ctypedef bint aiBool
     cdef enum:
@@ -453,7 +460,7 @@ cdef extern from "assimp/cimport.h":
     const aiImporterDesc* aiGetImportFormatDescription( size_t pIndex)
 
 cdef extern from "assimp/postprocess.h":
-    ctypedef enum aiPostProcessSteps:
+    cdef enum aiPostProcessSteps:
         aiProcess_CalcTangentSpace = 0x1
         aiProcess_JoinIdenticalVertices = 0x2
         aiProcess_MakeLeftHanded = 0x4

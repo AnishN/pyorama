@@ -12,23 +12,6 @@ import math
 import numpy as np
 
 """
-TODO: I need to think about how to redesign the camera class.
-Would like to make it more artist/human friendly to use, like a real-world camera.
-Types of cameras perspectives to consider:
-* Orthographic (2d)
-* Perspective (3d)
-
-Types of camera motions:
-* Pan (pivot, rotating left and right)
-* Tilt (pivot, rotating up and down)
-* Zoom (change fov)
-* Dolly (moving in z-plane to keep subject at same size)
-* Tracking (moving along side of subject to follow it)
-* Arc (moving in circle around subject)
-* Follow (moving along behind subject and following it)
-"""
-
-"""
 TODO: need to add additional interpolation functions
 In my math3d module, I just support lerp (and slerp) at this time
 Which is limiting for animations...
@@ -41,8 +24,8 @@ Then I can update all of the tweens in one place?
 class Game(App):
 
     def init(self):
-        super().init(use_vsync=False, use_sleep=True)
-        #super().init(use_vsync=True, use_sleep=False)
+        #super().init(use_vsync=False, use_sleep=True)
+        super().init(use_vsync=True, use_sleep=False)
         self.setup_window()
         self.setup_program()
         self.setup_batch()
@@ -81,7 +64,7 @@ class Game(App):
         self.height = 600
         self.title = b"Test"
         self.window = self.graphics.window_create(self.width, self.height, self.title)
-
+    
     def cleanup_window(self):
         self.graphics.window_delete(self.window)
 
