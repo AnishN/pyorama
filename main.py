@@ -11,16 +11,6 @@ import time
 import math
 import numpy as np
 
-"""
-TODO: need to add additional interpolation functions
-In my math3d module, I just support lerp (and slerp) at this time
-Which is limiting for animations...
-No, need a separate tween class?
-Could then store this in an animation module instead
-Or call this a "time" module and move my app "clock" update loop over there instead...
-Then I can update all of the tweens in one place?
-"""
-
 class Game(App):
 
     def init(self):
@@ -93,17 +83,9 @@ class Game(App):
 
     def setup_batch(self):
         mesh = self.graphics.mesh_create()
-        #v_data, i_data = t.load_from_file(b"../banana/Banana.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../sphere.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../cube.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../banana/Banana.obj")
-        v_data, i_data = self.assets.scene_load_from_file(self.graphics, b"../monkey/monkey.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../dog/dog.obj")
-        #v_data, i_data = t.load_from_file(b"../dog/dog.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../jburkardt/airboat.obj")
-        #v_data, i_data = OBJLoader.load_file(b"../obj_files/teapot.obj")
-        self.graphics.mesh_set_vertices_data(mesh, v_data)
-        self.graphics.mesh_set_indices_data(mesh, i_data)
+        materials, meshes = self.assets.scene_load_from_file(self.graphics, b"../monkey/monkey.obj")
+        
+        mesh = meshes[0]
         model = self.graphics.model_create(mesh, Vec3(0.5, 0.0, 0.0), Quat(), Vec3())
         self.meshes = np.array([mesh], dtype=np.uint64)
         self.models = np.array([model], dtype=np.uint64)
@@ -117,12 +99,7 @@ class Game(App):
             self.graphics.model_delete(model)
 
     def setup_texture(self):
-        #self.image = self.graphics.image_create()
-        #self.graphics.image_init_from_file(self.image, b"../gltfJsonStructure.png")
         self.image = self.assets.image_load_from_file(self.graphics, b"../monkey/albedo.png")
-        #self.graphics.image_init_from_file(self.image, b"../dog/dog.jpg")
-        #self.graphics.image_init_from_file(self.image, b"../monkey/Suzanne.jpg")
-        #self.graphics.image_init_from_file(self.image, b"../banana/tex/Banana.jpg")
         self.sampler = self.graphics.sampler_create()
         self.texture = self.graphics.texture_create(self.sampler, self.image)
         self.graphics.texture_bind(self.texture)

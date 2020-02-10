@@ -20,6 +20,7 @@ cdef class GraphicsManager:
         self.shaders = ItemSlotMap(sizeof(ShaderC), ITEM_TYPE_SHADER)
         self.programs = ItemSlotMap(sizeof(ProgramC), ITEM_TYPE_PROGRAM)
         self.materials = ItemSlotMap(sizeof(MaterialC), ITEM_TYPE_MATERIAL)
+        self.nodes = ItemSlotMap(sizeof(NodeC), ITEM_TYPE_NODE)
     
     def __dealloc__(self):
         SDL_GL_DeleteContext(self.root_context)

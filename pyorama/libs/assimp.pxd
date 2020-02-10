@@ -271,6 +271,39 @@ cdef extern from "assimp/material.h":
     unsigned int aiGetMaterialTextureCount(const aiMaterial* pMat, aiTextureType type)
     aiReturn aiGetMaterialTexture(const aiMaterial* mat, aiTextureType type, unsigned int index, aiString* path, aiTextureMapping* mapping, unsigned int* uvindex, float* blend, aiTextureOp* op, aiTextureMapMode* mapmode, unsigned int* flags)
 
+"""
+#define AI_MATKEY_NAME "?mat.name",0,0
+#define AI_MATKEY_TWOSIDED "$mat.twosided",0,0
+#define AI_MATKEY_SHADING_MODEL "$mat.shadingm",0,0
+#define AI_MATKEY_ENABLE_WIREFRAME "$mat.wireframe",0,0
+#define AI_MATKEY_BLEND_FUNC "$mat.blend",0,0
+#define AI_MATKEY_OPACITY "$mat.opacity",0,0
+#define AI_MATKEY_BUMPSCALING "$mat.bumpscaling",0,0
+#define AI_MATKEY_SHININESS "$mat.shininess",0,0
+#define AI_MATKEY_REFLECTIVITY "$mat.reflectivity",0,0
+#define AI_MATKEY_SHININESS_STRENGTH "$mat.shinpercent",0,0
+#define AI_MATKEY_REFRACTI "$mat.refracti",0,0
+#define AI_MATKEY_COLOR_DIFFUSE "$clr.diffuse",0,0
+#define AI_MATKEY_COLOR_AMBIENT "$clr.ambient",0,0
+#define AI_MATKEY_COLOR_SPECULAR "$clr.specular",0,0
+#define AI_MATKEY_COLOR_EMISSIVE "$clr.emissive",0,0
+#define AI_MATKEY_COLOR_TRANSPARENT "$clr.transparent",0,0
+#define AI_MATKEY_COLOR_REFLECTIVE "$clr.reflective",0,0
+#define AI_MATKEY_GLOBAL_BACKGROUND_IMAGE "?bg.global",0,0
+
+// Pure key names for all texture-related properties
+#define _AI_MATKEY_TEXTURE_BASE         "$tex.file"
+#define _AI_MATKEY_UVWSRC_BASE          "$tex.uvwsrc"
+#define _AI_MATKEY_TEXOP_BASE           "$tex.op"
+#define _AI_MATKEY_MAPPING_BASE         "$tex.mapping"
+#define _AI_MATKEY_TEXBLEND_BASE        "$tex.blend"
+#define _AI_MATKEY_MAPPINGMODE_U_BASE   "$tex.mapmodeu"
+#define _AI_MATKEY_MAPPINGMODE_V_BASE   "$tex.mapmodev"
+#define _AI_MATKEY_TEXMAP_AXIS_BASE     "$tex.mapaxis"
+#define _AI_MATKEY_UVTRANSFORM_BASE     "$tex.uvtrafo"
+#define _AI_MATKEY_TEXFLAGS_BASE        "$tex.flags"
+"""
+
 cdef extern from "assimp/mesh.h":
     cdef enum:
         AI_MAX_BONE_WEIGHTS

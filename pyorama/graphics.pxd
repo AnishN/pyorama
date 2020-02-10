@@ -148,13 +148,19 @@ ctypedef struct ProgramC:
 
 ctypedef struct MaterialC:
     char *name
-    size_t name_len
-    Vec3C ambient
-    Vec3C diffuse
-    Vec3C specular
+    size_t name_length
+    Vec4C ambient
+    Vec4C diffuse
+    Vec4C specular
+    float shininess
 
 ctypedef struct NodeC:
-    Mat4C transform
+    Mat4C local
+    Mat4C world
+    Handle parent
+    Handle first_child
+    Handle next_sibling
+    Handle prev_sibling
 
 @cython.final
 cdef class GraphicsManager:
@@ -172,3 +178,4 @@ cdef class GraphicsManager:
     cdef ItemSlotMap shaders
     cdef ItemSlotMap programs
     cdef ItemSlotMap materials
+    cdef ItemSlotMap nodes
