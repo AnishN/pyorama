@@ -26,54 +26,38 @@ cdef class ItemVector:
         free(self.items)
         self.items = NULL
 
-    cdef void c_push_empty(self) except *:
-        cdef:
-            size_t new_max_items
-            char *item
-        if self.num_items >= self.max_items:
-            new_max_items = <size_t>(self.max_items * VECTOR_GROWTH_RATE)
-            self.c_resize(new_max_items)
+    cdef inline void c_push_empty(self) except *:
+        cdef char *item
+        self.c_grow_if_needed()
         item = self.items + (self.item_size * self.num_items)
         memset(item, 0, self.item_size)
         self.num_items += 1
 
-    cdef void c_pop_empty(self) except *:
-        cdef:
-            size_t new_max_items
+    cdef inline void c_pop_empty(self) except *:
         if self.num_items <= 0:
             raise POP_EMPTY_ERROR
-        elif self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
-            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
-            self.c_resize(new_max_items)
+        self.c_shrink_if_needed()
         self.num_items -= 1
 
-    cdef void c_push(self, void *item) except *:
-        cdef:
-            size_t new_max_items
-        if self.num_items >= self.max_items:
-            new_max_items = <size_t>(self.max_items * VECTOR_GROWTH_RATE)
-            self.c_resize(new_max_items)
+    cdef inline void c_push(self, void *item) except *:
+        self.c_grow_if_needed()
         self.c_set(self.num_items, item)
         self.num_items += 1
 
-    cdef void c_pop(self, void *item) except *:
-        cdef:
-            size_t new_max_items
+    cdef inline void c_pop(self, void *item) except *:
         if self.num_items <= 0:
             raise POP_EMPTY_ERROR
-        elif self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
-            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
-            self.c_resize(new_max_items)
+        self.c_shrink_if_needed()
         self.c_get(self.num_items - 1, item)
         self.num_items -= 1
 
-    cdef void *c_get_ptr(self, size_t index) except *:
+    cdef inline void *c_get_ptr(self, size_t index) except *:
         if 0 <= index < self.max_items: 
             return self.items + (self.item_size * index)
         else:
             raise INVALID_INDEX_ERROR
 
-    cdef void c_get(self, size_t index, void *item) except *:
+    cdef inline void c_get(self, size_t index, void *item) except *:
         cdef char *src
         if 0 <= index < self.max_items: 
             src = self.items + (self.item_size * index)
@@ -81,7 +65,7 @@ cdef class ItemVector:
         else:
             raise INVALID_INDEX_ERROR
 
-    cdef void c_set(self, size_t index, void *item) except *:
+    cdef inline void c_set(self, size_t index, void *item) except *:
         cdef char *dest
         if 0 <= index < self.max_items: 
             dest = self.items + (self.item_size * index)
@@ -89,7 +73,7 @@ cdef class ItemVector:
         else:
             raise INVALID_INDEX_ERROR
 
-    cdef void c_clear(self, size_t index) except *:
+    cdef inline void c_clear(self, size_t index) except *:
         cdef char *dest
         if 0 <= index < self.max_items:
             dest = self.items + (self.item_size * index)
@@ -97,10 +81,10 @@ cdef class ItemVector:
         else:
             raise INVALID_INDEX_ERROR
 
-    cdef void c_clear_all(self) nogil:
+    cdef inline void c_clear_all(self) nogil:
         memset(self.items, 0, self.max_items * self.item_size)
 
-    cdef void c_swap(self, size_t a, size_t b) except *:
+    cdef inline void c_swap(self, size_t a, size_t b) except *:
         cdef:
             char *a_ptr
             char *b_ptr
@@ -113,7 +97,7 @@ cdef class ItemVector:
         else:
             raise INVALID_INDEX_ERROR
 
-    cdef void c_resize(self, size_t new_max_items) except *:
+    cdef inline void c_resize(self, size_t new_max_items) except *:
         cdef:
             char *new_items
             char *clear_start
@@ -128,10 +112,20 @@ cdef class ItemVector:
         self.items = new_items
         self.max_items = new_max_items
 
+    cdef inline void c_grow_if_needed(self) except *:
+        cdef size_t new_max_items
+        if self.num_items >= self.max_items:
+            new_max_items = <size_t>(self.max_items * VECTOR_GROWTH_RATE)
+            self.c_resize(new_max_items)
 
-    cdef void c_remove_empty(self, size_t index) except *:
+    cdef inline void c_shrink_if_needed(self) except *:
+        cdef size_t new_max_items
+        if self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
+            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
+            self.c_resize(new_max_items)
+
+    cdef inline void c_remove_empty(self, size_t index) except *:
         cdef:
-            size_t new_max_items
             void *dest
             void *src
             size_t size
@@ -142,15 +136,12 @@ cdef class ItemVector:
         src = self.c_get_ptr(index)
         size = (self.num_items - index - 1) * self.item_size
         memmove(dest, src, size)
-        if self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
-            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
-            self.c_resize(new_max_items)
+        self.c_shrink_if_needed()
         self.num_items -= 1
 
     
-    cdef void c_remove(self, size_t index, void *item) except *:
+    cdef inline void c_remove(self, size_t index, void *item) except *:
         cdef:
-            size_t new_max_items
             void *dest
             void *src
             size_t size
@@ -162,7 +153,5 @@ cdef class ItemVector:
         src = self.c_get_ptr(index)
         size = (self.num_items - index - 1) * self.item_size
         memmove(dest, src, size)
-        if self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
-            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
-            self.c_resize(new_max_items)
+        self.c_shrink_if_needed()
         self.num_items -= 1

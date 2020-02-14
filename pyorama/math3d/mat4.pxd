@@ -33,6 +33,12 @@ cdef class Mat4:
     @staticmethod
     cdef inline void c_frustum(Mat4C *out, float left, float right, float bottom, float top, float near, float far) nogil
     @staticmethod
+    cdef inline void c_get_rotation(QuatC *out, Mat4C *a) nogil
+    @staticmethod
+    cdef inline void c_get_scale(Vec3C *out, Mat4C *a) nogil
+    @staticmethod
+    cdef inline void c_get_translation(Vec3C *out, Mat4C *a) nogil
+    @staticmethod
     cdef inline void c_identity(Mat4C *out) nogil
     @staticmethod
     cdef inline void c_inv(Mat4C *out, Mat4C *a) nogil
@@ -50,6 +56,8 @@ cdef class Mat4:
     cdef inline void c_random(Mat4C *out) nogil
     @staticmethod
     cdef inline void c_rotate(Mat4C *out, Mat4C *a, float radians, Vec3C *axis) nogil
+    @staticmethod
+    cdef inline void c_rotate_quat(Mat4C *out, Mat4C *a, QuatC *quat) nogil
     @staticmethod
     cdef inline void c_rotate_x(Mat4C *out, Mat4C *a, float radians) nogil
     @staticmethod

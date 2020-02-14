@@ -10,7 +10,7 @@ cdef class GraphicsManager:
         glEnable(GL_TEXTURE_2D)
 
         self.windows = ItemSlotMap(sizeof(WindowC), ITEM_TYPE_WINDOW)
-        self.cameras_3d = ItemSlotMap(sizeof(Camera3dC), ITEM_TYPE_CAMERA_3D)
+        self.cameras_3d = ItemSlotMap(sizeof(CameraC), ITEM_TYPE_CAMERA_3D)
         self.images = ItemSlotMap(sizeof(ImageC), ITEM_TYPE_IMAGE)
         self.samplers = ItemSlotMap(sizeof(SamplerC), ITEM_TYPE_SAMPLER)
         self.textures = ItemSlotMap(sizeof(TextureC), ITEM_TYPE_TEXTURE)
@@ -110,7 +110,7 @@ cdef class GraphicsManager:
         SDL_SetWindowTitle(sdl_window, window_ptr.title)
 
     #Camera3d
-    def camera_3d_create(self, 
+    def camera_create(self, 
             float fovy, float aspect, float near, float far,
             Vec3 position=Vec3(),
             Vec3 target=Vec3(),
@@ -119,73 +119,73 @@ cdef class GraphicsManager:
             Vec3 right=Vec3(1.0, 0.0, 0.0)):
         cdef:
             Handle camera
-            Camera3dC *camera_ptr
+            CameraC *camera_ptr
         camera = self.cameras_3d.c_create()
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
-        self.camera_3d_set_projection(camera, fovy, aspect, near, far)
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
+        self.camera_set_projection(camera, fovy, aspect, near, far)
         Vec3.c_copy(&camera_ptr.forward, forward.ptr)
         Vec3.c_copy(&camera_ptr.up, up.ptr)
         Vec3.c_copy(&camera_ptr.right, right.ptr)
         return camera
 
-    def camera_3d_delete(self, Handle camera):
-        self.camera_3d_set_projection(camera, 0.0, 0.0, 0.0, 0.0)
+    def camera_delete(self, Handle camera):
+        self.camera_set_projection(camera, 0.0, 0.0, 0.0, 0.0)
         self.cameras_3d.c_delete(camera)
 
-    def camera_3d_set_projection(self, Handle camera, float fovy, float aspect, float near, float far):
-        cdef Camera3dC *camera_ptr
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+    def camera_set_projection(self, Handle camera, float fovy, float aspect, float near, float far):
+        cdef CameraC *camera_ptr
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         camera_ptr.fovy = fovy
         camera_ptr.aspect = aspect
         camera_ptr.near = near
         camera_ptr.far = far
 
-    def camera_3d_get_projection(self, Handle camera):
+    def camera_get_projection(self, Handle camera):
         cdef:
-            Camera3dC *camera_ptr
+            CameraC *camera_ptr
             Mat4 projection = Mat4()
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Mat4.c_perspective(projection.ptr, camera_ptr.fovy, camera_ptr.aspect, camera_ptr.near, camera_ptr.far)
         return projection
     
-    def camera_3d_get_position(self, Handle camera):
+    def camera_get_position(self, Handle camera):
         cdef:
-            Camera3dC *camera_ptr
+            CameraC *camera_ptr
             Vec3 position = Vec3()
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(position.ptr, &camera_ptr.position)
         return position
 
-    def camera_3d_set_position(self, Handle camera, Vec3 position=Vec3()):
-        cdef Camera3dC *camera_ptr
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+    def camera_set_position(self, Handle camera, Vec3 position=Vec3()):
+        cdef CameraC *camera_ptr
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(&camera_ptr.position, position.ptr)
 
-    def camera_3d_pan(self, Handle camera, Vec3 translation=Vec3()):
-        cdef Camera3dC *camera_ptr
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+    def camera_pan(self, Handle camera, Vec3 translation=Vec3()):
+        cdef CameraC *camera_ptr
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_add(&camera_ptr.position, &camera_ptr.position, translation.ptr)
         Vec3.c_add(&camera_ptr.target, &camera_ptr.target, translation.ptr)
         # TODO: this implemetation is completely wrong. In a pan, the camera does not move!
 
-    def camera_3d_get_target(self, Handle camera):
+    def camera_get_target(self, Handle camera):
         cdef:
-            Camera3dC *camera_ptr
+            CameraC *camera_ptr
             Vec3 target = Vec3()
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(target.ptr, &camera_ptr.target)
         return target
 
-    def camera_3d_set_target(self, Handle camera, Vec3 target=Vec3()):
-        cdef Camera3dC *camera_ptr
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+    def camera_set_target(self, Handle camera, Vec3 target=Vec3()):
+        cdef CameraC *camera_ptr
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Vec3.c_copy(&camera_ptr.target, target.ptr)
 
-    def camera_3d_get_view(self, Handle camera):
+    def camera_get_view(self, Handle camera):
         cdef:
-            Camera3dC *camera_ptr
+            CameraC *camera_ptr
             Mat4 view = Mat4()
-        camera_ptr = <Camera3dC *>self.cameras_3d.c_get_ptr(camera)
+        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
         Mat4.c_look_at(
             view.ptr, 
             &camera_ptr.position, 
@@ -599,7 +599,7 @@ cdef class GraphicsManager:
             GLenum u_type
             char *u_name
             UniformC *info
-            ItemHashMap uniform_map
+            dict uniform_map
 
         #Compile OpenGL program object
         program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
@@ -617,7 +617,7 @@ cdef class GraphicsManager:
             raise ValueError("Program: failed to compile:\n{0}".format(log))
         
         #Setup uniform dict mapping
-        uniform_map = ItemHashMap()
+        uniform_map = {}
         glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORMS, <int *>&program_ptr.num_uniforms)
         glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_u_name_length)
         #print("max_len", max_u_name_length)
@@ -632,7 +632,7 @@ cdef class GraphicsManager:
             info.index = glGetUniformLocation(program_ptr.id, u_name)
             info.type = <MathType>u_type
             info.size = u_size
-            uniform_map.c_append(u_name, i)
+            uniform_map[u_name] = i
         program_ptr.uniform_map = <PyObject *>uniform_map
         Py_XINCREF(program_ptr.uniform_map)#TODO: need decompile decref equivalent
     
@@ -644,7 +644,7 @@ cdef class GraphicsManager:
             uint32_t type
         
         program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
-        i = (<ItemHashMap>program_ptr.uniform_map).c_get(name)
+        i = (<dict>program_ptr.uniform_map)[name]
         info = &program_ptr.uniform_info[i]
         if info.type == MATH_TYPE_FLOAT:
             glUniform1f(info.index, <float>value)

@@ -1,3 +1,6 @@
+from pyorama.core.item_hash_map import *
+
+"""
 from pyorama.core.app import App
 from pyorama.asset import *
 from pyorama.event import *
@@ -44,10 +47,10 @@ class Game(App):
             shift = Vec3(0.0, +speed, 0.0)
         elif scan_code == SCAN_CODE_DOWN:
             shift = Vec3(0.0, -speed, 0.0)
-        position = self.graphics.camera_3d_get_position(self.camera)
-        target = self.graphics.camera_3d_get_target(self.camera)
+        position = self.graphics.camera_get_position(self.camera)
+        target = self.graphics.camera_get_target(self.camera)
         Vec3.add(position, position, shift)
-        self.graphics.camera_3d_set_position(self.camera, position)
+        self.graphics.camera_set_position(self.camera, position)
     
     def setup_window(self):
         self.width = 800
@@ -84,7 +87,6 @@ class Game(App):
     def setup_batch(self):
         mesh = self.graphics.mesh_create()
         materials, meshes = self.assets.scene_load_from_file(self.graphics, b"../monkey/monkey.obj")
-        
         mesh = meshes[0]
         model = self.graphics.model_create(mesh, Vec3(0.5, 0.0, 0.0), Quat(), Vec3())
         self.meshes = np.array([mesh], dtype=np.uint64)
@@ -114,21 +116,18 @@ class Game(App):
     def setup_listeners(self):
         key_down = self.events.listener_create(EVENT_TYPE_KEY_DOWN, self.on_key_down, None)
         self.listeners = np.array([key_down], dtype=np.uint64)
-
+    
     def cleanup_listeners(self):
         for listener in self.listeners:
             self.events.listener_delete(listener)
 
     def setup_camera(self):
-        self.camera = self.graphics.camera_3d_create(
-            math.radians(90.0), 
-            float(self.width)/self.height, 
-            0.0, 
-            1000
-        )
+        fovy = math.radians(90.0)
+        aspect_ratio = float(self.width)/self.height
+        self.camera = self.graphics.camera_create(fovy, aspect_ratio, 0.0, 1000.0)
     
     def cleanup_camera(self):
-        self.graphics.camera_3d_delete(self.camera)
+        self.graphics.camera_delete(self.camera)
         self.camera = None
 
     def update(self, delta):
@@ -139,9 +138,9 @@ class Game(App):
         self.graphics.window_bind(self.window)
         self.graphics.window_clear()
         self.graphics.program_bind(self.program)
-        projection = self.graphics.camera_3d_get_projection(self.camera)
+        projection = self.graphics.camera_get_projection(self.camera)
         self.graphics.program_set_uniform(self.program, b"projection", projection)
-        view = self.graphics.camera_3d_get_view(self.camera)
+        view = self.graphics.camera_get_view(self.camera)
         self.graphics.program_set_uniform(self.program, b"view", view)
         self.graphics.program_set_uniform(self.program, b"sampler", 0)
         self.graphics.texture_bind(self.texture)
@@ -154,3 +153,4 @@ class Game(App):
 if __name__ == "__main__":
     game = Game()
     game.run()
+"""

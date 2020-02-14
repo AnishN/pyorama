@@ -1,7 +1,6 @@
 cimport cython
 from cpython.ref cimport *
 from pyorama.core.item cimport *
-from pyorama.core.item_hash_map cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.libs.gl cimport *
 from pyorama.libs.sdl2 cimport *
@@ -23,13 +22,26 @@ ctypedef struct WindowC:
     size_t title_len
 
 """
-ctypedef struct TransformC:
-    Vec3C translation
-    QuatC rotation
-    Vec3C scale
+cpdef enum CameraProjectionType:
+    CAMERA_PROJECTION_TYPE_2D
+    CAMERA_PROJECTION_TYPE_3D
+
+ctypedef struct Camera2dProjectionC:
+    float left
+    float right
+    float bottom
+    float top
+    float near
+    float far
+
+ctypedef struct Camera3dProjectionC:
+    float fovy
+    float aspect
+    float near
+    float far
 """
 
-ctypedef struct Camera3dC:
+ctypedef struct CameraC:
     float fovy
     float aspect
     float near
@@ -40,18 +52,6 @@ ctypedef struct Camera3dC:
     Vec3C right
     Vec3C position
     Vec3C target
-
-"""
-ctypedef struct Camera2dC:
-    float left
-    float right
-    float bottom
-    float top
-    float near
-    float far
-pan
-zoom
-"""
 
 ctypedef struct ImageC:
     int width
@@ -154,9 +154,14 @@ ctypedef struct MaterialC:
     Vec4C specular
     float shininess
 
+ctypedef struct TransformC:
+    Vec3C translation
+    QuatC rotation
+    Vec3C scale
+
 ctypedef struct NodeC:
-    Mat4C local
-    Mat4C world
+    TransformC local
+    TransformC world
     Handle parent
     Handle first_child
     Handle next_sibling

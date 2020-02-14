@@ -17,7 +17,7 @@ cdef class ItemSlotMap:
         self.free_list_front = <uint32_t>0xFFFFFFFF
         self.free_list_back = <uint32_t>0xFFFFFFFF        
 
-    cdef Handle c_create(self) except *:
+    cdef inline Handle c_create(self) except *:
         cdef:
             Handle outer_id = 0
             Handle inner_id = 0
@@ -45,7 +45,7 @@ cdef class ItemSlotMap:
         self.erase.c_push(&outer_index)
         return outer_id
 
-    cdef void c_delete(self, Handle handle) except *:
+    cdef inline void c_delete(self, Handle handle) except *:
         cdef:
             Handle inner_id
             Handle free_id
@@ -82,7 +82,7 @@ cdef class ItemSlotMap:
         self.items.c_pop_empty()
         self.erase.c_pop_empty()
 
-    cdef void *c_get_ptr(self, Handle handle) except *:
+    cdef inline void *c_get_ptr(self, Handle handle) except *:
         cdef:
             Handle inner_id
             void *item_ptr
@@ -94,10 +94,10 @@ cdef class ItemSlotMap:
             item_ptr = self.items.c_get_ptr(c_handle_get_index(&inner_id))
             return item_ptr
         
-    cdef bint c_is_free_list_empty(self) nogil:
+    cdef inline bint c_is_free_list_empty(self) nogil:
         return self.free_list_front == <uint32_t>0xFFFFFFFF
 
-    cdef bint c_is_handle_valid(self, Handle handle) except *:
+    cdef inline bint c_is_handle_valid(self, Handle handle) except *:
         cdef:
             uint32_t outer_index
             Handle inner_id

@@ -1,11 +1,24 @@
 cimport cython
+from pyorama.core.item_vector cimport *
 from pyorama.libs.c cimport *
+
+"""
+Map uint64_t unhashed keys to uint64_t values allocated in array.
+Instead of using string keys (which are slower to hash).
+Hashing here purely ensures uniform distribution.
+"""
 
 @cython.final
 cdef class ItemHashMap:
-    cdef dict hash_map
+    cdef:
+        ItemVector items
+        size_t num_items
 
-    cdef void c_append(self, bytes key, uint64_t value) except *
-    cdef void c_remove(self, bytes key) except *
-    cdef uint64_t c_get(self, bytes key) except *
-    cdef bint c_contains(self, bytes key)
+    cdef inline void c_insert(self, uint64_t key, uint64_t value) except *
+    cdef inline void c_remove(self, uint64_t key) except *
+    cdef inline uint64_t c_get(self, uint64_t key) except *
+    cdef inline uint64_t c_hash(self, uint64_t key) nogil
+    cdef inline bint c_contains(self, uint64_t key) nogil
+    cdef inline void c_grow_if_needed(self) except *
+    cdef inline void c_shrink_if_needed(self) except *
+    cdef inline void c_resize(self, size_t new_max_items) except *

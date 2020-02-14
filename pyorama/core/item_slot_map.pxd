@@ -15,8 +15,8 @@ cdef class ItemSlotMap:
         uint32_t free_list_front
         uint32_t free_list_back
 
-    cdef Handle c_create(self) except *
-    cdef void c_delete(self, Handle handle) except *
-    cdef void *c_get_ptr(self, Handle handle) except *
-    cdef bint c_is_free_list_empty(self) nogil
-    cdef bint c_is_handle_valid(self, Handle handle) except *
+    cdef inline Handle c_create(self) except *
+    cdef inline void c_delete(self, Handle handle) except *
+    cdef inline void *c_get_ptr(self, Handle handle) except *
+    cdef inline bint c_is_free_list_empty(self) nogil
+    cdef inline bint c_is_handle_valid(self, Handle handle) except *

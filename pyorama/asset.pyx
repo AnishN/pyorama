@@ -69,8 +69,10 @@ cdef class AssetManager:
             ai_mesh = ai_scene.mMeshes[i]
             mesh = graphics.meshes.c_create()
             self.c_scene_parse_mesh(ai_mesh, graphics, mesh)
-            meshes[i] = mesh
-        
+            meshes[i] = mesh        
+
+        self.c_scene_parse_nodes(<aiScene *>ai_scene, graphics)
+
         aiReleaseImport(ai_scene)
         return materials, meshes
     
@@ -94,7 +96,7 @@ cdef class AssetManager:
         else:
             print(material_shading_model)
             raise ValueError("Scene: unsupported material shading model")
-
+    
     cdef void c_scene_parse_mesh(self, aiMesh *ai_mesh, GraphicsManager graphics, Handle mesh) except *:
         cdef:
             MeshC *mesh_ptr
@@ -153,62 +155,59 @@ cdef class AssetManager:
         mesh_ptr.indices_data = i_data
         mesh_ptr.indices_length = i_length
 
-    """
     cdef void c_scene_parse_nodes(self, aiScene *ai_scene, GraphicsManager graphics) except *:
         cdef:
             aiNode *ai_root
-            aiNode ai_empty
-            Mat4C identity
             Handle root
             NodeC *root_ptr
-            #Handle[:] nodes
             ItemVector nodes
-            #ItemVector 
 
         ai_root = ai_scene.mRootNode
         if ai_root == NULL:
             raise ValueError("Scene: root node not present in file")
-        
-        Mat4.c_identity(&identity)
         root = graphics.nodes.c_create()
         root_ptr = <NodeC *>graphics.nodes.c_get_ptr(root)
         root_ptr.parent = 0
-        #root_ptr.prev_sibling = 0
-        #root_ptr.next_sibling = 0
-
-        #ai_empty.mTransformation = <aiMatrix4x4>identity[0]
-        #ai_root.mParent = &ai_empty
-        #root = graphics.nodes.c_create()
-        #root.parent = 0
-        #root.prev_sibling = 0
-        #root.next_sibling = 0
-        #self.c_scene_parse_node(ai_root, graphics, root)
+        self.c_scene_parse_node(ai_root, graphics, root)
     
     cdef void c_scene_parse_node(self, aiNode *ai_node, GraphicsManager graphics, Handle node) except *:
         cdef:
             NodeC *node_ptr
+            Mat4C *local_mat
+            Mat4C world_mat
+            Handle parent
+            NodeC *parent_ptr
+            Mat4C parent_mat#parent's world mat
             size_t i
             aiNode *ai_child
-            Handle child
             NodeC *child_ptr
-            Handle prev_sibling = 0
-            Handle curr_sibling = 0
-            Handle next_sibling = 0
-
+        
         node_ptr = <NodeC *>graphics.nodes.c_get_ptr(node)
-        memcpy(&node_ptr.local, &(ai_node.mTransformation[0]), sizeof(Mat4C))
+        local_mat = &ai_node.mTransformation
+        Mat4.c_get_translation(&node_ptr.local.translation, local_mat)
+        Mat4.c_get_rotation(&node_ptr.local.rotation, local_mat)
+        Mat4.c_get_scale(&node_ptr.local.scale, local_mat)
+
+        parent = node_ptr.parent
+        if parent == 0:#aka this is root node
+            memcpy(&node_ptr.world, &node_ptr.local, sizeof(TransformC))
+        else:
+            parent_ptr =  <NodeC *>graphics.nodes.c_get_ptr(parent)
+            Mat4.c_from_translation(&parent_mat, &parent_ptr.world.translation)
+            Mat4.c_rotate_quat(&parent_mat, &parent_mat, &parent_ptr.world.rotation)
+            Mat4.c_scale(&parent_mat, &parent_mat, &parent_ptr.world.scale)
+            Mat4.c_dot(&world_mat, local_mat, &parent_mat)
+            Mat4.c_get_translation(&node_ptr.world.translation, &world_mat)
+            Mat4.c_get_rotation(&node_ptr.world.rotation, &world_mat)
+            Mat4.c_get_scale(&node_ptr.world.scale, &world_mat)
+        
         for i in range(ai_node.mNumChildren):
             ai_child = ai_node.mChildren[i]
             child = graphics.nodes.c_create()
             child_ptr =  <NodeC *>graphics.nodes.c_get_ptr(child)
-            if i == 0:
-                node_ptr.first_child = child
-            child_ptr.prev_sibling = prev_sibling
-            child_ptr.next_sibling = next_sibling
             child_ptr.parent = node
             self.c_scene_parse_node(ai_child, graphics, child)
-    """
-
+    
     """
     cdef struct aiNode:
         aiString mName
@@ -219,15 +218,17 @@ cdef class AssetManager:
         unsigned int mNumMeshes
         unsigned int* mMeshes
         aiMetadata* mMetaData
-    """
-    
-    """
+
+    ctypedef struct TransformC:
+        Vec3C translation
+        QuatC rotation
+        Vec3C scale
+
     ctypedef struct NodeC:
-        Mat4C local
-        Mat4C world
-        bint is_dirty
+        TransformC local
+        TransformC world
         Handle parent
-        #Handle first_child
-        #Handle next_sibling
-        #Handle prev_sibling
+        Handle first_child
+        Handle next_sibling
+        Handle prev_sibling
     """

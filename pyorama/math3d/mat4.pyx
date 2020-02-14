@@ -92,6 +92,18 @@ cdef class Mat4:
         Mat4.c_frustum(out.ptr, left, right, bottom, top, near, far)
 
     @staticmethod
+    def get_rotation(Quat out, Mat4 a):
+        Mat4.c_get_rotation(out.ptr, a.ptr)
+
+    @staticmethod
+    def get_scale(Vec3 out, Mat4 a):
+        Mat4.c_get_scale(out.ptr, a.ptr)
+
+    @staticmethod
+    def get_translation(Vec3 out, Mat4 a):
+        Mat4.c_get_translation(out.ptr, a.ptr)
+
+    @staticmethod
     def identity(Mat4 out):
         Mat4.c_identity(out.ptr)
 
@@ -431,6 +443,49 @@ cdef class Mat4:
         out[0][15] = 0
 
     @staticmethod
+    cdef inline void c_get_rotation(QuatC *out, Mat4C *a) nogil:
+        cdef:
+            Vec3C i
+            Vec3C j
+            Vec3C k
+            Mat3C rot
+        i = (a[0][0], a[0][1], a[0][2])
+        j = (a[0][4], a[0][5], a[0][6])
+        k = (a[0][8], a[0][9], a[0][10])
+        Vec3.c_norm(&i, &i)
+        Vec3.c_norm(&j, &j)
+        Vec3.c_norm(&k, &k)
+        rot[0] = i[0]
+        rot[1] = i[1]
+        rot[2] = i[2]
+        rot[3] = j[0]
+        rot[4] = j[1]
+        rot[5] = j[2]
+        rot[6] = k[0]
+        rot[7] = k[1]
+        rot[8] = k[2]
+        Quat.c_from_mat3(out, &rot)
+
+    @staticmethod
+    cdef inline void c_get_scale(Vec3C *out, Mat4C *a) nogil:
+        cdef:
+            Vec3C i
+            Vec3C j
+            Vec3C k
+        i = (a[0][0], a[0][1], a[0][2])
+        j = (a[0][4], a[0][5], a[0][6])
+        k = (a[0][8], a[0][9], a[0][10])
+        out[0][0] = Vec3.c_length(&i)
+        out[0][1] = Vec3.c_length(&j)
+        out[0][2] = Vec3.c_length(&k)
+
+    @staticmethod
+    cdef inline void c_get_translation(Vec3C *out, Mat4C *a) nogil:
+        out[0][0] = a[0][12]
+        out[0][1] = a[0][13]
+        out[0][2] = a[0][14]
+
+    @staticmethod
     cdef inline void c_identity(Mat4C *out) nogil:
         out[0][0] = 1
         out[0][1] = 0
@@ -575,6 +630,12 @@ cdef class Mat4:
     cdef inline void c_rotate(Mat4C *out, Mat4C *a, float radians, Vec3C *axis) nogil:
         cdef Mat4C rot_mat
         Mat4.c_from_rotation(&rot_mat, radians, axis)
+        Mat4.c_dot(out, a, &rot_mat)
+
+    @staticmethod
+    cdef inline void c_rotate_quat(Mat4C *out, Mat4C *a, QuatC *quat) nogil:
+        cdef Mat4C rot_mat
+        Mat4.c_from_quat(&rot_mat, quat)
         Mat4.c_dot(out, a, &rot_mat)
 
     @staticmethod
