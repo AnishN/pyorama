@@ -151,56 +151,8 @@ cdef class ItemHashMap:
         self.items.items = <char *>new_items
         self.items.max_items = new_max_items
         
-        """
-        cdef:
-            ItemVector new_items
-            size_t i, j
-            size_t index
-            ItemC *item_ptr
-            ItemC *new_item_ptr
-
-        new_items = ItemVector(sizeof(ItemC))
-        free(new_items.items)
-        new_items.max_items = new_max_items
-        new_items.items = <char *>calloc(new_max_items, sizeof(ItemC))
-        if new_items.items == NULL:
-            raise MemoryError()
-
-        for i in range(self.items.max_items):
-            item_ptr = <ItemC *>(self.items.items + (self.items.item_size * i))
-            if item_ptr.used:
-                for j in range(new_items.max_items):
-                    index = (item_ptr.hashed_key + j) % new_items.max_items
-                    new_item_ptr = <ItemC *>(new_items.items + (new_items.item_size * index))
-                    if new_item_ptr.used:
-                        if new_item_ptr.hashed_key == item_ptr.hashed_key and new_item_ptr.key == item_ptr.key:
-                            new_item_ptr.value = item_ptr.value
-                            break
-                    else:
-                        new_item_ptr.key = item_ptr.key
-                        new_item_ptr.hashed_key = item_ptr.hashed_key
-                        new_item_ptr.value = item_ptr.value
-                        new_item_ptr.used = True
-                        break
-        self.items = new_items
-        """
-
-        """
-        cdef:
-            ItemVector new_items
-            size_t i, j
-            size_t index
-            ItemC *item_ptr
-        new_items = ItemVector(sizeof(ItemC))
-        new_items.c_resize(new_max_items)
-        self.items, new_items = new_items, self.items
-        for i in range(new_items.max_items):
-            item_ptr = <ItemC *>(new_items.items + (new_items.item_size * i))
-            print(i, item_ptr[0])
-            self.c_insert(item_ptr.key, item_ptr.value)
-        print("")
-        """
 import time
+import numpy as np
 
 cdef:
     ItemHashMap hash_map
@@ -209,22 +161,25 @@ cdef:
     uint64_t v
     size_t i
     size_t n = 1000000
+    uint64_t[:] test
+
+test = np.random.randint(2**64, size=n, dtype=np.uint64)
+
+d = {}
+start = time.time()
+for i in range(n):
+    k = test[i]
+    v = test[i]
+    d[k] = v
+end = time.time()
+print(end - start, k, v, d[k])
 
 hash_map = ItemHashMap()
 start = time.time()
 for i in range(n):
     #print(i, hash_map.num_items)
-    k = rand()
-    v = rand()
+    k = test[i]
+    v = test[i]
     hash_map.c_insert(k, v)
 end = time.time()
 print(end - start, k, v, hash_map.c_get(k))
-
-d = {}
-start = time.time()
-for i in range(n):
-    k = rand()
-    v = rand()
-    d[k] = v
-end = time.time()
-print(end - start, k, v, d[k])
