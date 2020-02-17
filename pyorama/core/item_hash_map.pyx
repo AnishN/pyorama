@@ -2,7 +2,7 @@ cdef object KEY_ERROR = KeyError("ItemHashMap: key not found")
 
 cdef float HASH_MAP_GROWTH_RATE = 2.0#same as vector
 cdef float HASH_MAP_SHRINK_RATE = 0.5#same as vector
-cdef float HASH_MAP_LOAD_FACTOR = 0.6
+cdef float HASH_MAP_LOAD_FACTOR = 0.7
 cdef float HASH_MAP_UNLOAD_FACTOR = 0.1
 
 cdef class ItemHashMap:
@@ -24,7 +24,7 @@ cdef class ItemHashMap:
         self.c_grow_if_needed()
         hashed_key = self.c_hash(key)
         i = hashed_key & (self.items.max_items - 1)
-        
+
         while True:
             index = i & (self.items.max_items - 1)
             item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
