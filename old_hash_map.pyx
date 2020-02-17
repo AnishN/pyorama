@@ -11,7 +11,6 @@ ctypedef struct ItemC:
     uint64_t hashed_key#Not needed for comparisons
     uint64_t value
     bint used
-    size_t probe_length#Needed for Robin Hood Hashing
 
 cdef class ItemHashMap:
     def __cinit__(self):
@@ -27,7 +26,6 @@ cdef class ItemHashMap:
             uint64_t hashed_key
             size_t index
             ItemC *item_ptr
-            size_t probe_length = 0
         
         self.c_grow_if_needed()
         hashed_key = self.c_hash(key)
@@ -43,17 +41,8 @@ cdef class ItemHashMap:
                 item_ptr.hashed_key = hashed_key
                 item_ptr.value = value
                 item_ptr.used = True
-                item_ptr.probe_length = probe_length
                 self.num_items += 1
                 return
-            #probe_length += 1
-        """
-        if probe_length > item_ptr.probe_length:
-            key, item_ptr.key = item_ptr.key, key
-            hashed_key, item_ptr.hashed_key = item_ptr.hashed_key, hashed_key
-            value, item_ptr.value = item_ptr.value, value
-            probe_length, item_ptr.probe_length = item_ptr.probe_length, probe_length
-        """
 
     cdef inline void c_remove(self, uint64_t key) except *:
         cdef:
@@ -160,5 +149,8 @@ cdef class ItemHashMap:
                         new_item_ptr.value = item_ptr.value
                         new_item_ptr.used = True
                         break
+
+        free(self.items.items)
         self.items.items = <char *>new_items
         self.items.max_items = new_max_items
+        
