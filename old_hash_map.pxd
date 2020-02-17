@@ -37,4 +37,3 @@ cdef class ItemHashMap:
     cdef inline void c_grow_if_needed(self) except *
     cdef inline void c_shrink_if_needed(self) except *
     cdef inline void c_resize(self, size_t new_max_items) except *
-    cdef inline void c_print(self) except *

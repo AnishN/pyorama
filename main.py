@@ -1,4 +1,4 @@
-from pyorama.core.item_hash_map import *
+import hash_map_test
 
 """
 from pyorama.core.app import App
