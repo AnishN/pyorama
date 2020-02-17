@@ -9,24 +9,16 @@ This is a faster alternative to dict. It makes several optimizations/assumptions
 * Uses open addressing rather than chaining (to avoid linked list traversal)
 * Only compares by key (not hashed_key) since keys are just uint64_t as well (saves extra check)
 * Given that ItemVector only uses power-of-two sizes, replaced expensive modulo (%) with bitwise and (&) operation
-
-TODO: Robin Hood Hashing!!!
+* Robin hood hashing was attempted previously
+    * But in combination with backwards shifting was slower on insert/delete
+    * Equivalent on get (maybe slightly faster)
 """
-
-#Internal struct
-ctypedef struct ItemC:
-    uint64_t key
-    uint64_t hashed_key#Not needed for comparisons
-    uint64_t value
-    bint used
-    size_t probe_length#Needed for Robin Hood Hashing
 
 @cython.final
 cdef class ItemHashMap:
     cdef:
         ItemVector items
         size_t num_items
-        size_t max_probe_length
 
     cdef inline void c_insert(self, uint64_t key, uint64_t value) except *
     cdef inline void c_remove(self, uint64_t key) except *
@@ -37,4 +29,3 @@ cdef class ItemHashMap:
     cdef inline void c_grow_if_needed(self) except *
     cdef inline void c_shrink_if_needed(self) except *
     cdef inline void c_resize(self, size_t new_max_items) except *
-    cdef inline void c_print(self) except *

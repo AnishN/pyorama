@@ -1,6 +1,5 @@
 # distutils: language = c++
 from pyorama.core.item_hash_map cimport *
-from old_hash_map cimport ItemHashMap as OldHashMap
 import time
 import numpy as np
 from libcpp.unordered_map cimport unordered_map
@@ -9,13 +8,10 @@ cdef:
     dict d
     unordered_map[uint64_t, uint64_t] c_map
     ItemHashMap hash_map
-    OldHashMap old_map
     uint64_t k
     uint64_t v
     uint64_t out_sum = 0
     size_t i
-    size_t j
-    ItemC *item_ptr
     size_t n = 1000000
     uint64_t[:] test
 
@@ -23,7 +19,6 @@ test = np.random.randint(2**64, size=n, dtype=np.uint64)
 d = {}
 c_map 
 hash_map = ItemHashMap()
-old_map = OldHashMap()
 
 print("dict")
 start = time.time()
@@ -69,7 +64,7 @@ for i in range(n):
 end = time.time()
 print(end - start)
 
-print("new")
+print("ItemHashMap")
 start = time.time()
 for i in range(n):
     k = test[i]
@@ -88,27 +83,5 @@ start = time.time()
 for i in range(n):
     k = test[i]
     hash_map.c_remove(k)
-end = time.time()
-print(end - start)
-
-print("old")
-start = time.time()
-for i in range(n):
-    k = test[i]
-    v = test[i]
-    old_map.c_insert(k, v)
-end = time.time()
-print(end - start)
-out_sum = 0
-start = time.time()
-for i in range(n):
-    k = test[i]
-    out_sum += old_map.c_get(k)
-end = time.time()
-print(end - start, out_sum)
-start = time.time()
-for i in range(n):
-    k = test[i]
-    old_map.c_remove(k)
 end = time.time()
 print(end - start)
