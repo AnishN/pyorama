@@ -78,7 +78,7 @@ if __name__ == "__main__":
         author="Anish Narayanan",
         author_email="anish.narayanan32@gmail.com",
         url="https://github.com/AnishN/pyorama",
-        download_url="https://github.com/AnishN/pyorama/archive/v0.0.1.tar.gz",
+        download_url="https://github.com/AnishN/pyorama/archive/v0.0.2.tar.gz",
         keywords=["game", "2D", "3D", "rendering", "cython", "performance"],
         install_requires=[],
         classifiers=[
