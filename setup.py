@@ -1,6 +1,5 @@
-from distutils.core import setup
+from setuptools import setup, Extension, find_packages
 from Cython.Build import cythonize
-from distutils.core import Extension
 import numpy as np
 import os
 import shutil
@@ -70,11 +69,26 @@ if __name__ == "__main__":
         compiler_directives=directives,
         quiet=quiet
     )
-    setup(ext_modules=ext_modules)
-
-    """
-    #immediately remove build directory
-    build_dir = "./build"
-    if os.path.exists(build_dir):
-        shutil.rmtree(build_dir)
-    """
+    setup(
+        name="pyorama",
+        packages=find_packages(),
+        version="0.0.1",
+        license="MIT",
+        description="A performant game engine written in cython.",
+        author="Anish Narayanan",
+        author_email="anish.narayanan32@gmail.com",
+        url="https://github.com/AnishN/pyorama",
+        download_url="https://github.com/AnishN/pyorama/archive/v0.0.1.tar.gz",
+        keywords=["game", "2D", "3D", "rendering", "cython", "performance"],
+        install_requires=[],
+        classifiers=[
+            "Development Status :: 3 - Alpha",
+            "Intended Audience :: Developers",
+            "Topic :: Games/Entertainment",
+            "Topic :: Multimedia :: Graphics :: 3D Rendering",
+            "Topic :: Multimedia :: Graphics",
+            "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 3",
+        ],
+        ext_modules=ext_modules,
+    )

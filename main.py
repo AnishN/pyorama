@@ -1,6 +1,3 @@
-import hash_map_test
-
-"""
 from pyorama.core.app import App
 from pyorama.asset import *
 from pyorama.event import *
@@ -153,4 +150,3 @@ class Game(App):
 if __name__ == "__main__":
     game = Game()
     game.run()
-"""
