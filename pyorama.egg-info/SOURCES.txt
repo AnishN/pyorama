@@ -26,3 +26,6 @@ pyorama.egg-info/PKG-INFO
 pyorama.egg-info/SOURCES.txt
 pyorama.egg-info/dependency_links.txt
 pyorama.egg-info/top_level.txt
+pyorama/core/__init__.py
+pyorama/libs/__init__.py
+pyorama/math3d/__init__.py

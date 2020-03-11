@@ -72,7 +72,7 @@ if __name__ == "__main__":
     setup(
         name="pyorama",
         packages=find_packages(),
-        version="0.0.1",
+        version="0.0.2",
         license="MIT",
         description="A performant game engine written in cython.",
         author="Anish Narayanan",
