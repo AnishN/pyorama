@@ -1,3 +1,4 @@
+from pyorama.math3d.color cimport *
 from pyorama.math3d.common cimport *
 from pyorama.math3d.mat2 cimport *
 from pyorama.math3d.mat3 cimport *

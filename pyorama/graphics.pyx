@@ -1,550 +1,343 @@
-from pyorama.libs.assimp cimport *
+cdef uint32_t c_buffer_usage_to_gl(BufferUsage usage) nogil:
+    if usage == BUFFER_USAGE_STATIC:
+        return GL_STATIC_DRAW
+    elif usage == BUFFER_USAGE_DYNAMIC:
+        return GL_DYNAMIC_DRAW
+    elif usage == BUFFER_USAGE_STREAM:
+        return GL_STREAM_DRAW
+
+cdef size_t c_index_format_get_size(IndexFormat format) nogil:
+    if format == INDEX_FORMAT_U8: 
+        return sizeof(uint8_t)
+    elif format == INDEX_FORMAT_U16: 
+        return sizeof(uint16_t)
+    elif format == INDEX_FORMAT_U32: 
+        return sizeof(uint32_t)
+
+cdef uint32_t c_index_format_to_gl(IndexFormat format) nogil:
+    if format == INDEX_FORMAT_U8:
+        return GL_UNSIGNED_BYTE
+    elif format == INDEX_FORMAT_U16:
+        return GL_UNSIGNED_SHORT
+    elif format == INDEX_FORMAT_U32:
+        return GL_UNSIGNED_INT
+
+cdef uint32_t c_shader_type_to_gl(ShaderType type) nogil:
+    if type == SHADER_TYPE_VERTEX:
+        return GL_VERTEX_SHADER
+    elif type == SHADER_TYPE_FRAGMENT:
+        return GL_FRAGMENT_SHADER
+
+cdef uint32_t c_vertex_comp_type_to_gl(VertexCompType type) nogil:
+    if type == VERTEX_COMP_TYPE_F32:
+        return GL_FLOAT
+    elif type == VERTEX_COMP_TYPE_I8:
+        return GL_BYTE
+    elif type == VERTEX_COMP_TYPE_U8:
+        return GL_UNSIGNED_BYTE
+    elif type == VERTEX_COMP_TYPE_I16:
+        return GL_SHORT
+    elif type == VERTEX_COMP_TYPE_U16:
+        return GL_UNSIGNED_SHORT
+
+cdef size_t c_vertex_comp_type_get_size(VertexCompType type) nogil:
+    if type == VERTEX_COMP_TYPE_F32:
+        return sizeof(float)
+    elif type == VERTEX_COMP_TYPE_I8:
+        return sizeof(int8_t)
+    elif type == VERTEX_COMP_TYPE_U8:
+        return sizeof(uint8_t)
+    elif type == VERTEX_COMP_TYPE_I16:
+        return sizeof(int16_t)
+    elif type == VERTEX_COMP_TYPE_U16:
+        return sizeof(uint16_t)
+
+cdef uint32_t c_texture_filter_to_gl(TextureFilter filter, bint mipmaps) nogil:
+    if mipmaps:
+        if filter == TEXTURE_FILTER_NEAREST:
+            return GL_NEAREST_MIPMAP_NEAREST
+        elif filter == TEXTURE_FILTER_LINEAR:
+            return GL_LINEAR_MIPMAP_LINEAR
+    else:
+        if filter == TEXTURE_FILTER_NEAREST:
+            return GL_NEAREST
+        elif filter == TEXTURE_FILTER_LINEAR:
+            return GL_LINEAR
+
+cdef uint32_t c_texture_wrap_to_gl(TextureWrap wrap) nogil:
+    if wrap == TEXTURE_WRAP_REPEAT:
+        return GL_REPEAT
+    elif wrap == TEXTURE_WRAP_MIRRORED_REPEAT:
+        return GL_MIRRORED_REPEAT
+    elif wrap == TEXTURE_WRAP_CLAMP_TO_EDGE:
+        return GL_CLAMP_TO_EDGE
+
+cdef void c_image_data_flip_x(uint16_t width, uint16_t height, uint8_t *data) nogil:
+    cdef:
+        uint32_t *data_ptr
+        size_t y
+        size_t src, dst
+        uint16_t left, right
+    data_ptr = <uint32_t *>data
+    for y in range(height):
+        left = 0
+        right = width - 1
+        while left < right:
+            src = y * width + left
+            dst = y * width + right
+            data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]
+            left += 1
+            right -= 1
+
+cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) nogil:
+    cdef:
+        uint32_t *data_ptr
+        size_t x
+        size_t src, dst
+        uint16_t top, bottom
+    data_ptr = <uint32_t *>data
+    for x in range(width):
+        top = 0
+        bottom = height - 1
+        while top < bottom:
+            src = top * width + x
+            dst = bottom * width + x
+            data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]
+            top += 1
+            bottom -= 1
 
 cdef class GraphicsManager:
-    
+
     def __cinit__(self):
-        self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
+        #self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
+        self.root_window = SDL_CreateWindow(
+            "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+            800, 600, SDL_WINDOW_OPENGL,
+        )
         self.root_context = SDL_GL_CreateContext(self.root_window)
         glewInit()
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
-        glEnable(GL_TEXTURE_2D)
 
-        self.windows = ItemSlotMap(sizeof(WindowC), ITEM_TYPE_WINDOW)
-        self.cameras_3d = ItemSlotMap(sizeof(CameraC), ITEM_TYPE_CAMERA_3D)
-        self.images = ItemSlotMap(sizeof(ImageC), ITEM_TYPE_IMAGE)
-        self.samplers = ItemSlotMap(sizeof(SamplerC), ITEM_TYPE_SAMPLER)
-        self.textures = ItemSlotMap(sizeof(TextureC), ITEM_TYPE_TEXTURE)
-        self.meshes = ItemSlotMap(sizeof(MeshC), ITEM_TYPE_MESH)
-        self.models = ItemSlotMap(sizeof(ModelC), ITEM_TYPE_MODEL)
-        self.model_batches = ItemSlotMap(sizeof(ModelBatchC), ITEM_TYPE_MODEL_BATCH)
-        self.shaders = ItemSlotMap(sizeof(ShaderC), ITEM_TYPE_SHADER)
-        self.programs = ItemSlotMap(sizeof(ProgramC), ITEM_TYPE_PROGRAM)
-        self.materials = ItemSlotMap(sizeof(MaterialC), ITEM_TYPE_MATERIAL)
-        self.nodes = ItemSlotMap(sizeof(NodeC), ITEM_TYPE_NODE)
-    
+        self.vertex_formats = ItemSlotMap(sizeof(VertexFormatC), RENDERER_ITEM_TYPE_VERTEX_FORMAT)
+        self.vertex_buffers = ItemSlotMap(sizeof(VertexBufferC), RENDERER_ITEM_TYPE_VERTEX_BUFFER)
+        self.index_buffers = ItemSlotMap(sizeof(IndexBufferC), RENDERER_ITEM_TYPE_INDEX_BUFFER)
+        self.shaders = ItemSlotMap(sizeof(ShaderC), RENDERER_ITEM_TYPE_SHADER)
+        self.programs = ItemSlotMap(sizeof(ProgramC), RENDERER_ITEM_TYPE_PROGRAM)
+        self.images = ItemSlotMap(sizeof(ImageC), RENDERER_ITEM_TYPE_IMAGE)
+        self.textures = ItemSlotMap(sizeof(TextureC), RENDERER_ITEM_TYPE_TEXTURE)
+        self.views = ItemSlotMap(sizeof(ViewC), RENDERER_ITEM_TYPE_VIEW)
+
     def __dealloc__(self):
+        self.vertex_formats = None
+        self.vertex_buffers = None
+        self.index_buffers = None
+        self.shaders = None
+        self.programs = None
+        self.images = None
+        self.textures = None
+        self.views = None
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
 
-    #Window
-    def window_create(self, int width, int height, bytes title):
+    cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *:
+        return <VertexFormatC *>self.vertex_formats.c_get_ptr(format)
+
+    cpdef Handle vertex_format_create(self, list comps) except *:
         cdef:
-            Handle window
-            WindowC *window_ptr
-            SDL_Window *sdl_window
-            int center = SDL_WINDOWPOS_CENTERED
-            int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-        
-        window = self.windows.c_create()
-        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        sdl_window = SDL_CreateWindow(title, center, center, width, height, flags)
-        window_ptr.id = SDL_GetWindowID(sdl_window)
-        window_ptr.width = width
-        window_ptr.height = height
-        window_ptr.title = title
-        window_ptr.title_len = len(title)
-        return window
-
-    def window_delete(self, Handle window):
-        cdef:
-            WindowC *window_ptr
-            SDL_Window *sdl_window
-
-        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        sdl_window = SDL_GetWindowFromID(window_ptr.id)
-        SDL_DestroyWindow(sdl_window)
-        window_ptr.id = 0
-        window_ptr.width = 0
-        window_ptr.height = 0
-        window_ptr.title = NULL
-        window_ptr.title_len = 0
-        self.windows.c_delete(window)
-
-    def window_clear(self):
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
-
-    def window_bind(self, Handle window):
-        cdef:
-            WindowC *window_ptr
-            SDL_Window *sdl_window
-
-        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        sdl_window = SDL_GetWindowFromID(window_ptr.id)
-        SDL_GL_MakeCurrent(sdl_window, self.root_context)
-        glViewport(0, 0, window_ptr.width, window_ptr.height)
-    
-    def window_unbind(self):
-        SDL_GL_MakeCurrent(self.root_window, self.root_context)
-        glViewport(0, 0, 1, 1)
-    
-    def window_swap_buffers(self, Handle window):
-        cdef:
-            WindowC *window_ptr
-            SDL_Window *sdl_window
-
-        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        sdl_window = SDL_GetWindowFromID(window_ptr.id)
-        SDL_GL_SetSwapInterval(0)
-        SDL_GL_SwapWindow(sdl_window)
-
-    def window_get_width(self, Handle window):
-        cdef WindowC *window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        return window_ptr.width
-
-    def window_get_height(self, Handle window):
-        cdef WindowC *window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        return window_ptr.height
-
-    def window_get_title(self, Handle window):
-        cdef WindowC *window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        return window_ptr.title
-    
-    def window_set_title(self, Handle window, bytes title):
-        cdef:
-            WindowC *window_ptr
-            SDL_Window *sdl_window
-            
-        window_ptr = <WindowC *>self.windows.c_get_ptr(window)
-        sdl_window = SDL_GetWindowFromID(window_ptr.id)
-        window_ptr.title = title
-        SDL_SetWindowTitle(sdl_window, window_ptr.title)
-
-    #Camera3d
-    def camera_create(self, 
-            float fovy, float aspect, float near, float far,
-            Vec3 position=Vec3(),
-            Vec3 target=Vec3(),
-            Vec3 forward=Vec3(0.0, 0.0, -1.0), 
-            Vec3 up=Vec3(0.0, 1.0, 0.0), 
-            Vec3 right=Vec3(1.0, 0.0, 0.0)):
-        cdef:
-            Handle camera
-            CameraC *camera_ptr
-        camera = self.cameras_3d.c_create()
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        self.camera_set_projection(camera, fovy, aspect, near, far)
-        Vec3.c_copy(&camera_ptr.forward, forward.ptr)
-        Vec3.c_copy(&camera_ptr.up, up.ptr)
-        Vec3.c_copy(&camera_ptr.right, right.ptr)
-        return camera
-
-    def camera_delete(self, Handle camera):
-        self.camera_set_projection(camera, 0.0, 0.0, 0.0, 0.0)
-        self.cameras_3d.c_delete(camera)
-
-    def camera_set_projection(self, Handle camera, float fovy, float aspect, float near, float far):
-        cdef CameraC *camera_ptr
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        camera_ptr.fovy = fovy
-        camera_ptr.aspect = aspect
-        camera_ptr.near = near
-        camera_ptr.far = far
-
-    def camera_get_projection(self, Handle camera):
-        cdef:
-            CameraC *camera_ptr
-            Mat4 projection = Mat4()
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Mat4.c_perspective(projection.ptr, camera_ptr.fovy, camera_ptr.aspect, camera_ptr.near, camera_ptr.far)
-        return projection
-    
-    def camera_get_position(self, Handle camera):
-        cdef:
-            CameraC *camera_ptr
-            Vec3 position = Vec3()
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Vec3.c_copy(position.ptr, &camera_ptr.position)
-        return position
-
-    def camera_set_position(self, Handle camera, Vec3 position=Vec3()):
-        cdef CameraC *camera_ptr
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Vec3.c_copy(&camera_ptr.position, position.ptr)
-
-    def camera_pan(self, Handle camera, Vec3 translation=Vec3()):
-        cdef CameraC *camera_ptr
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Vec3.c_add(&camera_ptr.position, &camera_ptr.position, translation.ptr)
-        Vec3.c_add(&camera_ptr.target, &camera_ptr.target, translation.ptr)
-        # TODO: this implemetation is completely wrong. In a pan, the camera does not move!
-
-    def camera_get_target(self, Handle camera):
-        cdef:
-            CameraC *camera_ptr
-            Vec3 target = Vec3()
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Vec3.c_copy(target.ptr, &camera_ptr.target)
-        return target
-
-    def camera_set_target(self, Handle camera, Vec3 target=Vec3()):
-        cdef CameraC *camera_ptr
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Vec3.c_copy(&camera_ptr.target, target.ptr)
-
-    def camera_get_view(self, Handle camera):
-        cdef:
-            CameraC *camera_ptr
-            Mat4 view = Mat4()
-        camera_ptr = <CameraC *>self.cameras_3d.c_get_ptr(camera)
-        Mat4.c_look_at(
-            view.ptr, 
-            &camera_ptr.position, 
-            &camera_ptr.target,
-            &camera_ptr.up,
-        )
-        return view
-
-    #Image    
-    def image_create(self, int width, int height):
-        cdef:
-            Handle image
-            ImageC *image_ptr
-        image = self.images.c_create()
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        image_ptr.width = width
-        image_ptr.height = height
-        image_ptr.pixels = <uint8_t *>calloc(height * width * 4, sizeof(uint8_t))
-        return image
-
-    def image_create_from_array(self, uint8_t[:, :, :] pixels):
-        cdef:
-            Handle image
-            ImageC *image_ptr
-        image = self.images.c_create()
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        image_ptr.width = pixels.shape[1]
-        image_ptr.height = pixels.shape[0]
-        image_ptr.pixels = &pixels[0, 0, 0]
-        return image
-
-    def image_delete(self, Handle image):
-        cdef ImageC *image_ptr
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        image_ptr.width = 0
-        image_ptr.height = 0
-        free(image_ptr.pixels)
-        image_ptr.pixels = NULL
-        self.images.c_delete(image)
-
-    def image_get_width(self, Handle image):
-        cdef ImageC *image_ptr
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        return image_ptr.width
-
-    def image_get_height(self, Handle image):
-        cdef ImageC *image_ptr
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        return image_ptr.height
-
-    def image_get_pixels(self, Handle image):
-        cdef:
-            ImageC *image_ptr
-            uint8_t[:, :, :] pixels
-            int w
-            int h
-
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        w = image_ptr.width
-        h = image_ptr.height
-        pixels = <uint8_t[:h, :w, :4]>image_ptr.pixels
-        return pixels
-
-    def image_set_pixels(self, Handle image, uint8_t[:, :, :] pixels):
-        cdef:
-            ImageC *image_ptr
-            int w
-            int h
-
-        image_ptr = <ImageC *>self.images.c_get_ptr(image)
-        w = image_ptr.width
-        h = image_ptr.height
-        if pixels.shape[0] != h or pixels.shape[1] != w or pixels.shape[2] != 4:
-            raise ValueError("Image: invalid pixel array dimensions")
-        image_ptr.pixels = &pixels[0, 0, 0]
-
-    #Sampler
-    def sampler_create(self, 
-            SamplerFilter mag_filter=SAMPLER_FILTER_LINEAR,
-            SamplerFilter min_filter=SAMPLER_FILTER_LINEAR,
-            SamplerWrap wrap_s=SAMPLER_WRAP_REPEAT,
-            SamplerWrap wrap_t=SAMPLER_WRAP_REPEAT,
-    ):
-        cdef:
-            Handle sampler
-            SamplerC *sampler_ptr
-        sampler = self.samplers.c_create()
-        sampler_ptr = <SamplerC *>self.samplers.c_get_ptr(sampler)
-        sampler_ptr.mag_filter = mag_filter
-        sampler_ptr.min_filter = min_filter
-        sampler_ptr.wrap_s = wrap_s
-        sampler_ptr.wrap_t = wrap_t
-        return sampler
-
-    def sampler_delete(self, Handle sampler):
-        cdef SamplerC *sampler_ptr
-        sampler_ptr = <SamplerC *>self.samplers.c_get_ptr(sampler)
-        sampler_ptr.mag_filter = SAMPLER_FILTER_LINEAR
-        sampler_ptr.min_filter = SAMPLER_FILTER_LINEAR
-        sampler_ptr.wrap_s = SAMPLER_WRAP_REPEAT
-        sampler_ptr.wrap_t = SAMPLER_WRAP_REPEAT
-        self.samplers.c_delete(sampler)
-    
-    #Texture
-    def texture_create(self, Handle sampler, Handle image):
-        cdef:
-            Handle texture
-            TextureC *texture_ptr
-        texture = self.textures.c_create()
-        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
-        glGenTextures(1, &texture_ptr.id)
-        texture_ptr.sampler = sampler
-        texture_ptr.image = image
-        return texture
-
-    def texture_delete(self, Handle texture):
-        cdef TextureC *texture_ptr
-        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
-        glDeleteTextures(1, &texture_ptr.id)
-        texture_ptr.id = 0
-        texture_ptr.sampler = 0
-        texture_ptr.image = 0
-        self.textures.c_delete(texture)
-    
-    def texture_bind(self, Handle texture):
-        cdef TextureC *texture_ptr
-        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.id)
-    
-    def texture_unbind(self):
-        glBindTexture(GL_TEXTURE_2D, 0)
-
-    def texture_upload(self, Handle texture, bint upload_sampler=True, bint upload_image=True):
-        cdef:
-            TextureC *texture_ptr
-            SamplerC *sampler_ptr
-            ImageC *image_ptr
-
-        texture_ptr = <TextureC *>self.textures.c_get_ptr(texture)
-        sampler_ptr = <SamplerC *>self.samplers.c_get_ptr(texture_ptr.sampler)
-        image_ptr = <ImageC *>self.images.c_get_ptr(texture_ptr.image)
-        if upload_sampler:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampler_ptr.mag_filter)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampler_ptr.min_filter)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sampler_ptr.wrap_s)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, sampler_ptr.wrap_t)
-        if upload_image:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.pixels)
-        
-    #Mesh
-    def mesh_create(self):
-        cdef:
-            Handle mesh
-            MeshC *mesh_ptr
-        mesh = self.meshes.c_create()
-        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
-        mesh_ptr.vertices_data = NULL
-        mesh_ptr.vertices_length = 0
-        mesh_ptr.indices_data = NULL
-        mesh_ptr.indices_length = 0
-        return mesh
-    
-    def mesh_delete(self, Handle mesh):
-        cdef MeshC *mesh_ptr
-        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
-        mesh_ptr.vertices_data = NULL
-        mesh_ptr.vertices_length = 0
-        mesh_ptr.indices_data = NULL
-        mesh_ptr.indices_length = 0
-        self.meshes.c_delete(mesh)
-
-    def mesh_set_vertices_data(self, Handle mesh, float[:] data):
-        cdef MeshC *mesh_ptr
-        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
-        mesh_ptr.vertices_data = &data[0]
-        mesh_ptr.vertices_length = data.shape[0]
-
-    def mesh_set_indices_data(self, Handle mesh, uint32_t[:] data):
-        cdef MeshC *mesh_ptr
-        mesh_ptr = <MeshC *>self.meshes.c_get_ptr(mesh)
-        mesh_ptr.indices_data = &data[0]
-        mesh_ptr.indices_length = data.shape[0]
-
-    #Model
-    def model_create(self, Handle mesh, Vec3 translation, Quat rotation, Vec3 scale):
-        cdef:
-            Handle model
-            ModelC *model_ptr
-        model = self.models.c_create()
-        model_ptr = <ModelC *>self.models.c_get_ptr(model)
-        model_ptr.mesh = mesh
-        memcpy(&model_ptr.translation[0], <Vec3C *>translation.ptr, sizeof(Vec3C))
-        memcpy(&model_ptr.rotation[0], <QuatC *>rotation.ptr, sizeof(QuatC))
-        memcpy(&model_ptr.scale[0], <Vec3C *>scale.ptr, sizeof(Vec3C))
-        return model
-    
-    def model_delete(self, Handle model):
-        cdef ModelC *model_ptr
-        model_ptr = <ModelC *>self.models.c_get_ptr(model)
-        model_ptr.mesh = 0
-        memset(model_ptr.translation, 0, sizeof(Vec3C))
-        memset(model_ptr.rotation, 0, sizeof(QuatC))
-        memset(model_ptr.scale, 0, sizeof(Vec3C))
-        self.models.c_delete(model)
-
-    #ModelBatch
-    def model_batch_create(self, Handle[:] models):
-        cdef:
-            Handle model_batch
-            ModelBatchC *model_batch_ptr
-            ModelC *model_ptr
-            MeshC *mesh_ptr
+            Handle format
+            VertexFormatC *format_ptr
+            size_t num_comps
             size_t i
-            float *v_ptr
-            uint32_t *i_ptr
+            tuple comp_tuple
+            VertexCompC *comp
             size_t offset
-
-        model_batch = self.model_batches.c_create()
-        model_batch_ptr = <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
-        glGenVertexArrays(1, &model_batch_ptr.vao_id)
-        glGenBuffers(1, &model_batch_ptr.vbo_id)
-        glGenBuffers(1, &model_batch_ptr.ibo_id)
-        glGenBuffers(1, &model_batch_ptr.tbo_id)
-        glGenTextures(1, &model_batch_ptr.tbo_tex_id)
-
-        model_batch_ptr.num_models = models.shape[0]
-        model_batch_ptr.vertices_length = 0
-        model_batch_ptr.indices_length = 0
-        for i in range(model_batch_ptr.num_models):
-            model_ptr = <ModelC *>self.models.c_get_ptr(models[i])
-            mesh_ptr = <MeshC *>self.meshes.c_get_ptr(model_ptr.mesh)
-            model_batch_ptr.vertices_length += mesh_ptr.vertices_length
-            model_batch_ptr.indices_length += mesh_ptr.indices_length
-
-        model_batch_ptr.vertices_data = <float *>calloc(model_batch_ptr.vertices_length, sizeof(float))
-        if model_batch_ptr.vertices_data == NULL:
-            raise MemoryError("Model Batch: cannot allocate vertices data")
-        v_ptr = model_batch_ptr.vertices_data
-        model_batch_ptr.indices_data = <uint32_t *>calloc(model_batch_ptr.indices_length, sizeof(uint32_t))
-        if model_batch_ptr.indices_data == NULL:
-            raise MemoryError("Model Batch: cannot allocate indices data")
-        i_ptr = model_batch_ptr.indices_data
-
-        for i in range(model_batch_ptr.num_models):
-            model_ptr = <ModelC *>self.models.c_get_ptr(models[i])
-            mesh_ptr = <MeshC *>self.meshes.c_get_ptr(model_ptr.mesh)
-            memcpy(v_ptr, mesh_ptr.vertices_data, mesh_ptr.vertices_length * sizeof(float))
-            memcpy(i_ptr, mesh_ptr.indices_data, mesh_ptr.indices_length * sizeof(uint32_t))
-            v_ptr += mesh_ptr.vertices_length * sizeof(float)
-            i_ptr += mesh_ptr.indices_length * sizeof(uint32_t)
-
-        #Fill the batch's single vbo with the interleaved data
-        #Bind each attribute for the corresponding vao (matching format)
-        glBindVertexArray(model_batch_ptr.vao_id)
-        glBindBuffer(GL_ARRAY_BUFFER, model_batch_ptr.vbo_id)
-        glBufferData(GL_ARRAY_BUFFER, model_batch_ptr.vertices_length * sizeof(float), model_batch_ptr.vertices_data, GL_STATIC_DRAW)
+            size_t comp_type_size
+        num_comps = len(comps)
+        if num_comps > 16:
+            raise ValueError("VertexFormat: maximum number of vertex comps exceeded")
+        format = self.vertex_formats.c_create()
+        format_ptr = self.vertex_format_get_ptr(format)
         offset = 0
-        glVertexAttribPointer(0, 3, GL_FLOAT, False, 8 * sizeof(float), <void *>offset)
-        glEnableVertexAttribArray(0)
-        offset += 3 * sizeof(float)
-        glVertexAttribPointer(1, 2, GL_FLOAT, False, 8 * sizeof(float), <void *>offset)
-        glEnableVertexAttribArray(1)
-        offset += 2 * sizeof(float)
-        glVertexAttribPointer(2, 3, GL_FLOAT, False, 8 * sizeof(float), <void *>offset)
-        glEnableVertexAttribArray(2)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
-        glBindVertexArray(0)
+        for i in range(num_comps):
+            comp_tuple = <tuple>comps[i]
+            comp = &format_ptr.comps[i]
+            comp.attribute = <Attribute>comp_tuple[0]
+            comp.type = <VertexCompType>comp_tuple[1]
+            comp.count = <size_t>comp_tuple[2]
+            comp.normalized = <bint>comp_tuple[3]
+            comp.offset = offset
+            if comp.type == VERTEX_COMP_TYPE_F32: comp_type_size = 4
+            elif comp.type == VERTEX_COMP_TYPE_I8: comp_type_size = 1
+            elif comp.type == VERTEX_COMP_TYPE_U8: comp_type_size = 1
+            elif comp.type == VERTEX_COMP_TYPE_I16: comp_type_size = 2
+            elif comp.type == VERTEX_COMP_TYPE_U16: comp_type_size = 2
+            offset += comp.count * comp_type_size
+        format_ptr.count = num_comps
+        format_ptr.stride = offset
+        return format
 
-        #Fill the tbo with per-mesh data
+    cpdef void vertex_format_delete(self, Handle format) except *:
+        cdef VertexFormatC *format_ptr
+        format_ptr = self.vertex_format_get_ptr(format)
+        self.vertex_formats.c_delete(format)
+
+    cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *:
+        return <VertexBufferC *>self.vertex_buffers.c_get_ptr(buffer)
+
+    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage) except *:
         cdef:
-            Mat4C transform
-            Mat4C rotation_mat
-            Vec3C *translation
-            QuatC *rotation
-            Vec3C *scale
-            Mat4C *t_ptr
+            Handle buffer
+            VertexBufferC *buffer_ptr
+        buffer = self.vertex_buffers.c_create()
+        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
+        glGenBuffers(1, &buffer_ptr.gl_id)
+        if buffer_ptr.gl_id == 0:
+            raise ValueError("VertexBuffer: failed to generate buffer id")
+        buffer_ptr.format = format
+        buffer_ptr.usage = usage
+        buffer_ptr.size = 0
+        return buffer
 
-        model_batch_ptr.transform_length = model_batch_ptr.num_models * 16
-        model_batch_ptr.transform_data = <float *>calloc(model_batch_ptr.transform_length, sizeof(float))
-        if model_batch_ptr.transform_data == NULL:
-            raise MemoryError("Model Batch: cannot allocate transform data")
+    cpdef void vertex_buffer_delete(self, Handle buffer) except *:
+        cdef:
+            VertexBufferC *buffer_ptr
+            uint32_t gl_usage
+        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
+        glBufferData(GL_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage)
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glDeleteBuffers(1, &buffer_ptr.gl_id)
+        self.vertex_buffers.c_delete(buffer)
+
+    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *:
+        cdef:
+            VertexBufferC *buffer_ptr
+            size_t data_size
+            uint8_t *data_ptr
+            uint32_t gl_usage
+        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
+        data_size = data.shape[0]
+        data_ptr = &data[0]
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        if buffer_ptr.size == data_size:#use sub data instead
+            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr)
+        else:
+            gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
+            glBufferData(GL_ARRAY_BUFFER, data_size, data_ptr, gl_usage)
+            buffer_ptr.size = data_size
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
         
-        t_ptr = <Mat4C *>model_batch_ptr.transform_data
-        for i in range(model_batch_ptr.num_models):
-            model_ptr = <ModelC *>self.models.c_get_ptr(models[i])
-            translation = &model_ptr.translation
-            rotation = &model_ptr.rotation
-            scale = &model_ptr.scale
-            Mat4.c_from_translation(&transform, translation)
-            Mat4.c_from_quat(&rotation_mat, rotation)
-            Mat4.c_dot(&transform, &transform, &rotation_mat)
-            Mat4.c_scale(&transform, &transform, scale)
-            memcpy(t_ptr, &transform, sizeof(Mat4C))
-            t_ptr += 1
-
-        glBindBuffer(GL_TEXTURE_BUFFER, model_batch_ptr.tbo_id)
-        glBufferData(GL_TEXTURE_BUFFER, model_batch_ptr.transform_length * sizeof(float), model_batch_ptr.transform_data, GL_STATIC_DRAW)
-        glBindBuffer(GL_TEXTURE_BUFFER, 0)
-        return model_batch
-
-    def model_batch_delete(self, Handle model_batch):
-        cdef ModelBatchC *model_batch_ptr
-        model_batch_ptr = <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
-        glDeleteVertexArrays(1, &model_batch_ptr.vao_id)
-        model_batch_ptr.vao_id = 0
-        glDeleteBuffers(1, &model_batch_ptr.vbo_id)
-        model_batch_ptr.vbo_id = 0
-        self.model_batches.c_delete(model_batch)
-
-    def model_batch_render(self, Handle model_batch):
-        cdef ModelBatchC *model_batch_ptr
-        model_batch_ptr = <ModelBatchC *>self.model_batches.c_get_ptr(model_batch)
-        glEnable(GL_DEPTH_TEST)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
-        glBindVertexArray(model_batch_ptr.vao_id)
-        glBindTexture(GL_TEXTURE_BUFFER, model_batch_ptr.tbo_tex_id)
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, model_batch_ptr.tbo_id)
-        glDrawElements(GL_TRIANGLES, model_batch_ptr.indices_length, GL_UNSIGNED_INT, model_batch_ptr.indices_data)
-        #glDrawArrays(GL_TRIANGLES, 0, model_batch_ptr.vertices_length / 8)
-        glBindTexture(GL_TEXTURE_BUFFER, 0)
-        glBindVertexArray(0)
+    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *:
+        cdef:
+            VertexBufferC *buffer_ptr
+            size_t data_size
+            uint8_t *data_ptr
+        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
+        data_size = data.shape[0]
+        data_ptr = &data[0]
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        if offset + data_size > buffer_ptr.size:
+            raise ValueError("VertexBuffer: attempting to write out of bounds")
+        else:
+            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr)
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
     
-    #Shader
-    def shader_create(self, ShaderType type, bytes source):
+    cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *:
+        return <IndexBufferC *>self.index_buffers.c_get_ptr(buffer)
+
+    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage) except *:
+        cdef:
+            Handle buffer
+            IndexBufferC *buffer_ptr
+        buffer = self.index_buffers.c_create()
+        buffer_ptr = self.index_buffer_get_ptr(buffer)
+        glGenBuffers(1, &buffer_ptr.gl_id)
+        if buffer_ptr.gl_id == 0:
+            raise ValueError("IndexBuffer: failed to generate buffer id")
+        buffer_ptr.format = format
+        buffer_ptr.usage = usage
+        buffer_ptr.size = 0
+        return buffer
+
+    cpdef void index_buffer_delete(self, Handle buffer) except *:
+        cdef:
+            IndexBufferC *buffer_ptr
+            uint32_t gl_usage
+        buffer_ptr = self.index_buffer_get_ptr(buffer)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+        glDeleteBuffers(1, &buffer_ptr.gl_id)
+        self.index_buffers.c_delete(buffer)
+    
+    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *:
+        cdef:
+            IndexBufferC *buffer_ptr
+            size_t data_size
+            uint8_t *data_ptr
+            uint32_t gl_usage
+        buffer_ptr = self.index_buffer_get_ptr(buffer)
+        data_size = data.shape[0]
+        data_ptr = &data[0]
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        if buffer_ptr.size == data_size:#use sub data instead
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr)
+        else:
+            gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage)
+            buffer_ptr.size = data_size
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+        
+    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *:
+        cdef:
+            IndexBufferC *buffer_ptr
+            size_t data_size
+            uint8_t *data_ptr
+        buffer_ptr = self.index_buffer_get_ptr(buffer)
+        data_size = data.shape[0]
+        data_ptr = &data[0]
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        if offset + data_size > buffer_ptr.size:
+            raise ValueError("IndexBuffer: attempting to write out of bounds")
+        else:
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+
+    cdef void _index_buffer_draw(self, Handle buffer) except *:
+        cdef:
+            IndexBufferC *buffer_ptr
+            size_t format_size
+            uint32_t format_gl
+        buffer_ptr = self.index_buffer_get_ptr(buffer)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        format_size = c_index_format_get_size(buffer_ptr.format)    
+        format_gl = c_index_format_to_gl(buffer_ptr.format)
+        glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+
+    cdef ShaderC *shader_get_ptr(self, Handle shader) except *:
+        return <ShaderC *>self.shaders.c_get_ptr(shader)
+
+    cpdef Handle shader_create(self, ShaderType type, bytes source) except *:
         cdef:
             Handle shader
             ShaderC *shader_ptr
-        shader = self.shaders.c_create()
-        shader_ptr = <ShaderC *>self.shaders.c_get_ptr(shader)
-
-        if type == SHADER_TYPE_VERTEX:
-            shader_ptr.id = glCreateShader(GL_VERTEX_SHADER)
-        elif type == SHADER_TYPE_FRAGMENT:
-            shader_ptr.id = glCreateShader(GL_FRAGMENT_SHADER)
-        else:
-            raise ValueError("Shader: invalid type")
-        shader_ptr.type = type
-        shader_ptr.source = source
-        shader_ptr.source_length = len(source)
-        return shader
-    
-    def shader_delete(self, Handle shader):
-        cdef ShaderC *shader_ptr
-        shader_ptr = <ShaderC *>self.shaders.c_get_ptr(shader)
-        glDeleteShader(shader_ptr.id)
-        shader_ptr.id = 0
-        self.shaders.c_delete(shader)
-
-    def shader_compile(self, Handle shader):
-        cdef:
-            ShaderC *shader_ptr
             uint32_t gl_id
+            char *source_ptr
+            size_t source_length
             uint32_t compile_status
             char *log
             int log_length
-
-        shader_ptr = <ShaderC *>self.shaders.c_get_ptr(shader)
-        gl_id = shader_ptr.id
-        glShaderSource(gl_id, 1, &shader_ptr.source, <GLint*>&shader_ptr.source_length)
+            uint32_t gl_type
+        shader = self.shaders.c_create()
+        shader_ptr = self.shader_get_ptr(shader)
+        gl_type = c_shader_type_to_gl(type)
+        gl_id = glCreateShader(gl_type)
+        source_ptr = source
+        source_length = len(source)
+        glShaderSource(gl_id, 1, &source_ptr, <GLint*>&source_length)
         glCompileShader(gl_id)
         glGetShaderiv(gl_id, GL_COMPILE_STATUS, <GLint*>&compile_status)
         glGetShaderiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length)
@@ -553,112 +346,338 @@ cdef class GraphicsManager:
             if log == NULL:
                 raise MemoryError("Shader: could not allocate memory for compile error")
             glGetShaderInfoLog(gl_id, log_length, NULL, log)
-            raise ValueError("Shader: failed to compile:\n{0}".format(log))
-
-    #Program
-    def program_create(self, Handle vs, Handle fs):
+            raise ValueError("Shader: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
+        shader_ptr.gl_id = gl_id
+        shader_ptr.type = type
+        return shader
+    
+    cpdef Handle shader_create_from_file(self, ShaderType type, bytes file_path) except *:
         cdef:
-            Handle program
+            Handle shader
+            object in_file
+            bytes source
+        in_file = open(file_path, "rb")
+        source = in_file.read()
+        in_file.close()
+        shader = self.shader_create(type, source)
+        return shader
+
+    cpdef void shader_delete(self, Handle shader) except *:
+        cdef:
+            ShaderC *shader_ptr
+        shader_ptr = self.shader_get_ptr(shader)
+        glDeleteShader(shader_ptr.gl_id)
+        self.shaders.c_delete(shader)
+
+    cdef ProgramC *program_get_ptr(self, Handle program) except *:
+        return <ProgramC *>self.programs.c_get_ptr(program)
+
+    cpdef Handle program_create(self, Handle vertex, Handle fragment) except *:
+        cdef:
             ProgramC *program_ptr
         program = self.programs.c_create()
-        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
-        program_ptr.id = glCreateProgram()
-        program_ptr.vs = vs
-        program_ptr.fs = fs
+        program_ptr = self.program_get_ptr(program)
+        program_ptr.gl_id = glCreateProgram()
+        program_ptr.vertex = vertex
+        program_ptr.fragment = fragment
+        self._program_compile(program)
+        self._program_setup_attributes(program)
+        self._program_setup_uniforms(program)
         return program
-    
-    def program_delete(self, Handle program):
-        cdef ProgramC *program_ptr
-        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
-        glDeleteProgram(program_ptr.id)
-        program_ptr.id = 0
-        self.programs.c_delete(program)
 
-    def program_bind(self, Handle program):
-        cdef ProgramC *program_ptr
-        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
-        glUseProgram(program_ptr.id)
-
-    def program_unbind(self):
-        glUseProgram(0)
-    
-    def program_compile(self, Handle program):
+    cpdef void program_delete(self, Handle program) except *:
         cdef:
             ProgramC *program_ptr
-            ShaderC *vs
-            ShaderC *fs
+        program_ptr = self.program_get_ptr(program)
+        glDeleteProgram(program_ptr.gl_id)
+        self.programs.c_delete(program)
+
+    cdef void _program_compile(self, Handle program) except *:
+        cdef:
+            ProgramC *program_ptr
+            ShaderC *vertex_ptr
+            ShaderC *fragment_ptr
             uint32_t gl_id
             uint32_t link_status
             char *log
             int log_length
-
-            int max_u_name_length
-            int u_name_length
-            int u_size
-            size_t i
-            GLenum u_type
-            char *u_name
-            UniformC *info
-            dict uniform_map
-
-        #Compile OpenGL program object
-        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
-        gl_id = program_ptr.id
-        vs = <ShaderC *>self.shaders.c_get_ptr(program_ptr.vs)
-        fs = <ShaderC *>self.shaders.c_get_ptr(program_ptr.fs)
-        glAttachShader(gl_id, vs.id)
-        glAttachShader(gl_id, fs.id)
+        program_ptr = self.program_get_ptr(program)
+        vertex_ptr = self.shader_get_ptr(program_ptr.vertex)
+        fragment_ptr = self.shader_get_ptr(program_ptr.fragment)
+        gl_id = program_ptr.gl_id
+        glAttachShader(gl_id, vertex_ptr.gl_id)
+        glAttachShader(gl_id, fragment_ptr.gl_id)
         glLinkProgram(gl_id)
         glGetProgramiv(gl_id, GL_LINK_STATUS, <GLint*>&link_status)
         glGetProgramiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length)
         if not link_status:
             log = <char*>malloc(log_length * sizeof(char))
             glGetProgramInfoLog(gl_id, log_length, NULL, log)
-            raise ValueError("Program: failed to compile:\n{0}".format(log))
+            raise ValueError("Program: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
+
+    cdef void _program_setup_attributes(self, Handle program) except *:
+        print("setup attributes")
+        cdef:
+            ProgramC *program_ptr
+            uint32_t gl_id
+            size_t i
+            char *a_name
+            int a_loc
+            int num_attributes = 0
+        program_ptr = self.program_get_ptr(program)
+        gl_id = program_ptr.gl_id
+        program_ptr.num_attributes = 0
+        for i in range(ATTRIBUTE_COUNT):
+            a_name = attribute_names[i]
+            a_loc = glGetAttribLocation(gl_id, a_name)
+            if a_loc != -1:
+                program_ptr.attributes[program_ptr.num_attributes] = <Attribute>i
+                program_ptr.num_attributes += 1
+                program_ptr.attribute_locations[i] = a_loc
+        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTES, &num_attributes)
+        if num_attributes != program_ptr.num_attributes:
+            raise ValueError("Program: non-standard attribute names present in shader code")
         
-        #Setup uniform dict mapping
-        uniform_map = {}
-        glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORMS, <int *>&program_ptr.num_uniforms)
-        glGetProgramiv(program_ptr.id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_u_name_length)
-        #print("max_len", max_u_name_length)
-        if program_ptr.num_uniforms > 16:
-            raise ValueError("Program: > 16 uniforms is not supported")
-        for i in range(program_ptr.num_uniforms):
-            u_name = <char *>calloc(max_u_name_length, sizeof(char))
-            if u_name == NULL:
-                raise MemoryError("Program: cannot allocate uniform name")
-            glGetActiveUniform(program_ptr.id, i, max_u_name_length, &u_name_length, &u_size, &u_type, u_name);
-            info = &program_ptr.uniform_info[i]
-            info.index = glGetUniformLocation(program_ptr.id, u_name)
-            info.type = <MathType>u_type
-            info.size = u_size
-            uniform_map[u_name] = i
-        program_ptr.uniform_map = <PyObject *>uniform_map
-        Py_XINCREF(program_ptr.uniform_map)#TODO: need decompile decref equivalent
-    
-    def program_set_uniform(self, Handle program, bytes name, value):
+    cdef void _program_setup_uniforms(self, Handle program) except *:
+        print("setup uniforms")
+
+    cdef void _program_bind_attributes(self, Handle program, Handle buffer) except *:
+        cdef:
+            ProgramC *program_ptr
+            VertexBufferC *buffer_ptr
+            VertexFormatC *format_ptr
+            VertexCompC *comp_ptr
+            size_t i
+            uint32_t comp_type_gl
+            size_t comp_type_size
+            size_t comp_offset
+            size_t a_loc
+            Attribute attrib
+        program_ptr = self.program_get_ptr(program)
+        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        format_ptr = self.vertex_format_get_ptr(buffer_ptr.format)
+        for i in range(format_ptr.count):
+            comp_ptr = &format_ptr.comps[i]
+            attrib = comp_ptr.attribute
+            a_loc = program_ptr.attribute_locations[<size_t>attrib]
+            comp_type_gl = c_vertex_comp_type_to_gl(comp_ptr.type)
+            comp_type_size = c_vertex_comp_type_get_size(comp_ptr.type)
+            comp_offset = comp_ptr.offset
+            glVertexAttribPointer(
+                a_loc,
+                comp_ptr.count, 
+                comp_type_gl, 
+                comp_ptr.normalized, 
+                format_ptr.stride,
+                <void *>comp_offset,
+            )
+            glEnableVertexAttribArray(a_loc)
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+    cdef void _program_unbind_attributes(self, Handle program) except *:
         cdef:
             ProgramC *program_ptr
             size_t i
-            UniformC *info
-            uint32_t type
-        
-        program_ptr = <ProgramC *>self.programs.c_get_ptr(program)
-        i = (<dict>program_ptr.uniform_map)[name]
-        info = &program_ptr.uniform_info[i]
-        if info.type == MATH_TYPE_FLOAT:
-            glUniform1f(info.index, <float>value)
-        elif info.type == MATH_TYPE_VEC2:
-            glUniform2fv(info.index, 1, <float *>(<Vec2>value).ptr)
-        elif info.type == MATH_TYPE_VEC3:
-            glUniform3fv(info.index, 1, <float *>(<Vec3>value).ptr)
-        elif info.type == MATH_TYPE_VEC4:
-            glUniform4fv(info.index, 1, <float *>(<Vec4>value).ptr)
-        elif info.type == MATH_TYPE_MAT2:
-            glUniformMatrix2fv(info.index, 1, False, <float *>(<Mat2>value).ptr)
-        elif info.type == MATH_TYPE_MAT3:
-            glUniformMatrix3fv(info.index, 1, False, <float *>(<Mat3>value).ptr)
-        elif info.type == MATH_TYPE_MAT4:
-            glUniformMatrix4fv(info.index, 1, False, <float *>(<Mat4>value).ptr)
+            size_t a_loc
+            Attribute attrib
+        program_ptr = self.program_get_ptr(program)
+        for i in range(program_ptr.num_attributes):
+            attrib = program_ptr.attributes[i]
+            a_loc = program_ptr.attribute_locations[<size_t>attrib]
+            glDisableVertexAttribArray(a_loc)
 
-    #Material
+    cdef ImageC *image_get_ptr(self, Handle image) except *:
+        return <ImageC *>self.images.c_get_ptr(image)
+
+    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=None) except *:
+        cdef:
+            Handle image
+            ImageC *image_ptr
+        if width == 0:
+            raise ValueError("Image: width cannot be zero pixels")
+        if height == 0:
+            raise ValueError("Image: height cannot be zero pixels")
+        image = self.images.c_create()
+        image_ptr = self.image_get_ptr(image)
+        image_ptr.width = width
+        image_ptr.height = height
+        image_ptr.data_size = <uint64_t>width * <uint64_t>height * 4
+        image_ptr.data = <uint8_t *>calloc(image_ptr.data_size, sizeof(uint8_t))
+        if image_ptr.data == NULL:
+            raise MemoryError("Image: cannot allocate memory for data")
+        self.image_set_data(image, data)
+        return image
+
+    cpdef Handle image_create_from_file(self, bytes file_path, bint flip_x=False, bint flip_y=False) except *:
+        cdef:
+            Handle image
+            SDL_Surface *surface
+            SDL_Surface *converted_surface
+            uint16_t width
+            uint16_t height
+            size_t data_size
+            size_t left, right, top, bottom
+            size_t x, y, z
+            size_t src, dst
+            uint8_t *data_ptr
+            uint8_t[:] data
+        surface = IMG_Load(file_path)
+        if surface == NULL:
+            raise ValueError("Image: cannot load from path")
+        converted_surface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0)
+        if converted_surface == NULL:
+            raise ValueError("Image: cannot convert to RGBA format")
+        width = converted_surface.w
+        height = converted_surface.h
+        data_size = width * height * 4
+        data_ptr = <uint8_t *>converted_surface.pixels
+        data = <uint8_t[:data_size]>data_ptr
+        if flip_x:
+            c_image_data_flip_x(width, height, data_ptr)
+        if not flip_y:#NOT actually flips the data to match OpenGL coordinate system
+            c_image_data_flip_y(width, height, data_ptr)
+        image = self.image_create(width, height, data)
+        SDL_FreeSurface(surface)
+        SDL_FreeSurface(converted_surface)
+        return image
+    
+    cpdef void image_delete(self, Handle image) except *:
+        cdef:
+            ImageC *image_ptr
+        image_ptr = self.image_get_ptr(image)
+        free(image_ptr.data)
+        self.images.c_delete(image)
+
+    cpdef void image_set_data(self, Handle image, uint8_t[:] data=None) except *:
+        cdef:
+            ImageC *image_ptr
+        image_ptr = self.image_get_ptr(image)
+        if data != None:
+            if data.shape[0] != image_ptr.data_size:
+                raise ValueError("Image: invalid data size")
+            memcpy(image_ptr.data, &data[0], image_ptr.data_size)
+        else:
+            memset(image_ptr.data, 0, image_ptr.data_size)
+
+    cpdef uint16_t image_get_width(self, Handle image) except *:
+        cdef:
+            ImageC *image_ptr
+        image_ptr = self.image_get_ptr(image)
+        return image_ptr.width
+
+    cpdef uint16_t image_get_height(self, Handle image) except *:
+        cdef:
+            ImageC *image_ptr
+        image_ptr = self.image_get_ptr(image)
+        return image_ptr.height
+
+    cpdef uint8_t[:] image_get_data(self, Handle image) except *:
+        cdef:
+            ImageC *image_ptr
+        image_ptr = self.image_get_ptr(image)
+        return <uint8_t[:image_ptr.data_size]>image_ptr.data
+
+    cdef TextureC *texture_get_ptr(self, Handle texture) except *:
+        return <TextureC *>self.textures.c_get_ptr(texture)
+
+    cpdef Handle texture_create(self, bint mipmaps=True, TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, TextureWrap wrap_t=TEXTURE_WRAP_REPEAT) except *:
+        cdef:
+            Handle texture
+            TextureC *texture_ptr
+        texture = self.textures.c_create()
+        texture_ptr = self.texture_get_ptr(texture)
+        glGenTextures(1, &texture_ptr.gl_id)
+        self.texture_set_parameters(texture, mipmaps, filter, wrap_s, wrap_t)
+        return texture
+
+    cpdef void texture_delete(self, Handle texture) except *:
+        cdef:
+            TextureC *texture_ptr
+        texture_ptr = self.texture_get_ptr(texture)
+        glDeleteTextures(1, &texture_ptr.gl_id)
+        self.textures.c_delete(texture)
+    
+    cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=True, TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, TextureWrap wrap_t=TEXTURE_WRAP_REPEAT) except *:
+        cdef:
+            TextureC *texture_ptr
+        texture_ptr = self.texture_get_ptr(texture)
+        texture_ptr.mipmaps = mipmaps
+        texture_ptr.filter = filter
+        texture_ptr.wrap_s = wrap_s
+        texture_ptr.wrap_t = wrap_t
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s))	
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t))
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps))
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, mipmaps))
+        glBindTexture(GL_TEXTURE_2D, 0)
+    
+    cpdef void texture_set_image(self, Handle texture, Handle image) except *:
+        cdef:
+            TextureC *texture_ptr
+            ImageC *image_ptr
+        texture_ptr = self.texture_get_ptr(texture)
+        image_ptr = self.image_get_ptr(image)
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.data)
+        if texture_ptr.mipmaps:
+            glGenerateMipmap(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, 0)
+
+    cdef ViewC *view_get_ptr(self, Handle view) except *:
+        return <ViewC *>self.views.c_get_ptr(view)
+
+    cpdef Handle view_create(self) except *:
+        cdef:
+            Handle view
+            ViewC *view_ptr
+        view = self.views.c_create()
+        view_ptr = self.view_get_ptr(view)
+        return view
+
+    cpdef void view_delete(self, Handle view) except *:
+        self.views.c_delete(view)
+
+    cpdef void view_set_clear_flags(self, Handle view, uint32_t clear_flags) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.clear_flags = clear_flags
+
+    cpdef void view_set_clear_color(self, Handle view, Color color) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.view_get_ptr(view)
+        #view_ptr.clear_color = color.ptr
+
+    cpdef void view_set_clear_depth(self, Handle view, float depth) except *: pass
+    cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *: pass
+
+    cpdef void update(self) except *:
+        cdef:
+            ProgramC *program_ptr
+            VertexBufferC *vbo_ptr
+            IndexBufferC *ibo_ptr
+            TextureC *texture_ptr
+
+        program_ptr = <ProgramC *>self.programs.items.c_get_ptr(0)
+        vbo_ptr = <VertexBufferC *>self.vertex_buffers.items.c_get_ptr(0)
+        ibo_ptr = <IndexBufferC *>self.index_buffers.items.c_get_ptr(0)
+        texture_ptr = <TextureC *>self.textures.items.c_get_ptr(0)
+
+        glClearColor(0.2, 0.2, 0.2, 1.0)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glViewport(0, 0, 800, 600)
+
+        glUseProgram(program_ptr.gl_id)
+
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+        self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
+        self._index_buffer_draw(ibo_ptr.handle)
+        self._program_unbind_attributes(program_ptr.handle)
+        glBindTexture(GL_TEXTURE_2D, 0)
+        glUseProgram(0)
+
+        SDL_GL_SetSwapInterval(0)
+        SDL_GL_SwapWindow(self.root_window)

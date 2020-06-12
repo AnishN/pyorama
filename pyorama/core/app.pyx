@@ -11,13 +11,14 @@ cdef class App:
         py_atexit.register(App.quit, self)
         SDL_Init(SDL_INIT_EVERYTHING)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
-        #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
-        #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3)
+        #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
+        #SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0)
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1)
+        #SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
         #SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)
         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
         
@@ -27,9 +28,6 @@ cdef class App:
         self.current_time = self.c_get_current_time()
         self.previous_time = self.current_time
         self.is_running = True
-        self.assets = AssetManager()
-        self.graphics = GraphicsManager()
-        self.events = EventManager()
 
     def quit(self):
         #Tries to undo state changes from c_init in reverse order

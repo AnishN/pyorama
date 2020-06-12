@@ -1,4 +1,4 @@
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension, find_packages, find_namespace_packages
 from Cython.Build import cythonize
 import numpy as np
 import os
@@ -32,8 +32,6 @@ directives = {
     "cdivision": True,
     "nonecheck": False,
     "language_level": "3",
-    #"c_string_type": "unicode",
-    #"c_string_encoding": "utf-8",
 }
 
 if __name__ == "__main__":
@@ -69,18 +67,29 @@ if __name__ == "__main__":
         compiler_directives=directives,
         quiet=quiet
     )
+    
+    #setup all data files
+    data_files = {}
+    for path, dirs, file_names in os.walk("./resources"):
+        if file_names != []:
+            data_files[path] = file_names
+
     setup(
         name="pyorama",
-        packages=find_packages(),
+        description="A performant game engine written in cython.",
         version="0.0.2",
         license="MIT",
-        description="A performant game engine written in cython.",
+        url="https://github.com/AnishN/pyorama",
+        project_urls={
+            "Source Code": "https://github.com/AnishN/pyorama",
+        },
+        #download_url="https://github.com/AnishN/pyorama/archive/v0.0.2.tar.gz",
         author="Anish Narayanan",
         author_email="anish.narayanan32@gmail.com",
-        url="https://github.com/AnishN/pyorama",
-        download_url="https://github.com/AnishN/pyorama/archive/v0.0.2.tar.gz",
+        install_requires=["cython"],
+        packages=find_packages(),
+        package_data=data_files,
         keywords=["game", "2D", "3D", "rendering", "cython", "performance"],
-        install_requires=[],
         classifiers=[
             "Development Status :: 3 - Alpha",
             "Intended Audience :: Developers",
