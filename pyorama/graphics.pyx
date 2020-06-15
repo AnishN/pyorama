@@ -649,7 +649,7 @@ cdef class GraphicsManager:
         cdef:
             ViewC *view_ptr
         view_ptr = self.view_get_ptr(view)
-        #view_ptr.clear_color = color.ptr
+        view_ptr.clear_color = color.data
 
     cpdef void view_set_clear_depth(self, Handle view, float depth) except *: pass
     cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *: pass

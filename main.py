@@ -2,7 +2,6 @@ import sys
 import numpy as np
 from pyorama.core.app import App
 from pyorama.graphics import *
-#from pyorama.math3d.mat2 import Mat2
 from pyorama.math3d.mat2 import Mat2
 
 class Game(App):

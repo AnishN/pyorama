@@ -1,15 +1,5 @@
 from pyorama.libs.c cimport *
-
-ctypedef struct ColorC:
-    uint8_t r
-    uint8_t g
-    uint8_t b
-    uint8_t a
-ctypedef struct FloatColorC:
-    float r
-    float b
-    float g
-    float a
+from pyorama.math3d.common cimport *
 
 cdef void color_set(ColorC *color,  uint8_t r, uint8_t g, uint8_t b, uint8_t a) nogil
 cdef void float_color_set(FloatColorC *color, float r, float g, float b, float a) nogil
