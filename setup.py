@@ -20,7 +20,7 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native", "-fno-var-tracking-assignments"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
 link_args = ["-std=c11"]
 annotate = True
 quiet = False
@@ -56,7 +56,7 @@ if __name__ == "__main__":
                     language=language,
                     extra_compile_args=args,
                     extra_link_args=link_args,
-                    include_dirs = [np.get_include()],
+                    include_dirs = [np.get_include(), "."],
                 )
                 extensions.append(ext)
     

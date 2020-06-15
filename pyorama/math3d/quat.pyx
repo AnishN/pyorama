@@ -1,15 +1,13 @@
 cdef class Quat:
     
     def __init__(self, float x=0.0, float y=0.0, float z=0.0, float w=0.0):
-        self.ptr = <QuatC *>calloc(1, sizeof(QuatC))
-        Quat.c_set_data(self.ptr, x, y, z, w)
+        Quat.c_set_data(&self.data, x, y, z, w)
     
     def __dealloc__(self):
-        free(self.ptr)
-        self.ptr = NULL
+        memset(&self.data, 0, sizeof(QuatC))
     
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = self.ptr
+        buffer.buf = &self.data
         buffer.len = 4
         buffer.readonly = 0
         buffer.format = "f"
@@ -22,34 +20,36 @@ cdef class Quat:
 
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
-        
+
+    """
     def __getitem__(self, size_t i):
         cdef size_t size = 4
         if i < 0 or i >= size:
             raise ValueError("invalid index")
-        return self.ptr[0][i]
+        return (<float *>self.data)[i]
         
     def __setitem__(self, size_t i, float value):
         cdef size_t size = 4
         if i < 0 or i >= size:
             raise ValueError("invalid index")
-        self.ptr[0][i] = value
+        (<float *>self.data)[i] = value
+    """
         
     property x:
-        def __get__(self): return self.ptr[0][0]
-        def __set__(self, float new_x): self.ptr[0][0] = new_x
+        def __get__(self): return self.data.x
+        def __set__(self, float new_x): self.data.x = new_x
     
     property y:
-        def __get__(self): return self.ptr[0][1]
-        def __set__(self, float new_y): self.ptr[0][1] = new_y
+        def __get__(self): return self.data.y
+        def __set__(self, float new_y): self.data.y = new_y
         
     property z:
-        def __get__(self): return self.ptr[0][2]
-        def __set__(self, float new_z): self.ptr[0][2] = new_z
+        def __get__(self): return self.data.z
+        def __set__(self, float new_z): self.data.z = new_z
         
     property w:
-        def __get__(self): return self.ptr[0][3]
-        def __set__(self, float new_w): self.ptr[0][3] = new_w
+        def __get__(self): return self.data.w
+        def __set__(self, float new_w): self.data.w = new_w
         
     @staticmethod
     def add(Quat out, Quat a, Quat b): pass
@@ -94,7 +94,7 @@ cdef class Quat:
     def mul(Quat out, Quat a, Quat b): pass
 
     #@staticmethod
-    #def bint nearly_equals(Quat a, Quat b, float epsilon=epsilon): pass
+    #def bint nearly_equals(Quat a, Quat b, float epsilon=0.000001): pass
 
     @staticmethod
     def norm(Quat out, Quat a): pass
@@ -130,56 +130,53 @@ cdef class Quat:
     #def float sqr_length(Quat a): pass
     
     @staticmethod
-    cdef inline void c_add(QuatC *out, QuatC *a, QuatC *b) nogil:
+    cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil:
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            out[0][i] = a[0][i] + b[0][i]
+            (<float *>out)[i] = (<float *>a)[i] + (<float *>b)[i]
 
     @staticmethod
-    cdef inline void c_calculate_w(QuatC *out, QuatC *a) nogil:
-        cdef float x = a[0][0]
-        cdef float y = a[0][1]
-        cdef float z = a[0][2]
-        out[0][0] = x
-        out[0][1] = y
-        out[0][2] = z
-        out[0][3] = c_math.sqrt(c_math.fabs(1.0 - x * x - y * y - z * z))
+    cdef void c_calculate_w(QuatC *out, QuatC *a) nogil:
+        out.x = a.x
+        out.y = a.y
+        out.z = a.z
+        out.w = c_math.sqrt(c_math.fabs(1.0 - a.x * a.x - a.y * a.y - a.z * a.z))
 
     @staticmethod
-    cdef inline void c_conjugate(QuatC *out, QuatC *a) nogil:
-        out[0][0] = -a[0][0]
-        out[0][1] = -a[0][1]
-        out[0][2] = -a[0][2]
-        out[0][3] = a[0][3]
+    cdef void c_conjugate(QuatC *out, QuatC *a) nogil:
+        out.x = -a.x
+        out.y = -a.y
+        out.z = -a.z
+        out.w = a.w
 
     @staticmethod
-    cdef inline void c_copy(QuatC *out, QuatC *a) nogil:
+    cdef void c_copy(QuatC *out, QuatC *a) nogil:
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            out[0][i] = a[0][i]
+            (<float *>out)[i] = (<float *>a)[i]
 
     @staticmethod
-    cdef inline float c_dot(QuatC *a, QuatC *b) nogil:
+    cdef float c_dot(QuatC *a, QuatC *b) nogil:
         cdef float out = 0.0
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            out += a[0][i] * b[0][i]
+            out += (<float *>a)[i] * (<float *>b)[i]
         return out
 
     @staticmethod
-    cdef inline bint c_equals(QuatC *a, QuatC *b) nogil:
+    cdef bint c_equals(QuatC *a, QuatC *b) nogil:
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            if a[0][i] != b[0][i]:
+            if (<float *>a)[i] != (<float *>b)[i]:
                 return False
         return True
 
     @staticmethod
-    cdef inline void c_from_euler(QuatC *out, float x, float y, float z) nogil:
+    cdef void c_from_euler(QuatC *out, float x, float y, float z) nogil:
         cdef float half_to_rad = 0.5 * c_math.M_PI / 180.0
         x *= half_to_rad
         y *= half_to_rad
@@ -190,160 +187,135 @@ cdef class Quat:
         cdef float cy = c_math.cos(y)
         cdef float sz = c_math.sin(z)
         cdef float cz = c_math.cos(z)
-        out[0][0] = sx * cy * cz - cx * sy * sz
-        out[0][1] = cx * sy * cz + sx * cy * sz
-        out[0][2] = cx * cy * sz - sx * sy * cz
-        out[0][3] = cx * cy * cz + sx * sy * sz
+        out.x = sx * cy * cz - cx * sy * sz
+        out.y = cx * sy * cz + sx * cy * sz
+        out.z = cx * cy * sz - sx * sy * cz
+        out.w = cx * cy * cz + sx * sy * sz
 
     @staticmethod
-    cdef inline void c_from_mat3(QuatC *out, Mat3C *a) nogil:
-        cdef float f_trace = a[0][0] + a[0][4] + a[0][8]
+    cdef void c_from_mat3(QuatC *out, Mat3C *a) nogil:
+        cdef float f_trace = a.m00 + a.m11 + a.m22
         cdef float f_root
         cdef int i, j, k
         
         if f_trace > 0.0:
             f_root = c_math.sqrt(f_trace + 1.0)
-            out[0][3] = 0.5 * f_root
+            out.w = 0.5 * f_root
             f_root = 0.5/f_root
-            out[0][0] = (a[0][5] - a[0][7]) * f_root
-            out[0][1] = (a[0][6] - a[0][2]) * f_root
-            out[0][2] = (a[0][1] - a[0][3]) * f_root
+            out.x = (a.m12 - a.m21) * f_root
+            out.y = (a.m20 - a.m02) * f_root
+            out.z = (a.m01 - a.m10) * f_root
         else:
             i = 0
-            if a[0][4] > a[0][0]: i = 1
-            if a[0][8] > a[0][i*3+i]: i = 2
+            if a.m11 > a.m00: i = 1
+            if a.m22 > (<float *>a)[i*3+i]: i = 2
             j = (i + 1) % 3
             k = (i + 2) % 3
-            f_root = c_math.sqrt(a[0][i*3+i]-a[0][j*3+j]-a[0][k*3+k] + 1.0)
-            out[0][i] = 0.5 * f_root
+            f_root = c_math.sqrt((<float *>a)[i*3+i]-(<float *>a)[j*3+j]-(<float *>a)[k*3+k] + 1.0)
+            (<float *>out)[i] = 0.5 * f_root
             f_root = 0.5 / f_root
-            out[0][3] = (a[0][j*3+k] - a[0][k*3+j]) * f_root
-            out[0][j] = (a[0][j*3+i] + a[0][i*3+j]) * f_root
-            out[0][k] = (a[0][k*3+i] + a[0][i*3+k]) * f_root
+            (<float *>out)[3] = ((<float *>a)[j*3+k] - (<float *>a)[k*3+j]) * f_root
+            (<float *>out)[j] = ((<float *>a)[j*3+i] + (<float *>a)[i*3+j]) * f_root
+            (<float *>out)[k] = ((<float *>a)[k*3+i] + (<float *>a)[i*3+k]) * f_root
 
     @staticmethod
-    cdef inline float c_get_axis_angle(Vec3C *out, QuatC *a) nogil:
-        cdef float rad = c_math.acos(a[0][3]) * 2.0
+    cdef float c_get_axis_angle(Vec3C *out, QuatC *a) nogil:
+        cdef float rad = c_math.acos(a.w) * 2.0
         cdef float s = c_math.sin(rad/2.0)
         if not s:
-            out[0][0] = a[0][0] / s
-            out[0][1] = a[0][1] / s
-            out[0][2] = a[0][2] / s
+            out.x = a.x / s
+            out.y = a.y / s
+            out.z = a.z / s
         else:
-            out[0][0] = 1
-            out[0][1] = 0
-            out[0][2] = 0
+            out.x = 1
+            out.y = 0
+            out.z = 0
         return rad
 
     @staticmethod
-    cdef inline void c_identity(QuatC *out) nogil:
-        out[0][0] = 0
-        out[0][1] = 0
-        out[0][2] = 0
-        out[0][3] = 1
+    cdef void c_identity(QuatC *out) nogil:
+        out.x = 0
+        out.y = 0
+        out.z = 0
+        out.w = 1
 
     @staticmethod
-    cdef inline void c_inv(QuatC *out, QuatC *a) nogil:
-        cdef float x = a[0][0]
-        cdef float y = a[0][1]
-        cdef float z = a[0][2]
-        cdef float w = a[0][3]
-        cdef float dot = x*x + y*y + z*z + w*w
+    cdef void c_inv(QuatC *out, QuatC *a) nogil:
+        cdef float dot = a.x*a.x + a.y*a.y + a.z*a.z + a.w*a.w
         cdef float inv_dot = 1.0/dot if dot else 0
-        out[0][0] = -x*inv_dot
-        out[0][1] = -y*inv_dot
-        out[0][2] = -z*inv_dot
-        out[0][3] = w*inv_dot
+        out.x = -a.x*inv_dot
+        out.y = -a.y*inv_dot
+        out.z = -a.z*inv_dot
+        out.w = a.w*inv_dot
 
     @staticmethod
-    cdef inline float c_length(QuatC *a) nogil:
+    cdef float c_length(QuatC *a) nogil:
         cdef float out = c_math.sqrt(Quat.c_sqr_length(a))
         return out
 
     @staticmethod
-    cdef inline void c_lerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil:
+    cdef void c_lerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil:
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            out[0][i] = a[0][i] + t * (b[0][i] - a[0][i])
+            (<float *>out)[i] = (<float *>a)[i] + t * ((<float *>b)[i] - (<float *>a)[i])
 
     @staticmethod
-    cdef inline void c_mul(QuatC *out, QuatC *a, QuatC *b) nogil:
-        cdef float ax = a[0][0]
-        cdef float ay = a[0][1]
-        cdef float az = a[0][2]
-        cdef float aw = a[0][3]
-        cdef float bx = b[0][0]
-        cdef float by = b[0][1]
-        cdef float bz = b[0][2]
-        cdef float bw = b[0][3]
-        
-        out[0][0] = ax * bw + aw * bx + ay * bz - az * by
-        out[0][1] = ay * bw + aw * by + az * bx - ax * bz
-        out[0][2] = az * bw + aw * bz + ax * by - ay * bx
-        out[0][3] = aw * bw - ax * bx - ay * by - az * bz
+    cdef void c_mul(QuatC *out, QuatC *a, QuatC *b) nogil:        
+        out.x = a.x * b.w + a.w * b.x + a.y * b.z - a.z * b.y
+        out.y = a.y * b.w + a.w * b.y + a.z * b.x - a.x * b.z
+        out.z = a.z * b.w + a.w * b.z + a.x * b.y - a.y * b.x
+        out.w = a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z
 
     @staticmethod
-    cdef inline bint c_nearly_equals(QuatC *a, QuatC *b, float epsilon=0.000001) nogil:
+    cdef bint c_nearly_equals(QuatC *a, QuatC *b, float epsilon=0.000001) nogil:
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            if c_math.fabs(a[0][i] - b[0][i]) > epsilon * max(1.0, c_math.fabs(a[0][i]), c_math.fabs(b[0][i])):
+            if c_math.fabs((<float *>a)[i] - (<float *>b)[i]) > epsilon * max(1.0, c_math.fabs((<float *>a)[i]), c_math.fabs((<float *>b)[i])):
                 return False
         return True
 
     @staticmethod
-    cdef inline void c_norm(QuatC *out, QuatC *a) nogil:
+    cdef void c_norm(QuatC *out, QuatC *a) nogil:
         cdef float mag = Quat.c_length(a)
         Quat.c_scale_add(out, a, scale=1.0/mag)
 
     @staticmethod
-    cdef inline void c_rotate_x(QuatC *out, QuatC *a, float radians) nogil:
+    cdef void c_rotate_x(QuatC *out, QuatC *a, float radians) nogil:
         cdef float rad = radians * 0.5
-        cdef float x = a[0][0]
-        cdef float y = a[0][1]
-        cdef float z = a[0][2]
-        cdef float w = a[0][3]
         cdef float s = c_math.sin(rad)
         cdef float c = c_math.cos(rad)
-        out[0][0] = x * c + w * s
-        out[0][1] = y * c + z * s
-        out[0][2] = z * c - y * s
-        out[0][3] = w * c - x * s
+        out.x = a.x * c + a.w * s
+        out.y = a.y * c + a.z * s
+        out.z = a.z * c - a.y * s
+        out.w = a.w * c - a.x * s
 
     @staticmethod
-    cdef inline void c_rotate_y(QuatC *out, QuatC *a, float radians) nogil:
+    cdef void c_rotate_y(QuatC *out, QuatC *a, float radians) nogil:
         cdef float rad = radians * 0.5
-        cdef float x = a[0][0]
-        cdef float y = a[0][1]
-        cdef float z = a[0][2]
-        cdef float w = a[0][3]
         cdef float s = c_math.sin(rad)
         cdef float c = c_math.cos(rad)
-        out[0][0] = x * c - z * s
-        out[0][1] = y * c + w * s
-        out[0][2] = z * c + x * s
-        out[0][3] = w * c - y * s
+        out.x = a.x * c - a.z * s
+        out.y = a.y * c + a.w * s
+        out.z = a.z * c + a.x * s
+        out.w = a.w * c - a.y * s
 
     @staticmethod
-    cdef inline void c_rotate_z(QuatC *out, QuatC *a, float radians) nogil:
+    cdef void c_rotate_z(QuatC *out, QuatC *a, float radians) nogil:
         cdef float rad = radians * 0.5
-        cdef float x = a[0][0]
-        cdef float y = a[0][1]
-        cdef float z = a[0][2]
-        cdef float w = a[0][3]
         cdef float s = c_math.sin(rad)
         cdef float c = c_math.cos(rad)
-        out[0][0] = x * c + y * s
-        out[0][1] = y * c - x * s
-        out[0][2] = z * c + w * s
-        out[0][3] = w * c - z * s
+        out.x = a.x * c + a.y * s
+        out.y = a.y * c - a.x * s
+        out.z = a.z * c + a.w * s
+        out.w = a.w * c - a.z * s
 
     @staticmethod
-    cdef inline void c_rotation_to(QuatC *out, Vec3C *a, Vec3C *b) nogil:
+    cdef void c_rotation_to(QuatC *out, Vec3C *a, Vec3C *b) nogil:
         cdef Vec3C temp
-        cdef Vec3C x_unit = (1, 0, 0)
-        cdef Vec3C y_unit = (0, 1, 0)
+        cdef Vec3C x_unit = [1, 0, 0]
+        cdef Vec3C y_unit = [0, 1, 0]
         cdef float dot
         
         dot = Vec3.c_dot(a, b)
@@ -354,67 +326,56 @@ cdef class Quat:
             Vec3.c_norm(&temp, &temp)
             Quat.c_set_axis_angle(out, &temp, c_math.M_PI)
         elif dot > 0.999999:
-            out[0][0] = 0
-            out[0][1] = 0
-            out[0][2] = 0
-            out[0][3] = 1
+            out[0] = [0, 0, 0, 1]
         else:
             Vec3.c_cross(&temp, a, b)
-            out[0][0] = temp[0]
-            out[0][1] = temp[1]
-            out[0][2] = temp[2]
-            out[0][3] = 1 + dot
+            out[0] = [temp.x, temp.y, temp.z, 1 + dot]
             Quat.c_norm(out, out)
 
     @staticmethod
-    cdef inline void c_scale_add(QuatC *out, QuatC *a, float scale=1.0, float add=0.0) nogil:
+    cdef void c_scale_add(QuatC *out, QuatC *a, float scale=1.0, float add=0.0) nogil:
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            out[0][i] = scale * a[0][i] + add
+            (<float *>out)[i] = scale * (<float *>a)[i] + add
 
     @staticmethod
-    cdef inline void c_set_axes(QuatC *out, Vec3C *view, Vec3C *right, Vec3C *up) nogil:
-        cdef Mat3C m
-        m[0] = right[0][0]
-        m[3] = right[0][1]
-        m[6] = right[0][2]
-        m[1] = up[0][0]
-        m[4] = up[0][1]
-        m[7] = up[0][2]
-        m[2] = -view[0][0]
-        m[5] = -view[0][1]
-        m[8] = -view[0][2]
+    cdef void c_set_axes(QuatC *out, Vec3C *view, Vec3C *right, Vec3C *up) nogil:
+        cdef Mat3C m = [
+            right.x, up.x, -view.x,
+            right.y, up.y, -view.y,
+            right.z, up.z, -view.z,
+        ]
         Quat.c_from_mat3(out, &m)
         Quat.c_norm(out, out)
 
     @staticmethod
-    cdef inline void c_set_axis_angle(QuatC *out, Vec3C *axis, float radians) nogil:
+    cdef void c_set_axis_angle(QuatC *out, Vec3C *axis, float radians) nogil:
         cdef float rad = radians * 0.5
         cdef float c = c_math.cos(rad)
         cdef float s = c_math.sin(rad)
-        out[0][0] = s * axis[0][0]
-        out[0][1] = s * axis[0][1]
-        out[0][2] = s * axis[0][2]
-        out[0][3] = c
+        out.x = s * axis.x
+        out.y = s * axis.y
+        out.z = s * axis.z
+        out.w = c
 
     @staticmethod
-    cdef inline void c_set_data(QuatC *out, float x=0.0, float y=0.0, float z=0.0, float w=0.0) nogil:
-        out[0][0] = x
-        out[0][1] = y
-        out[0][2] = z
-        out[0][3] = w
-
+    cdef void c_set_data(QuatC *out, float x=0.0, float y=0.0, float z=0.0, float w=0.0) nogil:
+        out.x = x
+        out.y = y
+        out.z = z
+        out.w = w
+    
     @staticmethod
-    cdef inline void c_slerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil:
-        cdef float ax = a[0][0]
-        cdef float ay = a[0][1]
-        cdef float az = a[0][2]
-        cdef float aw = a[0][3]
-        cdef float bx = b[0][0]
-        cdef float by = b[0][1]
-        cdef float bz = b[0][2]
-        cdef float bw = b[0][3]
+    cdef void c_slerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil:
+        cdef float ax = a.x
+        cdef float ay = a.y
+        cdef float az = a.z
+        cdef float aw = a.w
+        cdef float bx = b.x
+        cdef float by = b.y
+        cdef float bz = b.z
+        cdef float bw = b.w
         cdef float omega, cosom, sinom, scale0, scale1
         
         cosom = ax * bx + ay * by + az * bz + aw * bw
@@ -432,16 +393,24 @@ cdef class Quat:
         else:
             scale0 = 1.0 - t
             scale1 = t
-        out[0][0] = scale0 * ax + scale1 * bx
-        out[0][1] = scale0 * ay + scale1 * by
-        out[0][2] = scale0 * az + scale1 * bz
-        out[0][3] = scale0 * aw + scale1 * bw
+        out.x = scale0 * ax + scale1 * bx
+        out.y = scale0 * ay + scale1 * by
+        out.z = scale0 * az + scale1 * bz
+        out.w = scale0 * aw + scale1 * bw
 
     @staticmethod
-    cdef inline float c_sqr_length(QuatC *a) nogil:
+    cdef float c_sqr_length(QuatC *a) nogil:
+        """
         cdef float out = 0.0
         cdef size_t i = 0
         cdef size_t size = 4
         for i in range(size):
-            out += a[0][i] * a[0][i]
+            (<float *>out)[i] += (<float *>a)[i] * (<float *>a)[i]
+        return out
+        """
+        cdef float out = 0.0
+        out += a.x * a.x
+        out += a.y * a.y
+        out += a.z * a.z
+        out += a.w * a.w
         return out

@@ -678,6 +678,6 @@ cdef class GraphicsManager:
         self._program_unbind_attributes(program_ptr.handle)
         glBindTexture(GL_TEXTURE_2D, 0)
         glUseProgram(0)
-
+        
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(self.root_window)

@@ -16,20 +16,6 @@ ctypedef enum RendererItemType:
     RENDERER_ITEM_TYPE_VIEW
 
 """
-ctypedef enum TextureFilter:
-    TEXTURE_FILTER_NEAREST
-    TEXTURE_FILTER_LINEAR
-
-ctypedef enum UniformType:
-    UNIFORM_TYPE_INT
-    UNIFORM_TYPE_FLOAT
-    UNIFORM_TYPE_VEC2
-    UNIFORM_TYPE_VEC3
-    UNIFORM_TYPE_VEC4
-    UNIFORM_TYPE_MAT2
-    UNIFORM_TYPE_MAT3
-    UNIFORM_TYPE_MAT4
-
 ctypedef enum DepthTest:
     DEPTH_TEST_NONE
     DEPTH_TEST_NEVER
@@ -46,26 +32,6 @@ ctypedef struct RenderRectC:
     uint16_t y
     uint16_t w
     uint16_t h
-
-ctypedef struct ViewC:
-    Vec4C clear_color
-    float clear_depth
-    uint32_t clear_stencil
-    DepthTest depth_test
-    RenderRectC scissor_rect
-    Mat4C view
-    Mat4C proj
-
-ctypedef enum CanvasFormatC:
-    CANVAS_FORMAT_RGBA8
-    CANVAS_FORMAT_RGBA8_D16
-    CANVAS_FORMAT_D16
-
-ctypedef struct CanvasC:
-    uint64_t gl_id
-    uint16_t width
-    uint16_t height
-    CanvasFormatC format
 
 ctypedef enum DrawMode:
     DRAW_MODE_TRIANGLE
@@ -179,6 +145,16 @@ cdef extern from *:
     """
     cdef char **attribute_names
 
+cpdef enum UniformType:
+    UNIFORM_TYPE_INT
+    UNIFORM_TYPE_FLOAT
+    UNIFORM_TYPE_VEC2
+    UNIFORM_TYPE_VEC3
+    UNIFORM_TYPE_VEC4
+    UNIFORM_TYPE_MAT2
+    UNIFORM_TYPE_MAT3
+    UNIFORM_TYPE_MAT4
+
 #attributes = used attribute enums (densely packed at front)
 #attributes maxes at 16 since this is the minimum guaranteed by OpenGL
 #attribute_locations maxes at ATTRIBUTE_COUNT = 18
@@ -226,6 +202,8 @@ ctypedef struct ViewC:
     ColorC clear_color
     float clear_depth
     uint32_t clear_stencil
+    Mat4C view
+    Mat4C projection
 
 @cython.final
 cdef class GraphicsManager:
