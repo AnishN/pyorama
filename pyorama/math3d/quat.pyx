@@ -38,82 +38,108 @@ cdef class Quat:
         def __set__(self, float new_w): self.data.w = new_w
         
     @staticmethod
-    def add(Quat out, Quat a, Quat b): pass
+    def add(Quat out, Quat a, Quat b):
+        Quat.c_add(&out.data, &a.data, &b.data)
 
     @staticmethod
-    def calculate_w(Quat out, Quat a): pass
+    def calculate_w(Quat out, Quat a):
+        Quat.c_calculate_w(&out.data, &a.data)
 
     @staticmethod
-    def conjugate(Quat out, Quat a): pass
+    def conjugate(Quat out, Quat a):
+        Quat.c_conjugate(&out.data, &a.data)
 
     @staticmethod
-    def copy(Quat out, Quat a): pass
-
-    #@staticmethod
-    #def float dot(Quat a, Quat b): pass
-
-    #@staticmethod
-    #def bint equals(Quat a, Quat b): pass
+    def copy(Quat out, Quat a):
+        Quat.c_copy(&out.data, &a.data)
 
     @staticmethod
-    def from_euler(Quat out, float x, float y, float z): pass
+    def dot(Quat a, Quat b):
+        return Quat.c_dot(&a.data, &b.data)
 
     @staticmethod
-    def from_mat3(Quat out, Mat3 a): pass
-
-    #@staticmethod
-    #def float get_axis_angle(Vec3 out, Quat a): pass
+    def equals(Quat a, Quat b):
+        return Quat.c_equals(&a.data, &b.data)
 
     @staticmethod
-    def identity(Quat out): pass
+    def from_euler(Quat out, float x, float y, float z):
+        Quat.c_from_euler(&out.data, x, y, z)
 
     @staticmethod
-    def inv(Quat out, Quat a): pass
-
-    #@staticmethod
-    #def float length(Quat a): pass
+    def from_mat3(Quat out, Mat3 a):
+        Quat.c_from_mat3(&out.data, &a.data)
 
     @staticmethod
-    def lerp(Quat out, Quat a, Quat b, float t): pass
+    def get_axis_angle(Vec3 out, Quat a):
+        return Quat.c_get_axis_angle(&out.data, &a.data)
 
     @staticmethod
-    def mul(Quat out, Quat a, Quat b): pass
-
-    #@staticmethod
-    #def bint nearly_equals(Quat a, Quat b, float epsilon=0.000001): pass
+    def identity(Quat out):
+        Quat.c_identity(&out.data)
 
     @staticmethod
-    def norm(Quat out, Quat a): pass
+    def inv(Quat out, Quat a):
+        Quat.c_inv(&out.data, &a.data)
 
     @staticmethod
-    def rotate_x(Quat out, Quat a, float radians): pass
+    def length(Quat a):
+        return Quat.c_length(&a.data)
 
     @staticmethod
-    def rotate_y(Quat out, Quat a, float radians): pass
+    def lerp(Quat out, Quat a, Quat b, float t):
+        Quat.c_lerp(&out.data, &a.data, &b.data, t)
 
     @staticmethod
-    def rotate_z(Quat out, Quat a, float radians): pass
+    def mul(Quat out, Quat a, Quat b):
+        Quat.c_mul(&out.data, &a.data, &b.data)
 
     @staticmethod
-    def rotation_to(Quat out, Vec3 a, Vec3 b): pass
+    def nearly_equals(Quat a, Quat b, float epsilon=0.000001):
+        return Quat.c_nearly_equals(&a.data, &b.data, epsilon)
 
     @staticmethod
-    def scale_add(Quat out, Quat a, float scale=1.0, float add=0.0): pass
+    def norm(Quat out, Quat a):
+        Quat.c_norm(&out.data, &a.data)
 
     @staticmethod
-    def set_axes(Quat out, Vec3 view, Vec3 right, Vec3 up): pass
+    def rotate_x(Quat out, Quat a, float radians):
+        Quat.c_rotate_x(&out.data, &a.data, radians)
 
     @staticmethod
-    def set_axis_angle(Quat out, Vec3 axis, float radians): pass
+    def rotate_y(Quat out, Quat a, float radians):
+        Quat.c_rotate_y(&out.data, &a.data, radians)
 
     @staticmethod
-    def set_data(Quat out, float x=0.0, float y=0.0, float z=0.0, float w=0.0): pass
+    def rotate_z(Quat out, Quat a, float radians):
+        Quat.c_rotate_z(&out.data, &a.data, radians)
 
     @staticmethod
-    def slerp(Quat out, Quat a, Quat b, float t): pass
+    def rotation_to(Quat out, Vec3 a, Vec3 b):
+        Quat.c_rotation_to(&out.data, &a.data, &b.data)
 
-    #@staticmethod
-    #def float sqr_length(Quat a): pass
+    @staticmethod
+    def scale_add(Quat out, Quat a, float scale=1.0, float add=0.0):
+        Quat.c_scale_add(&out.data, &a.data, scale, add)
+
+    @staticmethod
+    def set_axes(Quat out, Vec3 view, Vec3 right, Vec3 up):
+        Quat.c_set_axes(&out.data, &view.data, &right.data, &up.data)
+
+    @staticmethod
+    def set_axis_angle(Quat out, Vec3 axis, float radians):
+        Quat.c_set_axis_angle(&out.data, &axis.data, radians)
+
+    @staticmethod
+    def set_data(Quat out, float x=0.0, float y=0.0, float z=0.0, float w=0.0):
+        Quat.c_set_data(&out.data, x, y, z, w)
+
+    @staticmethod
+    def slerp(Quat out, Quat a, Quat b, float t):
+        Quat.c_slerp(&out.data, &a.data, &b.data, t)
+
+    @staticmethod
+    def sqr_length(Quat a):
+        return Quat.c_sqr_length(&a.data)
     
     @staticmethod
     cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil:
