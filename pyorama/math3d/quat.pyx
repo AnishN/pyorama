@@ -21,20 +21,6 @@ cdef class Quat:
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
 
-    """
-    def __getitem__(self, size_t i):
-        cdef size_t size = 4
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        return (<float *>self.data)[i]
-        
-    def __setitem__(self, size_t i, float value):
-        cdef size_t size = 4
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        (<float *>self.data)[i] = value
-    """
-        
     property x:
         def __get__(self): return self.data.x
         def __set__(self, float new_x): self.data.x = new_x
@@ -131,10 +117,10 @@ cdef class Quat:
     
     @staticmethod
     cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + (<float *>b)[i]
+        out.x = a.x + b.x
+        out.y = a.y + b.y
+        out.z = a.z + b.z
+        out.w = a.w + b.w
 
     @staticmethod
     cdef void c_calculate_w(QuatC *out, QuatC *a) nogil:
@@ -152,27 +138,29 @@ cdef class Quat:
 
     @staticmethod
     cdef void c_copy(QuatC *out, QuatC *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i]
+        out.x = a.x
+        out.y = a.y
+        out.z = a.z
+        out.w = a.w
 
     @staticmethod
     cdef float c_dot(QuatC *a, QuatC *b) nogil:
         cdef float out = 0.0
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            out += (<float *>a)[i] * (<float *>b)[i]
+        out += a.x * b.x
+        out += a.y * b.y
+        out += a.z * b.z
+        out += a.w * b.w
         return out
 
     @staticmethod
     cdef bint c_equals(QuatC *a, QuatC *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            if (<float *>a)[i] != (<float *>b)[i]:
-                return False
+        if (
+            (a.x != b.x) or 
+            (a.y != b.y) or 
+            (a.z != b.z) or 
+            (a.w != b.w)
+        ): 
+            return False
         return True
 
     @staticmethod
@@ -255,10 +243,10 @@ cdef class Quat:
 
     @staticmethod
     cdef void c_lerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + t * ((<float *>b)[i] - (<float *>a)[i])
+        out.x = a.x + t * (b.x - a.x)
+        out.y = a.y + t * (b.y - a.y)
+        out.z = a.z + t * (b.z - a.z)
+        out.w = a.w + t * (b.w - a.w) 
 
     @staticmethod
     cdef void c_mul(QuatC *out, QuatC *a, QuatC *b) nogil:        
@@ -269,11 +257,13 @@ cdef class Quat:
 
     @staticmethod
     cdef bint c_nearly_equals(QuatC *a, QuatC *b, float epsilon=0.000001) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            if c_math.fabs((<float *>a)[i] - (<float *>b)[i]) > epsilon * max(1.0, c_math.fabs((<float *>a)[i]), c_math.fabs((<float *>b)[i])):
-                return False
+        if (
+            c_math.fabs(a.x - b.x) > epsilon * max(1.0, c_math.fabs(a.x), c_math.fabs(b.x)) or
+            c_math.fabs(a.y - b.y) > epsilon * max(1.0, c_math.fabs(a.y), c_math.fabs(b.y)) or
+            c_math.fabs(a.z - b.z) > epsilon * max(1.0, c_math.fabs(a.z), c_math.fabs(b.z)) or
+            c_math.fabs(a.w - b.w) > epsilon * max(1.0, c_math.fabs(a.w), c_math.fabs(b.w))
+        ): 
+            return False
         return True
 
     @staticmethod
@@ -334,10 +324,10 @@ cdef class Quat:
 
     @staticmethod
     cdef void c_scale_add(QuatC *out, QuatC *a, float scale=1.0, float add=0.0) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = scale * (<float *>a)[i] + add
+        out.x = scale * a.x + add
+        out.y = scale * a.y + add
+        out.z = scale * a.z + add
+        out.w = scale * a.w + add
 
     @staticmethod
     cdef void c_set_axes(QuatC *out, Vec3C *view, Vec3C *right, Vec3C *up) nogil:
@@ -368,15 +358,16 @@ cdef class Quat:
     
     @staticmethod
     cdef void c_slerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil:
-        cdef float ax = a.x
-        cdef float ay = a.y
-        cdef float az = a.z
-        cdef float aw = a.w
-        cdef float bx = b.x
-        cdef float by = b.y
-        cdef float bz = b.z
-        cdef float bw = b.w
-        cdef float omega, cosom, sinom, scale0, scale1
+        cdef:
+            float ax = a.x
+            float ay = a.y
+            float az = a.z
+            float aw = a.w
+            float bx = b.x
+            float by = b.y
+            float bz = b.z
+            float bw = b.w
+            float omega, cosom, sinom, scale0, scale1
         
         cosom = ax * bx + ay * by + az * bz + aw * bw
         if cosom < 0.0:
@@ -400,14 +391,6 @@ cdef class Quat:
 
     @staticmethod
     cdef float c_sqr_length(QuatC *a) nogil:
-        """
-        cdef float out = 0.0
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] += (<float *>a)[i] * (<float *>a)[i]
-        return out
-        """
         cdef float out = 0.0
         out += a.x * a.x
         out += a.y * a.y

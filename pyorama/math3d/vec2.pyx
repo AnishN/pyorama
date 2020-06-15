@@ -21,20 +21,6 @@ cdef class Vec2:
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
 
-    """
-    def __getitem__(self, size_t i):
-        cdef size_t size = 2
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        return (<float *>self.data)[i]
-        
-    def __setitem__(self, size_t i, float value):
-        cdef size_t size = 2
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        (<float *>self.data)[i] = value
-    """
-    
     property x:
         def __get__(self): return self.data.x
         def __set__(self, float new_x): self.data.x = new_x
@@ -157,30 +143,24 @@ cdef class Vec2:
 
     @staticmethod
     cdef void c_add(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + (<float *>b)[i]
+        out.x = a.x + b.x
+        out.y = a.y + b.y
 
     @staticmethod
     cdef void c_ceil(Vec2C *out, Vec2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = c_math.ceil((<float *>a)[i])
+        out.x = c_math.ceil(a.x)
+        out.y = c_math.ceil(a.y)
 
     @staticmethod
     cdef void c_copy(Vec2C *out, Vec2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i]
+        out.x = a.x
+        out.y = a.y
 
     @staticmethod
     cdef void c_cross(Vec3C *out, Vec2C *a, Vec2C *b) nogil:
         out.x = 0
         out.y = 0
-        (<float *>out)[2] = a.x * b.y - a.y * b.x
+        out.z = a.x * b.y - a.y * b.x
 
     @staticmethod
     cdef float c_dist(Vec2C *a, Vec2C *b) nogil:
@@ -189,41 +169,34 @@ cdef class Vec2:
 
     @staticmethod
     cdef void c_div(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] / (<float *>b)[i]
+        out.x = a.x / b.x
+        out.y = a.y / b.y
 
     @staticmethod
     cdef float c_dot(Vec2C *a, Vec2C *b) nogil:
         cdef float out = 0.0
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            out += (<float *>a)[i] * (<float *>b)[i]
+        out += a.x * b.x
+        out += a.y * b.y
+        return out
 
     @staticmethod
     cdef bint c_equals(Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            if (<float *>a)[i] != (<float *>b)[i]:
-                return False
+        if (
+            (a.x != b.x) or 
+            (a.y != b.y)
+        ): 
+            return False
         return True
 
     @staticmethod
     cdef void c_floor(Vec2C *out, Vec2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = c_math.floor((<float *>a)[i])
+        out.x = c_math.floor(a.x)
+        out.y = c_math.floor(a.y)
 
     @staticmethod
     cdef void c_inv(Vec2C *out, Vec2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = 1.0 / (<float *>a)[i]
+        out.x = 1.0 / a.x
+        out.y = 1.0 / a.y
 
     @staticmethod
     cdef float c_length(Vec2C *a) nogil:
@@ -232,47 +205,37 @@ cdef class Vec2:
 
     @staticmethod
     cdef void c_lerp(Vec2C *out, Vec2C *a, Vec2C *b, float t) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + t * ((<float *>b)[i] - (<float *>a)[i])
+        out.x = a.x + t * (b.x - a.x)
+        out.y = a.y + t * (b.y - a.y)
 
     @staticmethod
     cdef void c_max_comps(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = max((<float *>a)[i], (<float *>b)[i])
+        out.x = max(a.x, b.x)
+        out.y = max(a.y, b.y)
 
     @staticmethod
     cdef void c_min_comps(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = min((<float *>a)[i], (<float *>b)[i])
+        out.x = min(a.x, b.x)
+        out.y = min(a.y, b.y)
 
     @staticmethod
     cdef void c_mul(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] * (<float *>b)[i]
+        out.x = a.x * b.x
+        out.y = a.y * b.y
 
     @staticmethod
     cdef bint c_nearly_equals(Vec2C *a, Vec2C *b, float epsilon=0.000001) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            if c_math.fabs((<float *>a)[i] - (<float *>b)[i]) > epsilon * max(1.0, c_math.fabs((<float *>a)[i]), c_math.fabs((<float *>b)[i])):
-                return False
+        if (
+            c_math.fabs(a.x - b.x) > epsilon * max(1.0, c_math.fabs(a.x), c_math.fabs(b.x)) or
+            c_math.fabs(a.y - b.y) > epsilon * max(1.0, c_math.fabs(a.y), c_math.fabs(b.y))
+        ): 
+            return False
         return True
 
     @staticmethod
     cdef void c_negate(Vec2C *out, Vec2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] * -1
+        out.x = -a.x
+        out.y = -a.y
 
     @staticmethod
     cdef void c_norm(Vec2C *out, Vec2C *a) nogil:
@@ -281,24 +244,18 @@ cdef class Vec2:
 
     @staticmethod
     cdef void c_random(Vec2C *out) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = rand() / <float>RAND_MAX
+        out.x = rand() / <float>RAND_MAX
+        out.y = rand() / <float>RAND_MAX
 
     @staticmethod
     cdef void c_round(Vec2C *out, Vec2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = c_math.round((<float *>a)[i])
+        out.x = c_math.round(a.x)
+        out.y = c_math.round(a.y)
 
     @staticmethod
     cdef void c_scale_add(Vec2C *out, Vec2C *a, float scale=1.0, float add=0.0) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = scale * (<float *>a)[i] + add
+        out.x = scale * a.x + add
+        out.y = scale * a.y + add
 
     @staticmethod
     cdef void c_set_data(Vec2C *out, float x=0.0, float y=0.0) nogil:
@@ -308,27 +265,21 @@ cdef class Vec2:
     @staticmethod
     cdef float c_sqr_dist(Vec2C *a, Vec2C *b) nogil:
         cdef float out = 0.0
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            out += ((<float *>b)[i] - (<float *>a)[i])*((<float *>b)[i] - (<float *>a)[i])
+        out += (b.x - a.x) * (b.x - a.x)
+        out += (b.y - a.y) * (b.y - a.y)
         return out
 
     @staticmethod
     cdef float c_sqr_length(Vec2C *a) nogil:
         cdef float out = 0.0
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            out += (<float *>a)[i] * (<float *>a)[i]
+        out += a.x * a.x
+        out += a.y * a.y
         return out
 
     @staticmethod
     cdef void c_sub(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 2
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] - (<float *>b)[i]
+        out.x = a.x - b.x
+        out.y = a.y - b.y
 
     @staticmethod
     cdef void c_transform_mat2(Vec2C *out, Vec2C *a, Mat2C *m) nogil:

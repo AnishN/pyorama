@@ -21,20 +21,6 @@ cdef class Mat4:
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
     
-    """
-    def __getitem__(self, size_t i):
-        cdef size_t size = 16
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        return (<float *>self.data)[i]
-        
-    def __setitem__(self, size_t i, float value):
-        cdef size_t size = 16
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        (<float *>self.data)[i] = value
-    """
-    
     @staticmethod
     def add(Mat4 out, Mat4 a, Mat4 b):
         Mat4.c_add(&out.data, &a.data, &b.data)
@@ -184,17 +170,41 @@ cdef class Mat4:
     
     @staticmethod
     cdef void c_add(Mat4C *out, Mat4C *a, Mat4C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + (<float *>b)[i]
+        out.m00 = a.m00 + b.m00
+        out.m01 = a.m01 + b.m01
+        out.m02 = a.m02 + b.m02
+        out.m03 = a.m03 + b.m03
+        out.m10 = a.m10 + b.m10
+        out.m11 = a.m11 + b.m11
+        out.m12 = a.m12 + b.m12
+        out.m13 = a.m13 + b.m13
+        out.m20 = a.m20 + b.m20
+        out.m21 = a.m21 + b.m21
+        out.m22 = a.m22 + b.m22
+        out.m23 = a.m23 + b.m23
+        out.m30 = a.m30 + b.m30
+        out.m31 = a.m31 + b.m31
+        out.m32 = a.m32 + b.m32
+        out.m33 = a.m33 + b.m33
 
     @staticmethod
     cdef void c_copy(Mat4C *out, Mat4C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i]
+        out.m00 = a.m00
+        out.m01 = a.m01
+        out.m02 = a.m02
+        out.m03 = a.m03
+        out.m10 = a.m10
+        out.m11 = a.m11
+        out.m12 = a.m12
+        out.m13 = a.m13
+        out.m20 = a.m20
+        out.m21 = a.m21
+        out.m22 = a.m22 
+        out.m23 = a.m23
+        out.m30 = a.m30
+        out.m31 = a.m31
+        out.m32 = a.m32
+        out.m33 = a.m33
 
     @staticmethod
     cdef float c_det(Mat4C *a) nogil:
@@ -215,10 +225,22 @@ cdef class Mat4:
 
     @staticmethod
     cdef void c_div(Mat4C *out, Mat4C *a, Mat4C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] / (<float *>b)[i]
+        out.m00 = a.m00 / b.m00
+        out.m01 = a.m01 / b.m01
+        out.m02 = a.m02 / b.m02
+        out.m03 = a.m03 / b.m03
+        out.m10 = a.m10 / b.m10
+        out.m11 = a.m11 / b.m11
+        out.m12 = a.m12 / b.m12
+        out.m13 = a.m13 / b.m13
+        out.m20 = a.m20 / b.m20
+        out.m21 = a.m21 / b.m21
+        out.m22 = a.m22 / b.m22
+        out.m23 = a.m23 / b.m23
+        out.m30 = a.m30 / b.m30
+        out.m31 = a.m31 / b.m31
+        out.m32 = a.m32 / b.m32
+        out.m33 = a.m33 / b.m33
 
     @staticmethod
     cdef void c_dot(Mat4C *out, Mat4C *a, Mat4C *b) nogil:
@@ -241,11 +263,25 @@ cdef class Mat4:
 
     @staticmethod
     cdef bint c_equals(Mat4C *a, Mat4C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            if (<float *>a)[i] != (<float *>b)[i]:
-                return False
+        if (
+            (a.m00 != b.m00) or 
+            (a.m01 != b.m01) or 
+            (a.m02 != b.m02) or 
+            (a.m03 != b.m03) or 
+            (a.m10 != b.m10) or 
+            (a.m11 != b.m11) or 
+            (a.m12 != b.m12) or 
+            (a.m13 != b.m13) or 
+            (a.m20 != b.m20) or 
+            (a.m21 != b.m21) or 
+            (a.m22 != b.m22) or 
+            (a.m23 != b.m23) or 
+            (a.m30 != b.m30) or 
+            (a.m31 != b.m31) or 
+            (a.m32 != b.m32) or 
+            (a.m33 != b.m33)
+        ): 
+            return False
         return True
 
     @staticmethod
@@ -556,18 +592,44 @@ cdef class Mat4:
 
     @staticmethod
     cdef void c_mul(Mat4C *out, Mat4C *a, Mat4C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] * (<float *>b)[i]
+        out.m00 = a.m00 * b.m00
+        out.m01 = a.m01 * b.m01
+        out.m02 = a.m02 * b.m02
+        out.m03 = a.m03 * b.m03
+        out.m10 = a.m10 * b.m10
+        out.m11 = a.m11 * b.m11
+        out.m12 = a.m12 * b.m12
+        out.m13 = a.m13 * b.m13
+        out.m20 = a.m20 * b.m20
+        out.m21 = a.m21 * b.m21
+        out.m22 = a.m22 * b.m22
+        out.m23 = a.m23 * b.m23
+        out.m30 = a.m30 * b.m30
+        out.m31 = a.m31 * b.m31
+        out.m32 = a.m32 * b.m32
+        out.m33 = a.m33 * b.m33
 
     @staticmethod
     cdef bint c_nearly_equals(Mat4C *a, Mat4C *b, float epsilon=0.000001) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            if c_math.fabs((<float *>a)[i] - (<float *>b)[i]) > epsilon * max(1.0, c_math.fabs((<float *>a)[i]), c_math.fabs((<float *>b)[i])):
-                return False
+        if (
+            c_math.fabs(a.m00 - b.m00) > epsilon * max(1.0, c_math.fabs(a.m00), c_math.fabs(b.m00)) or
+            c_math.fabs(a.m01 - b.m01) > epsilon * max(1.0, c_math.fabs(a.m01), c_math.fabs(b.m01)) or
+            c_math.fabs(a.m02 - b.m02) > epsilon * max(1.0, c_math.fabs(a.m02), c_math.fabs(b.m02)) or
+            c_math.fabs(a.m03 - b.m03) > epsilon * max(1.0, c_math.fabs(a.m03), c_math.fabs(b.m03)) or
+            c_math.fabs(a.m10 - b.m10) > epsilon * max(1.0, c_math.fabs(a.m10), c_math.fabs(b.m10)) or
+            c_math.fabs(a.m11 - b.m11) > epsilon * max(1.0, c_math.fabs(a.m11), c_math.fabs(b.m11)) or
+            c_math.fabs(a.m12 - b.m12) > epsilon * max(1.0, c_math.fabs(a.m12), c_math.fabs(b.m12)) or
+            c_math.fabs(a.m13 - b.m13) > epsilon * max(1.0, c_math.fabs(a.m13), c_math.fabs(b.m13)) or
+            c_math.fabs(a.m20 - b.m20) > epsilon * max(1.0, c_math.fabs(a.m20), c_math.fabs(b.m20)) or
+            c_math.fabs(a.m21 - b.m21) > epsilon * max(1.0, c_math.fabs(a.m21), c_math.fabs(b.m21)) or
+            c_math.fabs(a.m22 - b.m22) > epsilon * max(1.0, c_math.fabs(a.m22), c_math.fabs(b.m22)) or
+            c_math.fabs(a.m23 - b.m23) > epsilon * max(1.0, c_math.fabs(a.m23), c_math.fabs(b.m23)) or
+            c_math.fabs(a.m30 - b.m30) > epsilon * max(1.0, c_math.fabs(a.m30), c_math.fabs(b.m30)) or
+            c_math.fabs(a.m31 - b.m31) > epsilon * max(1.0, c_math.fabs(a.m31), c_math.fabs(b.m31)) or
+            c_math.fabs(a.m32 - b.m32) > epsilon * max(1.0, c_math.fabs(a.m32), c_math.fabs(b.m32)) or
+            c_math.fabs(a.m33 - b.m33) > epsilon * max(1.0, c_math.fabs(a.m33), c_math.fabs(b.m33))
+        ): 
+            return False
         return True
 
     @staticmethod
@@ -611,10 +673,22 @@ cdef class Mat4:
 
     @staticmethod
     cdef void c_random(Mat4C *out) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = rand() / <float>RAND_MAX
+        out.m00 = rand() / <float>RAND_MAX
+        out.m01 = rand() / <float>RAND_MAX
+        out.m02 = rand() / <float>RAND_MAX
+        out.m03 = rand() / <float>RAND_MAX
+        out.m10 = rand() / <float>RAND_MAX
+        out.m11 = rand() / <float>RAND_MAX
+        out.m12 = rand() / <float>RAND_MAX
+        out.m13 = rand() / <float>RAND_MAX
+        out.m20 = rand() / <float>RAND_MAX
+        out.m21 = rand() / <float>RAND_MAX
+        out.m22 = rand() / <float>RAND_MAX
+        out.m23 = rand() / <float>RAND_MAX
+        out.m30 = rand() / <float>RAND_MAX
+        out.m31 = rand() / <float>RAND_MAX
+        out.m32 = rand() / <float>RAND_MAX
+        out.m33 = rand() / <float>RAND_MAX
 
     @staticmethod
     cdef void c_rotate(Mat4C *out, Mat4C *a, float radians, Vec3C *axis) nogil:
@@ -654,10 +728,22 @@ cdef class Mat4:
 
     @staticmethod
     cdef void c_scale_add(Mat4C *out, Mat4C *a, float scale=1.0, float add=0.0) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = scale * (<float *>a)[i] + add
+        out.m00 = scale * a.m00 + add
+        out.m01 = scale * a.m01 + add
+        out.m02 = scale * a.m02 + add
+        out.m03 = scale * a.m03 + add
+        out.m10 = scale * a.m10 + add
+        out.m11 = scale * a.m11 + add
+        out.m12 = scale * a.m12 + add
+        out.m13 = scale * a.m13 + add
+        out.m20 = scale * a.m20 + add
+        out.m21 = scale * a.m21 + add
+        out.m22 = scale * a.m22 + add
+        out.m23 = scale * a.m23 + add
+        out.m30 = scale * a.m30 + add
+        out.m31 = scale * a.m31 + add
+        out.m32 = scale * a.m32 + add
+        out.m33 = scale * a.m33 + add
 
     @staticmethod
     cdef void c_set_data(Mat4C *out, float m00=0.0, float m01=0.0, float m02=0.0, float m03=0.0,
@@ -683,10 +769,22 @@ cdef class Mat4:
 
     @staticmethod
     cdef void c_sub(Mat4C *out, Mat4C *a, Mat4C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 16
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] - (<float *>b)[i]
+        out.m00 = a.m00 - b.m00
+        out.m01 = a.m01 - b.m01
+        out.m02 = a.m02 - b.m02
+        out.m03 = a.m03 - b.m03
+        out.m10 = a.m10 - b.m10
+        out.m11 = a.m11 - b.m11
+        out.m12 = a.m12 - b.m12
+        out.m13 = a.m13 - b.m13
+        out.m20 = a.m20 - b.m20
+        out.m21 = a.m21 - b.m21
+        out.m22 = a.m22 - b.m22
+        out.m23 = a.m23 - b.m23
+        out.m30 = a.m30 - b.m30
+        out.m31 = a.m31 - b.m31
+        out.m32 = a.m32 - b.m32
+        out.m33 = a.m33 - b.m33
 
     @staticmethod
     cdef void c_translate(Mat4C *out, Mat4C *a, Vec3C *shift) nogil:

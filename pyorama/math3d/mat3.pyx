@@ -20,20 +20,6 @@ cdef class Mat3:
 
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
-        
-    """
-    def __getitem__(self, size_t i):
-        cdef size_t size = 9
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        return (<float *>self.data)[i]
-        
-    def __setitem__(self, size_t i, float value):
-        cdef size_t size = 9
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        (<float *>self.data)[i] = value
-    """
     
     @staticmethod
     def add(Mat3 out, Mat3 a, Mat3 b):
@@ -162,17 +148,27 @@ cdef class Mat3:
     
     @staticmethod
     cdef void c_add(Mat3C *out, Mat3C *a, Mat3C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + (<float *>b)[i]
+        out.m00 = a.m00 + b.m00
+        out.m01 = a.m01 + b.m01
+        out.m02 = a.m02 + b.m02
+        out.m10 = a.m10 + b.m10
+        out.m11 = a.m11 + b.m11
+        out.m12 = a.m12 + b.m12
+        out.m20 = a.m20 + b.m20
+        out.m21 = a.m21 + b.m21
+        out.m22 = a.m22 + b.m22
 
     @staticmethod
     cdef void c_copy(Mat3C *out, Mat3C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i]
+        out.m00 = a.m00
+        out.m01 = a.m01
+        out.m02 = a.m02
+        out.m10 = a.m10
+        out.m11 = a.m11
+        out.m12 = a.m12
+        out.m20 = a.m20
+        out.m21 = a.m21
+        out.m22 = a.m22
 
     @staticmethod
     cdef float c_det(Mat3C *a) nogil:
@@ -183,10 +179,15 @@ cdef class Mat3:
 
     @staticmethod
     cdef void c_div(Mat3C *out, Mat3C *a, Mat3C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] / (<float *>b)[i]
+        out.m00 = a.m00 / b.m00
+        out.m01 = a.m01 / b.m01
+        out.m02 = a.m02 / b.m02
+        out.m10 = a.m10 / b.m10
+        out.m11 = a.m11 / b.m11
+        out.m12 = a.m12 / b.m12
+        out.m20 = a.m20 / b.m20
+        out.m21 = a.m21 / b.m21
+        out.m22 = a.m22 / b.m22
 
     @staticmethod
     cdef void c_dot(Mat3C *out, Mat3C *a, Mat3C *b) nogil:
@@ -202,20 +203,31 @@ cdef class Mat3:
 
     @staticmethod
     cdef bint c_equals(Mat3C *a, Mat3C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            if (<float *>a)[i] != (<float *>b)[i]:
-                return False
+        if (
+            (a.m00 != b.m00) or 
+            (a.m01 != b.m01) or 
+            (a.m02 != b.m02) or
+            (a.m10 != b.m10) or 
+            (a.m11 != b.m11) or 
+            (a.m12 != b.m12) or
+            (a.m20 != b.m20) or 
+            (a.m21 != b.m21) or 
+            (a.m22 != b.m22)
+        ): 
+            return False
         return True
 
     @staticmethod
     cdef void c_from_mat4(Mat3C *out, Mat4C *a) nogil:
-        cdef int *indices = [0, 1, 2, 4, 5, 6, 8, 9, 10]
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[indices[i]]
+        out.m00 = a.m00
+        out.m01 = a.m01
+        out.m02 = a.m02
+        out.m10 = a.m10
+        out.m11 = a.m11
+        out.m12 = a.m12
+        out.m20 = a.m20
+        out.m21 = a.m21
+        out.m22 = a.m22
 
     @staticmethod
     cdef void c_from_quat(Mat3C *out, QuatC *a) nogil:
@@ -351,18 +363,30 @@ cdef class Mat3:
 
     @staticmethod
     cdef void c_mul(Mat3C *out, Mat3C *a, Mat3C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] * (<float *>b)[i]
+        out.m00 = a.m00 * b.m00
+        out.m01 = a.m01 * b.m01
+        out.m02 = a.m02 * b.m02
+        out.m10 = a.m10 * b.m10
+        out.m11 = a.m11 * b.m11
+        out.m12 = a.m12 * b.m12
+        out.m20 = a.m20 * b.m20
+        out.m21 = a.m21 * b.m21
+        out.m22 = a.m22 * b.m22
 
     @staticmethod
     cdef bint c_nearly_equals(Mat3C *a, Mat3C *b, float epsilon=0.000001) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            if c_math.fabs((<float *>a)[i] - (<float *>b)[i]) > epsilon * max(1.0, c_math.fabs((<float *>a)[i]), c_math.fabs((<float *>b)[i])):
-                return False
+        if (
+            c_math.fabs(a.m00 - b.m00) > epsilon * max(1.0, c_math.fabs(a.m00), c_math.fabs(b.m00)) or
+            c_math.fabs(a.m01 - b.m01) > epsilon * max(1.0, c_math.fabs(a.m01), c_math.fabs(b.m01)) or
+            c_math.fabs(a.m02 - b.m02) > epsilon * max(1.0, c_math.fabs(a.m02), c_math.fabs(b.m02)) or
+            c_math.fabs(a.m10 - b.m10) > epsilon * max(1.0, c_math.fabs(a.m10), c_math.fabs(b.m10)) or
+            c_math.fabs(a.m11 - b.m11) > epsilon * max(1.0, c_math.fabs(a.m11), c_math.fabs(b.m11)) or
+            c_math.fabs(a.m12 - b.m12) > epsilon * max(1.0, c_math.fabs(a.m12), c_math.fabs(b.m12)) or
+            c_math.fabs(a.m20 - b.m20) > epsilon * max(1.0, c_math.fabs(a.m20), c_math.fabs(b.m20)) or
+            c_math.fabs(a.m21 - b.m21) > epsilon * max(1.0, c_math.fabs(a.m21), c_math.fabs(b.m21)) or
+            c_math.fabs(a.m22 - b.m22) > epsilon * max(1.0, c_math.fabs(a.m22), c_math.fabs(b.m22))
+        ): 
+            return False
         return True
 
     @staticmethod
@@ -375,10 +399,15 @@ cdef class Mat3:
 
     @staticmethod
     cdef void c_random(Mat3C *out) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = rand() / <float>RAND_MAX
+        out.m00 = rand() / <float>RAND_MAX
+        out.m01 = rand() / <float>RAND_MAX
+        out.m02 = rand() / <float>RAND_MAX
+        out.m10 = rand() / <float>RAND_MAX
+        out.m11 = rand() / <float>RAND_MAX
+        out.m12 = rand() / <float>RAND_MAX
+        out.m20 = rand() / <float>RAND_MAX
+        out.m21 = rand() / <float>RAND_MAX
+        out.m22 = rand() / <float>RAND_MAX
 
     @staticmethod
     cdef void c_rotate(Mat3C *out, Mat3C *a, float radians) nogil:
@@ -394,10 +423,15 @@ cdef class Mat3:
 
     @staticmethod
     cdef void c_scale_add(Mat3C *out, Mat3C *a, float scale=1.0, float add=0.0) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = scale * (<float *>a)[i] + add
+        out.m00 = scale * a.m00 + add
+        out.m01 = scale * a.m01 + add
+        out.m02 = scale * a.m02 + add
+        out.m10 = scale * a.m10 + add
+        out.m11 = scale * a.m11 + add
+        out.m12 = scale * a.m12 + add
+        out.m20 = scale * a.m20 + add
+        out.m21 = scale * a.m21 + add
+        out.m22 = scale * a.m22 + add
 
     @staticmethod
     cdef void c_set_data(Mat3C *out, float m00=0.0, float m01=0.0, float m02=0.0,
@@ -433,10 +467,15 @@ cdef class Mat3:
 
     @staticmethod
     cdef void c_sub(Mat3C *out, Mat3C *a, Mat3C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 9
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] - (<float *>b)[i]
+        out.m00 = a.m00 - b.m00
+        out.m01 = a.m01 - b.m01
+        out.m02 = a.m02 - b.m02
+        out.m10 = a.m10 - b.m10
+        out.m11 = a.m11 - b.m11
+        out.m12 = a.m12 - b.m12
+        out.m20 = a.m20 - b.m20
+        out.m21 = a.m21 - b.m21
+        out.m22 = a.m22 - b.m22
 
     @staticmethod
     cdef void c_transpose(Mat3C *out, Mat3C *a) nogil:

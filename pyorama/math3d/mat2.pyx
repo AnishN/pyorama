@@ -20,20 +20,6 @@ cdef class Mat2:
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
     
-    """
-    def __getitem__(self, size_t i):
-        cdef size_t size = 4
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        return (<float *>self.data)[i]
-        
-    def __setitem__(self, size_t i, float value):
-        cdef size_t size = 4
-        if i < 0 or i >= size:
-            raise ValueError("invalid index")
-        (<float *>self.data)[i] = value
-    """
-    
     @staticmethod
     def add(Mat2 out, Mat2 a, Mat2 b):
         Mat2.c_add(&out.data, &a.data, &b.data)
@@ -112,17 +98,17 @@ cdef class Mat2:
     
     @staticmethod
     cdef void c_add(Mat2C *out, Mat2C *a, Mat2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] + (<float *>b)[i]
+        out.m00 = a.m00 + b.m00
+        out.m01 = a.m01 + b.m01
+        out.m10 = a.m10 + b.m10
+        out.m11 = a.m11 + b.m11
         
     @staticmethod
     cdef void c_copy(Mat2C *out, Mat2C *a) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i]
+        out.m00 = a.m00
+        out.m01 = a.m01
+        out.m10 = a.m10
+        out.m11 = a.m11
         
     @staticmethod
     cdef float c_det(Mat2C *a) nogil:
@@ -131,10 +117,10 @@ cdef class Mat2:
         
     @staticmethod
     cdef void c_div(Mat2C *out, Mat2C *a, Mat2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] / (<float *>b)[i]
+        out.m00 = a.m00 / b.m00
+        out.m01 = a.m01 / b.m01
+        out.m10 = a.m10 / b.m10
+        out.m11 = a.m11 / b.m11
         
     @staticmethod
     cdef void c_dot(Mat2C *out, Mat2C *a, Mat2C *b) nogil:
@@ -147,11 +133,13 @@ cdef class Mat2:
         
     @staticmethod
     cdef bint c_equals(Mat2C *a, Mat2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            if (<float *>a)[i] != (<float *>b)[i]:
-                return False
+        if (
+            (a.m00 != b.m00) or 
+            (a.m01 != b.m01) or 
+            (a.m10 != b.m10) or
+            (a.m11 != b.m11)
+        ): 
+            return False
         return True
         
     @staticmethod
@@ -190,26 +178,28 @@ cdef class Mat2:
 
     @staticmethod
     cdef void c_mul(Mat2C *out, Mat2C *a, Mat2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] * (<float *>b)[i]
+        out.m00 = a.m00 * b.m00
+        out.m01 = a.m01 * b.m01
+        out.m10 = a.m10 * b.m10
+        out.m11 = a.m11 * b.m11
             
     @staticmethod
     cdef bint c_nearly_equals(Mat2C *a, Mat2C *b, float epsilon=0.000001) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            if c_math.fabs((<float *>a)[i] - (<float *>b)[i]) > epsilon * max(1.0, c_math.fabs((<float *>a)[i]), c_math.fabs((<float *>b)[i])):
-                return False
+        if (
+            c_math.fabs(a.m00 - b.m00) > epsilon * max(1.0, c_math.fabs(a.m00), c_math.fabs(b.m00)) or
+            c_math.fabs(a.m01 - b.m01) > epsilon * max(1.0, c_math.fabs(a.m01), c_math.fabs(b.m01)) or
+            c_math.fabs(a.m10 - b.m10) > epsilon * max(1.0, c_math.fabs(a.m10), c_math.fabs(b.m10)) or
+            c_math.fabs(a.m11 - b.m11) > epsilon * max(1.0, c_math.fabs(a.m11), c_math.fabs(b.m11))
+        ): 
+            return False
         return True
 
     @staticmethod
     cdef void c_random(Mat2C *out) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = rand() / <float>RAND_MAX
+        out.m00 = rand() / <float>RAND_MAX
+        out.m01 = rand() / <float>RAND_MAX
+        out.m10 = rand() / <float>RAND_MAX
+        out.m11 = rand() / <float>RAND_MAX
         
     @staticmethod
     cdef void c_rotate(Mat2C *out, Mat2C *a, float radians) nogil:
@@ -223,10 +213,10 @@ cdef class Mat2:
         
     @staticmethod
     cdef void c_scale_add(Mat2C *out, Mat2C *a, float scale=1.0, float add=0.0) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = scale * (<float *>a)[i] + add
+        out.m00 = scale * a.m00 + add
+        out.m01 = scale * a.m01 + add
+        out.m10 = scale * a.m10 + add
+        out.m11 = scale * a.m11 + add
         
     @staticmethod
     cdef void c_set_data(Mat2C *out, float m00=0.0, float m01=0.0, float m10=0.0, float m11=0.0) nogil:
@@ -237,10 +227,10 @@ cdef class Mat2:
 
     @staticmethod
     cdef void c_sub(Mat2C *out, Mat2C *a, Mat2C *b) nogil:
-        cdef size_t i = 0
-        cdef size_t size = 4
-        for i in range(size):
-            (<float *>out)[i] = (<float *>a)[i] - (<float *>b)[i]
+        out.m00 = a.m00 - b.m00
+        out.m01 = a.m01 - b.m01
+        out.m10 = a.m10 - b.m10
+        out.m11 = a.m11 - b.m11
             
     @staticmethod
     cdef void c_transpose(Mat2C *out, Mat2C *a) nogil:
