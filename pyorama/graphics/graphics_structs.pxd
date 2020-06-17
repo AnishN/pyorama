@@ -1,0 +1,101 @@
+from pyorama.core.handle cimport *
+from pyorama.libs.c cimport *
+from pyorama.math3d cimport *
+from pyorama.graphics.graphics_enums cimport *
+
+ctypedef struct VertexCompC:
+    Handle handle
+    char[256] name
+    size_t name_length
+    VertexCompType type
+    size_t count
+    bint normalized
+    size_t offset
+
+ctypedef struct VertexFormatC:
+    Handle handle
+    VertexCompC[16] comps
+    size_t count
+    size_t stride
+
+ctypedef struct VertexBufferC:
+    Handle handle
+    uint32_t gl_id
+    Handle format
+    BufferUsage usage
+    size_t size
+
+ctypedef struct IndexBufferC:
+    Handle handle
+    uint32_t gl_id
+    IndexFormat format
+    BufferUsage usage
+    size_t size
+
+ctypedef struct UniformFormatC:
+    Handle handle
+    char[256] name
+    size_t name_length
+    UniformType type
+    size_t count
+    size_t size
+
+ctypedef struct UniformC:
+    Handle handle
+    Handle format
+    uint8_t *data
+
+ctypedef struct ShaderC:
+    Handle handle
+    uint32_t gl_id
+    ShaderType type
+
+#Part of ProgramC, not directly created!
+ctypedef struct ProgramAttributeC:
+    char[256] name
+    size_t name_length
+    size_t size#in multiples of the type's size
+    AttributeType type
+    size_t location
+
+#Part of ProgramC, not directly create!
+ctypedef struct ProgramUniformC:
+    char[256] name
+    size_t name_length
+    size_t size
+    UniformType type
+    size_t location
+
+ctypedef struct ProgramC:
+    Handle handle
+    uint32_t gl_id
+    Handle vertex
+    Handle fragment
+    ProgramAttributeC[16] attributes
+    size_t num_attributes
+    ProgramUniformC[16] uniforms
+    size_t num_uniforms
+
+ctypedef struct ImageC:
+    Handle handle
+    uint16_t width
+    uint16_t height
+    size_t data_size
+    uint8_t *data
+
+ctypedef struct TextureC:
+    Handle handle
+    uint32_t gl_id
+    bint mipmaps
+    TextureFilter filter
+    TextureWrap wrap_s
+    TextureWrap wrap_t
+
+ctypedef struct ViewC:
+    Handle handle
+    uint32_t clear_flags
+    ColorC clear_color
+    float clear_depth
+    uint32_t clear_stencil
+    Mat4C view
+    Mat4C projection

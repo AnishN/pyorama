@@ -1,8 +1,10 @@
 import sys
 import numpy as np
 from pyorama.core.app import App
-from pyorama.graphics import *
-from pyorama.math3d.mat2 import Mat2
+from pyorama.graphics.graphics_enums import *
+from pyorama.graphics.graphics_manager import GraphicsManager
+from pyorama.math3d.vec3 import Vec3
+from pyorama.math3d.vec4 import Vec4
 
 class Game(App):
 
@@ -10,9 +12,13 @@ class Game(App):
         super().init()
         self.graphics = GraphicsManager()
         self.v_fmt = self.graphics.vertex_format_create([
-            (ATTRIBUTE_POSITION, VERTEX_COMP_TYPE_F32, 3, False),#vertices
-            (ATTRIBUTE_TEX_COORD_0, VERTEX_COMP_TYPE_F32, 2, False),#tex_coords
+            (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
+            (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
         ])
+        self.u_tint_fmt = self.graphics.uniform_format_create(b"u_tint", UNIFORM_TYPE_VEC4)
+        self.u_tint = self.graphics.uniform_create(self.u_tint_fmt)
+        self.graphics.uniform_set_data(self.u_tint, Vec4(1.0, 0.0, 0.0, 1.0))
+        
         self.v_data = np.array([
             -1.0, -1.0, 0.0, 0.0, 0.0,
              0.0, 1.0, 0.0, 0.5, 1.0, 
@@ -34,6 +40,10 @@ class Game(App):
         self.image = self.graphics.image_create_from_file(image_path)
         self.texture = self.graphics.texture_create()
         self.graphics.texture_set_image(self.texture, self.image)
+
+        self.view = self.graphics.view_create()
+        self.uniforms = np.array([self.u_tint], dtype=np.uint64)
+        self.graphics.view_set_uniforms(self.view, self.uniforms)
     
     def quit(self):
         self.graphics.vertex_format_delete(self.v_fmt)
@@ -53,6 +63,52 @@ if __name__ == "__main__":
     game.run()
 
 """
+cpdef enum Attribute:
+    ATTRIBUTE_POSITION
+    ATTRIBUTE_NORMAL
+    ATTRIBUTE_TANGENT
+    ATTRIBUTE_BITANGENT
+    ATTRIBUTE_COLOR_0
+    ATTRIBUTE_COLOR_1
+    ATTRIBUTE_COLOR_2
+    ATTRIBUTE_COLOR_3
+    ATTRIBUTE_INDICES
+    ATTRIBUTE_WEIGHT
+    ATTRIBUTE_TEX_COORD_0
+    ATTRIBUTE_TEX_COORD_1
+    ATTRIBUTE_TEX_COORD_2
+    ATTRIBUTE_TEX_COORD_3
+    ATTRIBUTE_TEX_COORD_4
+    ATTRIBUTE_TEX_COORD_5
+    ATTRIBUTE_TEX_COORD_6
+    ATTRIBUTE_TEX_COORD_7
+
+cdef enum:
+    ATTRIBUTE_COUNT = 18
+
+cdef extern from *:
+    char *attribute_names[] = {
+        "a_position",
+        "a_normal",
+        "a_tangent",
+        "a_bitangent",
+        "a_color_0",
+        "a_color_1",
+        "a_color_2",
+        "a_color_3",
+        "a_indices",
+        "a_weight",
+        "a_tex_coord_0",
+        "a_tex_coord_1",
+        "a_tex_coord_2",
+        "a_tex_coord_3",
+        "a_tex_coord_4",
+        "a_tex_coord_5",
+        "a_tex_coord_6",
+        "a_tex_coord_7",
+    };
+    cdef char **attribute_names
+
 def program_compile(self, Handle program):
     cdef:
         int max_u_name_length
