@@ -179,6 +179,9 @@ cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil:
 cdef uint32_t c_texture_unit_to_gl(TextureUnit unit) nogil:
     return GL_TEXTURE0 + (unit - TEXTURE_UNIT_0)
 
+cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) nogil:
+    return GL_COLOR_ATTACHMENT0 + (attachment - FRAME_BUFFER_ATTACHMENT_COLOR_0)
+
 cdef class GraphicsManager:
 
     def __cinit__(self):
@@ -200,6 +203,7 @@ cdef class GraphicsManager:
         self.programs = ItemSlotMap(sizeof(ProgramC), RENDERER_ITEM_TYPE_PROGRAM)
         self.images = ItemSlotMap(sizeof(ImageC), RENDERER_ITEM_TYPE_IMAGE)
         self.textures = ItemSlotMap(sizeof(TextureC), RENDERER_ITEM_TYPE_TEXTURE)
+        self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), RENDERER_ITEM_TYPE_FRAME_BUFFER)
         self.views = ItemSlotMap(sizeof(ViewC), RENDERER_ITEM_TYPE_VIEW)
 
     def __dealloc__(self):
@@ -212,6 +216,7 @@ cdef class GraphicsManager:
         self.programs = None
         self.images = None
         self.textures = None
+        self.frame_buffers = None
         self.views = None
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
@@ -867,6 +872,69 @@ cdef class GraphicsManager:
         if texture_ptr.mipmaps:
             glGenerateMipmap(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, 0)
+    
+    cpdef void texture_set_empty(self, Handle texture, uint16_t width, uint16_t height) except *:
+        cdef:
+            TextureC *texture_ptr
+        texture_ptr = self.texture_get_ptr(texture)
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL)
+        if texture_ptr.mipmaps:
+            glGenerateMipmap(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, 0)
+
+    cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *:
+        return <FrameBufferC *>self.frame_buffers.c_get_ptr(frame_buffer)
+
+    cpdef Handle frame_buffer_create(self) except *:
+        cdef:
+            Handle frame_buffer
+            FrameBufferC *frame_buffer_ptr
+        frame_buffer = self.frame_buffers.c_create()
+        frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
+        glGenFramebuffers(1, &frame_buffer_ptr.gl_id)
+        return frame_buffer
+
+    cpdef void frame_buffer_delete(self, Handle frame_buffer) except *:
+        cdef:
+            FrameBufferC *frame_buffer_ptr
+        frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
+        glDeleteFramebuffers(1, &frame_buffer_ptr.gl_id)
+        self.frame_buffers.c_delete(frame_buffer)
+
+    cpdef void frame_buffer_attach_textures(self, Handle frame_buffer, Handle[:] textures, int32_t[:] attachments) except *:
+        cdef:
+            FrameBufferC *frame_buffer_ptr
+            uint32_t gl_id
+            size_t num_textures
+            size_t num_attachments
+            size_t i
+            Handle texture
+            TextureC *texture_ptr
+            FrameBufferAttachment attachment
+            uint32_t gl_attachment
+        frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
+        num_textures = textures.shape[0]
+        num_attachments = attachments.shape[0]
+        if num_textures > MAX_FRAME_BUFFER_ATTACHMENTS:
+            raise ValueError("FrameBuffer: cannot attach more than {0} textures".format(MAX_FRAME_BUFFER_ATTACHMENTS))
+        if num_attachments > MAX_FRAME_BUFFER_ATTACHMENTS:
+            raise ValueError("FrameBuffer: cannot use more than {0} attachments".format(MAX_FRAME_BUFFER_ATTACHMENTS))
+        if num_textures != num_attachments:
+            raise ValueError("FrameBuffer: number of textures and attachments do not match")
+        memset(frame_buffer_ptr.textures, 0, MAX_FRAME_BUFFER_ATTACHMENTS * sizeof(Handle))
+        memset(frame_buffer_ptr.attachments, 0, MAX_FRAME_BUFFER_ATTACHMENTS * sizeof(int32_t))
+        gl_id = frame_buffer_ptr.gl_id
+        glBindFramebuffer(GL_FRAMEBUFFER, gl_id)
+        for i in range(num_attachments):
+            texture = textures[i]
+            attachment = <FrameBufferAttachment>attachments[i]
+            frame_buffer_ptr.attachments[i] = attachment
+            frame_buffer_ptr.textures[<size_t>attachment] = texture
+            gl_attachment = c_frame_buffer_attachment_to_gl(attachment)
+            texture_ptr = self.texture_get_ptr(texture)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment, GL_TEXTURE_2D, texture_ptr.gl_id, 0)
+        glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
     cdef ViewC *view_get_ptr(self, Handle view) except *:
         return <ViewC *>self.views.c_get_ptr(view)
@@ -909,7 +977,6 @@ cdef class GraphicsManager:
     cpdef void view_set_program(self, Handle view, Handle program) except *:
         cdef:
             ViewC *view_ptr
-            size_t num_uniforms
         view_ptr = self.view_get_ptr(view)
         view_ptr.program = program
 
@@ -927,17 +994,15 @@ cdef class GraphicsManager:
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *:
         cdef:
             ViewC *view_ptr
-            size_t num_uniforms
         view_ptr = self.view_get_ptr(view)
         view_ptr.vertex_buffer = buffer
 
     cpdef void view_set_index_buffer(self, Handle view, Handle buffer) except *:
         cdef:
             ViewC *view_ptr
-            size_t num_uniforms
         view_ptr = self.view_get_ptr(view)
         view_ptr.index_buffer = buffer
-    
+
     cpdef void view_set_textures(self, Handle view, Handle[:] textures, int32_t[:] texture_units) except *:
         cdef:
             ViewC *view_ptr
@@ -964,6 +1029,12 @@ cdef class GraphicsManager:
             view_ptr.textures[<size_t>unit] = texture
         view_ptr.num_texture_units = num_units
 
+    cpdef void view_set_frame_buffer(self, Handle view, Handle frame_buffer) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.frame_buffer = frame_buffer
+
     cpdef void update(self) except *:
         cdef:
             ViewC *view_ptr
@@ -972,6 +1043,8 @@ cdef class GraphicsManager:
             Handle texture
             TextureUnit texture_unit
             uint32_t gl_texture_unit
+            Handle fbo
+            FrameBufferC *fbo_ptr
             ProgramC *program_ptr
             VertexBufferC *vbo_ptr
             IndexBufferC *ibo_ptr
@@ -986,14 +1059,19 @@ cdef class GraphicsManager:
         glClearColor(color.x, color.y, color.z, color.w)
         glViewport(0, 0, 800, 600)
 
+
         program_ptr = self.program_get_ptr(view_ptr.program)
         vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
-        ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)   
+        ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
 
         glUseProgram(program_ptr.gl_id)
         for i in range(view_ptr.num_uniforms):
             uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
             self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
+        fbo = view_ptr.frame_buffer
+        if fbo != 0:
+            fbo_ptr = self.frame_buffer_get_ptr(fbo)
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id)
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
@@ -1009,6 +1087,8 @@ cdef class GraphicsManager:
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
             glActiveTexture(gl_texture_unit)
             glBindTexture(GL_TEXTURE_2D, 0)
+        if fbo != 0:
+            glBindFramebuffer(GL_FRAMEBUFFER, 0)
         glUseProgram(0)
         
         SDL_GL_SetSwapInterval(0)

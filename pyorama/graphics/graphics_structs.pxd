@@ -91,6 +91,13 @@ ctypedef struct TextureC:
     TextureWrap wrap_s
     TextureWrap wrap_t
 
+ctypedef struct FrameBufferC:
+    Handle handle
+    uint32_t gl_id
+    Handle[8] textures
+    FrameBufferAttachment[8] attachments
+    size_t num_attachments
+
 ctypedef struct ViewC:
     Handle handle
     uint32_t clear_flags
@@ -107,3 +114,4 @@ ctypedef struct ViewC:
     Handle[16] textures
     TextureUnit[16] texture_units
     size_t num_texture_units
+    Handle frame_buffer

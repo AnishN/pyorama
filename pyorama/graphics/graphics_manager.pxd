@@ -22,6 +22,7 @@ cdef class GraphicsManager:
         ItemSlotMap programs
         ItemSlotMap images
         ItemSlotMap textures
+        ItemSlotMap frame_buffers
         ItemSlotMap views
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *
@@ -79,6 +80,12 @@ cdef class GraphicsManager:
     cpdef void texture_delete(self, Handle texture) except *
     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
     cpdef void texture_set_image(self, Handle texture, Handle image) except *
+    cpdef void texture_set_empty(self, Handle texture, uint16_t width, uint16_t height) except *
+
+    cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *
+    cpdef Handle frame_buffer_create(self) except *
+    cpdef void frame_buffer_delete(self, Handle frame_buffer) except *
+    cpdef void frame_buffer_attach_textures(self, Handle frame_buffer, Handle[:] textures, int32_t[:] attachments) except *
 
     cdef ViewC *view_get_ptr(self, Handle view) except *
     cpdef Handle view_create(self) except *
@@ -92,5 +99,6 @@ cdef class GraphicsManager:
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *
     cpdef void view_set_index_buffer(self, Handle view, Handle buffer) except *
     cpdef void view_set_textures(self, Handle view, Handle[:] textures, int32_t[:] texture_units) except *
+    cpdef void view_set_frame_buffer(self, Handle view, Handle frame_buffer) except *
     
     cpdef void update(self) except *
