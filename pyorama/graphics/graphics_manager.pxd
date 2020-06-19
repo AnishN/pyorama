@@ -13,6 +13,17 @@ cdef class GraphicsManager:
     cdef:
         SDL_Window *root_window
         SDL_GLContext root_context
+
+        Handle quad_v_fmt
+        Handle quad_vbo
+        Handle quad_ibo
+        Handle quad_vs
+        Handle quad_fs
+        Handle quad_program
+        Handle u_quad_fmt
+        Handle u_quad
+
+        ItemSlotMap windows
         ItemSlotMap vertex_formats
         ItemSlotMap vertex_buffers
         ItemSlotMap index_buffers
@@ -24,6 +35,11 @@ cdef class GraphicsManager:
         ItemSlotMap textures
         ItemSlotMap frame_buffers
         ItemSlotMap views
+
+    cdef WindowC *window_get_ptr(self, Handle window) except *
+    cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *
+    cpdef void window_delete(self, Handle window) except *
+    cpdef void window_set_texture(self, Handle window, Handle texture) except *
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *
     cpdef Handle vertex_format_create(self, list comps) except *

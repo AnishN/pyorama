@@ -185,15 +185,12 @@ cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) 
 cdef class GraphicsManager:
 
     def __cinit__(self):
-        #self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
-        self.root_window = SDL_CreateWindow(
-            "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-            800, 600, SDL_WINDOW_OPENGL,
-        )
+        self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
         self.root_context = SDL_GL_CreateContext(self.root_window)
         glewInit()
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
 
+        self.windows = ItemSlotMap(sizeof(WindowC), RENDERER_ITEM_TYPE_WINDOW)
         self.vertex_formats = ItemSlotMap(sizeof(VertexFormatC), RENDERER_ITEM_TYPE_VERTEX_FORMAT)
         self.vertex_buffers = ItemSlotMap(sizeof(VertexBufferC), RENDERER_ITEM_TYPE_VERTEX_BUFFER)
         self.index_buffers = ItemSlotMap(sizeof(IndexBufferC), RENDERER_ITEM_TYPE_INDEX_BUFFER)
@@ -206,7 +203,36 @@ cdef class GraphicsManager:
         self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), RENDERER_ITEM_TYPE_FRAME_BUFFER)
         self.views = ItemSlotMap(sizeof(ViewC), RENDERER_ITEM_TYPE_VIEW)
 
+        cdef:
+            float[16] quad_vbo_data
+            uint32_t[6] quad_ibo_data
+            uint8_t[:] quad_vbo_mv
+            uint8_t[:] quad_ibo_mv
+        quad_vbo_data = [
+            -1.0, -1.0, 0.0, 0.0,
+            -1.0, 1.0, 0.0, 1.0,
+            1.0, -1.0, 1.0, 0.0,
+            1.0, 1.0, 1.0, 1.0,
+        ]
+        quad_vbo_mv = <uint8_t[:64]>(<uint8_t *>&quad_vbo_data)
+        quad_ibo_data =  [0, 1, 2, 1, 2, 3]
+        quad_ibo_mv = <uint8_t[:24]>(<uint8_t *>&quad_ibo_data)
+        self.quad_v_fmt = self.vertex_format_create([
+            (b"a_quad", VERTEX_COMP_TYPE_F32, 4, False),
+        ])
+        self.quad_vbo = self.vertex_buffer_create(self.quad_v_fmt, BUFFER_USAGE_STATIC)
+        self.vertex_buffer_set_data(self.quad_vbo, quad_vbo_mv)
+        self.quad_ibo = self.index_buffer_create(INDEX_FORMAT_U32, BUFFER_USAGE_STATIC)
+        self.index_buffer_set_data(self.quad_ibo, quad_ibo_mv)
+        self.quad_vs = self.shader_create_from_file(SHADER_TYPE_VERTEX, b"./resources/shaders/quad.vert")
+        self.quad_fs = self.shader_create_from_file(SHADER_TYPE_FRAGMENT, b"./resources/shaders/quad.frag")
+        self.quad_program = self.program_create(self.quad_vs, self.quad_fs)
+        self.u_quad_fmt = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
+        self.u_quad = self.uniform_create(self.u_quad_fmt)
+        self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
+
     def __dealloc__(self):
+        self.windows = None
         self.vertex_formats = None
         self.vertex_buffers = None
         self.index_buffers = None
@@ -220,6 +246,42 @@ cdef class GraphicsManager:
         self.views = None
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
+
+    cdef WindowC *window_get_ptr(self, Handle window) except *:
+        return <WindowC *>self.windows.c_get_ptr(window)
+
+    cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *:
+        cdef:
+            Handle window
+            WindowC *window_ptr
+            size_t title_length
+        window = self.windows.c_create()
+        window_ptr = self.window_get_ptr(window)
+        window_ptr.sdl_ptr = SDL_CreateWindow(
+            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+            width, height, SDL_WINDOW_OPENGL,
+        )
+        window_ptr.width = width
+        window_ptr.height = height
+        title_length = len(title)
+        if title_length >= 256:
+            raise ValueError("Window: title cannot exceed 255 characters")
+        memcpy(window_ptr.title, <char *>title, title_length)
+        window_ptr.title_length = title_length
+        return window
+
+    cpdef void window_delete(self, Handle window) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.window_get_ptr(window)
+        SDL_DestroyWindow(window_ptr.sdl_ptr)
+        self.windows.c_delete(window)
+
+    cpdef void window_set_texture(self, Handle window, Handle texture) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.window_get_ptr(window)
+        window_ptr.texture = texture
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *:
         return <VertexFormatC *>self.vertex_formats.c_get_ptr(format)
@@ -1034,7 +1096,7 @@ cdef class GraphicsManager:
             ViewC *view_ptr
         view_ptr = self.view_get_ptr(view)
         view_ptr.frame_buffer = frame_buffer
-
+    
     cpdef void update(self) except *:
         cdef:
             ViewC *view_ptr
@@ -1050,6 +1112,7 @@ cdef class GraphicsManager:
             IndexBufferC *ibo_ptr
             TextureC *texture_ptr
             UniformC *uniform_ptr
+            WindowC *window_ptr
             size_t i
 
         view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
@@ -1058,7 +1121,6 @@ cdef class GraphicsManager:
         glClear(gl_clear_flags)
         glClearColor(color.x, color.y, color.z, color.w)
         glViewport(0, 0, 800, 600)
-
 
         program_ptr = self.program_get_ptr(view_ptr.program)
         vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
@@ -1091,5 +1153,25 @@ cdef class GraphicsManager:
             glBindFramebuffer(GL_FRAMEBUFFER, 0)
         glUseProgram(0)
         
+        for i in range(self.windows.items.num_items):
+            window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
+            SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
+            glViewport(0, 0, 800, 600)
+            glClear(GL_COLOR_BUFFER_BIT)
+            glClearColor(1.0, 0.0, 0.0, 1.0)
+            glActiveTexture(GL_TEXTURE0)
+            texture_ptr = self.texture_get_ptr(window_ptr.texture)
+            program_ptr = self.program_get_ptr(self.quad_program)
+            glUseProgram(program_ptr.gl_id)
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+            self._program_bind_uniform(self.quad_program, self.u_quad)
+            self._program_bind_attributes(self.quad_program, self.quad_vbo)
+            self._index_buffer_draw(self.quad_ibo)
+            self._program_unbind_attributes(self.quad_program)
+            glBindTexture(GL_TEXTURE_2D, 0)
+            SDL_GL_SetSwapInterval(0)
+            SDL_GL_SwapWindow(window_ptr.sdl_ptr)
+            glUseProgram(0)
+        SDL_GL_MakeCurrent(self.root_window, self.root_context)
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(self.root_window)

@@ -1,7 +1,17 @@
 from pyorama.core.handle cimport *
 from pyorama.libs.c cimport *
+from pyorama.libs.sdl2 cimport *
 from pyorama.math3d cimport *
 from pyorama.graphics.graphics_enums cimport *
+
+ctypedef struct WindowC:
+    Handle handle
+    SDL_Window *sdl_ptr
+    uint16_t width
+    uint16_t height
+    char[256] title
+    size_t title_length
+    Handle texture
 
 ctypedef struct VertexCompC:
     Handle handle

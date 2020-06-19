@@ -38,7 +38,7 @@ class Game(App):
         self.i_data = np.array([0, 1, 2], dtype=np.int32)
         self.ibo = self.graphics.index_buffer_create(INDEX_FORMAT_U32, BUFFER_USAGE_STATIC)
         self.graphics.index_buffer_set_data(self.ibo, self.i_data.view(np.uint8))
-
+        
         vs_path = b"./resources/shaders/basic.vert"
         self.vs = self.graphics.shader_create_from_file(SHADER_TYPE_VERTEX, vs_path)
         fs_path = b"./resources/shaders/basic.frag"
@@ -56,13 +56,15 @@ class Game(App):
         self.textures = np.array([self.texture_0, self.texture_1], dtype=np.uint64)
         self.texture_units = np.array([TEXTURE_UNIT_5, TEXTURE_UNIT_7], dtype=np.int32)
         
+        self.window = self.graphics.window_create(800, 600, b"Hello World!")
         self.out_texture = self.graphics.texture_create()
         self.graphics.texture_set_empty(self.out_texture, 800, 600)
+        self.graphics.window_set_texture(self.window, self.out_texture)
         self.out_textures = np.array([self.out_texture], dtype=np.uint64)
         self.attachments = np.array([FRAME_BUFFER_ATTACHMENT_COLOR_0], dtype=np.int32)
         self.fbo = self.graphics.frame_buffer_create()
         self.graphics.frame_buffer_attach_textures(self.fbo, self.out_textures, self.attachments)
-
+        
         self.view = self.graphics.view_create()
         self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR)
         self.graphics.view_set_clear_color(self.view, Vec4(0.2, 0.3, 0.3, 1.0))
@@ -72,7 +74,7 @@ class Game(App):
         self.graphics.view_set_index_buffer(self.view, self.ibo)
         self.graphics.view_set_textures(self.view, self.textures, self.texture_units)
         self.graphics.view_set_frame_buffer(self.view, self.fbo)
-    
+
     def quit(self):
         #really should call *_delete methods on all created graphics handles
         #in testing so far, this function is never called, so am lazy with clean up here.
@@ -81,7 +83,7 @@ class Game(App):
     def update(self, delta):
         print(delta)
         self.graphics.update()
-
+    
 if __name__ == "__main__":
     game = Game()
     game.run()
