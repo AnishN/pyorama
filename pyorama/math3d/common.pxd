@@ -1,15 +1,3 @@
-from pyorama.libs.c cimport *
-
-"""
-ctypedef float[2] Vec2C
-ctypedef float[3] Vec3C
-ctypedef float[4] Vec4C
-ctypedef float[4] QuatC
-ctypedef float[4] Mat2C
-ctypedef float[9] Mat3C
-ctypedef float[16] Mat4C
-"""
-
 ctypedef packed struct Vec2C:
     float x
     float y
@@ -45,15 +33,3 @@ ctypedef packed struct QuatC:
     float y
     float z
     float w
-
-ctypedef packed struct ColorC:
-    uint8_t r
-    uint8_t g
-    uint8_t b
-    uint8_t a
-
-ctypedef packed struct FloatColorC:
-    float r
-    float b
-    float g
-    float a

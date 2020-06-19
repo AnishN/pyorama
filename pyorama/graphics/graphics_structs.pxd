@@ -94,8 +94,16 @@ ctypedef struct TextureC:
 ctypedef struct ViewC:
     Handle handle
     uint32_t clear_flags
-    ColorC clear_color
+    Vec4C clear_color
     float clear_depth
     uint32_t clear_stencil
     Mat4C view
     Mat4C projection
+    Handle program
+    Handle[16] uniforms
+    size_t num_uniforms
+    Handle vertex_buffer
+    Handle index_buffer
+    Handle[16] textures
+    TextureUnit[16] texture_units
+    size_t num_textures

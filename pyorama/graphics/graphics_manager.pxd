@@ -4,7 +4,7 @@ from pyorama.core.item_slot_map cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.gl cimport *
 from pyorama.libs.sdl2 cimport *
-from pyorama.math3d cimport *
+#from pyorama.math3d cimport *
 from pyorama.graphics.graphics_enums cimport *
 from pyorama.graphics.graphics_structs cimport *
 
@@ -84,9 +84,13 @@ cdef class GraphicsManager:
     cpdef Handle view_create(self) except *
     cpdef void view_delete(self, Handle view) except *
     cpdef void view_set_clear_flags(self, Handle view, uint32_t clear_flags) except *
-    cpdef void view_set_clear_color(self, Handle view, Color color) except *
+    cpdef void view_set_clear_color(self, Handle view, Vec4 color) except *
     cpdef void view_set_clear_depth(self, Handle view, float depth) except *
     cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *
+    cpdef void view_set_program(self, Handle view, Handle program) except *
     cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *
+    cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *
+    cpdef void view_set_index_buffer(self, Handle view, Handle buffer) except *
+    cpdef void view_set_texture(self, Handle view, Handle texture, TextureUnit unit) except *
 
     cpdef void update(self) except *

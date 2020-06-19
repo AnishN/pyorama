@@ -90,32 +90,7 @@ cdef uint32_t c_texture_wrap_to_gl(TextureWrap wrap) nogil:
     elif wrap == TEXTURE_WRAP_CLAMP_TO_EDGE:
         return GL_CLAMP_TO_EDGE
 
-cdef uint8_t *c_uniform_data_get_ptr(object data, UniformType type) except *:
-    cdef:
-        uint8_t *data_ptr
-        int int_data
-        float float_data
-    if type == UNIFORM_TYPE_INT:
-        int_data = <int?>data
-        data_ptr = <uint8_t *>&(int_data)
-    elif type == UNIFORM_TYPE_FLOAT:
-        float_data = <float?>data
-        data_ptr = <uint8_t *>&(float_data)
-    elif type == UNIFORM_TYPE_VEC2:
-        data_ptr = <uint8_t *>&(<Vec2?>data).data
-    elif type == UNIFORM_TYPE_VEC3:
-        data_ptr = <uint8_t *>&(<Vec3?>data).data
-    elif type == UNIFORM_TYPE_VEC4:
-        data_ptr = <uint8_t *>&(<Vec4?>data).data
-    elif type == UNIFORM_TYPE_MAT2:
-        data_ptr = <uint8_t *>&(<Mat2?>data).data
-    elif type == UNIFORM_TYPE_MAT3:
-        data_ptr = <uint8_t *>&(<Mat3?>data).data
-    elif type == UNIFORM_TYPE_MAT4:
-        data_ptr = <uint8_t *>&(<Mat4?>data).data
-    else:
-        raise ValueError("Uniform: data is of an invalid type")
-    return data_ptr
+
 
 cdef AttributeType c_attribute_type_from_gl(uint32_t gl_type) except *:
     if gl_type == GL_INT:
@@ -190,6 +165,19 @@ cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) no
             data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]
             top += 1
             bottom -= 1
+
+cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil:
+    cdef uint32_t gl_flags = 0
+    if flags & VIEW_CLEAR_COLOR:
+        gl_flags |= GL_COLOR_BUFFER_BIT
+    if flags & VIEW_CLEAR_DEPTH:
+        gl_flags |= GL_DEPTH_BUFFER_BIT
+    if flags & VIEW_CLEAR_STENCIL:
+        gl_flags |= GL_STENCIL_BUFFER_BIT
+    return gl_flags
+
+cdef uint32_t c_texture_unit_to_gl(TextureUnit unit) nogil:
+    return GL_TEXTURE0 + (unit - TEXTURE_UNIT_0)
 
 cdef class GraphicsManager:
 
@@ -470,6 +458,8 @@ cdef class GraphicsManager:
             UniformFormatC *format_ptr
             UniformType type
             size_t type_size
+            int32_t int_data
+            float float_data
             uint8_t *src_ptr
             uint8_t *dst_ptr
         uniform_ptr = self.uniform_get_ptr(uniform)
@@ -478,9 +468,28 @@ cdef class GraphicsManager:
             raise ValueError("Uniform: attempting to set data outside of count boundaries")
         type = format_ptr.type
         type_size = c_uniform_type_get_size(type)
-        src_ptr = c_uniform_data_get_ptr(data, type)
+        if type == UNIFORM_TYPE_INT:
+            int_data = <int32_t?>data
+            src_ptr = <uint8_t *>&int_data
+        elif type == UNIFORM_TYPE_FLOAT:
+            float_data = <float?>data
+            src_ptr = <uint8_t *>&float_data
+        elif type == UNIFORM_TYPE_VEC2:
+            src_ptr = <uint8_t *>&(<Vec2?>data).data
+        elif type == UNIFORM_TYPE_VEC3:
+            src_ptr = <uint8_t *>&(<Vec3?>data).data
+        elif type == UNIFORM_TYPE_VEC4:
+            src_ptr = <uint8_t *>&(<Vec4?>data).data
+        elif type == UNIFORM_TYPE_MAT2:
+            src_ptr = <uint8_t *>&(<Mat2?>data).data
+        elif type == UNIFORM_TYPE_MAT3:
+            src_ptr = <uint8_t *>&(<Mat3?>data).data
+        elif type == UNIFORM_TYPE_MAT4:
+            src_ptr = <uint8_t *>&(<Mat4?>data).data
+        else:
+            raise ValueError("Uniform: data is of an invalid type")
         dst_ptr = uniform_ptr.data + (index * type_size)
-        memcpy(dst_ptr, src_ptr, sizeof(Vec4C))
+        memcpy(dst_ptr, src_ptr, type_size)
 
     cdef ShaderC *shader_get_ptr(self, Handle shader) except *:
         return <ShaderC *>self.shaders.c_get_ptr(shader)
@@ -581,7 +590,6 @@ cdef class GraphicsManager:
             raise ValueError("Program: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
 
     cdef void _program_setup_attributes(self, Handle program) except *:
-        print("setup attributes")
         cdef:
             ProgramC *program_ptr
             uint32_t gl_id
@@ -607,11 +615,9 @@ cdef class GraphicsManager:
             attribute.size = size
             attribute.type = c_attribute_type_from_gl(type)
             attribute.location = glGetAttribLocation(gl_id, attribute.name)
-            print(i, attribute[0])
         program_ptr.num_attributes = count
         
     cdef void _program_setup_uniforms(self, Handle program) except *:
-        print("setup uniforms")
         cdef:
             ProgramC *program_ptr
             uint32_t gl_id
@@ -637,7 +643,6 @@ cdef class GraphicsManager:
             uniform.size = size
             uniform.type = c_uniform_type_from_gl(type)
             uniform.location = glGetUniformLocation(gl_id, uniform.name)
-            print(i, uniform[0])
         program_ptr.num_uniforms = count
 
     cdef void _program_bind_attributes(self, Handle program, Handle buffer) except *:
@@ -658,10 +663,8 @@ cdef class GraphicsManager:
         format_ptr = self.vertex_format_get_ptr(buffer_ptr.format)
         for i in range(format_ptr.count):
             comp_ptr = &format_ptr.comps[i]
-            #print(i, comp_ptr[0])
             for j in range(program_ptr.num_attributes):
                 attribute = &program_ptr.attributes[j]
-                #print("\t", j, attribute[0])
                 if strcmp(comp_ptr.name, attribute.name) == 0:
                     location = attribute.location
                     comp_type_gl = c_vertex_comp_type_to_gl(comp_ptr.type)
@@ -698,6 +701,8 @@ cdef class GraphicsManager:
             size_t i
             ProgramUniformC *uniform_info
             UniformType type
+            int32_t int_data
+            float float_data
         program_ptr = self.program_get_ptr(program)
         uniform_ptr = self.uniform_get_ptr(uniform)
         format_ptr = self.uniform_format_get_ptr(uniform_ptr.format)
@@ -707,9 +712,11 @@ cdef class GraphicsManager:
                 location = uniform_info.location
                 type = uniform_info.type
                 if type == UNIFORM_TYPE_INT:
-                    glUniform1i(location, <int>uniform_ptr.data[0])
+                    int_data = (<int32_t *>(uniform_ptr.data))[0]
+                    glUniform1i(location, <GLint>int_data)
                 elif type == UNIFORM_TYPE_FLOAT:
-                    glUniform1f(location, <float>uniform_ptr.data[0])
+                    float_data = (<float *>uniform_ptr.data)[0]
+                    glUniform1f(location, float_data)
                 elif type == UNIFORM_TYPE_VEC2:
                     glUniform2fv(location, 1, <float *>uniform_ptr.data)
                 elif type == UNIFORM_TYPE_VEC3:
@@ -881,7 +888,7 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.clear_flags = clear_flags
 
-    cpdef void view_set_clear_color(self, Handle view, Color color) except *:
+    cpdef void view_set_clear_color(self, Handle view, Vec4 color) except *:
         cdef:
             ViewC *view_ptr
         view_ptr = self.view_get_ptr(view)
@@ -899,36 +906,92 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.clear_stencil = stencil
 
+    cpdef void view_set_program(self, Handle view, Handle program) except *:
+        cdef:
+            ViewC *view_ptr
+            size_t num_uniforms
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.program = program
+
     cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *:
-        import numpy as np
-        print(np.asarray(uniforms))
+        cdef:
+            ViewC *view_ptr
+            size_t num_uniforms
+        view_ptr = self.view_get_ptr(view)
+        num_uniforms = uniforms.shape[0]
+        if num_uniforms > 16:
+            raise ValueError("View: cannot set more than {0} uniforms".format(PROGRAM_MAX_UNIFORMS))
+        view_ptr.num_uniforms = num_uniforms
+        memcpy(view_ptr.uniforms, &uniforms[0], sizeof(Handle) * num_uniforms)
+
+    cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *:
+        cdef:
+            ViewC *view_ptr
+            size_t num_uniforms
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.vertex_buffer = buffer
+
+    cpdef void view_set_index_buffer(self, Handle view, Handle buffer) except *:
+        cdef:
+            ViewC *view_ptr
+            size_t num_uniforms
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.index_buffer = buffer
+
+    cpdef void view_set_texture(self, Handle view, Handle texture, TextureUnit unit) except *:#TODO: breaks when reseting units!
+        cdef:
+            ViewC *view_ptr
+            size_t num_uniforms
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.textures[<size_t>unit] = texture
+        view_ptr.texture_units[view_ptr.num_textures] = unit
+        view_ptr.num_textures += 1
 
     cpdef void update(self) except *:
         cdef:
+            ViewC *view_ptr
+            Vec4C *color
+            uint32_t gl_clear_flags
+            Handle texture
+            TextureUnit texture_unit
+            uint32_t gl_texture_unit
             ProgramC *program_ptr
             VertexBufferC *vbo_ptr
             IndexBufferC *ibo_ptr
             TextureC *texture_ptr
             UniformC *uniform_ptr
+            size_t i
 
-        program_ptr = <ProgramC *>self.programs.items.c_get_ptr(0)
-        vbo_ptr = <VertexBufferC *>self.vertex_buffers.items.c_get_ptr(0)
-        ibo_ptr = <IndexBufferC *>self.index_buffers.items.c_get_ptr(0)
-        texture_ptr = <TextureC *>self.textures.items.c_get_ptr(0)
-        uniform_ptr = <UniformC *>self.uniforms.items.c_get_ptr(0)
-
-        glClearColor(0.2, 0.2, 0.2, 1.0)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
+        color = &view_ptr.clear_color
+        gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
+        glClear(gl_clear_flags)
+        glClearColor(color.x, color.y, color.z, color.w)
         glViewport(0, 0, 800, 600)
 
-        glUseProgram(program_ptr.gl_id)
-        self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
+        program_ptr = self.program_get_ptr(view_ptr.program)
+        vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
+        ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)   
 
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+        glUseProgram(program_ptr.gl_id)
+        for i in range(view_ptr.num_uniforms):
+            uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
+            self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
+        for i in range(view_ptr.num_textures):
+            texture_unit = view_ptr.texture_units[i]
+            gl_texture_unit = c_texture_unit_to_gl(texture_unit)
+            texture = view_ptr.textures[<size_t>texture_unit]
+            texture_ptr = self.texture_get_ptr(texture)
+            glActiveTexture(gl_texture_unit)
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
         self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
         self._index_buffer_draw(ibo_ptr.handle)
         self._program_unbind_attributes(program_ptr.handle)
-        glBindTexture(GL_TEXTURE_2D, 0)
+        for i in range(view_ptr.num_textures):
+            texture_unit = view_ptr.texture_units[i]
+            gl_texture_unit = c_texture_unit_to_gl(texture_unit)
+            glActiveTexture(gl_texture_unit)
+            glBindTexture(GL_TEXTURE_2D, 0)
         glUseProgram(0)
         
         SDL_GL_SetSwapInterval(0)
