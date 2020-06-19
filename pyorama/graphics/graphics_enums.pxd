@@ -110,6 +110,9 @@ cpdef enum TextureUnit:
     TEXTURE_UNIT_14
     TEXTURE_UNIT_15
 
+cpdef enum:
+    MAX_TEXTURE_UNITS = 16
+
 cpdef enum ViewClear:
     VIEW_CLEAR_COLOR = (1 << 0)
     VIEW_CLEAR_DEPTH = (1 << 1)

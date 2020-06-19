@@ -63,8 +63,10 @@ class Game(App):
         self.graphics.view_set_uniforms(self.view, self.uniforms)
         self.graphics.view_set_vertex_buffer(self.view, self.vbo)
         self.graphics.view_set_index_buffer(self.view, self.ibo)
-        self.graphics.view_set_texture(self.view, self.texture_0, TEXTURE_UNIT_5)
-        self.graphics.view_set_texture(self.view, self.texture_1, TEXTURE_UNIT_7)
+
+        self.textures = np.array([self.texture_0, self.texture_1], dtype=np.uint64)
+        self.texture_units = np.array([TEXTURE_UNIT_5, TEXTURE_UNIT_7], dtype=np.int32)
+        self.graphics.view_set_textures(self.view, self.textures, self.texture_units)
     
     def quit(self):
         #really should call *_delete methods on all created graphics handles

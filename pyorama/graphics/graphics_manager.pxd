@@ -91,6 +91,6 @@ cdef class GraphicsManager:
     cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *
     cpdef void view_set_index_buffer(self, Handle view, Handle buffer) except *
-    cpdef void view_set_texture(self, Handle view, Handle texture, TextureUnit unit) except *
-
+    cpdef void view_set_textures(self, Handle view, Handle[:] textures, int32_t[:] texture_units) except *
+    
     cpdef void update(self) except *

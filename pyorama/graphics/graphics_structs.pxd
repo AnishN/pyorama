@@ -106,4 +106,4 @@ ctypedef struct ViewC:
     Handle index_buffer
     Handle[16] textures
     TextureUnit[16] texture_units
-    size_t num_textures
+    size_t num_texture_units

@@ -937,15 +937,32 @@ cdef class GraphicsManager:
             size_t num_uniforms
         view_ptr = self.view_get_ptr(view)
         view_ptr.index_buffer = buffer
-
-    cpdef void view_set_texture(self, Handle view, Handle texture, TextureUnit unit) except *:#TODO: breaks when reseting units!
+    
+    cpdef void view_set_textures(self, Handle view, Handle[:] textures, int32_t[:] texture_units) except *:
         cdef:
             ViewC *view_ptr
-            size_t num_uniforms
+            size_t num_textures
+            size_t num_units
+            size_t i
+            TextureUnit unit
+            Handle texture
         view_ptr = self.view_get_ptr(view)
-        view_ptr.textures[<size_t>unit] = texture
-        view_ptr.texture_units[view_ptr.num_textures] = unit
-        view_ptr.num_textures += 1
+        num_textures = textures.shape[0]
+        num_units = texture_units.shape[0]
+        if num_textures > MAX_TEXTURE_UNITS:
+            raise ValueError("View: cannot set more than 16 textures")
+        if num_units > MAX_TEXTURE_UNITS:
+            raise ValueError("View: cannot set more than 16 texture_units")
+        if num_textures != num_units:
+            raise ValueError("View: number of textures and texture units do not match")
+        memset(view_ptr.texture_units, 0, MAX_TEXTURE_UNITS * sizeof(int32_t))
+        memset(view_ptr.textures, 0, MAX_TEXTURE_UNITS * sizeof(Handle))
+        for i in range(num_units):
+            texture = textures[i]
+            unit = <TextureUnit>texture_units[i]
+            view_ptr.texture_units[i] = unit
+            view_ptr.textures[<size_t>unit] = texture
+        view_ptr.num_texture_units = num_units
 
     cpdef void update(self) except *:
         cdef:
@@ -977,7 +994,7 @@ cdef class GraphicsManager:
         for i in range(view_ptr.num_uniforms):
             uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
             self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
-        for i in range(view_ptr.num_textures):
+        for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
             texture = view_ptr.textures[<size_t>texture_unit]
@@ -987,7 +1004,7 @@ cdef class GraphicsManager:
         self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
         self._index_buffer_draw(ibo_ptr.handle)
         self._program_unbind_attributes(program_ptr.handle)
-        for i in range(view_ptr.num_textures):
+        for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
             glActiveTexture(gl_texture_unit)
