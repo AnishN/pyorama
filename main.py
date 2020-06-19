@@ -67,7 +67,7 @@ class Game(App):
         
         self.view = self.graphics.view_create()
         self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR)
-        self.graphics.view_set_clear_color(self.view, Vec4(0.2, 0.3, 0.3, 1.0))
+        self.graphics.view_set_clear_color(self.view, Vec4(0.2, 0.3, 0.3, 0.5))
         self.graphics.view_set_program(self.view, self.program)
         self.graphics.view_set_uniforms(self.view, self.uniforms)
         self.graphics.view_set_vertex_buffer(self.view, self.vbo)

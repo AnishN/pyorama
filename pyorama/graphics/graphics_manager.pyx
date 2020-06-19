@@ -1118,9 +1118,6 @@ cdef class GraphicsManager:
         view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
         color = &view_ptr.clear_color
         gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
-        glClear(gl_clear_flags)
-        glClearColor(color.x, color.y, color.z, color.w)
-        glViewport(0, 0, 800, 600)
 
         program_ptr = self.program_get_ptr(view_ptr.program)
         vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
@@ -1134,6 +1131,9 @@ cdef class GraphicsManager:
         if fbo != 0:
             fbo_ptr = self.frame_buffer_get_ptr(fbo)
             glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id)
+        glClearColor(color.x, color.y, color.z, color.w)
+        glClear(gl_clear_flags)
+        glViewport(0, 0, 800, 600)
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
@@ -1157,8 +1157,8 @@ cdef class GraphicsManager:
             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
             SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
             glViewport(0, 0, 800, 600)
-            glClear(GL_COLOR_BUFFER_BIT)
             glClearColor(1.0, 0.0, 0.0, 1.0)
+            glClear(GL_COLOR_BUFFER_BIT)
             glActiveTexture(GL_TEXTURE0)
             texture_ptr = self.texture_get_ptr(window_ptr.texture)
             program_ptr = self.program_get_ptr(self.quad_program)
