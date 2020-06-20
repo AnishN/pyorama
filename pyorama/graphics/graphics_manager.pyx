@@ -232,6 +232,15 @@ cdef class GraphicsManager:
         self.u_quad = self.uniform_create(self.u_fmt_quad)
         self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
 
+        self.u_fmt_view = self.uniform_format_create(b"u_view", UNIFORM_TYPE_MAT4)
+        self.u_fmt_proj = self.uniform_format_create(b"u_proj", UNIFORM_TYPE_MAT4)
+        
+        self.v_fmt_mesh = self.vertex_format_create([
+            (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
+            (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
+            (b"a_normal", VERTEX_COMP_TYPE_F32, 3, False),
+        ])
+
     def __dealloc__(self):
         self.windows = None
         self.vertex_formats = None
@@ -337,7 +346,7 @@ cdef class GraphicsManager:
     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *:
         return <VertexBufferC *>self.vertex_buffers.c_get_ptr(buffer)
 
-    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage) except *:
+    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage=BUFFER_USAGE_STATIC) except *:
         cdef:
             Handle buffer
             VertexBufferC *buffer_ptr
@@ -415,7 +424,7 @@ cdef class GraphicsManager:
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *:
         return <IndexBufferC *>self.index_buffers.c_get_ptr(buffer)
 
-    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage) except *:
+    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage=BUFFER_USAGE_STATIC) except *:
         cdef:
             Handle buffer
             IndexBufferC *buffer_ptr
@@ -527,6 +536,83 @@ cdef class GraphicsManager:
             raise MemoryError("Mesh: cannot allocate memory for index data")
         memcpy(mesh_ptr.index_data, &index_data[0], index_data_size)
         mesh_ptr.index_data_size = index_data_size
+        return mesh
+    
+    cpdef Handle mesh_create_from_file(self, bytes file_path) except *:
+        cdef:
+            aiScene *ai_scene
+            str error_str
+            Handle mesh
+            MeshC *mesh_ptr
+            aiMesh *ai_mesh
+            Vec3C *positions
+            Vec3C *tex_coords#assimp uses Vec3 instead of Vec2
+            Vec3C *normals
+            size_t num_vertices
+            size_t vertex_data_size
+            uint8_t *vertex_data
+            size_t i
+            uint8_t *dst_ptr
+            size_t p_size = sizeof(Vec3C)
+            size_t pt_size = p_size + sizeof(Vec2C)
+            size_t ptn_size = pt_size + sizeof(Vec3C)
+            size_t num_indices
+            size_t index_data_size
+            uint8_t *index_data
+            aiFace *ai_faces
+
+        ai_scene = aiImportFile(file_path, 
+            aiProcess_CalcTangentSpace | 
+            aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_SortByPType,
+        )
+        if ai_scene == NULL:
+            error_str = aiGetErrorString().decode("utf-8")
+            raise ValueError("Mesh: assimp loader error message below:\n{0}".format(error_str))
+        if ai_scene.mNumMeshes == 0:
+            raise ValueError("Mesh: no meshes present in file")
+        if ai_scene.mNumMeshes > 1:
+            raise ValueError("Mesh: multiple mesh import not supported")
+        mesh = self.meshes.c_create()
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        mesh_ptr.vertex_format = self.v_fmt_mesh
+        mesh_ptr.index_format = self.i_fmt_mesh
+        ai_mesh = ai_scene.mMeshes[0]
+
+        #get vertex data (interleaved)
+        positions = ai_mesh.mVertices
+        tex_coords = ai_mesh.mTextureCoords[0]#takes only first channel of tex_coords
+        normals = ai_mesh.mNormals
+        num_vertices = ai_mesh.mNumVertices
+        vertex_data_size = num_vertices * ptn_size
+        vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
+        if vertex_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for vertex data")
+        for i in range(num_vertices):
+            dst_ptr = &vertex_data[i * ptn_size]
+            memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
+            memcpy(dst_ptr + p_size, &tex_coords[i], sizeof(Vec2C))
+            memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
+        mesh_ptr.vertex_data = vertex_data
+        mesh_ptr.vertex_data_size = vertex_data_size
+
+        #get index data
+        ai_faces = ai_mesh.mFaces
+        num_indices = ai_mesh.mNumFaces
+        index_data_size = num_indices * sizeof(uint32_t) * 3
+        index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
+        if index_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for index data")
+        memcpy(index_data, ai_faces.mIndices, index_data_size)
+        mesh_ptr.index_data = index_data
+        mesh_ptr.index_data_size = index_data_size
+        
+        #print debug
+        import numpy as np
+        print(vertex_data_size, np.asarray(<uint8_t[:vertex_data_size]>vertex_data))
+        print(index_data_size, np.asarray(<uint8_t[:index_data_size]>index_data))
+        aiReleaseImport(ai_scene)
         return mesh
 
     cpdef void mesh_delete(self, Handle mesh) except *:
@@ -1112,14 +1198,7 @@ cdef class GraphicsManager:
             ViewC *view_ptr
         view_ptr = self.view_get_ptr(view)
         view_ptr.clear_stencil = stencil
-
-    cpdef void view_set_transform(self, Handle view, Mat4 view_mat, Mat4 proj_mat) except *:
-        cdef:
-            ViewC *view_ptr
-        view_ptr = self.view_get_ptr(view)
-        memcpy(&view_ptr.view_mat, &view_mat.data, sizeof(Mat4C))
-        memcpy(&view_ptr.proj_mat, &proj_mat.data, sizeof(Mat4C))
-
+    
     cpdef void view_set_program(self, Handle view, Handle program) except *:
         cdef:
             ViewC *view_ptr
@@ -1205,6 +1284,7 @@ cdef class GraphicsManager:
         for i in range(view_ptr.num_uniforms):
             uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
             self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
+
         fbo = view_ptr.frame_buffer
         if fbo != 0:
             fbo_ptr = self.frame_buffer_get_ptr(fbo)

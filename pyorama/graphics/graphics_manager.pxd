@@ -2,6 +2,7 @@ cimport cython
 from pyorama.core.handle cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.libs.c cimport *
+from pyorama.libs.assimp cimport *
 from pyorama.libs.gl cimport *
 from pyorama.libs.sdl2 cimport *
 #from pyorama.math3d cimport *
@@ -14,14 +15,15 @@ cdef class GraphicsManager:
         SDL_Window *root_window
         SDL_GLContext root_context
 
-        Handle quad_v_fmt
-        Handle quad_vbo
-        Handle quad_ibo
-        Handle quad_vs
-        Handle quad_fs
-        Handle quad_program
-        Handle u_fmt_quad
-        Handle u_quad
+        Handle quad_v_fmt, quad_vbo, quad_ibo
+        Handle quad_vs, quad_fs, quad_program
+        Handle u_fmt_quad, u_quad
+
+        readonly Handle u_fmt_view
+        readonly Handle u_fmt_proj
+
+        Handle v_fmt_mesh
+        IndexFormat i_fmt_mesh
 
         ItemSlotMap windows
         ItemSlotMap vertex_formats
@@ -47,7 +49,7 @@ cdef class GraphicsManager:
     cpdef void vertex_format_delete(self, Handle format) except *
     
     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *
-    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage) except *
+    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage=*) except *
     cpdef void vertex_buffer_delete(self, Handle buffer) except *
     cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *
     cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
@@ -55,7 +57,7 @@ cdef class GraphicsManager:
     cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
     
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *
-    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage) except *
+    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage=*) except *
     cpdef void index_buffer_delete(self, Handle buffer) except *
     cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *
     cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
@@ -64,7 +66,8 @@ cdef class GraphicsManager:
     cdef void _index_buffer_draw(self, Handle buffer) except *
     
     cdef MeshC *mesh_get_ptr(self, Handle mesh) except *
-    cpdef Handle mesh_create(self, Handle vertex_format, uint8_t[:] vertex_data, IndexFormat index_format, uint8_t[:] index_data) except *
+    cpdef Handle mesh_create(self, Handle vertex_format, uint8_t[:] vertex_data, IndexFormat index_format, uint8_t[:] index_data) except *#TODO: might need to change this signature to use standardized formats
+    cpdef Handle mesh_create_from_file(self, bytes file_path) except *
     cpdef void mesh_delete(self, Handle mesh) except *
 
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
@@ -120,7 +123,6 @@ cdef class GraphicsManager:
     cpdef void view_set_clear_color(self, Handle view, Vec4 color) except *
     cpdef void view_set_clear_depth(self, Handle view, float depth) except *
     cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *
-    cpdef void view_set_transform(self, Handle view, Mat4 view_mat, Mat4 proj_mat) except *
     cpdef void view_set_program(self, Handle view, Handle program) except *
     cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *
