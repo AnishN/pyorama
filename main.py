@@ -17,11 +17,9 @@ class Game(App):
         self.u_tint = self.graphics.uniform_create(self.u_tint_fmt)
         self.graphics.uniform_set_data(self.u_tint, Vec4(1.0, 0.0, 0.0, 1.0))
 
-        self.u_texture_0_fmt = self.graphics.uniform_format_create(b"u_texture_0", UNIFORM_TYPE_INT)
-        self.u_texture_0 = self.graphics.uniform_create(self.u_texture_0_fmt)
+        self.u_texture_0 = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
         self.graphics.uniform_set_data(self.u_texture_0, TEXTURE_UNIT_5)
-        self.u_texture_1_fmt = self.graphics.uniform_format_create(b"u_texture_1", UNIFORM_TYPE_INT)
-        self.u_texture_1 = self.graphics.uniform_create(self.u_texture_1_fmt)
+        self.u_texture_1 = self.graphics.uniform_create(self.graphics.u_fmt_texture_1)
         self.graphics.uniform_set_data(self.u_texture_1, TEXTURE_UNIT_7)
         
         self.u_proj = self.graphics.uniform_create(self.graphics.u_fmt_proj)

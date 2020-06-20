@@ -14,17 +14,6 @@ cdef class GraphicsManager:
     cdef:
         SDL_Window *root_window
         SDL_GLContext root_context
-
-        Handle quad_v_fmt, quad_vbo, quad_ibo
-        Handle quad_vs, quad_fs, quad_program
-        Handle u_fmt_quad, u_quad
-
-        readonly Handle u_fmt_view
-        readonly Handle u_fmt_proj
-
-        Handle v_fmt_mesh
-        IndexFormat i_fmt_mesh
-
         ItemSlotMap windows
         ItemSlotMap vertex_formats
         ItemSlotMap vertex_buffers
@@ -38,6 +27,27 @@ cdef class GraphicsManager:
         ItemSlotMap textures
         ItemSlotMap frame_buffers
         ItemSlotMap views
+
+        Handle u_quad
+        quad_vbo, quad_ibo
+        Handle quad_vs, quad_fs, quad_program
+
+        readonly Handle u_fmt_quad
+        readonly Handle u_fmt_proj
+        readonly Handle u_fmt_view
+        readonly Handle u_fmt_texture_0
+        readonly Handle u_fmt_texture_1
+        readonly Handle u_fmt_texture_2
+        readonly Handle u_fmt_texture_3
+        readonly Handle u_fmt_texture_4
+        readonly Handle u_fmt_texture_5
+        readonly Handle u_fmt_texture_6
+        readonly Handle u_fmt_texture_7
+
+        readonly Handle v_fmt_quad
+        readonly Handle v_fmt_mesh
+        readonly IndexFormat i_fmt_quad
+        readonly IndexFormat i_fmt_mesh
 
     cdef WindowC *window_get_ptr(self, Handle window) except *
     cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *

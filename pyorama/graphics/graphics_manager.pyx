@@ -204,6 +204,30 @@ cdef class GraphicsManager:
         self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), GRAPHICS_TYPE_FRAME_BUFFER)
         self.views = ItemSlotMap(sizeof(ViewC), GRAPHICS_TYPE_VIEW)
 
+        self.u_fmt_quad = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
+        self.u_fmt_view = self.uniform_format_create(b"u_view", UNIFORM_TYPE_MAT4)
+        self.u_fmt_proj = self.uniform_format_create(b"u_proj", UNIFORM_TYPE_MAT4)
+        self.u_fmt_texture_0 = self.uniform_format_create(b"u_texture_0", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_1 = self.uniform_format_create(b"u_texture_1", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_2 = self.uniform_format_create(b"u_texture_2", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_3 = self.uniform_format_create(b"u_texture_3", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_4 = self.uniform_format_create(b"u_texture_4", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_5 = self.uniform_format_create(b"u_texture_5", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_6 = self.uniform_format_create(b"u_texture_6", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_7 = self.uniform_format_create(b"u_texture_7", UNIFORM_TYPE_INT)
+
+        self.v_fmt_quad = self.vertex_format_create([
+            (b"a_quad", VERTEX_COMP_TYPE_F32, 4, False),
+        ])
+        self.v_fmt_mesh = self.vertex_format_create([
+            (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
+            (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
+            (b"a_normal", VERTEX_COMP_TYPE_F32, 3, False),
+        ])
+
+        self.i_fmt_quad = INDEX_FORMAT_U32
+        self.i_fmt_mesh = INDEX_FORMAT_U32
+
         cdef:
             float[16] quad_vbo_data
             uint32_t[6] quad_ibo_data
@@ -218,28 +242,15 @@ cdef class GraphicsManager:
         quad_vbo_mv = <uint8_t[:64]>(<uint8_t *>&quad_vbo_data)
         quad_ibo_data =  [0, 1, 2, 1, 2, 3]
         quad_ibo_mv = <uint8_t[:24]>(<uint8_t *>&quad_ibo_data)
-        self.quad_v_fmt = self.vertex_format_create([
-            (b"a_quad", VERTEX_COMP_TYPE_F32, 4, False),
-        ])
-        self.quad_vbo = self.vertex_buffer_create(self.quad_v_fmt, BUFFER_USAGE_STATIC)
+        self.quad_vbo = self.vertex_buffer_create(self.v_fmt_quad)
         self.vertex_buffer_set_data(self.quad_vbo, quad_vbo_mv)
-        self.quad_ibo = self.index_buffer_create(INDEX_FORMAT_U32, BUFFER_USAGE_STATIC)
+        self.quad_ibo = self.index_buffer_create(self.i_fmt_quad)
         self.index_buffer_set_data(self.quad_ibo, quad_ibo_mv)
         self.quad_vs = self.shader_create_from_file(SHADER_TYPE_VERTEX, b"./resources/shaders/quad.vert")
         self.quad_fs = self.shader_create_from_file(SHADER_TYPE_FRAGMENT, b"./resources/shaders/quad.frag")
         self.quad_program = self.program_create(self.quad_vs, self.quad_fs)
-        self.u_fmt_quad = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
         self.u_quad = self.uniform_create(self.u_fmt_quad)
         self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
-
-        self.u_fmt_view = self.uniform_format_create(b"u_view", UNIFORM_TYPE_MAT4)
-        self.u_fmt_proj = self.uniform_format_create(b"u_proj", UNIFORM_TYPE_MAT4)
-        
-        self.v_fmt_mesh = self.vertex_format_create([
-            (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
-            (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
-            (b"a_normal", VERTEX_COMP_TYPE_F32, 3, False),
-        ])
 
     def __dealloc__(self):
         self.windows = None
