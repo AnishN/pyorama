@@ -114,8 +114,8 @@ ctypedef struct ViewC:
     Vec4C clear_color
     float clear_depth
     uint32_t clear_stencil
-    Mat4C view
-    Mat4C projection
+    Mat4C view_mat
+    Mat4C proj_mat
     Handle program
     Handle[16] uniforms
     size_t num_uniforms

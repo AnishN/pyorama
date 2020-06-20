@@ -20,7 +20,7 @@ cdef class GraphicsManager:
         Handle quad_vs
         Handle quad_fs
         Handle quad_program
-        Handle u_quad_fmt
+        Handle u_fmt_quad
         Handle u_quad
 
         ItemSlotMap windows
@@ -95,8 +95,9 @@ cdef class GraphicsManager:
     cpdef Handle texture_create(self, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
     cpdef void texture_delete(self, Handle texture) except *
     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
-    cpdef void texture_set_image(self, Handle texture, Handle image) except *
-    cpdef void texture_set_empty(self, Handle texture, uint16_t width, uint16_t height) except *
+    cpdef void texture_set_data_from_image(self, Handle texture, Handle image) except *
+    cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *
+    cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
 
     cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *
     cpdef Handle frame_buffer_create(self) except *
@@ -110,6 +111,7 @@ cdef class GraphicsManager:
     cpdef void view_set_clear_color(self, Handle view, Vec4 color) except *
     cpdef void view_set_clear_depth(self, Handle view, float depth) except *
     cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *
+    cpdef void view_set_transform(self, Handle view, Mat4 view_mat, Mat4 proj_mat) except *
     cpdef void view_set_program(self, Handle view, Handle program) except *
     cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *

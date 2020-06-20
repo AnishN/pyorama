@@ -227,8 +227,8 @@ cdef class GraphicsManager:
         self.quad_vs = self.shader_create_from_file(SHADER_TYPE_VERTEX, b"./resources/shaders/quad.vert")
         self.quad_fs = self.shader_create_from_file(SHADER_TYPE_FRAGMENT, b"./resources/shaders/quad.frag")
         self.quad_program = self.program_create(self.quad_vs, self.quad_fs)
-        self.u_quad_fmt = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
-        self.u_quad = self.uniform_create(self.u_quad_fmt)
+        self.u_fmt_quad = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
+        self.u_quad = self.uniform_create(self.u_fmt_quad)
         self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
 
     def __dealloc__(self):
@@ -923,7 +923,7 @@ cdef class GraphicsManager:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, mipmaps))
         glBindTexture(GL_TEXTURE_2D, 0)
     
-    cpdef void texture_set_image(self, Handle texture, Handle image) except *:
+    cpdef void texture_set_data_from_image(self, Handle texture, Handle image) except *:
         cdef:
             TextureC *texture_ptr
             ImageC *image_ptr
@@ -934,8 +934,22 @@ cdef class GraphicsManager:
         if texture_ptr.mipmaps:
             glGenerateMipmap(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, 0)
-    
-    cpdef void texture_set_empty(self, Handle texture, uint16_t width, uint16_t height) except *:
+
+    cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *:
+        cdef:
+            TextureC *texture_ptr
+            size_t data_size 
+        texture_ptr = self.texture_get_ptr(texture)
+        data_size = width * height * 4 * sizeof(uint8_t)
+        if data_size != data.shape[0]:
+            raise ValueError("Texture: data shape does not match dimensions")
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &data[0])
+        if texture_ptr.mipmaps:
+            glGenerateMipmap(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, 0)
+
+    cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *:
         cdef:
             TextureC *texture_ptr
         texture_ptr = self.texture_get_ptr(texture)
@@ -1035,6 +1049,13 @@ cdef class GraphicsManager:
             ViewC *view_ptr
         view_ptr = self.view_get_ptr(view)
         view_ptr.clear_stencil = stencil
+
+    cpdef void view_set_transform(self, Handle view, Mat4 view_mat, Mat4 proj_mat) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.view_get_ptr(view)
+        memcpy(&view_ptr.view_mat, &view_mat.data, sizeof(Mat4C))
+        memcpy(&view_ptr.proj_mat, &proj_mat.data, sizeof(Mat4C))
 
     cpdef void view_set_program(self, Handle view, Handle program) except *:
         cdef:

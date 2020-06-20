@@ -22,7 +22,7 @@ class Game(App):
         self.u_texture_1 = self.graphics.uniform_create(self.u_texture_1_fmt)
         self.graphics.uniform_set_data(self.u_texture_1, TEXTURE_UNIT_7)
         self.uniforms = np.array([self.u_tint, self.u_texture_0, self.u_texture_1], dtype=np.uint64)
-        
+
         self.v_fmt = self.graphics.vertex_format_create([
             (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
             (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
@@ -50,15 +50,15 @@ class Game(App):
         self.image_0 = self.graphics.image_create_from_file(image_0_path)
         self.image_1 = self.graphics.image_create_from_file(image_1_path)
         self.texture_0 = self.graphics.texture_create()
-        self.graphics.texture_set_image(self.texture_0, self.image_0)
+        self.graphics.texture_set_data_from_image(self.texture_0, self.image_0)
         self.texture_1 = self.graphics.texture_create()
-        self.graphics.texture_set_image(self.texture_1, self.image_1)
+        self.graphics.texture_set_data_from_image(self.texture_1, self.image_1)
         self.textures = np.array([self.texture_0, self.texture_1], dtype=np.uint64)
         self.texture_units = np.array([TEXTURE_UNIT_5, TEXTURE_UNIT_7], dtype=np.int32)
         
         self.window = self.graphics.window_create(800, 600, b"Hello World!")
         self.out_texture = self.graphics.texture_create()
-        self.graphics.texture_set_empty(self.out_texture, 800, 600)
+        self.graphics.texture_clear(self.out_texture, 800, 600)
         self.graphics.window_set_texture(self.window, self.out_texture)
         self.out_textures = np.array([self.out_texture], dtype=np.uint64)
         self.attachments = np.array([FRAME_BUFFER_ATTACHMENT_COLOR_0], dtype=np.int32)
