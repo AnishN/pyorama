@@ -1001,7 +1001,6 @@ cdef class GraphicsManager:
             frame_buffer_ptr.attachments[i] = attachment
             frame_buffer_ptr.textures[<size_t>attachment] = texture
             gl_attachment = c_frame_buffer_attachment_to_gl(attachment)
-            print(gl_attachment)
             texture_ptr = self.texture_get_ptr(texture)
             glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment, GL_TEXTURE_2D, texture_ptr.gl_id, 0)
             i += 1
