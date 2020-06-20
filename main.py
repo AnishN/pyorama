@@ -24,16 +24,16 @@ class Game(App):
         Mat4.perspective(self.proj_mat, math.radians(90), 1.0, 0.001, 1000)
         self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
         self.view_mat = Mat4()
-        Mat4.from_translation(self.view_mat, Vec3(0, -3.5, -5.0))
+        Mat4.from_translation(self.view_mat, Vec3(0, 0, -100))
         self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
         self.uniforms = np.array([self.u_texture, self.u_proj, self.u_view], dtype=np.uint64)
 
         #setup mesh
-        mesh_path = b"./resources/meshes/teapot.obj"
+        #mesh_path = b"./resources/meshes/teapot.obj"
         #mesh_path = b"./resources/meshes/cube/cube.obj"
         #mesh_path = b"./resources/meshes/cube/cube.dae"
-        #mesh_path = b"./resources/meshes/dog/dog.obj"
+        mesh_path = b"./resources/meshes/dog/dog.obj"
         self.mesh = self.graphics.mesh_create_from_file(mesh_path)
         self.vbo = self.graphics.vertex_buffer_create(self.graphics.v_fmt_mesh)
         self.ibo = self.graphics.index_buffer_create(self.graphics.i_fmt_mesh)
@@ -48,7 +48,8 @@ class Game(App):
         self.program = self.graphics.program_create(self.vs, self.fs)
 
         #setup texture
-        image_path = b"./resources/textures/image_0.png"
+        #image_path = b"./resources/textures/image_0.png"
+        image_path = b"./resources/meshes/dog/dog.jpg"
         self.image = self.graphics.image_create_from_file(image_path)
         self.texture = self.graphics.texture_create()
         self.graphics.texture_set_data_from_image(self.texture, self.image)
@@ -85,7 +86,7 @@ class Game(App):
     
     def update(self, delta):
         print(delta)
-        Mat4.translate(self.view_mat, self.view_mat, Vec3(0.0, 0.0, +0.001))
+        Mat4.translate(self.view_mat, self.view_mat, Vec3(0.0, 0.0, 0.1))
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
 
         self.update_view()

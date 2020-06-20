@@ -1319,6 +1319,7 @@ cdef class GraphicsManager:
 
         color = &view_ptr.clear_color
         glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LESS)
         gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
         glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3])
         glClearColor(color.x, color.y, color.z, color.w)
