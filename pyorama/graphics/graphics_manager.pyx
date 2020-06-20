@@ -978,38 +978,33 @@ cdef class GraphicsManager:
         glDeleteFramebuffers(1, &frame_buffer_ptr.gl_id)
         self.frame_buffers.c_delete(frame_buffer)
 
-    cpdef void frame_buffer_attach_textures(self, Handle frame_buffer, Handle[:] textures, int32_t[:] attachments) except *:
+    cpdef void frame_buffer_attach_textures(self, Handle frame_buffer, dict textures) except *:
         cdef:
             FrameBufferC *frame_buffer_ptr
             uint32_t gl_id
             size_t num_textures
-            size_t num_attachments
-            size_t i
+            size_t i = 0
             Handle texture
             TextureC *texture_ptr
             FrameBufferAttachment attachment
             uint32_t gl_attachment
         frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
-        num_textures = textures.shape[0]
-        num_attachments = attachments.shape[0]
+        num_textures = len(textures)
         if num_textures > MAX_FRAME_BUFFER_ATTACHMENTS:
             raise ValueError("FrameBuffer: cannot attach more than {0} textures".format(MAX_FRAME_BUFFER_ATTACHMENTS))
-        if num_attachments > MAX_FRAME_BUFFER_ATTACHMENTS:
-            raise ValueError("FrameBuffer: cannot use more than {0} attachments".format(MAX_FRAME_BUFFER_ATTACHMENTS))
-        if num_textures != num_attachments:
-            raise ValueError("FrameBuffer: number of textures and attachments do not match")
         memset(frame_buffer_ptr.textures, 0, MAX_FRAME_BUFFER_ATTACHMENTS * sizeof(Handle))
         memset(frame_buffer_ptr.attachments, 0, MAX_FRAME_BUFFER_ATTACHMENTS * sizeof(int32_t))
         gl_id = frame_buffer_ptr.gl_id
         glBindFramebuffer(GL_FRAMEBUFFER, gl_id)
-        for i in range(num_attachments):
-            texture = textures[i]
-            attachment = <FrameBufferAttachment>attachments[i]
+        for attachment in textures:
+            texture = <Handle>textures[attachment]
             frame_buffer_ptr.attachments[i] = attachment
             frame_buffer_ptr.textures[<size_t>attachment] = texture
             gl_attachment = c_frame_buffer_attachment_to_gl(attachment)
+            print(gl_attachment)
             texture_ptr = self.texture_get_ptr(texture)
             glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment, GL_TEXTURE_2D, texture_ptr.gl_id, 0)
+            i += 1
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
     cdef ViewC *view_get_ptr(self, Handle view) except *:
@@ -1086,31 +1081,25 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.index_buffer = buffer
 
-    cpdef void view_set_textures(self, Handle view, Handle[:] textures, int32_t[:] texture_units) except *:
+    cpdef void view_set_textures(self, Handle view, dict textures) except *:
         cdef:
             ViewC *view_ptr
             size_t num_textures
-            size_t num_units
-            size_t i
+            size_t i = 0
             TextureUnit unit
             Handle texture
         view_ptr = self.view_get_ptr(view)
-        num_textures = textures.shape[0]
-        num_units = texture_units.shape[0]
+        num_textures = len(textures)
         if num_textures > MAX_TEXTURE_UNITS:
             raise ValueError("View: cannot set more than 16 textures")
-        if num_units > MAX_TEXTURE_UNITS:
-            raise ValueError("View: cannot set more than 16 texture_units")
-        if num_textures != num_units:
-            raise ValueError("View: number of textures and texture units do not match")
         memset(view_ptr.texture_units, 0, MAX_TEXTURE_UNITS * sizeof(int32_t))
         memset(view_ptr.textures, 0, MAX_TEXTURE_UNITS * sizeof(Handle))
-        for i in range(num_units):
-            texture = textures[i]
-            unit = <TextureUnit>texture_units[i]
+        for unit in textures:
+            texture = <Handle>textures[unit]
             view_ptr.texture_units[i] = unit
             view_ptr.textures[<size_t>unit] = texture
-        view_ptr.num_texture_units = num_units
+            i += 1
+        view_ptr.num_texture_units = num_textures
 
     cpdef void view_set_frame_buffer(self, Handle view, Handle frame_buffer) except *:
         cdef:

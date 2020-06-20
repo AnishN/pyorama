@@ -22,7 +22,7 @@ class Game(App):
         self.u_texture_1 = self.graphics.uniform_create(self.u_texture_1_fmt)
         self.graphics.uniform_set_data(self.u_texture_1, TEXTURE_UNIT_7)
         self.uniforms = np.array([self.u_tint, self.u_texture_0, self.u_texture_1], dtype=np.uint64)
-
+        
         self.v_fmt = self.graphics.vertex_format_create([
             (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
             (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
@@ -53,17 +53,15 @@ class Game(App):
         self.graphics.texture_set_data_from_image(self.texture_0, self.image_0)
         self.texture_1 = self.graphics.texture_create()
         self.graphics.texture_set_data_from_image(self.texture_1, self.image_1)
-        self.textures = np.array([self.texture_0, self.texture_1], dtype=np.uint64)
-        self.texture_units = np.array([TEXTURE_UNIT_5, TEXTURE_UNIT_7], dtype=np.int32)
         
         self.window = self.graphics.window_create(800, 600, b"Hello World!")
         self.out_texture = self.graphics.texture_create()
         self.graphics.texture_clear(self.out_texture, 800, 600)
         self.graphics.window_set_texture(self.window, self.out_texture)
-        self.out_textures = np.array([self.out_texture], dtype=np.uint64)
-        self.attachments = np.array([FRAME_BUFFER_ATTACHMENT_COLOR_0], dtype=np.int32)
         self.fbo = self.graphics.frame_buffer_create()
-        self.graphics.frame_buffer_attach_textures(self.fbo, self.out_textures, self.attachments)
+        self.graphics.frame_buffer_attach_textures(self.fbo, {
+            FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_texture,
+        })
         
         self.view = self.graphics.view_create()
         self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR)
@@ -72,7 +70,10 @@ class Game(App):
         self.graphics.view_set_uniforms(self.view, self.uniforms)
         self.graphics.view_set_vertex_buffer(self.view, self.vbo)
         self.graphics.view_set_index_buffer(self.view, self.ibo)
-        self.graphics.view_set_textures(self.view, self.textures, self.texture_units)
+        self.graphics.view_set_textures(self.view, {
+            TEXTURE_UNIT_5: self.texture_0,
+            TEXTURE_UNIT_7: self.texture_1,
+        })
         self.graphics.view_set_frame_buffer(self.view, self.fbo)
 
     def quit(self):
