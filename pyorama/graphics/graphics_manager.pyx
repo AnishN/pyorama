@@ -557,6 +557,7 @@ cdef class GraphicsManager:
             Vec3C *positions
             Vec3C *tex_coords#assimp uses Vec3 instead of Vec2
             Vec3C *normals
+            Vec2C empty_tex_coord = Vec2C(0.0, 0.0)
             size_t num_vertices
             size_t vertex_data_size
             uint8_t *vertex_data
@@ -565,6 +566,8 @@ cdef class GraphicsManager:
             size_t p_size = sizeof(Vec3C)
             size_t pt_size = p_size + sizeof(Vec2C)
             size_t ptn_size = pt_size + sizeof(Vec3C)
+            size_t f_size = 3 * sizeof(uint32_t)
+            size_t num_faces
             size_t num_indices
             size_t index_data_size
             uint8_t *index_data
@@ -572,6 +575,7 @@ cdef class GraphicsManager:
 
         ai_scene = aiImportFile(file_path, 
             aiProcess_CalcTangentSpace | 
+            aiProcess_GenNormals | #generates normals if not present in mesh file
             aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
             aiProcess_SortByPType,
@@ -588,37 +592,47 @@ cdef class GraphicsManager:
         ai_mesh = ai_scene.mMeshes[0]
 
         #get vertex data (interleaved)
-        positions = ai_mesh.mVertices
-        tex_coords = ai_mesh.mTextureCoords[0]#takes only first channel of tex_coords
-        normals = ai_mesh.mNormals
         num_vertices = ai_mesh.mNumVertices
         vertex_data_size = num_vertices * ptn_size
         vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
         if vertex_data == NULL:
             raise MemoryError("Mesh: cannot allocate memory for vertex data")
-        for i in range(num_vertices):
-            dst_ptr = &vertex_data[i * ptn_size]
-            memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
-            memcpy(dst_ptr + p_size, &tex_coords[i], sizeof(Vec2C))
-            memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
+
+        positions = ai_mesh.mVertices
+        tex_coords = ai_mesh.mTextureCoords[0]#takes only first channel of tex_coords
+        normals = ai_mesh.mNormals
+        
+        if tex_coords == NULL:
+            for i in range(num_vertices):
+                dst_ptr = &vertex_data[i * ptn_size]
+                memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
+                memcpy(dst_ptr + p_size, &empty_tex_coord, sizeof(Vec2C))
+                memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
+        else:
+            for i in range(num_vertices):
+                dst_ptr = &vertex_data[i * ptn_size]
+                memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
+                memcpy(dst_ptr + p_size, &tex_coords[i], sizeof(Vec2C))
+                memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
         mesh_ptr.vertex_data = vertex_data
         mesh_ptr.vertex_data_size = vertex_data_size
 
         #get index data
         ai_faces = ai_mesh.mFaces
-        num_indices = ai_mesh.mNumFaces
-        index_data_size = num_indices * sizeof(uint32_t) * 3
+        num_faces = ai_mesh.mNumFaces
+        index_data_size = num_faces * f_size
         index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
         if index_data == NULL:
             raise MemoryError("Mesh: cannot allocate memory for index data")
-        memcpy(index_data, ai_faces.mIndices, index_data_size)
+        for i in range(num_faces):
+            memcpy(index_data + (i * f_size), ai_faces[i].mIndices, f_size)
         mesh_ptr.index_data = index_data
         mesh_ptr.index_data_size = index_data_size
         
         #print debug
         import numpy as np
-        print(vertex_data_size, np.asarray(<uint8_t[:vertex_data_size]>vertex_data))
-        print(index_data_size, np.asarray(<uint8_t[:index_data_size]>index_data))
+        print(vertex_data_size, np.asarray(<uint8_t[:vertex_data_size]>vertex_data).view(np.float32))
+        print(index_data_size, np.asarray(<uint8_t[:index_data_size]>index_data).view(np.uint32))
         aiReleaseImport(ai_scene)
         return mesh
 
@@ -1206,6 +1220,15 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.clear_stencil = stencil
     
+    cpdef void view_set_rect(self, Handle view, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.view_get_ptr(view)
+        view_ptr.rect[0] = x
+        view_ptr.rect[1] = y
+        view_ptr.rect[2] = width
+        view_ptr.rect[3] = height
+
     cpdef void view_set_program(self, Handle view, Handle program) except *:
         cdef:
             ViewC *view_ptr
@@ -1280,9 +1303,6 @@ cdef class GraphicsManager:
             size_t i
 
         view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
-        color = &view_ptr.clear_color
-        gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
-
         program_ptr = self.program_get_ptr(view_ptr.program)
         vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
         ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
@@ -1296,9 +1316,16 @@ cdef class GraphicsManager:
         if fbo != 0:
             fbo_ptr = self.frame_buffer_get_ptr(fbo)
             glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id)
+
+        color = &view_ptr.clear_color
+        glEnable(GL_DEPTH_TEST)
+        gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
+        glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3])
         glClearColor(color.x, color.y, color.z, color.w)
+        glClearDepth(view_ptr.clear_depth)
+        glClearStencil(view_ptr.clear_stencil)
         glClear(gl_clear_flags)
-        glViewport(0, 0, 800, 600)
+        
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
@@ -1321,9 +1348,9 @@ cdef class GraphicsManager:
         for i in range(self.windows.items.num_items):
             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
             SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-            glViewport(0, 0, 800, 600)
-            glClearColor(1.0, 0.0, 0.0, 1.0)
-            glClear(GL_COLOR_BUFFER_BIT)
+            glViewport(0, 0, window_ptr.width, window_ptr.height)
+            glClearColor(0.0, 0.0, 0.0, 0.0)
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
             glActiveTexture(GL_TEXTURE0)
             texture_ptr = self.texture_get_ptr(window_ptr.texture)
             program_ptr = self.program_get_ptr(self.quad_program)

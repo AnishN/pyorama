@@ -120,6 +120,7 @@ ctypedef struct ViewC:
     Vec4C clear_color
     float clear_depth
     uint32_t clear_stencil
+    uint16_t[4] rect
     Mat4C view_mat
     Mat4C proj_mat
     Handle program

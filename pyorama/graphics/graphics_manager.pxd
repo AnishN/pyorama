@@ -29,7 +29,7 @@ cdef class GraphicsManager:
         ItemSlotMap views
 
         Handle u_quad
-        quad_vbo, quad_ibo
+        Handle quad_vbo, quad_ibo
         Handle quad_vs, quad_fs, quad_program
 
         readonly Handle u_fmt_quad
@@ -133,6 +133,7 @@ cdef class GraphicsManager:
     cpdef void view_set_clear_color(self, Handle view, Vec4 color) except *
     cpdef void view_set_clear_depth(self, Handle view, float depth) except *
     cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *
+    cpdef void view_set_rect(self, Handle view, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *
     cpdef void view_set_program(self, Handle view, Handle program) except *
     cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *
