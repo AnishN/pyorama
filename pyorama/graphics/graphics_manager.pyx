@@ -240,7 +240,7 @@ cdef class GraphicsManager:
             1.0, 1.0, 1.0, 1.0,
         ]
         quad_vbo_mv = <uint8_t[:64]>(<uint8_t *>&quad_vbo_data)
-        quad_ibo_data =  [0, 1, 2, 1, 2, 3]
+        quad_ibo_data =  [0, 2, 1, 1, 2, 3]
         quad_ibo_mv = <uint8_t[:24]>(<uint8_t *>&quad_ibo_data)
         self.quad_vbo = self.vertex_buffer_create(self.v_fmt_quad)
         self.vertex_buffer_set_data(self.quad_vbo, quad_vbo_mv)
@@ -1306,7 +1306,13 @@ cdef class GraphicsManager:
         program_ptr = self.program_get_ptr(view_ptr.program)
         vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
         ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
-
+        
+        cdef:
+            uint32_t depth_rbo
+        glGenRenderbuffers(1, &depth_rbo)
+        glBindRenderbuffer(GL_RENDERBUFFER, depth_rbo)
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 800, 600)
+        
         glUseProgram(program_ptr.gl_id)
         for i in range(view_ptr.num_uniforms):
             uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
@@ -1316,10 +1322,13 @@ cdef class GraphicsManager:
         if fbo != 0:
             fbo_ptr = self.frame_buffer_get_ptr(fbo)
             glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id)
-
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_rbo)
+        
         color = &view_ptr.clear_color
+        glEnable(GL_CULL_FACE)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
+        glDepthMask(True)
         gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
         glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3])
         glClearColor(color.x, color.y, color.z, color.w)
@@ -1334,6 +1343,7 @@ cdef class GraphicsManager:
             texture_ptr = self.texture_get_ptr(texture)
             glActiveTexture(gl_texture_unit)
             glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+
         self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
         self._index_buffer_draw(ibo_ptr.handle)
         self._program_unbind_attributes(program_ptr.handle)

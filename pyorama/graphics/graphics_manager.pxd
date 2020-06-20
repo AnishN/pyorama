@@ -120,7 +120,7 @@ cdef class GraphicsManager:
     cpdef void texture_set_data_from_image(self, Handle texture, Handle image) except *
     cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *
     cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
-
+    
     cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *
     cpdef Handle frame_buffer_create(self) except *
     cpdef void frame_buffer_delete(self, Handle frame_buffer) except *
