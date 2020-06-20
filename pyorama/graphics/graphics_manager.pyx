@@ -190,18 +190,19 @@ cdef class GraphicsManager:
         glewInit()
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
 
-        self.windows = ItemSlotMap(sizeof(WindowC), RENDERER_ITEM_TYPE_WINDOW)
-        self.vertex_formats = ItemSlotMap(sizeof(VertexFormatC), RENDERER_ITEM_TYPE_VERTEX_FORMAT)
-        self.vertex_buffers = ItemSlotMap(sizeof(VertexBufferC), RENDERER_ITEM_TYPE_VERTEX_BUFFER)
-        self.index_buffers = ItemSlotMap(sizeof(IndexBufferC), RENDERER_ITEM_TYPE_INDEX_BUFFER)
-        self.uniform_formats = ItemSlotMap(sizeof(UniformFormatC), RENDERER_ITEM_TYPE_UNIFORM_FORMAT)
-        self.uniforms = ItemSlotMap(sizeof(UniformC), RENDERER_ITEM_TYPE_UNIFORM)
-        self.shaders = ItemSlotMap(sizeof(ShaderC), RENDERER_ITEM_TYPE_SHADER)
-        self.programs = ItemSlotMap(sizeof(ProgramC), RENDERER_ITEM_TYPE_PROGRAM)
-        self.images = ItemSlotMap(sizeof(ImageC), RENDERER_ITEM_TYPE_IMAGE)
-        self.textures = ItemSlotMap(sizeof(TextureC), RENDERER_ITEM_TYPE_TEXTURE)
-        self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), RENDERER_ITEM_TYPE_FRAME_BUFFER)
-        self.views = ItemSlotMap(sizeof(ViewC), RENDERER_ITEM_TYPE_VIEW)
+        self.windows = ItemSlotMap(sizeof(WindowC), GRAPHICS_TYPE_WINDOW)
+        self.vertex_formats = ItemSlotMap(sizeof(VertexFormatC), GRAPHICS_TYPE_VERTEX_FORMAT)
+        self.vertex_buffers = ItemSlotMap(sizeof(VertexBufferC), GRAPHICS_TYPE_VERTEX_BUFFER)
+        self.index_buffers = ItemSlotMap(sizeof(IndexBufferC), GRAPHICS_TYPE_INDEX_BUFFER)
+        self.meshes = ItemSlotMap(sizeof(MeshC), GRAPHICS_TYPE_MESH)
+        self.uniform_formats = ItemSlotMap(sizeof(UniformFormatC), GRAPHICS_TYPE_UNIFORM_FORMAT)
+        self.uniforms = ItemSlotMap(sizeof(UniformC), GRAPHICS_TYPE_UNIFORM)
+        self.shaders = ItemSlotMap(sizeof(ShaderC), GRAPHICS_TYPE_SHADER)
+        self.programs = ItemSlotMap(sizeof(ProgramC), GRAPHICS_TYPE_PROGRAM)
+        self.images = ItemSlotMap(sizeof(ImageC), GRAPHICS_TYPE_IMAGE)
+        self.textures = ItemSlotMap(sizeof(TextureC), GRAPHICS_TYPE_TEXTURE)
+        self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), GRAPHICS_TYPE_FRAME_BUFFER)
+        self.views = ItemSlotMap(sizeof(ViewC), GRAPHICS_TYPE_VIEW)
 
         cdef:
             float[16] quad_vbo_data
@@ -236,6 +237,7 @@ cdef class GraphicsManager:
         self.vertex_formats = None
         self.vertex_buffers = None
         self.index_buffers = None
+        self.meshes = None
         self.uniform_formats = None
         self.uniforms = None
         self.shaders = None
@@ -378,7 +380,15 @@ cdef class GraphicsManager:
             glBufferData(GL_ARRAY_BUFFER, data_size, data_ptr, gl_usage)
             buffer_ptr.size = data_size
         glBindBuffer(GL_ARRAY_BUFFER, 0)
-        
+    
+    cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
+        cdef:
+            MeshC *mesh_ptr
+            uint8_t[:] data
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        data = <uint8_t[:mesh_ptr.vertex_data_size]>mesh_ptr.vertex_data
+        self.vertex_buffer_set_data(buffer, data)
+
     cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *:
         cdef:
             VertexBufferC *buffer_ptr
@@ -394,6 +404,14 @@ cdef class GraphicsManager:
             glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     
+    cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
+        cdef:
+            MeshC *mesh_ptr
+            uint8_t[:] data
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        data = <uint8_t[:mesh_ptr.vertex_data_size]>mesh_ptr.vertex_data
+        self.vertex_buffer_set_sub_data(buffer, data, offset)
+
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *:
         return <IndexBufferC *>self.index_buffers.c_get_ptr(buffer)
 
@@ -440,7 +458,15 @@ cdef class GraphicsManager:
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage)
             buffer_ptr.size = data_size
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-        
+    
+    cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
+        cdef:
+            MeshC *mesh_ptr
+            uint8_t[:] data
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
+        self.index_buffer_set_data(buffer, data)
+
     cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *:
         cdef:
             IndexBufferC *buffer_ptr
@@ -456,6 +482,14 @@ cdef class GraphicsManager:
             glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
 
+    cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
+        cdef:
+            MeshC *mesh_ptr
+            uint8_t[:] data
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
+        self.index_buffer_set_sub_data(buffer, data, offset)
+
     cdef void _index_buffer_draw(self, Handle buffer) except *:
         cdef:
             IndexBufferC *buffer_ptr
@@ -468,6 +502,41 @@ cdef class GraphicsManager:
         glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
 
+    cdef MeshC *mesh_get_ptr(self, Handle mesh) except *:
+        return <MeshC *>self.meshes.c_get_ptr(mesh)
+
+    cpdef Handle mesh_create(self, Handle vertex_format, uint8_t[:] vertex_data, IndexFormat index_format, uint8_t[:] index_data) except *:
+        cdef:
+            Handle mesh
+            MeshC *mesh_ptr
+            size_t vertex_data_size
+            size_t index_data_size
+        mesh = self.meshes.c_create()
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        vertex_data_size = vertex_data.shape[0]
+        index_data_size = index_data.shape[0]
+        mesh_ptr.vertex_format = vertex_format
+        mesh_ptr.vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
+        if mesh_ptr.vertex_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for vertex data")
+        memcpy(mesh_ptr.vertex_data, &vertex_data[0], vertex_data_size)
+        mesh_ptr.vertex_data_size = vertex_data_size
+        mesh_ptr.index_format = index_format
+        mesh_ptr.index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
+        if mesh_ptr.index_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for index data")
+        memcpy(mesh_ptr.index_data, &index_data[0], index_data_size)
+        mesh_ptr.index_data_size = index_data_size
+        return mesh
+
+    cpdef void mesh_delete(self, Handle mesh) except *:
+        cdef:
+            MeshC *mesh_ptr
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        free(mesh_ptr.vertex_data)
+        free(mesh_ptr.index_data)
+        self.meshes.c_delete(mesh)
+    
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *:
         return <UniformFormatC *>self.uniform_formats.c_get_ptr(format)
 

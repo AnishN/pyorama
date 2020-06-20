@@ -42,6 +42,14 @@ ctypedef struct IndexBufferC:
     BufferUsage usage
     size_t size
 
+ctypedef struct MeshC:
+    Handle vertex_format
+    uint8_t *vertex_data
+    size_t vertex_data_size
+    IndexFormat index_format
+    uint8_t *index_data
+    size_t index_data_size
+
 ctypedef struct UniformFormatC:
     Handle handle
     char[256] name

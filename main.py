@@ -22,7 +22,7 @@ class Game(App):
         self.u_texture_1 = self.graphics.uniform_create(self.u_texture_1_fmt)
         self.graphics.uniform_set_data(self.u_texture_1, TEXTURE_UNIT_7)
         self.uniforms = np.array([self.u_tint, self.u_texture_0, self.u_texture_1], dtype=np.uint64)
-        
+
         self.v_fmt = self.graphics.vertex_format_create([
             (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
             (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
@@ -33,11 +33,16 @@ class Game(App):
              1.0, -1.0, 0.0, 1.0, 0.0,
             ], dtype=np.float32,
         )
-        self.vbo = self.graphics.vertex_buffer_create(self.v_fmt, BUFFER_USAGE_STATIC)
-        self.graphics.vertex_buffer_set_data(self.vbo, self.v_data.view(np.uint8))
+        self.i_fmt = INDEX_FORMAT_U32
         self.i_data = np.array([0, 1, 2], dtype=np.int32)
+        self.mesh = self.graphics.mesh_create(
+            self.v_fmt, self.v_data.view(np.uint8), 
+            self.i_fmt, self.i_data.view(np.uint8),
+        )
+        self.vbo = self.graphics.vertex_buffer_create(self.v_fmt, BUFFER_USAGE_STATIC)
         self.ibo = self.graphics.index_buffer_create(INDEX_FORMAT_U32, BUFFER_USAGE_STATIC)
-        self.graphics.index_buffer_set_data(self.ibo, self.i_data.view(np.uint8))
+        self.graphics.vertex_buffer_set_data_from_mesh(self.vbo, self.mesh)
+        self.graphics.index_buffer_set_data_from_mesh(self.ibo, self.mesh)
         
         vs_path = b"./resources/shaders/basic.vert"
         self.vs = self.graphics.shader_create_from_file(SHADER_TYPE_VERTEX, vs_path)

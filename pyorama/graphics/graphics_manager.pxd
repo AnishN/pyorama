@@ -27,6 +27,7 @@ cdef class GraphicsManager:
         ItemSlotMap vertex_formats
         ItemSlotMap vertex_buffers
         ItemSlotMap index_buffers
+        ItemSlotMap meshes
         ItemSlotMap uniform_formats
         ItemSlotMap uniforms
         ItemSlotMap shaders
@@ -49,15 +50,23 @@ cdef class GraphicsManager:
     cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage) except *
     cpdef void vertex_buffer_delete(self, Handle buffer) except *
     cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *
+    cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
     cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *
+    cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
     
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *
     cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage) except *
     cpdef void index_buffer_delete(self, Handle buffer) except *
     cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *
+    cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
+    cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
     cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *
     cdef void _index_buffer_draw(self, Handle buffer) except *
     
+    cdef MeshC *mesh_get_ptr(self, Handle mesh) except *
+    cpdef Handle mesh_create(self, Handle vertex_format, uint8_t[:] vertex_data, IndexFormat index_format, uint8_t[:] index_data) except *
+    cpdef void mesh_delete(self, Handle mesh) except *
+
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
     cpdef Handle uniform_format_create(self, bytes name, UniformType type, size_t count=*) except *
     cpdef void uniform_format_delete(self, Handle format) except *
