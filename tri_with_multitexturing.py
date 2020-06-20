@@ -24,7 +24,7 @@ class Game(App):
         
         self.u_proj = self.graphics.uniform_create(self.graphics.u_fmt_proj)
         self.proj_mat = Mat4()
-        Mat4.ortho(self.proj_mat, -5, 5, -5, 5, -5, 5)
+        Mat4.ortho(self.proj_mat, -2, 2, -2, 2, -1, 1)
         self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
         self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
         self.graphics.uniform_set_data(self.u_view, Mat4())
@@ -32,9 +32,29 @@ class Game(App):
         self.graphics.uniform_set_data(self.u_view, Mat4())
         self.uniforms = np.array([self.u_tint, self.u_texture_0, self.u_texture_1, self.u_proj, self.u_view], dtype=np.uint64)
 
-        self.mesh = self.graphics.mesh_create_from_file(b"./resources/meshes/dog/dog.obj")
-        self.vbo = self.graphics.vertex_buffer_create(self.graphics.v_fmt_mesh)
-        self.ibo = self.graphics.index_buffer_create(self.graphics.i_fmt_mesh)
+        self.v_fmt = self.graphics.vertex_format_create([
+            (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
+            (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
+        ])
+        self.v_data = np.array([
+            -1.0, -1.0, 0.0, 0.0, 0.0,
+             0.0, 1.0, 0.0, 0.5, 1.0, 
+             1.0, -1.0, 0.0, 1.0, 0.0,
+            ], dtype=np.float32,
+        )
+        self.i_fmt = INDEX_FORMAT_U32
+        self.i_data = np.array([0, 1, 2], dtype=np.int32)
+        self.mesh = self.graphics.mesh_create(
+            self.v_fmt, self.v_data.view(np.uint8), 
+            self.i_fmt, self.i_data.view(np.uint8),
+        )
+        #self.mesh = self.graphics.mesh_create_from_file(b"./resources/meshes/dog/dog.obj")
+        """
+        self.v_fmt = self.graphics.mesh_get_vertex_format(self.mesh)
+        self.i_fmt = self.graphics.mesh_get_index_format(self.mesh)
+        """
+        self.vbo = self.graphics.vertex_buffer_create(self.v_fmt)
+        self.ibo = self.graphics.index_buffer_create(self.i_fmt)
         self.graphics.vertex_buffer_set_data_from_mesh(self.vbo, self.mesh)
         self.graphics.index_buffer_set_data_from_mesh(self.ibo, self.mesh)
         

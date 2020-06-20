@@ -76,7 +76,7 @@ cdef class GraphicsManager:
     cdef void _index_buffer_draw(self, Handle buffer) except *
     
     cdef MeshC *mesh_get_ptr(self, Handle mesh) except *
-    cpdef Handle mesh_create(self, Handle vertex_format, uint8_t[:] vertex_data, IndexFormat index_format, uint8_t[:] index_data) except *#TODO: might need to change this signature to use standardized formats
+    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *
     cpdef Handle mesh_create_from_file(self, bytes file_path) except *
     cpdef void mesh_delete(self, Handle mesh) except *
 

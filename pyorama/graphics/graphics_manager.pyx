@@ -525,7 +525,7 @@ cdef class GraphicsManager:
     cdef MeshC *mesh_get_ptr(self, Handle mesh) except *:
         return <MeshC *>self.meshes.c_get_ptr(mesh)
 
-    cpdef Handle mesh_create(self, Handle vertex_format, uint8_t[:] vertex_data, IndexFormat index_format, uint8_t[:] index_data) except *:
+    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *:
         cdef:
             Handle mesh
             MeshC *mesh_ptr
@@ -535,13 +535,11 @@ cdef class GraphicsManager:
         mesh_ptr = self.mesh_get_ptr(mesh)
         vertex_data_size = vertex_data.shape[0]
         index_data_size = index_data.shape[0]
-        mesh_ptr.vertex_format = vertex_format
         mesh_ptr.vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
         if mesh_ptr.vertex_data == NULL:
             raise MemoryError("Mesh: cannot allocate memory for vertex data")
         memcpy(mesh_ptr.vertex_data, &vertex_data[0], vertex_data_size)
         mesh_ptr.vertex_data_size = vertex_data_size
-        mesh_ptr.index_format = index_format
         mesh_ptr.index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
         if mesh_ptr.index_data == NULL:
             raise MemoryError("Mesh: cannot allocate memory for index data")
@@ -587,8 +585,6 @@ cdef class GraphicsManager:
             raise ValueError("Mesh: multiple mesh import not supported")
         mesh = self.meshes.c_create()
         mesh_ptr = self.mesh_get_ptr(mesh)
-        mesh_ptr.vertex_format = self.v_fmt_mesh
-        mesh_ptr.index_format = self.i_fmt_mesh
         ai_mesh = ai_scene.mMeshes[0]
 
         #get vertex data (interleaved)
