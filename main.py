@@ -52,7 +52,7 @@ class Game(App):
         image_path = b"./resources/meshes/dog/dog.jpg"
         self.image = self.graphics.image_create_from_file(image_path)
         self.texture = self.graphics.texture_create()
-        self.graphics.texture_set_data_from_image(self.texture, self.image)
+        self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
         
         #setup window/fbo/view
         self.window = self.graphics.window_create(800, 600, b"Hello World!")

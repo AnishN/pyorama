@@ -1018,7 +1018,7 @@ cdef class GraphicsManager:
     cdef ImageC *image_get_ptr(self, Handle image) except *:
         return <ImageC *>self.images.c_get_ptr(image)
 
-    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=None) except *:
+    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=None, size_t bytes_per_channel=1, size_t num_channels=4) except *:
         cdef:
             Handle image
             ImageC *image_ptr
@@ -1030,7 +1030,9 @@ cdef class GraphicsManager:
         image_ptr = self.image_get_ptr(image)
         image_ptr.width = width
         image_ptr.height = height
-        image_ptr.data_size = <uint64_t>width * <uint64_t>height * 4
+        image_ptr.bytes_per_channel = bytes_per_channel
+        image_ptr.num_channels = num_channels
+        image_ptr.data_size = <uint64_t>width * <uint64_t>height * bytes_per_channel * num_channels
         image_ptr.data = <uint8_t *>calloc(image_ptr.data_size, sizeof(uint8_t))
         if image_ptr.data == NULL:
             raise MemoryError("Image: cannot allocate memory for data")
@@ -1109,12 +1111,25 @@ cdef class GraphicsManager:
     cdef TextureC *texture_get_ptr(self, Handle texture) except *:
         return <TextureC *>self.textures.c_get_ptr(texture)
 
-    cpdef Handle texture_create(self, bint mipmaps=True, TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, TextureWrap wrap_t=TEXTURE_WRAP_REPEAT) except *:
+    """
+    cpdef Handle texture_create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *
+    cpdef void texture_delete(self, Handle texture) except *
+    cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
+    cpdef void texture_set_data_from_image(self, Handle texture, Handle image, size_t cubemap_index=*) except *
+    cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height, size_t cubemap_index=*) except *
+    cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
+    """
+
+    cpdef Handle texture_create(self, TextureFormat format=TEXTURE_FORMAT_RGBA8U, bint mipmaps=True, 
+            TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, 
+            TextureWrap wrap_t=TEXTURE_WRAP_REPEAT, bint cubemap=False) except *:
         cdef:
             Handle texture
             TextureC *texture_ptr
         texture = self.textures.c_create()
         texture_ptr = self.texture_get_ptr(texture)
+        texture_ptr.format = format
+        texture_ptr.cubemap = cubemap
         glGenTextures(1, &texture_ptr.gl_id)
         self.texture_set_parameters(texture, mipmaps, filter, wrap_s, wrap_t)
         return texture
@@ -1129,23 +1144,30 @@ cdef class GraphicsManager:
     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=True, TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, TextureWrap wrap_t=TEXTURE_WRAP_REPEAT) except *:
         cdef:
             TextureC *texture_ptr
+            uint32_t target
         texture_ptr = self.texture_get_ptr(texture)
         texture_ptr.mipmaps = mipmaps
         texture_ptr.filter = filter
         texture_ptr.wrap_s = wrap_s
         texture_ptr.wrap_t = wrap_t
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s))	
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t))
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps))
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, mipmaps))
-        glBindTexture(GL_TEXTURE_2D, 0)
+        if texture_ptr.cubemap:
+            target = GL_TEXTURE_CUBE_MAP
+        else:
+            target = GL_TEXTURE_2D
+        glBindTexture(target, texture_ptr.gl_id)
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s))	
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t))
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps))
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, mipmaps))
+        glBindTexture(target, 0)
     
-    cpdef void texture_set_data_from_image(self, Handle texture, Handle image) except *:
+    cpdef void texture_set_data_2d_from_image(self, Handle texture, Handle image) except *:
         cdef:
             TextureC *texture_ptr
             ImageC *image_ptr
         texture_ptr = self.texture_get_ptr(texture)
+        if texture_ptr.cubemap:
+            raise ValueError("Texture: cannot use 2D data setter for cubemap texture")
         image_ptr = self.image_get_ptr(image)
         glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.data)
@@ -1153,12 +1175,38 @@ cdef class GraphicsManager:
             glGenerateMipmap(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, 0)
 
+    cpdef void texture_set_data_cubemap_from_image(self, Handle texture, 
+            Handle image_pos_x, Handle image_neg_x, Handle image_pos_y,
+            Handle image_neg_y, Handle image_pos_z, Handle image_neg_z) except *:
+        cdef:
+            TextureC *texture_ptr
+            Handle[6] images
+            size_t i
+            ImageC *image_ptr
+        images = [
+            image_pos_x, image_neg_x, 
+            image_pos_y, image_neg_y, 
+            image_pos_z, image_neg_z,
+        ]
+        texture_ptr = self.texture_get_ptr(texture)
+        if not texture_ptr.cubemap:
+            raise ValueError("Texture: cannot use cubemap data setter for 2D texture")
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texture_ptr.gl_id)
+        for i in range(6):
+            image_ptr = self.image_get_ptr(images[i])
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.data)
+        if texture_ptr.mipmaps:
+            glGenerateMipmap(GL_TEXTURE_CUBE_MAP)
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0)
+
     cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *:
         cdef:
             TextureC *texture_ptr
             size_t data_size 
         texture_ptr = self.texture_get_ptr(texture)
         data_size = width * height * 4 * sizeof(uint8_t)
+        if texture_ptr.cubemap:
+            data_size *= 6
         if data_size != data.shape[0]:
             raise ValueError("Texture: data shape does not match dimensions")
         glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
@@ -1170,12 +1218,22 @@ cdef class GraphicsManager:
     cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *:
         cdef:
             TextureC *texture_ptr
+            uint32_t target
+            size_t i
         texture_ptr = self.texture_get_ptr(texture)
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL)
-        if texture_ptr.mipmaps:
-            glGenerateMipmap(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, 0)
+        if texture_ptr.cubemap:
+            glBindTexture(GL_TEXTURE_CUBE_MAP, texture_ptr.gl_id)
+            for i in range(6):
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL)
+            if texture_ptr.mipmaps:
+                glGenerateMipmap(GL_TEXTURE_CUBE_MAP)
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0)
+        else:
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL)
+            if texture_ptr.mipmaps:
+                glGenerateMipmap(GL_TEXTURE_2D)
+            glBindTexture(GL_TEXTURE_2D, 0)
 
     cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *:
         return <FrameBufferC *>self.frame_buffers.c_get_ptr(frame_buffer)

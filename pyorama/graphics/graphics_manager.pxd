@@ -57,7 +57,7 @@ cdef class GraphicsManager:
     cdef void c_delete_predefined_vertex_index_formats(self) except *
     cdef void c_create_quad(self) except *
     cdef void c_delete_quad(self) except *
-    
+
     cdef WindowC *window_get_ptr(self, Handle window) except *
     cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *
     cpdef void window_delete(self, Handle window) except *
@@ -114,7 +114,7 @@ cdef class GraphicsManager:
     cdef void _program_bind_uniform(self, Handle program, Handle uniform) except *
 
     cdef ImageC *image_get_ptr(self, Handle image) except *
-    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=*) except *
+    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=*, size_t bytes_per_channel=*, size_t num_channels=*) except *
     cpdef Handle image_create_from_file(self, bytes file_path, bint flip_x=*, bint flip_y=*) except *
     cpdef void image_delete(self, Handle image) except *
     cpdef void image_set_data(self, Handle image, uint8_t[:] data=*) except *
@@ -123,10 +123,13 @@ cdef class GraphicsManager:
     cpdef uint8_t[:] image_get_data(self, Handle image) except *
 
     cdef TextureC *texture_get_ptr(self, Handle texture) except *
-    cpdef Handle texture_create(self, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
+    cpdef Handle texture_create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *
     cpdef void texture_delete(self, Handle texture) except *
     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
-    cpdef void texture_set_data_from_image(self, Handle texture, Handle image) except *
+    cpdef void texture_set_data_2d_from_image(self, Handle texture, Handle image) except *
+    cpdef void texture_set_data_cubemap_from_image(self, Handle texture, 
+            Handle image_pos_x, Handle image_neg_x, Handle image_pos_y,
+            Handle image_neg_y, Handle image_pos_z, Handle image_neg_z) except *
     cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *
     cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
 
