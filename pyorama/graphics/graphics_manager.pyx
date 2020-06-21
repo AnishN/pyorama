@@ -189,7 +189,22 @@ cdef class GraphicsManager:
         self.root_context = SDL_GL_CreateContext(self.root_window)
         glewInit()
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
+        self.c_create_slot_maps()
+        self.c_create_predefined_uniform_formats()
+        self.c_create_predefined_vertex_index_formats()
+        self.c_create_quad()
 
+    def __dealloc__(self):
+        self.c_delete_quad()
+        self.c_delete_predefined_vertex_index_formats()
+        self.c_delete_predefined_uniform_formats()
+        self.c_delete_slot_maps()
+        IMG_Quit()
+        #no equivalent like glewQuit()
+        SDL_GL_DeleteContext(self.root_context)
+        SDL_DestroyWindow(self.root_window)
+
+    cdef void c_create_slot_maps(self) except *:
         self.windows = ItemSlotMap(sizeof(WindowC), GRAPHICS_TYPE_WINDOW)
         self.vertex_formats = ItemSlotMap(sizeof(VertexFormatC), GRAPHICS_TYPE_VERTEX_FORMAT)
         self.vertex_buffers = ItemSlotMap(sizeof(VertexBufferC), GRAPHICS_TYPE_VERTEX_BUFFER)
@@ -204,6 +219,22 @@ cdef class GraphicsManager:
         self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), GRAPHICS_TYPE_FRAME_BUFFER)
         self.views = ItemSlotMap(sizeof(ViewC), GRAPHICS_TYPE_VIEW)
 
+    cdef void c_delete_slot_maps(self) except *:
+        self.windows = None
+        self.vertex_formats = None
+        self.vertex_buffers = None
+        self.index_buffers = None
+        self.meshes = None
+        self.uniform_formats = None
+        self.uniforms = None
+        self.shaders = None
+        self.programs = None
+        self.images = None
+        self.textures = None
+        self.frame_buffers = None
+        self.views = None
+
+    cdef void c_create_predefined_uniform_formats(self) except *:
         self.u_fmt_quad = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
         self.u_fmt_view = self.uniform_format_create(b"u_view", UNIFORM_TYPE_MAT4)
         self.u_fmt_proj = self.uniform_format_create(b"u_proj", UNIFORM_TYPE_MAT4)
@@ -216,6 +247,20 @@ cdef class GraphicsManager:
         self.u_fmt_texture_6 = self.uniform_format_create(b"u_texture_6", UNIFORM_TYPE_INT)
         self.u_fmt_texture_7 = self.uniform_format_create(b"u_texture_7", UNIFORM_TYPE_INT)
 
+    cdef void c_delete_predefined_uniform_formats(self) except *:
+        self.uniform_format_delete(self.u_fmt_quad)
+        self.uniform_format_delete(self.u_fmt_view) 
+        self.uniform_format_delete(self.u_fmt_proj) 
+        self.uniform_format_delete(self.u_fmt_texture_0) 
+        self.uniform_format_delete(self.u_fmt_texture_1) 
+        self.uniform_format_delete(self.u_fmt_texture_2) 
+        self.uniform_format_delete(self.u_fmt_texture_3) 
+        self.uniform_format_delete(self.u_fmt_texture_4) 
+        self.uniform_format_delete(self.u_fmt_texture_5) 
+        self.uniform_format_delete(self.u_fmt_texture_6) 
+        self.uniform_format_delete(self.u_fmt_texture_7) 
+
+    cdef void c_create_predefined_vertex_index_formats(self) except *:
         self.v_fmt_quad = self.vertex_format_create([
             (b"a_quad", VERTEX_COMP_TYPE_F32, 4, False),
         ])
@@ -224,10 +269,16 @@ cdef class GraphicsManager:
             (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
             (b"a_normal", VERTEX_COMP_TYPE_F32, 3, False),
         ])
-
         self.i_fmt_quad = INDEX_FORMAT_U32
         self.i_fmt_mesh = INDEX_FORMAT_U32
 
+    cdef void c_delete_predefined_vertex_index_formats(self) except *:
+        self.vertex_format_delete(self.v_fmt_quad)
+        self.vertex_format_delete(self.v_fmt_mesh)
+        self.i_fmt_quad = INDEX_FORMAT_U32
+        self.i_fmt_mesh = INDEX_FORMAT_U32
+
+    cdef void c_create_quad(self) except *:
         cdef:
             float[16] quad_vbo_data
             uint32_t[6] quad_ibo_data
@@ -252,22 +303,13 @@ cdef class GraphicsManager:
         self.u_quad = self.uniform_create(self.u_fmt_quad)
         self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
 
-    def __dealloc__(self):
-        self.windows = None
-        self.vertex_formats = None
-        self.vertex_buffers = None
-        self.index_buffers = None
-        self.meshes = None
-        self.uniform_formats = None
-        self.uniforms = None
-        self.shaders = None
-        self.programs = None
-        self.images = None
-        self.textures = None
-        self.frame_buffers = None
-        self.views = None
-        SDL_GL_DeleteContext(self.root_context)
-        SDL_DestroyWindow(self.root_window)
+    cdef void c_delete_quad(self) except *:
+        self.vertex_buffer_delete(self.quad_vbo)
+        self.index_buffer_delete(self.quad_ibo)
+        self.shader_delete(self.quad_vs)
+        self.shader_delete(self.quad_fs)
+        self.program_delete(self.quad_program)
+        self.uniform_delete(self.u_quad)
 
     cdef WindowC *window_get_ptr(self, Handle window) except *:
         return <WindowC *>self.windows.c_get_ptr(window)
@@ -1311,7 +1353,7 @@ cdef class GraphicsManager:
             uint32_t depth_rbo
         glGenRenderbuffers(1, &depth_rbo)
         glBindRenderbuffer(GL_RENDERBUFFER, depth_rbo)
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 800, 600)
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, view_ptr.rect[2], view_ptr.rect[3])
         
         glUseProgram(program_ptr.gl_id)
         for i in range(view_ptr.num_uniforms):

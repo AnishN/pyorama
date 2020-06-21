@@ -49,6 +49,15 @@ cdef class GraphicsManager:
         readonly IndexFormat i_fmt_quad
         readonly IndexFormat i_fmt_mesh
 
+    cdef void c_create_slot_maps(self) except *
+    cdef void c_delete_slot_maps(self) except *
+    cdef void c_create_predefined_uniform_formats(self) except *
+    cdef void c_delete_predefined_uniform_formats(self) except *
+    cdef void c_create_predefined_vertex_index_formats(self) except *
+    cdef void c_delete_predefined_vertex_index_formats(self) except *
+    cdef void c_create_quad(self) except *
+    cdef void c_delete_quad(self) except *
+    
     cdef WindowC *window_get_ptr(self, Handle window) except *
     cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *
     cpdef void window_delete(self, Handle window) except *
@@ -120,7 +129,7 @@ cdef class GraphicsManager:
     cpdef void texture_set_data_from_image(self, Handle texture, Handle image) except *
     cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *
     cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
-    
+
     cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *
     cpdef Handle frame_buffer_create(self) except *
     cpdef void frame_buffer_delete(self, Handle frame_buffer) except *
