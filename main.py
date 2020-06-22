@@ -2,6 +2,7 @@ import sys
 import math
 import numpy as np
 from pyorama.core.app import App
+from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import GraphicsManager
 from pyorama.math3d.vec3 import Vec3
@@ -12,7 +13,6 @@ class Game(App):
 
     def init(self):
         super().init()
-        self.graphics = GraphicsManager()
 
         #setup uniforms
         self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
@@ -57,20 +57,32 @@ class Game(App):
         #setup window/fbo/view
         self.window = self.graphics.window_create(800, 600, b"Hello World!")
         self.out_color = self.graphics.texture_create()
-        self.out_depth = self.graphics.texture_create(format=TEXTURE_FORMAT_DEPTH_16U, filter=TEXTURE_FILTER_NEAREST, mipmaps=False)
+        self.out_depth = self.graphics.texture_create(format=TEXTURE_FORMAT_DEPTH_32U, filter=TEXTURE_FILTER_NEAREST, mipmaps=False)
         self.graphics.texture_clear(self.out_color, 800, 600)
         self.graphics.texture_clear(self.out_depth, 800, 600)
         self.graphics.window_set_texture(self.window, self.out_color)
+        #self.graphics.window_set_texture(self.window, self.out_depth)
         self.fbo = self.graphics.frame_buffer_create()
         self.graphics.frame_buffer_attach_textures(self.fbo, {
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
             FRAME_BUFFER_ATTACHMENT_DEPTH: self.out_depth,
         })
         self.view = self.graphics.view_create()
+        self.update_view()
+
+        """
+        def callback_func(event_data, *args, **kwargs):
+            print(event_data)
+            print(args)
+            print(kwargs)
+        
+        self.event.add_listener(EVENT_TYPE_ENTER_FRAME, callback_func, *args, **kwargs)
+        """
     
     def quit(self):
         #really should call *_delete methods on all created graphics handles
         #in testing so far, this function is never called, so am lazy with clean up here.
+        #self.graphics.quit()
         super().quit()
     
     def update_view(self):
@@ -87,13 +99,14 @@ class Game(App):
         })
         self.graphics.view_set_frame_buffer(self.view, self.fbo)
     
+    """
     def update(self, delta):
-        print(delta)
-        Mat4.translate(self.view_mat, self.view_mat, Vec3(0.0, 0.0, 0.1))
+        self.event.update()
+        Mat4.translate(self.view_mat, self.view_mat, Vec3(0.0, 0.0, 0.25))
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
-
         self.update_view()
         self.graphics.update()
+    """
     
 if __name__ == "__main__":
     game = Game()

@@ -8,6 +8,7 @@ from pyorama.libs.sdl2 cimport *
 #from pyorama.math3d cimport *
 from pyorama.graphics.graphics_enums cimport *
 from pyorama.graphics.graphics_structs cimport *
+from pyorama.graphics.graphics_utils cimport *
 
 @cython.final
 cdef class GraphicsManager:
