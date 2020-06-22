@@ -1,5 +1,5 @@
 from pyorama.libs.c cimport *
-from pyorama.libs.gl cimport *
+from pyorama.libs.gles2 cimport *
 from pyorama.libs.sdl2 cimport *
 
 cdef class App:

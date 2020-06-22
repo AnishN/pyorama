@@ -3,7 +3,7 @@ from pyorama.core.handle cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.assimp cimport *
-from pyorama.libs.gl cimport *
+from pyorama.libs.gles2 cimport *
 from pyorama.libs.sdl2 cimport *
 #from pyorama.math3d cimport *
 from pyorama.graphics.graphics_enums cimport *
@@ -49,6 +49,8 @@ cdef class GraphicsManager:
         readonly IndexFormat i_fmt_quad
         readonly IndexFormat i_fmt_mesh
 
+    cdef void c_check_gl(self) except *
+    cdef void c_check_gl_extensions(self) except *
     cdef void c_create_slot_maps(self) except *
     cdef void c_delete_slot_maps(self) except *
     cdef void c_create_predefined_uniform_formats(self) except *
@@ -127,10 +129,9 @@ cdef class GraphicsManager:
     cpdef void texture_delete(self, Handle texture) except *
     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
     cpdef void texture_set_data_2d_from_image(self, Handle texture, Handle image) except *
-    cpdef void texture_set_data_cubemap_from_image(self, Handle texture, 
+    cpdef void texture_set_data_cubemap_from_images(self, Handle texture, 
             Handle image_pos_x, Handle image_neg_x, Handle image_pos_y,
             Handle image_neg_y, Handle image_pos_z, Handle image_neg_z) except *
-    cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *
     cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
 
     cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *

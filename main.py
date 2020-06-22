@@ -57,15 +57,14 @@ class Game(App):
         #setup window/fbo/view
         self.window = self.graphics.window_create(800, 600, b"Hello World!")
         self.out_color = self.graphics.texture_create()
-        #self.out_depth = self.graphics.texture_create()
+        self.out_depth = self.graphics.texture_create(format=TEXTURE_FORMAT_DEPTH_16U, filter=TEXTURE_FILTER_NEAREST, mipmaps=False)
         self.graphics.texture_clear(self.out_color, 800, 600)
-        #self.graphics.texture_clear(self.out_depth, 800, 600)
+        self.graphics.texture_clear(self.out_depth, 800, 600)
         self.graphics.window_set_texture(self.window, self.out_color)
-        #self.graphics.window_set_texture(self.window, self.out_depth)
         self.fbo = self.graphics.frame_buffer_create()
         self.graphics.frame_buffer_attach_textures(self.fbo, {
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
-            #FRAME_BUFFER_ATTACHMENT_DEPTH: self.out_depth,
+            FRAME_BUFFER_ATTACHMENT_DEPTH: self.out_depth,
         })
         self.view = self.graphics.view_create()
     

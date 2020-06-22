@@ -113,7 +113,7 @@ cdef AttributeType c_attribute_type_from_gl(uint32_t gl_type) except *:
         raise ValueError("Program: unsupported OpenGL attribute data type {0}".format(gl_type))
 
 cdef UniformType c_uniform_type_from_gl(uint32_t gl_type) except *:
-    if gl_type == GL_INT or gl_type == GL_SAMPLER_1D or gl_type == GL_SAMPLER_2D or gl_type == GL_SAMPLER_3D:
+    if gl_type == GL_INT or gl_type == GL_SAMPLER_2D or gl_type == GL_SAMPLER_CUBE:
         return UNIFORM_TYPE_INT
     elif gl_type == GL_FLOAT:
         return UNIFORM_TYPE_FLOAT
@@ -176,19 +176,125 @@ cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil:
         gl_flags |= GL_STENCIL_BUFFER_BIT
     return gl_flags
 
-cdef uint32_t c_texture_unit_to_gl(TextureUnit unit) nogil:
-    return GL_TEXTURE0 + (unit - TEXTURE_UNIT_0)
+cdef uint32_t c_texture_unit_to_gl(TextureUnit unit):
+    if unit == TEXTURE_UNIT_0:
+        return GL_TEXTURE0
+    elif unit == TEXTURE_UNIT_1:
+        return GL_TEXTURE1
+    elif unit == TEXTURE_UNIT_2:
+        return GL_TEXTURE2
+    elif unit == TEXTURE_UNIT_3:
+        return GL_TEXTURE3
+    elif unit == TEXTURE_UNIT_4:
+        return GL_TEXTURE4
+    elif unit == TEXTURE_UNIT_5:
+        return GL_TEXTURE5
+    elif unit == TEXTURE_UNIT_6:
+        return GL_TEXTURE6
+    elif unit == TEXTURE_UNIT_7:
+        return GL_TEXTURE7
+    elif unit == TEXTURE_UNIT_8:
+        return GL_TEXTURE8
+    elif unit == TEXTURE_UNIT_9:
+        return GL_TEXTURE9
+    elif unit == TEXTURE_UNIT_10:
+        return GL_TEXTURE10
+    elif unit == TEXTURE_UNIT_11:
+        return GL_TEXTURE11
+    elif unit == TEXTURE_UNIT_12:
+        return GL_TEXTURE12
+    elif unit == TEXTURE_UNIT_13:
+        return GL_TEXTURE13
+    elif unit == TEXTURE_UNIT_14:
+        return GL_TEXTURE14
+    elif unit == TEXTURE_UNIT_15:
+        return GL_TEXTURE15
 
 cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) nogil:
-    return GL_COLOR_ATTACHMENT0 + (attachment - FRAME_BUFFER_ATTACHMENT_COLOR_0)
+    if attachment == FRAME_BUFFER_ATTACHMENT_COLOR_0:
+        return GL_COLOR_ATTACHMENT0
+    elif attachment == FRAME_BUFFER_ATTACHMENT_DEPTH:
+        return GL_DEPTH_ATTACHMENT
+    elif attachment == FRAME_BUFFER_ATTACHMENT_STENCIL:
+        return GL_STENCIL_ATTACHMENT
+    """
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_1:
+        return GL_COLOR_ATTACHMENT1
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_2:
+        return GL_COLOR_ATTACHMENT2
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_3:
+        return GL_COLOR_ATTACHMENT3
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_4:
+        return GL_COLOR_ATTACHMENT4
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_5:
+        return GL_COLOR_ATTACHMENT5
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_6:
+        return GL_COLOR_ATTACHMENT6
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_7:
+        return GL_COLOR_ATTACHMENT7
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_8:
+        return GL_COLOR_ATTACHMENT8
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_9:
+        return GL_COLOR_ATTACHMENT9
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_10:
+        return GL_COLOR_ATTACHMENT10
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_11:
+        return GL_COLOR_ATTACHMENT11
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_12:
+        return GL_COLOR_ATTACHMENT12
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_13:
+        return GL_COLOR_ATTACHMENT13
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_14:
+        return GL_COLOR_ATTACHMENT14
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_15:
+        return GL_COLOR_ATTACHMENT15
+    """
+
+cdef uint32_t c_texture_format_to_internal_format_gl(TextureFormat format) nogil:
+    if format == TEXTURE_FORMAT_RGBA_8U:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_RGBA_32F:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_DEPTH_16U:
+        return GL_DEPTH_COMPONENT
+    elif format == TEXTURE_FORMAT_DEPTH_32U:
+        return GL_DEPTH_COMPONENT
+    #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:
+    #    return GL_DEPTH_STENCIL
+
+cdef uint32_t c_texture_format_to_format_gl(TextureFormat format) nogil:
+    if format == TEXTURE_FORMAT_RGBA_8U:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_RGBA_32F:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_DEPTH_16U:
+        return GL_DEPTH_COMPONENT
+    elif format == TEXTURE_FORMAT_DEPTH_32U:
+        return GL_DEPTH_COMPONENT
+    #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:
+    #    return GL_DEPTH_STENCIL
+
+cdef uint32_t c_texture_format_to_type_gl(TextureFormat format) nogil:
+    if format == TEXTURE_FORMAT_RGBA_8U:
+        return GL_UNSIGNED_BYTE
+    elif format == TEXTURE_FORMAT_RGBA_32F:
+        return GL_FLOAT
+    elif format == TEXTURE_FORMAT_DEPTH_16U:
+        return GL_UNSIGNED_SHORT
+    elif format == TEXTURE_FORMAT_DEPTH_32U:
+        return GL_UNSIGNED_INT
+    #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:
+    #    return GL_UNSIGNED_INT_24_8
 
 cdef class GraphicsManager:
 
     def __cinit__(self):
         self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
         self.root_context = SDL_GL_CreateContext(self.root_window)
-        glewInit()
+        if self.root_context == NULL:
+            raise ValueError("GraphicsManager: failed to create OpenGL context")
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
+        self.c_check_gl_extensions()
         self.c_create_slot_maps()
         self.c_create_predefined_uniform_formats()
         self.c_create_predefined_vertex_index_formats()
@@ -203,6 +309,35 @@ cdef class GraphicsManager:
         #no equivalent like glewQuit()
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
+
+    cdef void c_check_gl(self) except *:
+        cdef:
+            uint32_t gl_error
+            #str gl_error_str
+        gl_error = glGetError()
+        if gl_error != GL_NO_ERROR:
+            #gl_error_str = gluErrorString(gl_error).decode("utf-8")
+            #raise ValueError("GraphicsManager: OpenGL error (code: {0}; message: {1})".format(gl_error, gl_error_str))
+            raise ValueError("GraphicsManager: OpenGL error (code: {0})".format(gl_error))
+
+    cdef void c_check_gl_extensions(self) except *:
+        cdef:
+            str extentions_str
+            set extensions
+            list required
+            str r
+        extentions_str = glGetString(GL_EXTENSIONS).decode("utf-8"); self.c_check_gl()
+        extensions = set(extentions_str.split())
+        required = [
+            "GL_OES_texture_float",
+            "GL_OES_texture_float_linear",
+            "GL_OES_texture_half_float",
+            "GL_OES_texture_half_float_linear",
+            "GL_OES_depth_texture",
+        ]
+        for r in required:
+            if r not in extensions:
+                raise ValueError("GraphicsManager: required OpenGL extension {0} not supported.".format(r))
 
     cdef void c_create_slot_maps(self) except *:
         self.windows = ItemSlotMap(sizeof(WindowC), GRAPHICS_TYPE_WINDOW)
@@ -405,7 +540,7 @@ cdef class GraphicsManager:
             VertexBufferC *buffer_ptr
         buffer = self.vertex_buffers.c_create()
         buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        glGenBuffers(1, &buffer_ptr.gl_id)
+        glGenBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
         if buffer_ptr.gl_id == 0:
             raise ValueError("VertexBuffer: failed to generate buffer id")
         buffer_ptr.format = format
@@ -418,11 +553,11 @@ cdef class GraphicsManager:
             VertexBufferC *buffer_ptr
             uint32_t gl_usage
         buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-        glBufferData(GL_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
-        glDeleteBuffers(1, &buffer_ptr.gl_id)
+        glBufferData(GL_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.c_check_gl()
+        glBindBuffer(GL_ARRAY_BUFFER, 0); self.c_check_gl()
+        glDeleteBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
         self.vertex_buffers.c_delete(buffer)
 
     cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *:
@@ -434,14 +569,14 @@ cdef class GraphicsManager:
         buffer_ptr = self.vertex_buffer_get_ptr(buffer)
         data_size = data.shape[0]
         data_ptr = &data[0]
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         if buffer_ptr.size == data_size:#use sub data instead
-            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr)
+            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
         else:
             gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-            glBufferData(GL_ARRAY_BUFFER, data_size, data_ptr, gl_usage)
+            glBufferData(GL_ARRAY_BUFFER, data_size, data_ptr, gl_usage); self.c_check_gl()
             buffer_ptr.size = data_size
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glBindBuffer(GL_ARRAY_BUFFER, 0); self.c_check_gl()
     
     cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
         cdef:
@@ -459,12 +594,12 @@ cdef class GraphicsManager:
         buffer_ptr = self.vertex_buffer_get_ptr(buffer)
         data_size = data.shape[0]
         data_ptr = &data[0]
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         if offset + data_size > buffer_ptr.size:
             raise ValueError("VertexBuffer: attempting to write out of bounds")
         else:
-            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
+        glBindBuffer(GL_ARRAY_BUFFER, 0); self.c_check_gl()
     
     cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
         cdef:
@@ -483,7 +618,7 @@ cdef class GraphicsManager:
             IndexBufferC *buffer_ptr
         buffer = self.index_buffers.c_create()
         buffer_ptr = self.index_buffer_get_ptr(buffer)
-        glGenBuffers(1, &buffer_ptr.gl_id)
+        glGenBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
         if buffer_ptr.gl_id == 0:
             raise ValueError("IndexBuffer: failed to generate buffer id")
         buffer_ptr.format = format
@@ -496,11 +631,11 @@ cdef class GraphicsManager:
             IndexBufferC *buffer_ptr
             uint32_t gl_usage
         buffer_ptr = self.index_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-        glDeleteBuffers(1, &buffer_ptr.gl_id)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
+        glDeleteBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
         self.index_buffers.c_delete(buffer)
     
     cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *:
@@ -512,14 +647,14 @@ cdef class GraphicsManager:
         buffer_ptr = self.index_buffer_get_ptr(buffer)
         data_size = data.shape[0]
         data_ptr = &data[0]
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         if buffer_ptr.size == data_size:#use sub data instead
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr)
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
         else:
             gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage); self.c_check_gl()
             buffer_ptr.size = data_size
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
     
     cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
         cdef:
@@ -537,12 +672,12 @@ cdef class GraphicsManager:
         buffer_ptr = self.index_buffer_get_ptr(buffer)
         data_size = data.shape[0]
         data_ptr = &data[0]
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         if offset + data_size > buffer_ptr.size:
             raise ValueError("IndexBuffer: attempting to write out of bounds")
         else:
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
 
     cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
         cdef:
@@ -558,11 +693,11 @@ cdef class GraphicsManager:
             size_t format_size
             uint32_t format_gl
         buffer_ptr = self.index_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         format_size = c_index_format_get_size(buffer_ptr.format)    
         format_gl = c_index_format_to_gl(buffer_ptr.format)
-        glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+        glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL); self.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
 
     cdef MeshC *mesh_get_ptr(self, Handle mesh) except *:
         return <MeshC *>self.meshes.c_get_ptr(mesh)
@@ -793,18 +928,18 @@ cdef class GraphicsManager:
         shader = self.shaders.c_create()
         shader_ptr = self.shader_get_ptr(shader)
         gl_type = c_shader_type_to_gl(type)
-        gl_id = glCreateShader(gl_type)
+        gl_id = glCreateShader(gl_type); self.c_check_gl()
         source_ptr = source
         source_length = len(source)
-        glShaderSource(gl_id, 1, &source_ptr, <GLint*>&source_length)
-        glCompileShader(gl_id)
-        glGetShaderiv(gl_id, GL_COMPILE_STATUS, <GLint*>&compile_status)
-        glGetShaderiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length)
+        glShaderSource(gl_id, 1, &source_ptr, <GLint*>&source_length); self.c_check_gl()
+        glCompileShader(gl_id); self.c_check_gl()
+        glGetShaderiv(gl_id, GL_COMPILE_STATUS, <GLint*>&compile_status); self.c_check_gl()
+        glGetShaderiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length); self.c_check_gl()
         if not compile_status:
             log = <char*>malloc(log_length * sizeof(char))
             if log == NULL:
                 raise MemoryError("Shader: could not allocate memory for compile error")
-            glGetShaderInfoLog(gl_id, log_length, NULL, log)
+            glGetShaderInfoLog(gl_id, log_length, NULL, log); self.c_check_gl()
             raise ValueError("Shader: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
         shader_ptr.gl_id = gl_id
         shader_ptr.type = type
@@ -825,7 +960,7 @@ cdef class GraphicsManager:
         cdef:
             ShaderC *shader_ptr
         shader_ptr = self.shader_get_ptr(shader)
-        glDeleteShader(shader_ptr.gl_id)
+        glDeleteShader(shader_ptr.gl_id); self.c_check_gl()
         self.shaders.c_delete(shader)
 
     cdef ProgramC *program_get_ptr(self, Handle program) except *:
@@ -836,7 +971,7 @@ cdef class GraphicsManager:
             ProgramC *program_ptr
         program = self.programs.c_create()
         program_ptr = self.program_get_ptr(program)
-        program_ptr.gl_id = glCreateProgram()
+        program_ptr.gl_id = glCreateProgram(); self.c_check_gl()
         program_ptr.vertex = vertex
         program_ptr.fragment = fragment
         self._program_compile(program)
@@ -848,7 +983,7 @@ cdef class GraphicsManager:
         cdef:
             ProgramC *program_ptr
         program_ptr = self.program_get_ptr(program)
-        glDeleteProgram(program_ptr.gl_id)
+        glDeleteProgram(program_ptr.gl_id); self.c_check_gl()
         self.programs.c_delete(program)
 
     cdef void _program_compile(self, Handle program) except *:
@@ -864,14 +999,14 @@ cdef class GraphicsManager:
         vertex_ptr = self.shader_get_ptr(program_ptr.vertex)
         fragment_ptr = self.shader_get_ptr(program_ptr.fragment)
         gl_id = program_ptr.gl_id
-        glAttachShader(gl_id, vertex_ptr.gl_id)
-        glAttachShader(gl_id, fragment_ptr.gl_id)
-        glLinkProgram(gl_id)
-        glGetProgramiv(gl_id, GL_LINK_STATUS, <GLint*>&link_status)
-        glGetProgramiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length)
+        glAttachShader(gl_id, vertex_ptr.gl_id); self.c_check_gl()
+        glAttachShader(gl_id, fragment_ptr.gl_id); self.c_check_gl()
+        glLinkProgram(gl_id); self.c_check_gl()
+        glGetProgramiv(gl_id, GL_LINK_STATUS, <GLint*>&link_status); self.c_check_gl()
+        glGetProgramiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length); self.c_check_gl()
         if not link_status:
             log = <char*>malloc(log_length * sizeof(char))
-            glGetProgramInfoLog(gl_id, log_length, NULL, log)
+            glGetProgramInfoLog(gl_id, log_length, NULL, log); self.c_check_gl()
             raise ValueError("Program: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
 
     cdef void _program_setup_attributes(self, Handle program) except *:
@@ -887,19 +1022,19 @@ cdef class GraphicsManager:
             ProgramAttributeC *attribute
         program_ptr = self.program_get_ptr(program)
         gl_id = program_ptr.gl_id
-        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &name_max_length)
+        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &name_max_length); self.c_check_gl()
         if name_max_length >= 256:
             raise ValueError("Program: attribute names cannot exceed 255 characters")
-        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTES, &count)
+        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTES, &count); self.c_check_gl()
         if count > PROGRAM_MAX_ATTRIBUTES:
             raise ValueError("Program: cannot exceed {0} attributes".format(PROGRAM_MAX_ATTRIBUTES))
         for i in range(count):
             attribute = &program_ptr.attributes[i]
-            glGetActiveAttrib(gl_id, i, 255, &name_length, &size, &type, attribute.name)
+            glGetActiveAttrib(gl_id, i, 255, &name_length, &size, &type, attribute.name); self.c_check_gl()
             attribute.name_length = name_length
             attribute.size = size
             attribute.type = c_attribute_type_from_gl(type)
-            attribute.location = glGetAttribLocation(gl_id, attribute.name)
+            attribute.location = glGetAttribLocation(gl_id, attribute.name); self.c_check_gl()
         program_ptr.num_attributes = count
         
     cdef void _program_setup_uniforms(self, Handle program) except *:
@@ -915,15 +1050,15 @@ cdef class GraphicsManager:
             ProgramUniformC *uniform
         program_ptr = self.program_get_ptr(program)
         gl_id = program_ptr.gl_id
-        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &name_max_length)
+        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &name_max_length); self.c_check_gl()
         if name_max_length >= 256:
             raise ValueError("Program: uniform names cannot exceed 255 characters")
-        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORMS, &count)
+        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORMS, &count); self.c_check_gl()
         if count > PROGRAM_MAX_UNIFORMS:
             raise ValueError("Program: cannot exceed {0} uniforms".format(PROGRAM_MAX_UNIFORMS))
         for i in range(count):
             uniform = &program_ptr.uniforms[i]
-            glGetActiveUniform(gl_id, i, 255, &name_length, &size, &type, uniform.name)
+            glGetActiveUniform(gl_id, i, 255, &name_length, &size, &type, uniform.name); self.c_check_gl()
             uniform.name_length = name_length
             uniform.size = size
             uniform.type = c_uniform_type_from_gl(type)
@@ -944,7 +1079,7 @@ cdef class GraphicsManager:
             size_t location
         program_ptr = self.program_get_ptr(program)
         buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
         format_ptr = self.vertex_format_get_ptr(buffer_ptr.format)
         for i in range(format_ptr.count):
             comp_ptr = &format_ptr.comps[i]
@@ -962,8 +1097,8 @@ cdef class GraphicsManager:
                         comp_ptr.normalized, 
                         format_ptr.stride,
                         <void *>comp_offset,
-                    )
-                    glEnableVertexAttribArray(location)
+                    ); self.c_check_gl()
+                    glEnableVertexAttribArray(location); self.c_check_gl()
                     break
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
@@ -975,7 +1110,7 @@ cdef class GraphicsManager:
         program_ptr = self.program_get_ptr(program)
         for i in range(program_ptr.num_attributes):
             attribute = &program_ptr.attributes[i]
-            glDisableVertexAttribArray(attribute.location)
+            glDisableVertexAttribArray(attribute.location); self.c_check_gl()
 
     cdef void _program_bind_uniform(self, Handle program, Handle uniform) except *:
         cdef:
@@ -998,22 +1133,22 @@ cdef class GraphicsManager:
                 type = uniform_info.type
                 if type == UNIFORM_TYPE_INT:
                     int_data = (<int32_t *>(uniform_ptr.data))[0]
-                    glUniform1i(location, <GLint>int_data)
+                    glUniform1i(location, <GLint>int_data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_FLOAT:
                     float_data = (<float *>uniform_ptr.data)[0]
-                    glUniform1f(location, float_data)
+                    glUniform1f(location, float_data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_VEC2:
-                    glUniform2fv(location, 1, <float *>uniform_ptr.data)
+                    glUniform2fv(location, 1, <float *>uniform_ptr.data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_VEC3:
-                    glUniform3fv(location, 1, <float *>uniform_ptr.data)
+                    glUniform3fv(location, 1, <float *>uniform_ptr.data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_VEC4:
-                    glUniform4fv(location, 1, <float *>uniform_ptr.data)
+                    glUniform4fv(location, 1, <float *>uniform_ptr.data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_MAT2:
-                    glUniformMatrix2fv(location, 1, False, <float *>uniform_ptr.data)
+                    glUniformMatrix2fv(location, 1, False, <float *>uniform_ptr.data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_MAT3:
-                    glUniformMatrix3fv(location, 1, False, <float *>uniform_ptr.data)
+                    glUniformMatrix3fv(location, 1, False, <float *>uniform_ptr.data); self.c_check_gl()
                 elif type == UNIFORM_TYPE_MAT4:
-                    glUniformMatrix4fv(location, 1, False, <float *>uniform_ptr.data)
+                    glUniformMatrix4fv(location, 1, False, <float *>uniform_ptr.data); self.c_check_gl()
 
     cdef ImageC *image_get_ptr(self, Handle image) except *:
         return <ImageC *>self.images.c_get_ptr(image)
@@ -1111,16 +1246,7 @@ cdef class GraphicsManager:
     cdef TextureC *texture_get_ptr(self, Handle texture) except *:
         return <TextureC *>self.textures.c_get_ptr(texture)
 
-    """
-    cpdef Handle texture_create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *
-    cpdef void texture_delete(self, Handle texture) except *
-    cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *
-    cpdef void texture_set_data_from_image(self, Handle texture, Handle image, size_t cubemap_index=*) except *
-    cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height, size_t cubemap_index=*) except *
-    cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *
-    """
-
-    cpdef Handle texture_create(self, TextureFormat format=TEXTURE_FORMAT_RGBA8U, bint mipmaps=True, 
+    cpdef Handle texture_create(self, TextureFormat format=TEXTURE_FORMAT_RGBA_8U, bint mipmaps=True, 
             TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, 
             TextureWrap wrap_t=TEXTURE_WRAP_REPEAT, bint cubemap=False) except *:
         cdef:
@@ -1130,7 +1256,7 @@ cdef class GraphicsManager:
         texture_ptr = self.texture_get_ptr(texture)
         texture_ptr.format = format
         texture_ptr.cubemap = cubemap
-        glGenTextures(1, &texture_ptr.gl_id)
+        glGenTextures(1, &texture_ptr.gl_id); self.c_check_gl()
         self.texture_set_parameters(texture, mipmaps, filter, wrap_s, wrap_t)
         return texture
 
@@ -1138,7 +1264,7 @@ cdef class GraphicsManager:
         cdef:
             TextureC *texture_ptr
         texture_ptr = self.texture_get_ptr(texture)
-        glDeleteTextures(1, &texture_ptr.gl_id)
+        glDeleteTextures(1, &texture_ptr.gl_id); self.c_check_gl()
         self.textures.c_delete(texture)
     
     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=True, TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, TextureWrap wrap_t=TEXTURE_WRAP_REPEAT) except *:
@@ -1150,32 +1276,35 @@ cdef class GraphicsManager:
         texture_ptr.filter = filter
         texture_ptr.wrap_s = wrap_s
         texture_ptr.wrap_t = wrap_t
-        if texture_ptr.cubemap:
-            target = GL_TEXTURE_CUBE_MAP
-        else:
-            target = GL_TEXTURE_2D
-        glBindTexture(target, texture_ptr.gl_id)
-        glTexParameteri(target, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s))	
-        glTexParameteri(target, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t))
-        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps))
-        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, mipmaps))
-        glBindTexture(target, 0)
+        target = GL_TEXTURE_CUBE_MAP if texture_ptr.cubemap else GL_TEXTURE_2D
+        glBindTexture(target, texture_ptr.gl_id); self.c_check_gl()
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s)); self.c_check_gl()	
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t)); self.c_check_gl()
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps)); self.c_check_gl()
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, False)); self.c_check_gl()#mipmap does not matter for mag filter!
+        glBindTexture(target, 0); self.c_check_gl()
     
     cpdef void texture_set_data_2d_from_image(self, Handle texture, Handle image) except *:
         cdef:
             TextureC *texture_ptr
             ImageC *image_ptr
+            uint32_t gl_internal_format
+            uint32_t gl_format
+            uint32_t gl_type
         texture_ptr = self.texture_get_ptr(texture)
         if texture_ptr.cubemap:
             raise ValueError("Texture: cannot use 2D data setter for cubemap texture")
+        gl_internal_format = c_texture_format_to_internal_format_gl(texture_ptr.format)
+        gl_format = c_texture_format_to_format_gl(texture_ptr.format)
+        gl_type = c_texture_format_to_type_gl(texture_ptr.format)
         image_ptr = self.image_get_ptr(image)
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.data)
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
+        glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.c_check_gl()
         if texture_ptr.mipmaps:
-            glGenerateMipmap(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, 0)
+            glGenerateMipmap(GL_TEXTURE_2D); self.c_check_gl()
+        glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
 
-    cpdef void texture_set_data_cubemap_from_image(self, Handle texture, 
+    cpdef void texture_set_data_cubemap_from_images(self, Handle texture, 
             Handle image_pos_x, Handle image_neg_x, Handle image_pos_y,
             Handle image_neg_y, Handle image_pos_z, Handle image_neg_z) except *:
         cdef:
@@ -1183,6 +1312,9 @@ cdef class GraphicsManager:
             Handle[6] images
             size_t i
             ImageC *image_ptr
+            uint32_t gl_internal_format
+            uint32_t gl_format
+            uint32_t gl_type
         images = [
             image_pos_x, image_neg_x, 
             image_pos_y, image_neg_y, 
@@ -1191,49 +1323,39 @@ cdef class GraphicsManager:
         texture_ptr = self.texture_get_ptr(texture)
         if not texture_ptr.cubemap:
             raise ValueError("Texture: cannot use cubemap data setter for 2D texture")
+        gl_internal_format = c_texture_format_to_internal_format_gl(texture_ptr.format)
+        gl_format = c_texture_format_to_format_gl(texture_ptr.format)
+        gl_type = c_texture_format_to_type_gl(texture_ptr.format)
         glBindTexture(GL_TEXTURE_CUBE_MAP, texture_ptr.gl_id)
         for i in range(6):
             image_ptr = self.image_get_ptr(images[i])
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, image_ptr.width, image_ptr.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_ptr.data)
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.c_check_gl()
         if texture_ptr.mipmaps:
-            glGenerateMipmap(GL_TEXTURE_CUBE_MAP)
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0)
-
-    cpdef void texture_set_data(self, Handle texture, uint8_t[:] data, uint16_t width, uint16_t height) except *:
-        cdef:
-            TextureC *texture_ptr
-            size_t data_size 
-        texture_ptr = self.texture_get_ptr(texture)
-        data_size = width * height * 4 * sizeof(uint8_t)
-        if texture_ptr.cubemap:
-            data_size *= 6
-        if data_size != data.shape[0]:
-            raise ValueError("Texture: data shape does not match dimensions")
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &data[0])
-        if texture_ptr.mipmaps:
-            glGenerateMipmap(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, 0)
+            glGenerateMipmap(GL_TEXTURE_CUBE_MAP); self.c_check_gl()
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0); self.c_check_gl()
 
     cpdef void texture_clear(self, Handle texture, uint16_t width, uint16_t height) except *:
         cdef:
             TextureC *texture_ptr
             uint32_t target
             size_t i
+            uint32_t gl_internal_format
+            uint32_t gl_format
+            uint32_t gl_type
         texture_ptr = self.texture_get_ptr(texture)
+        gl_internal_format = c_texture_format_to_internal_format_gl(texture_ptr.format)
+        gl_format = c_texture_format_to_format_gl(texture_ptr.format)
+        gl_type = c_texture_format_to_type_gl(texture_ptr.format)
+        target = GL_TEXTURE_CUBE_MAP if texture_ptr.cubemap else GL_TEXTURE_2D
+        glBindTexture(target, texture_ptr.gl_id); self.c_check_gl()
         if texture_ptr.cubemap:
-            glBindTexture(GL_TEXTURE_CUBE_MAP, texture_ptr.gl_id)
             for i in range(6):
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL)
-            if texture_ptr.mipmaps:
-                glGenerateMipmap(GL_TEXTURE_CUBE_MAP)
-            glBindTexture(GL_TEXTURE_CUBE_MAP, 0)
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, width, height, 0, gl_format, gl_type, NULL); self.c_check_gl()
         else:
-            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL)
-            if texture_ptr.mipmaps:
-                glGenerateMipmap(GL_TEXTURE_2D)
-            glBindTexture(GL_TEXTURE_2D, 0)
+            glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, width, height, 0, gl_format, gl_type, NULL); self.c_check_gl()
+        if texture_ptr.mipmaps:
+            glGenerateMipmap(target); self.c_check_gl()
+        glBindTexture(target, 0); self.c_check_gl()
 
     cdef FrameBufferC *frame_buffer_get_ptr(self, Handle frame_buffer) except *:
         return <FrameBufferC *>self.frame_buffers.c_get_ptr(frame_buffer)
@@ -1244,14 +1366,14 @@ cdef class GraphicsManager:
             FrameBufferC *frame_buffer_ptr
         frame_buffer = self.frame_buffers.c_create()
         frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
-        glGenFramebuffers(1, &frame_buffer_ptr.gl_id)
+        glGenFramebuffers(1, &frame_buffer_ptr.gl_id); self.c_check_gl()
         return frame_buffer
 
     cpdef void frame_buffer_delete(self, Handle frame_buffer) except *:
         cdef:
             FrameBufferC *frame_buffer_ptr
         frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
-        glDeleteFramebuffers(1, &frame_buffer_ptr.gl_id)
+        glDeleteFramebuffers(1, &frame_buffer_ptr.gl_id); self.c_check_gl()
         self.frame_buffers.c_delete(frame_buffer)
 
     cpdef void frame_buffer_attach_textures(self, Handle frame_buffer, dict textures) except *:
@@ -1264,6 +1386,7 @@ cdef class GraphicsManager:
             TextureC *texture_ptr
             FrameBufferAttachment attachment
             uint32_t gl_attachment
+            uint32_t gl_status
         frame_buffer_ptr = self.frame_buffer_get_ptr(frame_buffer)
         num_textures = len(textures)
         if num_textures > MAX_FRAME_BUFFER_ATTACHMENTS:
@@ -1271,16 +1394,20 @@ cdef class GraphicsManager:
         memset(frame_buffer_ptr.textures, 0, MAX_FRAME_BUFFER_ATTACHMENTS * sizeof(Handle))
         memset(frame_buffer_ptr.attachments, 0, MAX_FRAME_BUFFER_ATTACHMENTS * sizeof(int32_t))
         gl_id = frame_buffer_ptr.gl_id
-        glBindFramebuffer(GL_FRAMEBUFFER, gl_id)
+        glBindFramebuffer(GL_FRAMEBUFFER, gl_id); self.c_check_gl()
         for attachment in textures:
             texture = <Handle>textures[attachment]
             frame_buffer_ptr.attachments[i] = attachment
             frame_buffer_ptr.textures[<size_t>attachment] = texture
             gl_attachment = c_frame_buffer_attachment_to_gl(attachment)
             texture_ptr = self.texture_get_ptr(texture)
-            glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment, GL_TEXTURE_2D, texture_ptr.gl_id, 0)
+            print(gl_attachment)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment, GL_TEXTURE_2D, texture_ptr.gl_id, 0); self.c_check_gl()
+            gl_status = glCheckFramebufferStatus(GL_FRAMEBUFFER); self.c_check_gl()
+            if gl_status != GL_FRAMEBUFFER_COMPLETE:
+                raise ValueError("FrameBuffer: failed to attach textures (status: {0})".format(gl_status))
             i += 1
-        glBindFramebuffer(GL_FRAMEBUFFER, 0)
+        glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
 
     cdef ViewC *view_get_ptr(self, Handle view) except *:
         return <ViewC *>self.views.c_get_ptr(view)
@@ -1407,42 +1534,36 @@ cdef class GraphicsManager:
         vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
         ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
         
-        cdef:
-            uint32_t depth_rbo
-        glGenRenderbuffers(1, &depth_rbo)
-        glBindRenderbuffer(GL_RENDERBUFFER, depth_rbo)
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, view_ptr.rect[2], view_ptr.rect[3])
-        
-        glUseProgram(program_ptr.gl_id)
+        glUseProgram(program_ptr.gl_id); self.c_check_gl()
         for i in range(view_ptr.num_uniforms):
             uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
             self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
 
+        glEnable(GL_CULL_FACE); self.c_check_gl()
+        glEnable(GL_DEPTH_TEST); self.c_check_gl()
+        glDepthFunc(GL_LESS); self.c_check_gl()
+        glDepthMask(True); self.c_check_gl()
+
         fbo = view_ptr.frame_buffer
         if fbo != 0:
             fbo_ptr = self.frame_buffer_get_ptr(fbo)
-            glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id)
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_rbo)
-        
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
+
         color = &view_ptr.clear_color
-        glEnable(GL_CULL_FACE)
-        glEnable(GL_DEPTH_TEST)
-        glDepthFunc(GL_LESS)
-        glDepthMask(True)
         gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
-        glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3])
-        glClearColor(color.x, color.y, color.z, color.w)
-        glClearDepth(view_ptr.clear_depth)
-        glClearStencil(view_ptr.clear_stencil)
-        glClear(gl_clear_flags)
+        glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
+        glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()
+        glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
+        glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
+        glClear(gl_clear_flags); self.c_check_gl()
         
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
             texture = view_ptr.textures[<size_t>texture_unit]
             texture_ptr = self.texture_get_ptr(texture)
-            glActiveTexture(gl_texture_unit)
-            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+            glActiveTexture(gl_texture_unit); self.c_check_gl()
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
 
         self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
         self._index_buffer_draw(ibo_ptr.handle)
@@ -1450,31 +1571,33 @@ cdef class GraphicsManager:
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
-            glActiveTexture(gl_texture_unit)
-            glBindTexture(GL_TEXTURE_2D, 0)
+            glActiveTexture(gl_texture_unit); self.c_check_gl()
+            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
         if fbo != 0:
-            glBindFramebuffer(GL_FRAMEBUFFER, 0)
-        glUseProgram(0)
+            glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
+        glUseProgram(0); self.c_check_gl()
         
         for i in range(self.windows.items.num_items):
             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
             SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-            glViewport(0, 0, window_ptr.width, window_ptr.height)
-            glClearColor(0.0, 0.0, 0.0, 0.0)
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
-            glActiveTexture(GL_TEXTURE0)
+            glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
+            glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
+            glClearDepthf(1.0); self.c_check_gl()
+            glClearStencil(0); self.c_check_gl()
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
+            glActiveTexture(GL_TEXTURE0); self.c_check_gl()
             texture_ptr = self.texture_get_ptr(window_ptr.texture)
             program_ptr = self.program_get_ptr(self.quad_program)
-            glUseProgram(program_ptr.gl_id)
-            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id)
+            glUseProgram(program_ptr.gl_id); self.c_check_gl()
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
             self._program_bind_uniform(self.quad_program, self.u_quad)
             self._program_bind_attributes(self.quad_program, self.quad_vbo)
             self._index_buffer_draw(self.quad_ibo)
             self._program_unbind_attributes(self.quad_program)
-            glBindTexture(GL_TEXTURE_2D, 0)
+            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
             SDL_GL_SetSwapInterval(0)
             SDL_GL_SwapWindow(window_ptr.sdl_ptr)
-            glUseProgram(0)
+            glUseProgram(0); self.c_check_gl()
         SDL_GL_MakeCurrent(self.root_window, self.root_context)
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(self.root_window)

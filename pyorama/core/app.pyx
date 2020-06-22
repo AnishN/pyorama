@@ -26,6 +26,7 @@ cdef class App:
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)
         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
         
         self.accumulated_time = 0.0
         self.delta = 0.0

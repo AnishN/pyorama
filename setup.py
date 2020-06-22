@@ -7,7 +7,7 @@ import platform
 
 libraries = {
     "Linux": [
-        "GL", "GLU", "GLEW", 
+        "GLESv2",
         "SDL2", "SDL2_image", "SDL2_mixer", 
         "openal", 
         "ogg", "vorbis", "vorbisfile", "vorbisenc",
