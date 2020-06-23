@@ -2,6 +2,7 @@ import sys
 import math
 import numpy as np
 from pyorama.core.app import App
+from pyorama.event.event_enums import *
 from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import GraphicsManager
@@ -70,14 +71,7 @@ class Game(App):
         self.view = self.graphics.view_create()
         self.update_view()
 
-        """
-        def callback_func(event_data, *args, **kwargs):
-            print(event_data)
-            print(args)
-            print(kwargs)
-        
-        self.event.add_listener(EVENT_TYPE_ENTER_FRAME, callback_func, *args, **kwargs)
-        """
+        self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down)
     
     def quit(self):
         #really should call *_delete methods on all created graphics handles
@@ -98,15 +92,11 @@ class Game(App):
             TEXTURE_UNIT_0: self.texture,
         })
         self.graphics.view_set_frame_buffer(self.view, self.fbo)
-    
-    """
-    def update(self, delta):
-        self.event.update()
-        Mat4.translate(self.view_mat, self.view_mat, Vec3(0.0, 0.0, 0.25))
-        self.graphics.uniform_set_data(self.u_view, self.view_mat)
-        self.update_view()
-        self.graphics.update()
-    """
+
+    def on_mouse_down(self, event_data, *args, **kwargs):
+        print("event data", event_data)
+        print("event args", args)
+        print("event kwargs", kwargs)
     
 if __name__ == "__main__":
     game = Game()

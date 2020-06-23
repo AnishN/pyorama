@@ -12,10 +12,10 @@ cdef class App:
         double previous_time
         double accumulated_time
         double delta
+        double timestamp
         uint64_t frequency
         readonly bint is_running
         readonly GraphicsManager graphics
         readonly EventManager events
     
     cdef double c_get_current_time(self) nogil
-    
