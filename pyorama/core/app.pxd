@@ -1,3 +1,4 @@
+from cpython.exc cimport PyErr_CheckSignals
 from pyorama.event.event_manager cimport *
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.libs.c cimport *
