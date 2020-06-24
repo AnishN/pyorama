@@ -24,7 +24,7 @@ class Game(App):
         Mat4.perspective(self.proj_mat, math.radians(90), 1.0, 0.001, 1000)
         self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
         self.view_mat = Mat4()
-        self.view_velocity = Vec3(0.0, 0.0, 0.1)
+        self.view_velocity = Vec3(0.0, 0.0, 0.2)
         Mat4.from_translation(self.view_mat, Vec3(0, 0, -100))
         self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
@@ -102,7 +102,7 @@ class Game(App):
         Mat4.translate(self.view_mat, self.view_mat, self.view_velocity)
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
         self.graphics.view_set_uniforms(self.view, self.uniforms)
-    
+
     def on_mouse_down(self, event_data, *args, **kwargs):
         print("MOUSE DOWN")
         print("event data", event_data)

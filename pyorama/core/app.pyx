@@ -37,24 +37,20 @@ cdef class App:
     def trigger_quit(self):
         self.is_running = False
 
-    def update(self):
-        PyErr_CheckSignals()
-        self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
-        self.event.update(self.timestamp)
-        self.graphics.update()
-
     def run(self):
         self.init()
         while self.is_running:
             self.current_time = self.c_get_current_time()
             self.delta = self.current_time - self.previous_time
             self.accumulated_time += self.delta
-            
             while self.accumulated_time > self.ms_per_update/1000:
                 self.timestamp = self.current_time - self.start_time
-                self.update()
+                PyErr_CheckSignals()
+                self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
+                self.event.update(self.timestamp)
                 self.accumulated_time -= self.ms_per_update/1000
             self.previous_time = self.current_time
+            self.graphics.update()
                 
     cdef double c_get_current_time(self) nogil:
         cdef:
