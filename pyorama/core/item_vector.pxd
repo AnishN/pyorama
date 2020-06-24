@@ -22,5 +22,7 @@ cdef class ItemVector:
     cdef inline void c_resize(self, size_t new_max_items) except *
     cdef inline void c_grow_if_needed(self) except *
     cdef inline void c_shrink_if_needed(self) except *
+    cdef inline void c_insert_empty(self, size_t index) except *
+    cdef inline void c_insert(self, size_t index, void *item) except *
     cdef inline void c_remove_empty(self, size_t index) except *
     cdef inline void c_remove(self, size_t index, void *item) except *

@@ -124,6 +124,34 @@ cdef class ItemVector:
             new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
             self.c_resize(new_max_items)
 
+    cdef inline void c_insert_empty(self, size_t index) except *:
+        cdef:
+            void *dest
+            void *src
+            size_t size
+            
+        self.c_grow_if_needed()
+        dest = self.c_get_ptr(index + 1)
+        src = self.c_get_ptr(index)
+        size = (self.num_items - index) * self.item_size
+        memmove(dest, src, size)
+        memset(src, 0, self.item_size)
+        self.num_items += 1
+
+    cdef inline void c_insert(self, size_t index, void *item) except *:
+        cdef:
+            void *dest
+            void *src
+            size_t size
+            
+        self.c_grow_if_needed()
+        dest = self.c_get_ptr(index + 1)
+        src = self.c_get_ptr(index)
+        size = (self.num_items - index) * self.item_size
+        memmove(dest, src, size)
+        memcpy(src, item, self.item_size)
+        self.num_items += 1
+    
     cdef inline void c_remove_empty(self, size_t index) except *:
         cdef:
             void *dest
@@ -132,13 +160,12 @@ cdef class ItemVector:
         
         if self.num_items <= 0:
             raise POP_EMPTY_ERROR
+        self.c_shrink_if_needed()
         dest = self.c_get_ptr(index)
-        src = self.c_get_ptr(index)
+        src = self.c_get_ptr(index + 1)
         size = (self.num_items - index - 1) * self.item_size
         memmove(dest, src, size)
-        self.c_shrink_if_needed()
         self.num_items -= 1
-
     
     cdef inline void c_remove(self, size_t index, void *item) except *:
         cdef:
@@ -148,10 +175,10 @@ cdef class ItemVector:
         
         if self.num_items <= 0:
             raise POP_EMPTY_ERROR
+        self.c_shrink_if_needed()
         self.c_get(index, item)
         dest = self.c_get_ptr(index)
-        src = self.c_get_ptr(index)
+        src = self.c_get_ptr(index + 1)
         size = (self.num_items - index - 1) * self.item_size
         memmove(dest, src, size)
-        self.c_shrink_if_needed()
         self.num_items -= 1

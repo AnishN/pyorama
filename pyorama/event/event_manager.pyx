@@ -45,46 +45,63 @@ cdef class EventManager:
             ListenerKeyC *key_ptr
             PyObject *values_ptr
             ListenerC *listener_ptr
-            PyObject *callback_ptr
-            PyObject *args_ptr
-            PyObject *kwargs_ptr
         listener = self.listener_keys.c_create()
         key_ptr = self.key_get_ptr(listener)
         key_ptr.event_type = event_type
         values_ptr = self.listeners[key_ptr.event_type]
         key_ptr.index = (<ItemVector>values_ptr).num_items
-
-        listener_ptr = self.listener_get_ptr(listener)
-        callback_ptr = <PyObject *>callback
-        args_ptr = <PyObject *>args
-        kwargs_ptr = <PyObject *>kwargs
-        Py_XINCREF(callback_ptr)
-        Py_XINCREF(args_ptr)
-        Py_XINCREF(kwargs_ptr)
-        listener_ptr.callback = callback_ptr
-        listener_ptr.args = args_ptr
-        listener_ptr.kwargs = kwargs_ptr
-        (<ItemVector>values_ptr).c_push(listener_ptr)
+        Py_INCREF(callback)
+        Py_INCREF(args)
+        Py_INCREF(kwargs)
+        (<ItemVector>values_ptr).c_push_empty()
+        listener_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(key_ptr.index)
+        listener_ptr.key = listener
+        listener_ptr.callback = <PyObject *>callback
+        listener_ptr.args = <PyObject *>args
+        listener_ptr.kwargs = <PyObject *>kwargs
         return listener
         
     cpdef void listener_delete(self, Handle listener) except *:
         cdef:
             ListenerKeyC *key_ptr
             PyObject *values_ptr
+            ListenerC *listener_ptr
+            ListenerC *value_ptr
             size_t i
+            size_t key_index
         key_ptr = self.key_get_ptr(listener)
         values_ptr = self.listeners[key_ptr.event_type]
-        (<ItemVector>values_ptr).c_remove_empty(key_ptr.index)
-        #shift logic (for index in keys coming after)
-        for i in range(key_ptr.index, (<ItemVector>values_ptr).num_items):
-            key_ptr = <ListenerKeyC *>(<ItemVector>values_ptr).c_get_ptr(i)
-            key_ptr.index -= 1
-
         listener_ptr = self.listener_get_ptr(listener)
         Py_XDECREF(listener_ptr.callback)
         Py_XDECREF(listener_ptr.args)
         Py_XDECREF(listener_ptr.kwargs)
+        key_index = key_ptr.index
+
+        print("before")
+        for i in range((<ItemVector>values_ptr).num_items):
+            value_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
+            print(i, value_ptr.key)
+
+        print("removing index", key_index)
+        (<ItemVector>values_ptr).c_remove_empty(key_index)
+
+        """
+        print(key_index)
+        for i in range(key_index, (<ItemVector>values_ptr).num_items):
+            value_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
+            key_ptr = <ListenerKeyC *>self.key_get_ptr(value_ptr.key)
+            key_ptr.index -= 1
+            print(i, "deleted vector value with key", value_ptr.key)
         self.listener_keys.c_delete(listener)
+        """
+
+        print("after")
+        for i in range((<ItemVector>values_ptr).num_items):
+            value_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
+            print(i, value_ptr.key)
+
+        print("deleted listener", listener, (<ItemVector>values_ptr).num_items)
+        print(self.listener_keys.items.num_items)
     
     cdef dict parse_keyboard_event(self, SDL_KeyboardEvent event):
         cdef dict event_data = {
@@ -192,8 +209,16 @@ cdef class EventManager:
                 ignore_event = True
             if not ignore_event:
                 values_ptr = self.listeners[event.type]
+                #print("process", event_data)
                 for i in range((<ItemVector>values_ptr).num_items):
                     listener_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
+                    print(
+                        event.type, i,
+                        listener_ptr.key, 
+                        <uintptr_t>listener_ptr.callback, 
+                        <uintptr_t>listener_ptr.args, 
+                        <uintptr_t>listener_ptr.kwargs,
+                    )
                     callback = <object>listener_ptr.callback
                     args = <list>listener_ptr.args
                     kwargs = <dict>listener_ptr.kwargs

@@ -71,7 +71,11 @@ class Game(App):
         self.view = self.graphics.view_create()
         self.update_view()
 
-        self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down)
+        mouse_1 = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down_1)
+        mouse_2 = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down_2)
+        mouse_3 = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down_3)
+        self.event.listener_delete(mouse_2)#breaks game (segmentaiton fault on mouse down trigger!)
+        self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_UP, self.on_mouse_up)
     
     def quit(self):
         #really should call *_delete methods on all created graphics handles
@@ -93,10 +97,33 @@ class Game(App):
         })
         self.graphics.view_set_frame_buffer(self.view, self.fbo)
 
-    def on_mouse_down(self, event_data, *args, **kwargs):
+    def on_mouse_down_1(self, event_data, *args, **kwargs):
+        print("MOUSE DOWN 1")
         print("event data", event_data)
         print("event args", args)
         print("event kwargs", kwargs)
+        print("")
+
+    def on_mouse_down_2(self, event_data, *args, **kwargs):
+        print("MOUSE DOWN 2")
+        print("event data", event_data)
+        print("event args", args)
+        print("event kwargs", kwargs)
+        print("")
+
+    def on_mouse_down_3(self, event_data, *args, **kwargs):
+        print("MOUSE DOWN 3")
+        print("event data", event_data)
+        print("event args", args)
+        print("event kwargs", kwargs)
+        print("")
+
+    def on_mouse_up(self, event_data, *args, **kwargs):
+        print("MOUSE UP")
+        print("event data", event_data)
+        print("event args", args)
+        print("event kwargs", kwargs)
+        print("")
     
 if __name__ == "__main__":
     game = Game()

@@ -37,8 +37,7 @@ cdef class App:
         self.is_running = False
 
     def update(self):
-        #print(self.accumulated_time)#to see frame time
-        PyErr_CheckSignals()#allows interrupt signal to work
+        PyErr_CheckSignals()
         self.event.update(self.timestamp)
         self.graphics.update()
 

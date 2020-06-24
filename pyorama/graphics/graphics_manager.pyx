@@ -1112,7 +1112,6 @@ cdef class GraphicsManager:
             frame_buffer_ptr.textures[<size_t>attachment] = texture
             gl_attachment = c_frame_buffer_attachment_to_gl(attachment)
             texture_ptr = self.texture_get_ptr(texture)
-            print(gl_attachment)
             glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment, GL_TEXTURE_2D, texture_ptr.gl_id, 0); self.c_check_gl()
             gl_status = glCheckFramebufferStatus(GL_FRAMEBUFFER); self.c_check_gl()
             if gl_status != GL_FRAMEBUFFER_COMPLETE:
