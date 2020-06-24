@@ -12,6 +12,10 @@ cdef class EventManager:
             values_ptr = <PyObject *>values
             Py_XINCREF(values_ptr)
             self.listeners[i] = values_ptr
+        for i in range(EVENT_TYPE_ENTER_FRAME):
+            self.registered[i] = True
+        for i in range(EVENT_TYPE_ENTER_FRAME, MAX_EVENT_TYPES):
+            self.registered[i] = False
 
     def __dealloc__(self):
         self.timestamp = 0.0
@@ -26,6 +30,33 @@ cdef class EventManager:
             values = <ItemVector>values_ptr
             values = None
 
+    cpdef uint16_t event_type_register(self) except *:#TODO: ensure registration corresponds with EVENT_TYPE enums!
+        cdef:
+            uint32_t event_type_u32#sdl's register function returns uint32_t, even though SDL_LASTEVENT caps way before...
+            uint16_t event_type
+        event_type_u32 = SDL_RegisterEvents(1)
+        if event_type_u32 >= MAX_EVENT_TYPES:
+            raise ValueError("EventManager: cannot register any more user event types")
+        event_type = <uint16_t> event_type_u32
+        self.registered[event_type] = True
+        return event_type
+
+    cpdef bint event_type_check_registered(self, uint16_t event_type) except *:
+        return self.registered[event_type]
+
+    cpdef void event_type_emit(self, uint16_t event_type, dict event_data) except *:
+        cdef:
+            SDL_Event event
+            PyObject *event_data_ptr
+        event_data_ptr = <PyObject *>event_data
+        Py_XINCREF(event_data_ptr)
+        memset(&event, 0, sizeof(event))
+        event.type = event_type
+        event.user.code = 0
+        event.user.data1 = event_data_ptr
+        event.user.data2 = NULL
+        SDL_PushEvent(&event)#TODO: check for errors here (e.g. what if queue is full)
+    
     cdef ListenerKeyC *key_get_ptr(self, Handle listener) except *:
         return <ListenerKeyC *>self.listener_keys.c_get_ptr(listener)
 
@@ -160,8 +191,9 @@ cdef class EventManager:
             "timestamp": self.timestamp,
             "data": <dict>event.data1,
         }
+        Py_XDECREF(<PyObject *>event.data1)
         return event_data
-
+    
     cdef dict parse_window_event(self, SDL_WindowEvent event):
         cdef dict event_data = {
             "type": event.type,
@@ -190,21 +222,24 @@ cdef class EventManager:
         self.timestamp = timestamp
         while SDL_PollEvent(&event):
             ignore_event = False
-            if event.type == SDL_WINDOWEVENT:
+            if event.type == EVENT_TYPE_WINDOW:
                 event_data = self.parse_window_event(event.window)
-            elif event.type in (SDL_KEYDOWN, SDL_KEYUP):
+            elif event.type in (EVENT_TYPE_KEY_DOWN, EVENT_TYPE_KEY_UP):
                 event_data = self.parse_keyboard_event(event.key)
-            elif event.type in (SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP):
+            elif event.type in (EVENT_TYPE_MOUSE_BUTTON_DOWN, EVENT_TYPE_MOUSE_BUTTON_UP):
                 event_data = self.parse_mouse_button_event(event.button)
-            elif event.type == SDL_MOUSEMOTION:
+            elif event.type == EVENT_TYPE_MOUSE_MOTION:
                 event_data = self.parse_mouse_motion_event(event.motion)
-            elif event.type == SDL_MOUSEWHEEL:
+            elif event.type == EVENT_TYPE_MOUSE_WHEEL:
                 event_data = self.parse_mouse_wheel_event(event.wheel)
-            elif event.type >= SDL_USEREVENT + 0:
+            elif EVENT_TYPE_ENTER_FRAME <= event.type < EVENT_TYPE_USER:#pyorama events (using SDL_UserEvent still)
+                is_user_event = True
+                event_data = self.parse_user_event(event.user)
+            elif event.type >= EVENT_TYPE_USER:#true user events
                 is_user_event = True
                 event_data = self.parse_user_event(event.user)
             else:
-                ignore_event = True
+                ignore_event = True#must be an SDL2 event I have not written a parser for
             if not ignore_event:
                 values_ptr = self.listeners[event.type]
                 #print("process", event_data)

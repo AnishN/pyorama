@@ -13,15 +13,22 @@ cdef class EventManager:
         double timestamp
         ItemSlotMap listener_keys
         PyObject *listeners[65536]
+        bint registered[65536]
+    
+    cpdef uint16_t event_type_register(self) except *#cannot unregister event types
+    cpdef bint event_type_check_registered(self, uint16_t event_type) except *
+    cpdef void event_type_emit(self, uint16_t event_type, dict event_data) except *
     
     cdef ListenerKeyC *key_get_ptr(self, Handle listener) except *
     cdef ListenerC *listener_get_ptr(self, Handle listener) except *
     cpdef Handle listener_create(self, uint16_t event_type, object callback, list args=*, dict kwargs=*) except *
     cpdef void listener_delete(self, Handle listener) except *
+
     cdef dict parse_keyboard_event(self, SDL_KeyboardEvent event)
     cdef dict parse_mouse_button_event(self, SDL_MouseButtonEvent event)
     cdef dict parse_mouse_motion_event(self, SDL_MouseMotionEvent event)
     cdef dict parse_mouse_wheel_event(self, SDL_MouseWheelEvent event)
     cdef dict parse_user_event(self, SDL_UserEvent event)
     cdef dict parse_window_event(self, SDL_WindowEvent event)
+
     cpdef void update(self, double timestamp) except *
