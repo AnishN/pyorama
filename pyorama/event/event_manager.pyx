@@ -14,7 +14,10 @@ cdef class EventManager:
             self.listeners[i] = values_ptr
         for i in range(EVENT_TYPE_ENTER_FRAME):
             self.registered[i] = True
-        for i in range(EVENT_TYPE_ENTER_FRAME, MAX_EVENT_TYPES):
+        for i in range(EVENT_TYPE_ENTER_FRAME, EVENT_TYPE_USER):
+            self.registered[i] = True
+            self.event_type_register()#to ensure pyorama's event types are registered
+        for i in range(EVENT_TYPE_USER, MAX_EVENT_TYPES):
             self.registered[i] = False
 
     def __dealloc__(self):
