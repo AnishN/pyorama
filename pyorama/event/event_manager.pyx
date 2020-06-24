@@ -77,31 +77,29 @@ cdef class EventManager:
         Py_XDECREF(listener_ptr.kwargs)
         key_index = key_ptr.index
 
+        """
         print("before")
         for i in range((<ItemVector>values_ptr).num_items):
             value_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
             print(i, value_ptr.key)
-
-        print("removing index", key_index)
-        (<ItemVector>values_ptr).c_remove_empty(key_index)
-
         """
-        print(key_index)
+        #print("removing index", key_index)
+        (<ItemVector>values_ptr).c_remove_empty(key_index)
+        #print(key_index)
         for i in range(key_index, (<ItemVector>values_ptr).num_items):
             value_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
             key_ptr = <ListenerKeyC *>self.key_get_ptr(value_ptr.key)
             key_ptr.index -= 1
-            print(i, "deleted vector value with key", value_ptr.key)
+            #print(i, "deleted vector value with key", value_ptr.key)
         self.listener_keys.c_delete(listener)
         """
-
         print("after")
         for i in range((<ItemVector>values_ptr).num_items):
             value_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
             print(i, value_ptr.key)
-
         print("deleted listener", listener, (<ItemVector>values_ptr).num_items)
         print(self.listener_keys.items.num_items)
+        """
     
     cdef dict parse_keyboard_event(self, SDL_KeyboardEvent event):
         cdef dict event_data = {
@@ -212,6 +210,7 @@ cdef class EventManager:
                 #print("process", event_data)
                 for i in range((<ItemVector>values_ptr).num_items):
                     listener_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(i)
+                    """
                     print(
                         event.type, i,
                         listener_ptr.key, 
@@ -219,6 +218,7 @@ cdef class EventManager:
                         <uintptr_t>listener_ptr.args, 
                         <uintptr_t>listener_ptr.kwargs,
                     )
+                    """
                     callback = <object>listener_ptr.callback
                     args = <list>listener_ptr.args
                     kwargs = <dict>listener_ptr.kwargs
