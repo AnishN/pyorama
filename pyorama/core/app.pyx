@@ -23,7 +23,8 @@ cdef class App:
         self.accumulated_time = 0.0
         self.delta = 0.0
         self.frequency = SDL_GetPerformanceFrequency()
-        self.current_time = self.c_get_current_time()
+        self.start_time = self.c_get_current_time()
+        self.current_time = self.start_time
         self.previous_time = self.current_time
         self.is_running = True
 
