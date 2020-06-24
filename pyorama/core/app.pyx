@@ -39,6 +39,7 @@ cdef class App:
 
     def update(self):
         PyErr_CheckSignals()
+        self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
         self.event.update(self.timestamp)
         self.graphics.update()
 

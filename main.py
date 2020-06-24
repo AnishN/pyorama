@@ -24,6 +24,7 @@ class Game(App):
         Mat4.perspective(self.proj_mat, math.radians(90), 1.0, 0.001, 1000)
         self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
         self.view_mat = Mat4()
+        self.view_velocity = Vec3(0.0, 0.0, 0.1)
         Mat4.from_translation(self.view_mat, Vec3(0, 0, -100))
         self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
@@ -72,9 +73,10 @@ class Game(App):
 
         mouse_down_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down)
         mouse_up_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_UP, self.on_mouse_up)
-        flarg = self.event.event_type_register()
-        self.event.event_type_emit(flarg, {"flargle": "flargleson"})
-        flarg_listener = self.event.listener_create(flarg, self.on_flarg)
+        enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
+        #flarg = self.event.event_type_register()
+        #self.event.event_type_emit(flarg, {"flargle": "flargleson"})
+        #flarg_listener = self.event.listener_create(flarg, self.on_flarg)
     
     def quit(self):
         #really should call *_delete methods on all created graphics handles
@@ -96,6 +98,11 @@ class Game(App):
         })
         self.graphics.view_set_frame_buffer(self.view, self.fbo)
 
+    def on_enter_frame(self, event_data, *args, **kwargs):
+        Mat4.translate(self.view_mat, self.view_mat, self.view_velocity)
+        self.graphics.uniform_set_data(self.u_view, self.view_mat)
+        self.graphics.view_set_uniforms(self.view, self.uniforms)
+    
     def on_mouse_down(self, event_data, *args, **kwargs):
         print("MOUSE DOWN")
         print("event data", event_data)
@@ -110,12 +117,14 @@ class Game(App):
         print("event kwargs", kwargs)
         print("")
 
+    """
     def on_flarg(self, event_data, *args, **kwargs):
         print("FLARG!!!")
         print("event data", event_data)
         print("event args", args)
         print("event kwargs", kwargs)
         print("")
+    """
     
 if __name__ == "__main__":
     game = Game()

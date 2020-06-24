@@ -17,7 +17,7 @@ cdef class EventManager:
     
     cpdef uint16_t event_type_register(self) except *#cannot unregister event types
     cpdef bint event_type_check_registered(self, uint16_t event_type) except *
-    cpdef void event_type_emit(self, uint16_t event_type, dict event_data) except *
+    cpdef void event_type_emit(self, uint16_t event_type, dict event_data=*) except *
     
     cdef ListenerKeyC *key_get_ptr(self, Handle listener) except *
     cdef ListenerC *listener_get_ptr(self, Handle listener) except *

@@ -47,7 +47,7 @@ cdef class EventManager:
     cpdef bint event_type_check_registered(self, uint16_t event_type) except *:
         return self.registered[event_type]
 
-    cpdef void event_type_emit(self, uint16_t event_type, dict event_data) except *:
+    cpdef void event_type_emit(self, uint16_t event_type, dict event_data={}) except *:
         cdef:
             SDL_Event event
             PyObject *event_data_ptr
