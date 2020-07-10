@@ -48,9 +48,9 @@ cdef class App:
                 PyErr_CheckSignals()
                 self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
                 self.event.update(self.timestamp)
+                self.graphics.update()#differs from fix your timestep (avoids interpolation), will decide in more intensive demos
                 self.accumulated_time -= self.ms_per_update/1000
             self.previous_time = self.current_time
-            self.graphics.update()
                 
     cdef double c_get_current_time(self) nogil:
         cdef:

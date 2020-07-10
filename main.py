@@ -1,10 +1,10 @@
 import math
 import numpy as np
-from pyorama.core.app import App
+from pyorama.core.app import *
 from pyorama.event.event_enums import *
 from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
-from pyorama.graphics.graphics_manager import GraphicsManager
+from pyorama.graphics.graphics_manager import *
 from pyorama.math3d.vec3 import Vec3
 from pyorama.math3d.vec4 import Vec4
 from pyorama.math3d.mat4 import Mat4
@@ -47,7 +47,7 @@ class Game(App):
         fs_path = b"./resources/shaders/basic.frag"
         self.fs = self.graphics.shader_create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
         self.program = self.graphics.program_create(self.vs, self.fs)
-
+        
         #setup texture
         #image_path = b"./resources/textures/image_0.png"
         image_path = b"./resources/meshes/dog/dog.jpg"
@@ -69,20 +69,17 @@ class Game(App):
             FRAME_BUFFER_ATTACHMENT_DEPTH: self.out_depth,
         })
         self.view = self.graphics.view_create()
-        self.update_view()
 
         mouse_down_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down)
         mouse_up_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_UP, self.on_mouse_up)
         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
-        #flarg = self.event.event_type_register()
-        #self.event.event_type_emit(flarg, {"flargle": "flargleson"})
-        #flarg_listener = self.event.listener_create(flarg, self.on_flarg)
+        window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
     
     def quit(self):
         #really should call *_delete methods on all created graphics handles
         #in testing so far, this function is never called, so am lazy with clean up here.
         #self.graphics.quit()
-        super().quit()
+        super().quit()#since not cleaning nicely, getting segmentation fault on close...
     
     def update_view(self):
         self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)
@@ -102,28 +99,39 @@ class Game(App):
         Mat4.translate(self.view_mat, self.view_mat, self.view_velocity)
         self.graphics.uniform_set_data(self.u_view, self.view_mat)
         self.graphics.view_set_uniforms(self.view, self.uniforms)
-
+        self.update_view()
+    
     def on_mouse_down(self, event_data, *args, **kwargs):
         print("MOUSE DOWN")
-        print("event data", event_data)
-        print("event args", args)
-        print("event kwargs", kwargs)
-        print("")
 
     def on_mouse_up(self, event_data, *args, **kwargs):
         print("MOUSE UP")
-        print("event data", event_data)
-        print("event args", args)
-        print("event kwargs", kwargs)
-        print("")
+
+    def on_window(self, event_data, *args, **kwargs):
+        if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
+            self.quit()
 
     """
-    def on_flarg(self, event_data, *args, **kwargs):
-        print("FLARG!!!")
-        print("event data", event_data)
-        print("event args", args)
-        print("event kwargs", kwargs)
-        print("")
+    Need to think about my higher level organization of the GraphicsSystem to map down to buffers.
+    Currently thinking of using "Group" objects to combine individual mesh objects together.
+    E.g. Sprite -> SpriteGroup; Mesh -> MeshGroup
+    Could also use the term "batch" instead of group... think I prefer that since group is more useful to use elsewhere
+    and you can batch draw calls (I guess you could group them too...)
+    then you write the data to a vertex_buffer from the batch...
+
+    sprite_1 = sprite_create()#no texture, only bind 1 to batch after all...
+    #sprite_delete(sprite_1)
+    sprite_set_tex_coords(sprite_1, np.array([0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0], dtype=np.float32)))#if not just default...
+    sprite_set_position(sprite_1, Vec2(x, y))
+    sprite_set_rotaiton(sprite_1, math.radians(50))
+    sprite_set_scale(sprite_1, Vec2(1.0, 1.0))
+    sprite_set_tint(sprite_1, Vec4(1.0, 0.0, 0.0, 1.0))
+    sprite_set_alpha(sprite_1, 0.7)
+    
+    batch = sprite_batch_create(
+    sprite_batch_set_sprites(batch, [sprite_1, sprite_2])
+    sprite_batch_get_vertex_data(batch)
+    sprite_batch_get_index_data(batch)
     """
     
 if __name__ == "__main__":
