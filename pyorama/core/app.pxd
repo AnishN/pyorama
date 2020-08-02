@@ -17,6 +17,6 @@ cdef class App:
         uint64_t frequency
         readonly bint is_running
         readonly GraphicsManager graphics
-        readonly EventManager events
+        readonly EventManager event
     
     cdef double c_get_current_time(self) nogil

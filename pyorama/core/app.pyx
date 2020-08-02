@@ -1,4 +1,5 @@
 import atexit as py_atexit
+import os
 import time
 
 cdef class App:
@@ -19,7 +20,7 @@ cdef class App:
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
         self.graphics = GraphicsManager()
         self.event = EventManager()
-        
+
         self.accumulated_time = 0.0
         self.delta = 0.0
         self.frequency = SDL_GetPerformanceFrequency()
@@ -30,9 +31,10 @@ cdef class App:
 
     def quit(self):
         self.graphics = None
-        self.events = None
+        self.event = None
         IMG_Quit()
         SDL_Quit()
+        os._exit(-1)
     
     def trigger_quit(self):
         self.is_running = False

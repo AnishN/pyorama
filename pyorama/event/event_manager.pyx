@@ -22,16 +22,16 @@ cdef class EventManager:
 
     def __dealloc__(self):
         self.timestamp = 0.0
-        self.listener_keys = None
         cdef:
             size_t i
             ItemVector values
             PyObject *values_ptr
         for i in range(MAX_EVENT_TYPES):
             values_ptr = self.listeners[i]
-            Py_XDECREF(values_ptr)
+            #Py_XDECREF(values_ptr)
             values = <ItemVector>values_ptr
             values = None
+        self.listener_keys = None
 
     cpdef uint16_t event_type_register(self) except *:#TODO: ensure registration corresponds with EVENT_TYPE enums!
         cdef:
