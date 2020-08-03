@@ -13,7 +13,7 @@ class Game(App):
     
     def init(self):
         super().init()
-        #self.window = self.graphics.window_create(800, 600, b"Hello World!")        
+        self.window = self.graphics.window_create(800, 600, b"Hello World!")        
         added = self.event.listener_create(EVENT_TYPE_JOYSTICK_ADDED, self.on_added)
         removed = self.event.listener_create(EVENT_TYPE_JOYSTICK_REMOVED, self.on_removed)
         button_down = self.event.listener_create(EVENT_TYPE_JOYSTICK_BUTTON_DOWN, self.on_button_down)

@@ -169,6 +169,8 @@ cdef class GraphicsManager:
             Handle window
             WindowC *window_ptr
             size_t title_length
+            #SDL_Renderer *renderer
+
         window = self.windows.c_create()
         window_ptr = self.window_get_ptr(window)
         window_ptr.sdl_ptr = SDL_CreateWindow(
@@ -182,6 +184,15 @@ cdef class GraphicsManager:
             raise ValueError("Window: title cannot exceed 255 characters")
         memcpy(window_ptr.title, <char *>title, title_length)
         window_ptr.title_length = title_length
+
+        """
+        renderer = SDL_CreateRenderer(window_ptr.sdl_ptr, -1, 0)
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)
+        SDL_RenderClear(renderer)
+        SDL_RenderPresent(renderer)
+        SDL_DestroyRenderer(renderer)
+        """
+
         return window
 
     cpdef void window_delete(self, Handle window) except *:
@@ -1239,7 +1250,21 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             size_t i
 
-        if self.views.c_is_handle_valid(0):
+        for i in range(self.windows.items.num_items):
+            window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
+            SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
+            glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
+            glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
+            glClearDepthf(1.0); self.c_check_gl()
+            glClearStencil(0); self.c_check_gl()
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
+            SDL_GL_SetSwapInterval(0)
+            SDL_GL_SwapWindow(window_ptr.sdl_ptr)
+        SDL_GL_MakeCurrent(self.root_window, self.root_context)
+        SDL_GL_SetSwapInterval(0)
+        SDL_GL_SwapWindow(self.root_window)
+
+        if self.views.items.num_items > 0:
             view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
             program_ptr = self.program_get_ptr(view_ptr.program)
             vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
@@ -1309,7 +1334,7 @@ cdef class GraphicsManager:
                 SDL_GL_SetSwapInterval(0)
                 SDL_GL_SwapWindow(window_ptr.sdl_ptr)
                 glUseProgram(0); self.c_check_gl()
-        
+            
         SDL_GL_MakeCurrent(self.root_window, self.root_context)
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(self.root_window)
