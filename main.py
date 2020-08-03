@@ -68,19 +68,14 @@ class Game(App):
             FRAME_BUFFER_ATTACHMENT_DEPTH: self.out_depth,
         })
         self.view = self.graphics.view_create()
-
+        
         mouse_down_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down)
         mouse_up_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_UP, self.on_mouse_up)
         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
-        """
-        
-    """
+    
     def quit(self):
-        #really should call *_delete methods on all created graphics handles
-        #in testing so far, this function is never called, so am lazy with clean up here.
-        #self.graphics.quit()
-        super().quit()#since not cleaning nicely, getting segmentation fault on close...
+        super().quit()
     
     def update_view(self):
         self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)

@@ -18,6 +18,8 @@ cdef class App:
         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
+        SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
+
         self.graphics = GraphicsManager()
         self.event = EventManager()
 

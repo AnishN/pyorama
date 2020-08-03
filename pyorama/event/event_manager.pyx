@@ -134,6 +134,69 @@ cdef class EventManager:
         print("deleted listener", listener, (<ItemVector>values_ptr).num_items)
         print(self.listener_keys.items.num_items)
         """
+
+    cdef dict parse_joystick_axis_event(self, SDL_JoyAxisEvent event):
+        cdef dict event_data = {
+            "type": event.type,
+            "timestamp": self.timestamp,
+            "which": event.which,
+            "axis": event.axis,
+            "value": event.value,
+        }
+        return event_data
+
+    cdef dict parse_joystick_ball_event(self, SDL_JoyBallEvent event):
+        cdef dict event_data = {
+            "type": event.type,
+            "timestamp": self.timestamp,
+            "which": event.which,
+            "ball": event.ball,
+            "x": event.xrel,
+            "y": event.yrel,
+        }
+        return event_data
+
+    cdef dict parse_joystick_hat_event(self, SDL_JoyHatEvent event):
+        cdef dict event_data = {
+            "type": event.type,
+            "timestamp": self.timestamp,
+            "which": event.which,
+            "hat": event.hat,
+            "value": <JoystickHat>event.value,
+        }
+        return event_data
+
+    cdef dict parse_joystick_button_event(self, SDL_JoyButtonEvent event):
+        cdef dict event_data = {
+            "type": event.type,
+            "timestamp": self.timestamp,
+            "which": event.which,
+            "button": event.button,
+            "state": <JoystickButtonState>event.state,
+        }
+        return event_data
+
+    cdef dict parse_joystick_device_event(self, SDL_JoyDeviceEvent event):
+        cdef:
+            dict event_data
+            SDL_Joystick *joy
+            
+        event_data = {
+            "type": event.type,
+            "timestamp": self.timestamp,
+            "which": event.which,
+        }
+        if event.type == EVENT_TYPE_JOYSTICK_ADDED:
+            if event.which > 65536:
+                raise ValueError("EventManager: cannot support more than 65536 joysticks at once")
+            SDL_NumJoysticks()
+            joy = SDL_JoystickOpen(event.which)
+            self.joysticks[event.which] = joy
+        elif event.type == EVENT_TYPE_JOYSTICK_REMOVED:
+            joy = self.joysticks[event.which]
+            SDL_JoystickClose(joy)
+            self.joysticks[event.which] = NULL
+        return event_data
     
     cdef dict parse_keyboard_event(self, SDL_KeyboardEvent event):
         cdef dict event_data = {
@@ -227,6 +290,16 @@ cdef class EventManager:
             ignore_event = False
             if event.type == EVENT_TYPE_WINDOW:
                 event_data = self.parse_window_event(event.window)
+            elif event.type == EVENT_TYPE_JOYSTICK_AXIS:
+                event_data = self.parse_joystick_axis_event(event.jaxis)
+            elif event.type == EVENT_TYPE_JOYSTICK_BALL:
+                event_data = self.parse_joystick_ball_event(event.jball)
+            elif event.type == EVENT_TYPE_JOYSTICK_HAT:
+                event_data = self.parse_joystick_hat_event(event.jhat)
+            elif event.type in (EVENT_TYPE_JOYSTICK_BUTTON_DOWN, EVENT_TYPE_JOYSTICK_BUTTON_UP):
+                event_data = self.parse_joystick_button_event(event.jbutton)
+            elif event.type in (EVENT_TYPE_JOYSTICK_ADDED, EVENT_TYPE_JOYSTICK_REMOVED):
+                event_data = self.parse_joystick_device_event(event.jdevice)
             elif event.type in (EVENT_TYPE_KEY_DOWN, EVENT_TYPE_KEY_UP):
                 event_data = self.parse_keyboard_event(event.key)
             elif event.type in (EVENT_TYPE_MOUSE_BUTTON_DOWN, EVENT_TYPE_MOUSE_BUTTON_UP):

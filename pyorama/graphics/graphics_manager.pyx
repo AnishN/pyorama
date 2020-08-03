@@ -1239,75 +1239,77 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             size_t i
 
-        view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
-        program_ptr = self.program_get_ptr(view_ptr.program)
-        vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
-        ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
-        
-        glUseProgram(program_ptr.gl_id); self.c_check_gl()
-        for i in range(view_ptr.num_uniforms):
-            uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
-            self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
-
-        glEnable(GL_CULL_FACE); self.c_check_gl()
-        glEnable(GL_DEPTH_TEST); self.c_check_gl()
-        glDepthFunc(GL_LESS); self.c_check_gl()
-        glDepthMask(True); self.c_check_gl()
-
-        fbo = view_ptr.frame_buffer
-        if fbo != 0:
-            fbo_ptr = self.frame_buffer_get_ptr(fbo)
-            glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
-
-        color = &view_ptr.clear_color
-        gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
-        glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
-        glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()
-        glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
-        glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
-        glClear(gl_clear_flags); self.c_check_gl()
-        
-        for i in range(view_ptr.num_texture_units):
-            texture_unit = view_ptr.texture_units[i]
-            gl_texture_unit = c_texture_unit_to_gl(texture_unit)
-            texture = view_ptr.textures[<size_t>texture_unit]
-            texture_ptr = self.texture_get_ptr(texture)
-            glActiveTexture(gl_texture_unit); self.c_check_gl()
-            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
-
-        self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
-        self._index_buffer_draw(ibo_ptr.handle)
-        self._program_unbind_attributes(program_ptr.handle)
-        for i in range(view_ptr.num_texture_units):
-            texture_unit = view_ptr.texture_units[i]
-            gl_texture_unit = c_texture_unit_to_gl(texture_unit)
-            glActiveTexture(gl_texture_unit); self.c_check_gl()
-            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
-        if fbo != 0:
-            glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
-        glUseProgram(0); self.c_check_gl()
-        
-        for i in range(self.windows.items.num_items):
-            window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
-            SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-            glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
-            glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
-            glClearDepthf(1.0); self.c_check_gl()
-            glClearStencil(0); self.c_check_gl()
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
-            glActiveTexture(GL_TEXTURE0); self.c_check_gl()
-            texture_ptr = self.texture_get_ptr(window_ptr.texture)
-            program_ptr = self.program_get_ptr(self.quad_program)
+        if self.views.c_is_handle_valid(0):
+            view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
+            program_ptr = self.program_get_ptr(view_ptr.program)
+            vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
+            ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
+            
             glUseProgram(program_ptr.gl_id); self.c_check_gl()
-            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
-            self._program_bind_uniform(self.quad_program, self.u_quad)
-            self._program_bind_attributes(self.quad_program, self.quad_vbo)
-            self._index_buffer_draw(self.quad_ibo)
-            self._program_unbind_attributes(self.quad_program)
-            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
-            SDL_GL_SetSwapInterval(0)
-            SDL_GL_SwapWindow(window_ptr.sdl_ptr)
+            for i in range(view_ptr.num_uniforms):
+                uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
+                self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
+
+            glEnable(GL_CULL_FACE); self.c_check_gl()
+            glEnable(GL_DEPTH_TEST); self.c_check_gl()
+            glDepthFunc(GL_LESS); self.c_check_gl()
+            glDepthMask(True); self.c_check_gl()
+
+            fbo = view_ptr.frame_buffer
+            if fbo != 0:
+                fbo_ptr = self.frame_buffer_get_ptr(fbo)
+                glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
+
+            color = &view_ptr.clear_color
+            gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
+            glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
+            glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()
+            glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
+            glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
+            glClear(gl_clear_flags); self.c_check_gl()
+            
+            for i in range(view_ptr.num_texture_units):
+                texture_unit = view_ptr.texture_units[i]
+                gl_texture_unit = c_texture_unit_to_gl(texture_unit)
+                texture = view_ptr.textures[<size_t>texture_unit]
+                texture_ptr = self.texture_get_ptr(texture)
+                glActiveTexture(gl_texture_unit); self.c_check_gl()
+                glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
+
+            self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
+            self._index_buffer_draw(ibo_ptr.handle)
+            self._program_unbind_attributes(program_ptr.handle)
+            for i in range(view_ptr.num_texture_units):
+                texture_unit = view_ptr.texture_units[i]
+                gl_texture_unit = c_texture_unit_to_gl(texture_unit)
+                glActiveTexture(gl_texture_unit); self.c_check_gl()
+                glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
+            if fbo != 0:
+                glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
             glUseProgram(0); self.c_check_gl()
+            
+            for i in range(self.windows.items.num_items):
+                window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
+                SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
+                glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
+                glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
+                glClearDepthf(1.0); self.c_check_gl()
+                glClearStencil(0); self.c_check_gl()
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
+                glActiveTexture(GL_TEXTURE0); self.c_check_gl()
+                texture_ptr = self.texture_get_ptr(window_ptr.texture)
+                program_ptr = self.program_get_ptr(self.quad_program)
+                glUseProgram(program_ptr.gl_id); self.c_check_gl()
+                glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
+                self._program_bind_uniform(self.quad_program, self.u_quad)
+                self._program_bind_attributes(self.quad_program, self.quad_vbo)
+                self._index_buffer_draw(self.quad_ibo)
+                self._program_unbind_attributes(self.quad_program)
+                glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
+                SDL_GL_SetSwapInterval(0)
+                SDL_GL_SwapWindow(window_ptr.sdl_ptr)
+                glUseProgram(0); self.c_check_gl()
+        
         SDL_GL_MakeCurrent(self.root_window, self.root_context)
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(self.root_window)

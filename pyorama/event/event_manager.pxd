@@ -14,6 +14,7 @@ cdef class EventManager:
         ItemSlotMap listener_keys
         PyObject *listeners[65536]
         bint registered[65536]
+        SDL_Joystick *joysticks[65536]
     
     cpdef uint16_t event_type_register(self) except *#cannot unregister event types
     cpdef bint event_type_check_registered(self, uint16_t event_type) except *
@@ -24,6 +25,11 @@ cdef class EventManager:
     cpdef Handle listener_create(self, uint16_t event_type, object callback, list args=*, dict kwargs=*) except *
     cpdef void listener_delete(self, Handle listener) except *
 
+    cdef dict parse_joystick_axis_event(self, SDL_JoyAxisEvent event)
+    cdef dict parse_joystick_ball_event(self, SDL_JoyBallEvent event)
+    cdef dict parse_joystick_hat_event(self, SDL_JoyHatEvent event)
+    cdef dict parse_joystick_button_event(self, SDL_JoyButtonEvent event)
+    cdef dict parse_joystick_device_event(self, SDL_JoyDeviceEvent event)
     cdef dict parse_keyboard_event(self, SDL_KeyboardEvent event)
     cdef dict parse_mouse_button_event(self, SDL_MouseButtonEvent event)
     cdef dict parse_mouse_motion_event(self, SDL_MouseMotionEvent event)

@@ -13,6 +13,8 @@ cdef extern from "SDL2/SDL.h" nogil:
 
     bint SDL_SetHint(const char* name, const char* value)
     char* SDL_HINT_NO_SIGNAL_HANDLERS
+    char* SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS
+
     enum: SDL_RENDERER_PRESENTVSYNC
     
     #Window Management
@@ -53,7 +55,12 @@ cdef extern from "SDL2/SDL.h" nogil:
     void SDL_MaximizeWindow(SDL_Window* window)
     void SDL_MinimizeWindow(SDL_Window* window)
     void SDL_RestoreWindow(SDL_Window* window)
-    
+    void SDL_RaiseWindow(SDL_Window* window)
+
+    void SDL_SetWindowGrab(SDL_Window* window, bint grabbed)
+    SDL_Window* SDL_GetGrabbedWindow()
+    bint SDL_GetWindowGrab(SDL_Window* window)
+
     void SDL_SetWindowPosition(SDL_Window* window, int x, int y)
     void SDL_GetWindowPosition(SDL_Window* window, int* x, int* y)
     void SDL_SetWindowSize(SDL_Window* window, int w, int h)
@@ -853,6 +860,22 @@ cdef extern from "SDL2/SDL.h" nogil:
         uint32_t type
         uint32_t timestamp
         int32_t which
+    
+    int SDL_NumJoysticks()
+    ctypedef struct SDL_Joystick:#anonymous
+        pass
+    
+    SDL_Joystick* SDL_JoystickOpen(int device_index)
+    void SDL_JoystickClose(SDL_Joystick* joystick)
+    const char* SDL_JoystickName(SDL_Joystick* joystick)
+    const char* SDL_JoystickNameForIndex(int device_index)
+    uint32_t SDL_JoystickInstanceID(SDL_Joystick* joystick)
+    int SDL_JoystickNumAxes(SDL_Joystick* joystick)
+    int16_t SDL_JoystickGetAxis(SDL_Joystick* joystick, int axis)
+    int SDL_JoystickNumButtons(SDL_Joystick* joystick)
+    uint8_t SDL_JoystickGetButton(SDL_Joystick* joystick, int button)
+    int SDL_JoystickNumBalls(SDL_Joystick* joystick)
+    int SDL_JoystickGetBall(SDL_Joystick* joystick, int ball, int* dx, int* dy)
 
     ctypedef struct SDL_ControllerAxisEvent:
         uint32_t type
