@@ -118,6 +118,28 @@ ctypedef struct FrameBufferC:
     FrameBufferAttachment[8] attachments
     size_t num_attachments
 
+ctypedef struct SpriteC:
+    Handle handle
+    float width
+    float height
+    Vec2C position
+    Vec2C anchor
+    float rotation
+    Vec2C scale
+    float z_index
+    float[12] tex_coords
+    bint visible
+    Vec3C tint
+    float alpha
+
+ctypedef struct SpriteBatchC:
+    Handle handle
+    uint16_t num_sprites
+    Handle[65536] sprites
+    Handle vertex_buffer
+    Handle index_buffer
+    Handle texture
+
 ctypedef struct ViewC:
     Handle handle
     uint32_t clear_flags

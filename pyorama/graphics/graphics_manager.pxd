@@ -28,11 +28,14 @@ cdef class GraphicsManager:
         ItemSlotMap textures
         ItemSlotMap frame_buffers
         ItemSlotMap views
+        ItemSlotMap sprites
+        ItemSlotMap sprite_batches
 
         Handle u_quad
         Handle quad_vbo, quad_ibo
         Handle quad_vs, quad_fs, quad_program
 
+        readonly Handle u_fmt_rect
         readonly Handle u_fmt_quad
         readonly Handle u_fmt_proj
         readonly Handle u_fmt_view
@@ -47,8 +50,10 @@ cdef class GraphicsManager:
 
         readonly Handle v_fmt_quad
         readonly Handle v_fmt_mesh
+        readonly Handle v_fmt_sprite
         readonly IndexFormat i_fmt_quad
         readonly IndexFormat i_fmt_mesh
+        readonly IndexFormat i_fmt_sprite
 
     cdef void c_check_gl(self) except *
     cdef void c_check_gl_extensions(self) except *
@@ -65,6 +70,8 @@ cdef class GraphicsManager:
     cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *
     cpdef void window_delete(self, Handle window) except *
     cpdef void window_set_texture(self, Handle window, Handle texture) except *
+    cpdef void window_clear(self, Handle window) except *
+    cpdef void window_render(self, Handle window) except *
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *
     cpdef Handle vertex_format_create(self, list comps) except *
@@ -155,4 +162,38 @@ cdef class GraphicsManager:
     cpdef void view_set_textures(self, Handle view, dict textures) except *
     cpdef void view_set_frame_buffer(self, Handle view, Handle frame_buffer) except *
     
+    cdef SpriteC *sprite_get_ptr(self, Handle sprite) except *
+    cpdef Handle sprite_create(self, float width, float height) except *
+    cpdef void sprite_delete(self, Handle sprite) except *
+    cpdef void sprite_set_tex_coords(self, Handle sprite, float[:] tex_coords) except *
+    cpdef void sprite_set_tex_coords_from_rect(self, Handle sprite, Vec4 rect) except *
+    cpdef void sprite_set_position(self, Handle sprite, Vec2 position) except *
+    cpdef void sprite_set_anchor(self, Handle sprite, Vec2 anchor) except *
+    cpdef void sprite_set_rotation(self, Handle sprite, float rotation) except *
+    cpdef void sprite_set_scale(self, Handle sprite, Vec2 scale) except *
+    cpdef void sprite_set_z_index(self, Handle sprite, float z_index) except *
+    cpdef void sprite_set_visible(self, Handle sprite, bint visible) except *
+    cpdef void sprite_set_tint(self, Handle sprite, Vec3 tint) except *
+    cpdef void sprite_set_alpha(self, Handle sprite, float alpha) except *
+
+    cpdef float[:] sprite_get_tex_coords(self, Handle sprite) except *
+    #cpdef Vec4 sprite_get_tex_coords_from_rect(self, Handle sprite)
+    cpdef Vec2 sprite_get_position(self, Handle sprite)
+    cpdef Vec2 sprite_get_anchor(self, Handle sprite)
+    cpdef float sprite_get_rotation(self, Handle sprite) except *
+    cpdef Vec2 sprite_get_scale(self, Handle sprite)
+    cpdef float sprite_get_z_index(self, Handle sprite) except *
+    cpdef bint sprite_get_visible(self, Handle sprite) except *
+    cpdef Vec3 sprite_get_tint(self, Handle sprite)
+    cpdef float sprite_get_alpha(self, Handle sprite) except *
+
+    cdef SpriteBatchC *sprite_batch_get_ptr(self, Handle batch) except *
+    cpdef Handle sprite_batch_create(self) except *
+    cpdef void sprite_batch_delete(self, Handle batch) except *
+    cpdef void sprite_batch_set_sprites(self, Handle batch, uint64_t[:] sprites) except *
+    cpdef Handle sprite_batch_get_vertex_buffer(self, Handle batch) except *
+    cpdef Handle sprite_batch_get_index_buffer(self, Handle batch) except *
+    cdef void _sprite_batch_update(self, Handle batch) except *
+
+    cdef void _swap_root_window(self) except *
     cpdef void update(self) except *

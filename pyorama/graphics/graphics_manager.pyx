@@ -68,6 +68,8 @@ cdef class GraphicsManager:
         self.textures = ItemSlotMap(sizeof(TextureC), GRAPHICS_ITEM_TYPE_TEXTURE)
         self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), GRAPHICS_ITEM_TYPE_FRAME_BUFFER)
         self.views = ItemSlotMap(sizeof(ViewC), GRAPHICS_ITEM_TYPE_VIEW)
+        self.sprites = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE)
+        self.sprite_batches = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
 
     cdef void c_delete_slot_maps(self) except *:
         self.windows = None
@@ -83,8 +85,11 @@ cdef class GraphicsManager:
         self.textures = None
         self.frame_buffers = None
         self.views = None
+        self.sprites = None
+        self.sprite_batches = None
 
     cdef void c_create_predefined_uniform_formats(self) except *:
+        self.u_fmt_rect = self.uniform_format_create(b"u_rect", UNIFORM_TYPE_VEC4)
         self.u_fmt_quad = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
         self.u_fmt_view = self.uniform_format_create(b"u_view", UNIFORM_TYPE_MAT4)
         self.u_fmt_proj = self.uniform_format_create(b"u_proj", UNIFORM_TYPE_MAT4)
@@ -119,8 +124,16 @@ cdef class GraphicsManager:
             (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
             (b"a_normal", VERTEX_COMP_TYPE_F32, 3, False),
         ])
+        self.v_fmt_sprite = self.vertex_format_create([
+            (b"a_vertex_tex_coord", VERTEX_COMP_TYPE_F32, 4, False),#base vertex (vec2), tex coord (vec2)
+            (b"a_pos_z_rot", VERTEX_COMP_TYPE_F32, 4, False),#position (vec2), z_index (float), rotation (float)
+            (b"a_size_scale", VERTEX_COMP_TYPE_F32, 4, False),#width (float), height (float), scale (vec2)
+            (b"a_tint_alpha", VERTEX_COMP_TYPE_F32, 4, False),#tint (vec3), alpha (float)
+            (b"a_anchor", VERTEX_COMP_TYPE_F32, 2, False),#anchor (vec2)
+        ])
         self.i_fmt_quad = INDEX_FORMAT_U32
         self.i_fmt_mesh = INDEX_FORMAT_U32
+        self.i_fmt_sprite = INDEX_FORMAT_U32
 
     cdef void c_delete_predefined_vertex_index_formats(self) except *:
         self.vertex_format_delete(self.v_fmt_quad)
@@ -184,15 +197,7 @@ cdef class GraphicsManager:
             raise ValueError("Window: title cannot exceed 255 characters")
         memcpy(window_ptr.title, <char *>title, title_length)
         window_ptr.title_length = title_length
-
-        """
-        renderer = SDL_CreateRenderer(window_ptr.sdl_ptr, -1, 0)
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)
-        SDL_RenderClear(renderer)
-        SDL_RenderPresent(renderer)
-        SDL_DestroyRenderer(renderer)
-        """
-
+        self.window_clear(window)
         return window
 
     cpdef void window_delete(self, Handle window) except *:
@@ -207,6 +212,48 @@ cdef class GraphicsManager:
             WindowC *window_ptr
         window_ptr = self.window_get_ptr(window)
         window_ptr.texture = texture
+
+    cpdef void window_clear(self, Handle window) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.window_get_ptr(window)
+        SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
+        glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
+        glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
+        glClearDepthf(1.0); self.c_check_gl()
+        glClearStencil(0); self.c_check_gl()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
+        SDL_GL_SetSwapInterval(0)
+        SDL_GL_SwapWindow(window_ptr.sdl_ptr)
+        SDL_GL_MakeCurrent(self.root_window, self.root_context)
+
+    cpdef void window_render(self, Handle window) except *:
+        cdef:
+            WindowC *window_ptr
+            TextureC *texture_ptr
+            ProgramC *program_ptr
+        window_ptr = self.window_get_ptr(window)
+        SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
+        glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
+        glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
+        glClearDepthf(1.0); self.c_check_gl()
+        glClearStencil(0); self.c_check_gl()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
+        if self.textures.c_is_handle_valid(window_ptr.texture):
+            glActiveTexture(GL_TEXTURE0); self.c_check_gl()
+            texture_ptr = self.texture_get_ptr(window_ptr.texture)
+            program_ptr = self.program_get_ptr(self.quad_program)
+            glUseProgram(program_ptr.gl_id); self.c_check_gl()
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
+            self._program_bind_uniform(self.quad_program, self.u_quad)
+            self._program_bind_attributes(self.quad_program, self.quad_vbo)
+            self._index_buffer_draw(self.quad_ibo)
+            self._program_unbind_attributes(self.quad_program)
+            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
+            SDL_GL_SetSwapInterval(0)
+            SDL_GL_SwapWindow(window_ptr.sdl_ptr)
+            glUseProgram(0); self.c_check_gl()
+        SDL_GL_MakeCurrent(self.root_window, self.root_context)
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *:
         return <VertexFormatC *>self.vertex_formats.c_get_ptr(format)
@@ -1232,6 +1279,274 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.frame_buffer = frame_buffer
     
+    cdef SpriteC *sprite_get_ptr(self, Handle sprite) except *:
+        return <SpriteC *>self.sprites.c_get_ptr(sprite)
+
+    cpdef Handle sprite_create(self, float width, float height) except *:
+        cdef:
+            Handle sprite
+            SpriteC *sprite_ptr
+            float[12] tex_coords
+
+        tex_coords = [
+            0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 
+            0.0, 1.0, 1.0, 0.0, 1.0, 1.0,
+        ]
+        sprite = self.sprites.c_create()
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.width = width
+        sprite_ptr.height = height
+        sprite_ptr.tex_coords = tex_coords
+        sprite_ptr.position = Vec2C(0.0, 0.0)
+        sprite_ptr.rotation = 0.0
+        sprite_ptr.scale = Vec2C(1.0, 1.0)
+        sprite_ptr.z_index = 0.0
+        sprite_ptr.visible = True
+        sprite_ptr.tint = Vec3C(1.0, 1.0, 1.0)
+        sprite_ptr.alpha = 1.0
+        return sprite
+
+    cpdef void sprite_delete(self, Handle sprite) except *:
+        self.sprites.c_delete(sprite)
+
+    cpdef void sprite_set_tex_coords(self, Handle sprite, float[:] tex_coords) except *:
+        cdef:
+            SpriteC *sprite_ptr
+            float *tex_coords_ptr
+
+        if tex_coords.shape[0] != 12:
+            raise ValueError("Sprite: tex coords array is invalid length")    
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        tex_coords_ptr = &tex_coords[0]
+        memcpy(sprite_ptr.tex_coords, tex_coords_ptr, sizeof(float) * 12)
+
+    cpdef void sprite_set_tex_coords_from_rect(self, Handle sprite, Vec4 rect) except *:
+        cdef:
+            SpriteC *sprite_ptr
+            float *tex_coords_ptr
+            Vec4C *rect_ptr
+
+        rect_ptr = &rect.data  
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.tex_coords = [
+            rect_ptr.x, rect_ptr.y,
+            rect_ptr.z, rect_ptr.y,
+            rect_ptr.x, rect_ptr.w,
+            rect_ptr.x, rect_ptr.w,
+            rect_ptr.z, rect_ptr.y,
+            rect_ptr.z, rect_ptr.w,
+        ]
+
+    cpdef void sprite_set_position(self, Handle sprite, Vec2 position) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.position = position.data
+
+    cpdef void sprite_set_anchor(self, Handle sprite, Vec2 anchor) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.anchor = anchor.data
+
+    cpdef void sprite_set_rotation(self, Handle sprite, float rotation) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.rotation = rotation
+
+    cpdef void sprite_set_scale(self, Handle sprite, Vec2 scale) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.scale = scale.data
+
+    cpdef void sprite_set_z_index(self, Handle sprite, float z_index) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.z_index = z_index
+
+    cpdef void sprite_set_visible(self, Handle sprite, bint visible) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.visible = visible
+
+    cpdef void sprite_set_tint(self, Handle sprite, Vec3 tint) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.tint = tint.data
+
+    cpdef void sprite_set_alpha(self, Handle sprite, float alpha) except *:
+        cdef SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        sprite_ptr.alpha = alpha
+
+    cpdef float[:] sprite_get_tex_coords(self, Handle sprite) except *:
+        cdef:
+            float[:] tex_coords
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        tex_coords = <float[:12]>sprite_ptr.tex_coords
+        return tex_coords
+    
+    cpdef Vec2 sprite_get_position(self, Handle sprite):
+        cdef:
+            Vec2 position = Vec2()
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        position.data = sprite_ptr.position
+        return position
+
+    cpdef Vec2 sprite_get_anchor(self, Handle sprite):
+        cdef:
+            Vec2 anchor = Vec2()
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        anchor.data = sprite_ptr.anchor
+        return anchor
+
+    cpdef float sprite_get_rotation(self, Handle sprite) except *:
+        cdef:
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        return sprite_ptr.rotation
+
+    cpdef Vec2 sprite_get_scale(self, Handle sprite):
+        cdef:
+            Vec2 scale = Vec2()
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        scale.data = sprite_ptr.scale
+        return scale
+
+    cpdef float sprite_get_z_index(self, Handle sprite) except *:
+        cdef:
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        return sprite_ptr.z_index
+
+    cpdef bint sprite_get_visible(self, Handle sprite) except *:
+        cdef:
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        return sprite_ptr.visible
+
+    cpdef Vec3 sprite_get_tint(self, Handle sprite):
+        cdef:
+            Vec3 tint = Vec3()
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        tint.data = sprite_ptr.tint
+        return tint
+    
+    cpdef float sprite_get_alpha(self, Handle sprite) except *:
+        cdef:
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        return sprite_ptr.alpha
+
+    cdef SpriteBatchC *sprite_batch_get_ptr(self, Handle batch) except *:
+        return <SpriteBatchC *>self.sprite_batches.c_get_ptr(batch)
+
+    cpdef Handle sprite_batch_create(self) except *:
+        cdef:
+            Handle batch
+            SpriteBatchC *batch_ptr
+
+        batch = self.sprite_batches.c_create()
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite)
+        batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite)
+        return batch
+
+    cpdef void sprite_batch_delete(self, Handle batch) except *:
+        self.sprite_batches.c_delete(batch)
+        """
+        ctypedef struct SpriteBatchC:
+            Handle handle
+            uint16_t num_sprites
+            Handle[65536] sprites
+            Handle vertex_buffer
+            Handle index_buffer
+            Handle texture
+        """
+
+    cpdef void sprite_batch_set_sprites(self, Handle batch, uint64_t[:] sprites) except *:
+        cdef:
+            SpriteBatchC *batch_ptr
+            
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        if sprites.shape[0] > 65535:
+            raise ValueError("SpriteBatch: > 65535 sprites not supported")
+        batch_ptr.num_sprites = sprites.shape[0]
+        memcpy(batch_ptr.sprites, &sprites[0], sizeof(Handle) * batch_ptr.num_sprites)
+
+    cpdef Handle sprite_batch_get_vertex_buffer(self, Handle batch) except *:
+        cdef SpriteBatchC *batch_ptr
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        return batch_ptr.vertex_buffer
+
+    cpdef Handle sprite_batch_get_index_buffer(self, Handle batch) except *:
+        cdef SpriteBatchC *batch_ptr
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        return batch_ptr.index_buffer
+
+    cdef void _sprite_batch_update(self, Handle batch) except *:
+        cdef:
+            SpriteBatchC *batch_ptr
+            SpriteC *sprite_ptr
+            size_t i, j, index
+            Vec4C[6] vertex_tex_coord
+            VertexFormatC *v_fmt_ptr
+            uint8_t *vbo
+            uint8_t *ibo
+            size_t vbo_size, ibo_size
+            uint8_t *vbo_index
+            uint8_t *ibo_index
+            
+        vertex_tex_coord = [
+            Vec4C(0.0, 0.0, 0.0, 0.0),
+            Vec4C(1.0, 0.0, 1.0, 0.0),
+            Vec4C(0.0, 1.0, 0.0, 1.0),
+            Vec4C(0.0, 1.0, 0.0, 1.0),
+            Vec4C(1.0, 0.0, 1.0, 0.0),
+            Vec4C(1.0, 1.0, 1.0, 1.0),
+        ]
+        v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        vbo_size = v_fmt_ptr.stride * 6 * batch_ptr.num_sprites
+        ibo_size = 6 * batch_ptr.num_sprites * sizeof(uint32_t)
+        vbo = <uint8_t *>calloc(1, vbo_size)
+        if vbo == NULL:
+            raise MemoryError("SpriteBatch: cannot allocate temporary vertex buffer memory")
+        ibo = <uint8_t *>calloc(1, ibo_size)
+        if ibo == NULL:
+            raise MemoryError("SpriteBatch: cannot allocate temporary index buffer memory")
+        for i in range(batch_ptr.num_sprites):
+            sprite_ptr = self.sprite_get_ptr(batch_ptr.sprites[i])
+            for j in range(6):
+                index = 6 * i + j
+                vbo_index = vbo + (index * v_fmt_ptr.stride)
+                memcpy(vbo_index + 0, &vertex_tex_coord[j], sizeof(Vec4C))
+                memcpy(vbo_index + sizeof(Vec4C), &sprite_ptr.position, sizeof(Vec2C))
+                memcpy(vbo_index + sizeof(Vec4C) + sizeof(Vec2C), &sprite_ptr.z_index, sizeof(float))
+                memcpy(vbo_index + sizeof(Vec4C) + sizeof(Vec3C), &sprite_ptr.rotation, sizeof(float))
+                memcpy(vbo_index + (2 * sizeof(Vec4C)), &sprite_ptr.width, sizeof(float))
+                memcpy(vbo_index + (2 * sizeof(Vec4C)) + sizeof(float), &sprite_ptr.height, sizeof(float))
+                memcpy(vbo_index + (2 * sizeof(Vec4C)) + sizeof(Vec2C), &sprite_ptr.scale, sizeof(Vec2C))
+                memcpy(vbo_index + (3 * sizeof(Vec4C)), &sprite_ptr.tint, sizeof(Vec3C))
+                memcpy(vbo_index + (3 * sizeof(Vec4C)) + sizeof(Vec3C), &sprite_ptr.alpha, sizeof(float))
+                memcpy(vbo_index + (4 * sizeof(Vec4C)), &sprite_ptr.anchor, sizeof(Vec2C))
+                ibo_index = ibo + (index * sizeof(uint32_t))
+                memcpy(ibo_index, &index, sizeof(uint32_t))
+        self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
+        self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
+        #import numpy as np
+        #print(np.array(<uint8_t[:vbo_size]>vbo))
+        free(vbo)
+        free(ibo)
+    
+    cdef void _swap_root_window(self) except *:
+        SDL_GL_MakeCurrent(self.root_window, self.root_context)
+        SDL_GL_SetSwapInterval(0)
+        SDL_GL_SwapWindow(self.root_window)
+
     cpdef void update(self) except *:
         cdef:
             ViewC *view_ptr
@@ -1248,21 +1563,12 @@ cdef class GraphicsManager:
             TextureC *texture_ptr
             UniformC *uniform_ptr
             WindowC *window_ptr
+            SpriteBatchC *sprite_batch_ptr
             size_t i
 
-        for i in range(self.windows.items.num_items):
-            window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
-            SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-            glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
-            glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
-            glClearDepthf(1.0); self.c_check_gl()
-            glClearStencil(0); self.c_check_gl()
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
-            SDL_GL_SetSwapInterval(0)
-            SDL_GL_SwapWindow(window_ptr.sdl_ptr)
-        SDL_GL_MakeCurrent(self.root_window, self.root_context)
-        SDL_GL_SetSwapInterval(0)
-        SDL_GL_SwapWindow(self.root_window)
+        for i in range(self.sprite_batches.items.num_items):
+            sprite_batch_ptr = <SpriteBatchC *>self.sprite_batches.items.c_get_ptr(i)
+            self._sprite_batch_update(sprite_batch_ptr.handle)
 
         if self.views.items.num_items > 0:
             view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
@@ -1313,28 +1619,7 @@ cdef class GraphicsManager:
                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
             glUseProgram(0); self.c_check_gl()
             
-            for i in range(self.windows.items.num_items):
-                window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
-                SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-                glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
-                glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
-                glClearDepthf(1.0); self.c_check_gl()
-                glClearStencil(0); self.c_check_gl()
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
-                glActiveTexture(GL_TEXTURE0); self.c_check_gl()
-                texture_ptr = self.texture_get_ptr(window_ptr.texture)
-                program_ptr = self.program_get_ptr(self.quad_program)
-                glUseProgram(program_ptr.gl_id); self.c_check_gl()
-                glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
-                self._program_bind_uniform(self.quad_program, self.u_quad)
-                self._program_bind_attributes(self.quad_program, self.quad_vbo)
-                self._index_buffer_draw(self.quad_ibo)
-                self._program_unbind_attributes(self.quad_program)
-                glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
-                SDL_GL_SetSwapInterval(0)
-                SDL_GL_SwapWindow(window_ptr.sdl_ptr)
-                glUseProgram(0); self.c_check_gl()
-            
-        SDL_GL_MakeCurrent(self.root_window, self.root_context)
-        SDL_GL_SetSwapInterval(0)
-        SDL_GL_SwapWindow(self.root_window)
+        for i in range(self.windows.items.num_items):
+            window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
+            self.window_render(window_ptr.handle)
+        self._swap_root_window()
