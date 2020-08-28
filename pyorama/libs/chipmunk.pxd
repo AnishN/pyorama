@@ -90,7 +90,6 @@ cdef extern from "chipmunk/cpBB.h" nogil:
     cpVect cpBBWrapVect(const cpBB bb, const cpVect v)
     cpBB cpBBOffset(const cpBB bb, const cpVect v)
 
-
 cdef extern from "chipmunk/cpTransform.h" nogil:
     const cpTransform cpTransformIdentity = {1.0, 0.0, 0.0, 1.0, 0.0, 0.0}
     cpTransform cpTransformNew(cpFloat a, cpFloat b, cpFloat c, cpFloat d, cpFloat tx, cpFloat ty)

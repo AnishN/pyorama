@@ -89,7 +89,7 @@ class Game(App):
     def on_enter_frame(self, event_data, *args, **kwargs):
         position = self.graphics.sprite_get_position(self.sprite)
         rotation = self.graphics.sprite_get_rotation(self.sprite)
-        rotation += math.radians(2.0)
+        rotation += math.radians(5.0)
         #scale = self.graphics.sprite_get_scale(self.sprite)
         if position.x < 0 or position.x > 800:
             self.speed.x *= -1
@@ -101,7 +101,7 @@ class Game(App):
         self.graphics.sprite_set_rotation(self.sprite, rotation)
         self.graphics.sprite_set_scale(self.sprite, Vec2(scale, scale))
         #print(np.array(self.graphics.sprite_get_tex_coords(self.sprite)))
-    
+
 if __name__ == "__main__":
     game = Game()
     game.run()

@@ -42,12 +42,6 @@ ctypedef struct IndexBufferC:
     BufferUsage usage
     size_t size
 
-ctypedef struct MeshC:
-    uint8_t *vertex_data
-    size_t vertex_data_size
-    uint8_t *index_data
-    size_t index_data_size
-
 ctypedef struct UniformFormatC:
     Handle handle
     char[256] name
@@ -117,6 +111,20 @@ ctypedef struct FrameBufferC:
     Handle[8] textures
     FrameBufferAttachment[8] attachments
     size_t num_attachments
+
+ctypedef struct MeshC:
+    uint8_t *vertex_data
+    size_t vertex_data_size
+    uint8_t *index_data
+    size_t index_data_size
+
+ctypedef struct MeshBatchC:
+    Handle handle
+    uint16_t num_meshes
+    Handle[65536] meshes
+    Handle vertex_buffer
+    Handle index_buffer
+    Handle texture
 
 ctypedef struct SpriteC:
     Handle handle

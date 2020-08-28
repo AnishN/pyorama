@@ -19,7 +19,6 @@ cdef class GraphicsManager:
         ItemSlotMap vertex_formats
         ItemSlotMap vertex_buffers
         ItemSlotMap index_buffers
-        ItemSlotMap meshes
         ItemSlotMap uniform_formats
         ItemSlotMap uniforms
         ItemSlotMap shaders
@@ -28,6 +27,8 @@ cdef class GraphicsManager:
         ItemSlotMap textures
         ItemSlotMap frame_buffers
         ItemSlotMap views
+        ItemSlotMap meshes
+        ItemSlotMap mesh_batches
         ItemSlotMap sprites
         ItemSlotMap sprite_batches
 
@@ -93,11 +94,6 @@ cdef class GraphicsManager:
     cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
     cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *
     cdef void _index_buffer_draw(self, Handle buffer) except *
-    
-    cdef MeshC *mesh_get_ptr(self, Handle mesh) except *
-    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *
-    cpdef Handle mesh_create_from_file(self, bytes file_path) except *
-    cpdef void mesh_delete(self, Handle mesh) except *
 
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
     cpdef Handle uniform_format_create(self, bytes name, UniformType type, size_t count=*) except *
@@ -162,6 +158,19 @@ cdef class GraphicsManager:
     cpdef void view_set_textures(self, Handle view, dict textures) except *
     cpdef void view_set_frame_buffer(self, Handle view, Handle frame_buffer) except *
     
+    cdef MeshC *mesh_get_ptr(self, Handle mesh) except *
+    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *
+    cpdef Handle mesh_create_from_file(self, bytes file_path) except *
+    cpdef void mesh_delete(self, Handle mesh) except *
+
+    cdef MeshBatchC *mesh_batch_get_ptr(self, Handle batch) except *
+    cpdef Handle mesh_batch_create(self) except *
+    cpdef void mesh_batch_delete(self, Handle batch) except *
+    cpdef void mesh_batch_set_meshes(self, Handle batch, uint64_t[:] meshes) except *
+    cpdef Handle mesh_batch_get_vertex_buffer(self, Handle batch) except *
+    cpdef Handle mesh_batch_get_index_buffer(self, Handle batch) except *
+    cdef void _mesh_batch_update(self, Handle batch) except *
+
     cdef SpriteC *sprite_get_ptr(self, Handle sprite) except *
     cpdef Handle sprite_create(self, float width, float height) except *
     cpdef void sprite_delete(self, Handle sprite) except *

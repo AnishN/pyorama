@@ -15,7 +15,7 @@ import platform
 /usr/bin/ld: cannot find -lvorbis (libvorbis-dev)
 /usr/bin/ld: cannot find -lvorbisfile (libvorbis-dev)
 /usr/bin/ld: cannot find -lvorbisenc (libvorbis-dev)
-/usr/bin/ld: cannot find -lopusfile (libopus-dev, libopusfile-dev)
+/usr/bin/ld: cannot find -lopus (libopus-dev)
 /usr/bin/ld: cannot find -lFLAC (libflac-dev)
 /usr/bin/ld: cannot find -lchipmunk (chipmunk-dev)
 /usr/bin/ld: cannot find -lassimp (libassimp-dev)
@@ -24,10 +24,14 @@ import platform
 libraries = {
     "Linux": [
         "GLESv2",
-        "SDL2", "SDL2_image", "SDL2_mixer", 
-        "openal", 
-        "ogg", "vorbis", "vorbisfile", "vorbisenc",
-        "opusfile", "FLAC", "chipmunk", "assimp",
+        "SDL2", "SDL2_image", "SDL2_mixer",
+        "openal",
+        "ogg", 
+        "vorbis", "vorbisfile", "vorbisenc",
+        "opus", 
+        "FLAC", 
+        "assimp",
+        "chipmunk",
     ],
     "Windows": [
         "opengl32", "libglew32", 
@@ -37,7 +41,9 @@ libraries = {
 }
 language = "c"
 args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
-link_args = ["-std=c11"]
+#link_args = ["-std=c11"]
+include_dirs = [np.get_include(), "./pyorama/libs/include"]
+library_dirs = ["./pyorama/libs/shared"]
 annotate = True
 quiet = False
 directives = {
@@ -71,8 +77,10 @@ if __name__ == "__main__":
                     libraries=libs,
                     language=language,
                     extra_compile_args=args,
-                    extra_link_args=link_args,
-                    include_dirs = [np.get_include(), "."],
+                    #extra_link_args=link_args,
+                    include_dirs = include_dirs,
+                    library_dirs = library_dirs,
+                    runtime_library_dirs = library_dirs,
                 )
                 extensions.append(ext)
     

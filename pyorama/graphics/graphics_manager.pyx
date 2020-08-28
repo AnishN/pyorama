@@ -59,7 +59,6 @@ cdef class GraphicsManager:
         self.vertex_formats = ItemSlotMap(sizeof(VertexFormatC), GRAPHICS_ITEM_TYPE_VERTEX_FORMAT)
         self.vertex_buffers = ItemSlotMap(sizeof(VertexBufferC), GRAPHICS_ITEM_TYPE_VERTEX_BUFFER)
         self.index_buffers = ItemSlotMap(sizeof(IndexBufferC), GRAPHICS_ITEM_TYPE_INDEX_BUFFER)
-        self.meshes = ItemSlotMap(sizeof(MeshC), GRAPHICS_ITEM_TYPE_MESH)
         self.uniform_formats = ItemSlotMap(sizeof(UniformFormatC), GRAPHICS_ITEM_TYPE_UNIFORM_FORMAT)
         self.uniforms = ItemSlotMap(sizeof(UniformC), GRAPHICS_ITEM_TYPE_UNIFORM)
         self.shaders = ItemSlotMap(sizeof(ShaderC), GRAPHICS_ITEM_TYPE_SHADER)
@@ -68,6 +67,8 @@ cdef class GraphicsManager:
         self.textures = ItemSlotMap(sizeof(TextureC), GRAPHICS_ITEM_TYPE_TEXTURE)
         self.frame_buffers = ItemSlotMap(sizeof(FrameBufferC), GRAPHICS_ITEM_TYPE_FRAME_BUFFER)
         self.views = ItemSlotMap(sizeof(ViewC), GRAPHICS_ITEM_TYPE_VIEW)
+        self.meshes = ItemSlotMap(sizeof(MeshC), GRAPHICS_ITEM_TYPE_MESH)
+        self.mesh_batches = ItemSlotMap(sizeof(MeshBatchC), GRAPHICS_ITEM_TYPE_MESH_BATCH)
         self.sprites = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE)
         self.sprite_batches = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
 
@@ -76,7 +77,6 @@ cdef class GraphicsManager:
         self.vertex_formats = None
         self.vertex_buffers = None
         self.index_buffers = None
-        self.meshes = None
         self.uniform_formats = None
         self.uniforms = None
         self.shaders = None
@@ -85,6 +85,8 @@ cdef class GraphicsManager:
         self.textures = None
         self.frame_buffers = None
         self.views = None
+        self.meshes = None
+        self.mesh_batches = None
         self.sprites = None
         self.sprite_batches = None
 
@@ -471,124 +473,6 @@ cdef class GraphicsManager:
         format_gl = c_index_format_to_gl(buffer_ptr.format)
         glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL); self.c_check_gl()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
-
-    cdef MeshC *mesh_get_ptr(self, Handle mesh) except *:
-        return <MeshC *>self.meshes.c_get_ptr(mesh)
-
-    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *:
-        cdef:
-            Handle mesh
-            MeshC *mesh_ptr
-            size_t vertex_data_size
-            size_t index_data_size
-        mesh = self.meshes.c_create()
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        vertex_data_size = vertex_data.shape[0]
-        index_data_size = index_data.shape[0]
-        mesh_ptr.vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
-        if mesh_ptr.vertex_data == NULL:
-            raise MemoryError("Mesh: cannot allocate memory for vertex data")
-        memcpy(mesh_ptr.vertex_data, &vertex_data[0], vertex_data_size)
-        mesh_ptr.vertex_data_size = vertex_data_size
-        mesh_ptr.index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
-        if mesh_ptr.index_data == NULL:
-            raise MemoryError("Mesh: cannot allocate memory for index data")
-        memcpy(mesh_ptr.index_data, &index_data[0], index_data_size)
-        mesh_ptr.index_data_size = index_data_size
-        return mesh
-    
-    cpdef Handle mesh_create_from_file(self, bytes file_path) except *:
-        cdef:
-            aiScene *ai_scene
-            str error_str
-            Handle mesh
-            MeshC *mesh_ptr
-            aiMesh *ai_mesh
-            Vec3C *positions
-            Vec3C *tex_coords#assimp uses Vec3 instead of Vec2
-            Vec3C *normals
-            Vec2C empty_tex_coord = Vec2C(0.0, 0.0)
-            size_t num_vertices
-            size_t vertex_data_size
-            uint8_t *vertex_data
-            size_t i
-            uint8_t *dst_ptr
-            size_t p_size = sizeof(Vec3C)
-            size_t pt_size = p_size + sizeof(Vec2C)
-            size_t ptn_size = pt_size + sizeof(Vec3C)
-            size_t f_size = 3 * sizeof(uint32_t)
-            size_t num_faces
-            size_t num_indices
-            size_t index_data_size
-            uint8_t *index_data
-            aiFace *ai_faces
-
-        ai_scene = aiImportFile(file_path, 
-            aiProcess_CalcTangentSpace | 
-            aiProcess_GenNormals | #generates normals if not present in mesh file
-            aiProcess_Triangulate |
-            aiProcess_JoinIdenticalVertices |
-            aiProcess_SortByPType,
-        )
-        if ai_scene == NULL:
-            error_str = aiGetErrorString().decode("utf-8")
-            raise ValueError("Mesh: assimp loader error message below:\n{0}".format(error_str))
-        if ai_scene.mNumMeshes == 0:
-            raise ValueError("Mesh: no meshes present in file")
-        if ai_scene.mNumMeshes > 1:
-            raise ValueError("Mesh: multiple mesh import not supported")
-        mesh = self.meshes.c_create()
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        ai_mesh = ai_scene.mMeshes[0]
-
-        #get vertex data (interleaved)
-        num_vertices = ai_mesh.mNumVertices
-        vertex_data_size = num_vertices * ptn_size
-        vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
-        if vertex_data == NULL:
-            raise MemoryError("Mesh: cannot allocate memory for vertex data")
-
-        positions = ai_mesh.mVertices
-        tex_coords = ai_mesh.mTextureCoords[0]#takes only first channel of tex_coords
-        normals = ai_mesh.mNormals
-        
-        if tex_coords == NULL:
-            for i in range(num_vertices):
-                dst_ptr = &vertex_data[i * ptn_size]
-                memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
-                memcpy(dst_ptr + p_size, &empty_tex_coord, sizeof(Vec2C))
-                memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
-        else:
-            for i in range(num_vertices):
-                dst_ptr = &vertex_data[i * ptn_size]
-                memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
-                memcpy(dst_ptr + p_size, &tex_coords[i], sizeof(Vec2C))
-                memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
-        mesh_ptr.vertex_data = vertex_data
-        mesh_ptr.vertex_data_size = vertex_data_size
-
-        #get index data
-        ai_faces = ai_mesh.mFaces
-        num_faces = ai_mesh.mNumFaces
-        index_data_size = num_faces * f_size
-        index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
-        if index_data == NULL:
-            raise MemoryError("Mesh: cannot allocate memory for index data")
-        for i in range(num_faces):
-            memcpy(index_data + (i * f_size), ai_faces[i].mIndices, f_size)
-        mesh_ptr.index_data = index_data
-        mesh_ptr.index_data_size = index_data_size
-
-        aiReleaseImport(ai_scene)
-        return mesh
-
-    cpdef void mesh_delete(self, Handle mesh) except *:
-        cdef:
-            MeshC *mesh_ptr
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        free(mesh_ptr.vertex_data)
-        free(mesh_ptr.index_data)
-        self.meshes.c_delete(mesh)
     
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *:
         return <UniformFormatC *>self.uniform_formats.c_get_ptr(format)
@@ -1279,6 +1163,219 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.frame_buffer = frame_buffer
     
+    cdef MeshC *mesh_get_ptr(self, Handle mesh) except *:
+        return <MeshC *>self.meshes.c_get_ptr(mesh)
+
+    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *:
+        cdef:
+            Handle mesh
+            MeshC *mesh_ptr
+            size_t vertex_data_size
+            size_t index_data_size
+        mesh = self.meshes.c_create()
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        vertex_data_size = vertex_data.shape[0]
+        index_data_size = index_data.shape[0]
+        mesh_ptr.vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
+        if mesh_ptr.vertex_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for vertex data")
+        memcpy(mesh_ptr.vertex_data, &vertex_data[0], vertex_data_size)
+        mesh_ptr.vertex_data_size = vertex_data_size
+        mesh_ptr.index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
+        if mesh_ptr.index_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for index data")
+        memcpy(mesh_ptr.index_data, &index_data[0], index_data_size)
+        mesh_ptr.index_data_size = index_data_size
+        return mesh
+    
+    cpdef Handle mesh_create_from_file(self, bytes file_path) except *:
+        cdef:
+            aiScene *ai_scene
+            str error_str
+            Handle mesh
+            MeshC *mesh_ptr
+            aiMesh *ai_mesh
+            Vec3C *positions
+            Vec3C *tex_coords#assimp uses Vec3 instead of Vec2
+            Vec3C *normals
+            Vec2C empty_tex_coord = Vec2C(0.0, 0.0)
+            size_t num_vertices
+            size_t vertex_data_size
+            uint8_t *vertex_data
+            size_t i
+            uint8_t *dst_ptr
+            size_t p_size = sizeof(Vec3C)
+            size_t pt_size = p_size + sizeof(Vec2C)
+            size_t ptn_size = pt_size + sizeof(Vec3C)
+            size_t f_size = 3 * sizeof(uint32_t)
+            size_t num_faces
+            size_t num_indices
+            size_t index_data_size
+            uint8_t *index_data
+            aiFace *ai_faces
+
+        ai_scene = aiImportFile(file_path, 
+            aiProcess_CalcTangentSpace | 
+            aiProcess_GenNormals | #generates normals if not present in mesh file
+            aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_SortByPType,
+        )
+        if ai_scene == NULL:
+            error_str = aiGetErrorString().decode("utf-8")
+            raise ValueError("Mesh: assimp loader error message below:\n{0}".format(error_str))
+        if ai_scene.mNumMeshes == 0:
+            raise ValueError("Mesh: no meshes present in file")
+        if ai_scene.mNumMeshes > 1:
+            raise ValueError("Mesh: multiple mesh import not supported")
+        mesh = self.meshes.c_create()
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        ai_mesh = ai_scene.mMeshes[0]
+
+        #get vertex data (interleaved)
+        num_vertices = ai_mesh.mNumVertices
+        vertex_data_size = num_vertices * ptn_size
+        vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
+        if vertex_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for vertex data")
+
+        positions = ai_mesh.mVertices
+        tex_coords = ai_mesh.mTextureCoords[0]#takes only first channel of tex_coords
+        normals = ai_mesh.mNormals
+        
+        if tex_coords == NULL:
+            for i in range(num_vertices):
+                dst_ptr = &vertex_data[i * ptn_size]
+                memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
+                memcpy(dst_ptr + p_size, &empty_tex_coord, sizeof(Vec2C))
+                memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
+        else:
+            for i in range(num_vertices):
+                dst_ptr = &vertex_data[i * ptn_size]
+                memcpy(dst_ptr, &positions[i], sizeof(Vec3C))
+                memcpy(dst_ptr + p_size, &tex_coords[i], sizeof(Vec2C))
+                memcpy(dst_ptr + pt_size, &normals[i], sizeof(Vec3C))
+        mesh_ptr.vertex_data = vertex_data
+        mesh_ptr.vertex_data_size = vertex_data_size
+
+        #get index data
+        ai_faces = ai_mesh.mFaces
+        num_faces = ai_mesh.mNumFaces
+        index_data_size = num_faces * f_size
+        index_data = <uint8_t *>calloc(index_data_size, sizeof(uint8_t))
+        if index_data == NULL:
+            raise MemoryError("Mesh: cannot allocate memory for index data")
+        for i in range(num_faces):
+            memcpy(index_data + (i * f_size), ai_faces[i].mIndices, f_size)
+        mesh_ptr.index_data = index_data
+        mesh_ptr.index_data_size = index_data_size
+
+        aiReleaseImport(ai_scene)
+        return mesh
+
+    cpdef void mesh_delete(self, Handle mesh) except *:
+        cdef:
+            MeshC *mesh_ptr
+        mesh_ptr = self.mesh_get_ptr(mesh)
+        free(mesh_ptr.vertex_data)
+        free(mesh_ptr.index_data)
+        self.meshes.c_delete(mesh)
+
+    cdef MeshBatchC *mesh_batch_get_ptr(self, Handle batch) except *:
+        return <MeshBatchC *>self.mesh_batches.c_get_ptr(batch)
+
+    cpdef Handle mesh_batch_create(self) except *:
+        cdef:
+            Handle batch
+            MeshBatchC *batch_ptr
+
+        batch = self.mesh_batches.c_create()
+        batch_ptr = self.mesh_batch_get_ptr(batch)
+        batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_mesh)
+        batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_mesh)
+        return batch
+
+    cpdef void mesh_batch_delete(self, Handle batch) except *:
+        self.mesh_batches.c_delete(batch)
+
+    cpdef void mesh_batch_set_meshes(self, Handle batch, uint64_t[:] meshes) except *:
+        cdef:
+            MeshBatchC *batch_ptr
+            
+        batch_ptr = self.mesh_batch_get_ptr(batch)
+        if meshes.shape[0] > 65535:
+            raise ValueError("MeshBatch: > 65535 meshes not supported")
+        batch_ptr.num_meshes = meshes.shape[0]
+        memcpy(batch_ptr.meshes, &meshes[0], sizeof(Handle) * batch_ptr.num_meshes)
+
+    cpdef Handle mesh_batch_get_vertex_buffer(self, Handle batch) except *:
+        cdef MeshBatchC *batch_ptr
+        batch_ptr = self.mesh_batch_get_ptr(batch)
+        return batch_ptr.vertex_buffer
+
+    cpdef Handle mesh_batch_get_index_buffer(self, Handle batch) except *:
+        cdef MeshBatchC *batch_ptr
+        batch_ptr = self.mesh_batch_get_ptr(batch)
+        return batch_ptr.index_buffer
+
+    cdef void _mesh_batch_update(self, Handle batch) except *:
+        pass
+        """
+        cdef:
+            SpriteBatchC *batch_ptr
+            SpriteC *sprite_ptr
+            size_t i, j, index
+            Vec4C[6] vertex_tex_coord
+            VertexFormatC *v_fmt_ptr
+            uint8_t *vbo
+            uint8_t *ibo
+            size_t vbo_size, ibo_size
+            uint8_t *vbo_index
+            uint8_t *ibo_index
+            
+        vertex_tex_coord = [
+            Vec4C(0.0, 0.0, 0.0, 0.0),
+            Vec4C(1.0, 0.0, 1.0, 0.0),
+            Vec4C(0.0, 1.0, 0.0, 1.0),
+            Vec4C(0.0, 1.0, 0.0, 1.0),
+            Vec4C(1.0, 0.0, 1.0, 0.0),
+            Vec4C(1.0, 1.0, 1.0, 1.0),
+        ]
+        v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        vbo_size = v_fmt_ptr.stride * 6 * batch_ptr.num_sprites
+        ibo_size = 6 * batch_ptr.num_sprites * sizeof(uint32_t)
+        vbo = <uint8_t *>calloc(1, vbo_size)
+        if vbo == NULL:
+            raise MemoryError("SpriteBatch: cannot allocate temporary vertex buffer memory")
+        ibo = <uint8_t *>calloc(1, ibo_size)
+        if ibo == NULL:
+            raise MemoryError("SpriteBatch: cannot allocate temporary index buffer memory")
+        for i in range(batch_ptr.num_sprites):
+            sprite_ptr = self.sprite_get_ptr(batch_ptr.sprites[i])
+            for j in range(6):
+                index = 6 * i + j
+                vbo_index = vbo + (index * v_fmt_ptr.stride)
+                memcpy(vbo_index + 0, &vertex_tex_coord[j], sizeof(Vec4C))
+                memcpy(vbo_index + sizeof(Vec4C), &sprite_ptr.position, sizeof(Vec2C))
+                memcpy(vbo_index + sizeof(Vec4C) + sizeof(Vec2C), &sprite_ptr.z_index, sizeof(float))
+                memcpy(vbo_index + sizeof(Vec4C) + sizeof(Vec3C), &sprite_ptr.rotation, sizeof(float))
+                memcpy(vbo_index + (2 * sizeof(Vec4C)), &sprite_ptr.width, sizeof(float))
+                memcpy(vbo_index + (2 * sizeof(Vec4C)) + sizeof(float), &sprite_ptr.height, sizeof(float))
+                memcpy(vbo_index + (2 * sizeof(Vec4C)) + sizeof(Vec2C), &sprite_ptr.scale, sizeof(Vec2C))
+                memcpy(vbo_index + (3 * sizeof(Vec4C)), &sprite_ptr.tint, sizeof(Vec3C))
+                memcpy(vbo_index + (3 * sizeof(Vec4C)) + sizeof(Vec3C), &sprite_ptr.alpha, sizeof(float))
+                memcpy(vbo_index + (4 * sizeof(Vec4C)), &sprite_ptr.anchor, sizeof(Vec2C))
+                ibo_index = ibo + (index * sizeof(uint32_t))
+                memcpy(ibo_index, &index, sizeof(uint32_t))
+        self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
+        self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
+        #import numpy as np
+        #print(np.array(<uint8_t[:vbo_size]>vbo))
+        free(vbo)
+        free(ibo)
+        """
+
     cdef SpriteC *sprite_get_ptr(self, Handle sprite) except *:
         return <SpriteC *>self.sprites.c_get_ptr(sprite)
 
@@ -1457,15 +1554,6 @@ cdef class GraphicsManager:
 
     cpdef void sprite_batch_delete(self, Handle batch) except *:
         self.sprite_batches.c_delete(batch)
-        """
-        ctypedef struct SpriteBatchC:
-            Handle handle
-            uint16_t num_sprites
-            Handle[65536] sprites
-            Handle vertex_buffer
-            Handle index_buffer
-            Handle texture
-        """
 
     cpdef void sprite_batch_set_sprites(self, Handle batch, uint64_t[:] sprites) except *:
         cdef:
@@ -1566,9 +1654,13 @@ cdef class GraphicsManager:
             SpriteBatchC *sprite_batch_ptr
             size_t i
 
+        #update sprite batches
         for i in range(self.sprite_batches.items.num_items):
             sprite_batch_ptr = <SpriteBatchC *>self.sprite_batches.items.c_get_ptr(i)
             self._sprite_batch_update(sprite_batch_ptr.handle)
+
+        #update mesh batches
+        pass
 
         if self.views.items.num_items > 0:
             view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
