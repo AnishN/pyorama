@@ -15,6 +15,51 @@ cdef class PhysicsManager:
         self.bodies = None
         self.shapes = None
 
+    cpdef float moment_for_circle(self, float mass, float inner_radius, float outer_radius, Vec2 offset) except *:
+        cdef cpVect *offset_ptr = <cpVect *>&offset.data
+        return cpMomentForCircle(mass, inner_radius, outer_radius, offset_ptr[0])
+
+    cpdef float area_for_circle(self, float inner_radius, float outer_radius) except *:
+        return cpAreaForCircle(inner_radius, outer_radius)
+
+    cpdef float moment_for_segment(self, float mass, Vec2 a, Vec2 b, float radius) except *:
+        cdef:
+            cpVect *a_ptr = <cpVect *>&a.data
+            cpVect *b_ptr = <cpVect *>&b.data
+        return cpMomentForSegment(mass, a_ptr[0], b_ptr[0], radius)
+
+    cpdef float area_for_segment(self, Vec2 a, Vec2 b, float radius) except *:
+        cdef:
+            cpVect *a_ptr = <cpVect *>&a.data
+            cpVect *b_ptr = <cpVect *>&b.data
+        return cpAreaForSegment(a_ptr[0], b_ptr[0], radius)
+
+    cpdef float moment_for_poly(self, float mass, float[:, :] vertices, Vec2 offset, float radius) except *:
+        cdef:
+            int count = vertices.shape[0]
+            cpVect *vertices_ptr = <cpVect *>&vertices[0, 0]
+            cpVect *offset_ptr = <cpVect *>&offset.data
+        cpMomentForPoly(mass, count, vertices_ptr, offset_ptr[0], radius)
+
+    cpdef float area_for_poly(self, float[:, :] vertices, float radius) except *:
+        cdef:
+            int count = vertices.shape[0]
+            cpVect *vertices_ptr = <cpVect *>&vertices[0, 0]
+        cpAreaForPoly(count, vertices_ptr, radius)
+
+    cpdef float centroid_for_poly(self, float[:, :] vertices) except *:
+        cdef:
+            int count = vertices.shape[0]
+            cpVect *vertices_ptr = <cpVect *>&vertices[0, 0]
+        cpCentroidForPoly(count, vertices_ptr)
+
+    cpdef float moment_for_box(self, float mass, float width, float height) except *:
+        return cpMomentForBox(mass, width, height)
+
+    cpdef float moment_for_box_2(self, float mass, float left, float bottom, float right, float top) except *:
+        cdef cpBB box = cpBB(left, bottom, right, top)
+        return cpMomentForBox2(mass, box)
+
     cdef SpaceC *space_get_ptr(self, Handle space) except *:
         return <SpaceC *>self.spaces.c_get_ptr(space)
 
@@ -201,7 +246,7 @@ cdef:
     Handle ball_shape
     float radius = 5.0
     float mass = 1.0
-    float moment = cpMomentForCircle(mass, 0, radius, cpvzero)
+    float moment
     Vec2 pos = Vec2(0.0, 15.0)
     Vec2 offset = Vec2()
     cpFloat ball_friction = 0.7
@@ -216,6 +261,7 @@ ground_shape = physics.shape_create_segment(ground_body, a, b, 0)
 physics.shape_set_friction(ground_shape, 0.5)
 physics.space_add_shape(space, ground_shape)
 
+moment = physics.moment_for_circle(mass, 0, radius, offset)
 ball_body = physics.body_create(mass, moment)
 physics.space_add_body(space, ball_body)
 physics.body_set_position(ball_body, pos)

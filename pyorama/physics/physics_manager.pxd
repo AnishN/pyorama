@@ -18,6 +18,16 @@ cdef class PhysicsManager:
     cdef void c_create_slot_maps(self) except *
     cdef void c_delete_slot_maps(self) except *
 
+    cpdef float moment_for_circle(self, float mass, float inner_radius, float outer_radius, Vec2 offset) except *
+    cpdef float area_for_circle(self, float inner_radius, float outer_radius) except *
+    cpdef float moment_for_segment(self, float mass, Vec2 a, Vec2 b, float radius) except *
+    cpdef float area_for_segment(self, Vec2 a, Vec2 b, float radius) except *
+    cpdef float moment_for_poly(self, float mass, float[:, :] vertices, Vec2 offset, float radius) except *
+    cpdef float area_for_poly(self, float[:, :] vertices, float radius) except *
+    cpdef float centroid_for_poly(self, float[:, :] vertices) except *
+    cpdef float moment_for_box(self, float mass, float width, float height) except *
+    cpdef float moment_for_box_2(self, float mass, float left, float bottom, float right, float top) except *
+
     cdef SpaceC *space_get_ptr(self, Handle space) except *
     cpdef Handle space_create(self) except *
     cpdef void space_delete(self, Handle space) except *
