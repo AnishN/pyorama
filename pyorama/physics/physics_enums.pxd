@@ -1,0 +1,4 @@
+ctypedef enum PhysicsItemType:
+    PHYSICS_ITEM_TYPE_SPACE
+    PHYSICS_ITEM_TYPE_BODY
+    PHYSICS_ITEM_TYPE_SHAPE
