@@ -9,6 +9,12 @@ ctypedef struct BodyC:
     Handle handle
     cpBody cp
 
+cdef union ShapeTypeC:
+    cpSegmentShape segment
+    cpCircleShape circle
+    cpPolyShape poly
+    cpShape shape
+
 ctypedef struct ShapeC:
     Handle handle
-    cpShape cp
+    ShapeTypeC cp
