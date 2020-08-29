@@ -70,6 +70,7 @@ cdef class PhysicsManager:
         space = self.spaces.c_create()
         space_ptr = self.space_get_ptr(space)
         cpSpaceInit(&space_ptr.cp)
+        cpSpaceSetUserData(&space_ptr.cp, <void *>space)
         return space
 
     cpdef void space_delete(self, Handle space) except *:
@@ -143,6 +144,7 @@ cdef class PhysicsManager:
         body = self.bodies.c_create()
         body_ptr = self.body_get_ptr(body)
         cpBodyInit(&body_ptr.cp, mass, moment)
+        cpBodySetUserData(&body_ptr.cp, <void *>body)
         cpBodySetType(&body_ptr.cp, <cpBodyType>type)
         return body
 
@@ -151,6 +153,30 @@ cdef class PhysicsManager:
         body_ptr = self.body_get_ptr(body)
         cpBodyDestroy(&body_ptr.cp)
         self.bodies.c_delete(body)
+
+    cpdef Handle body_get_space(self, Handle body) except *:
+        cdef:
+            BodyC *body_ptr
+            cpSpace *space_cp
+        body_ptr = self.body_get_ptr(body)
+        space_cp = cpBodyGetSpace(&body_ptr.cp)
+        return <Handle>cpSpaceGetUserData(space_cp)
+    
+    cpdef float body_get_mass(self, Handle body) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        return cpBodyGetMass(&body_ptr.cp)
+
+    cpdef void body_set_mass(self, Handle body, float mass) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        cpBodySetMass(&body_ptr.cp, mass)
+    
+    cpdef float body_get_moment(self, Handle body) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        return cpBodyGetMoment(&body_ptr.cp)
+
+    cpdef void body_set_moment(self, Handle body, float moment) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        cpBodySetMoment(&body_ptr.cp, moment)
 
     cpdef Vec2 body_get_position(self, Handle body):
         cdef:
@@ -170,6 +196,24 @@ cdef class PhysicsManager:
         position_ptr = <cpVect *>&position.data
         cpBodySetPosition(&body_ptr.cp, position_ptr[0])
 
+    cpdef Vec2 body_get_center_of_gravity(self, Handle body):
+        cdef:
+            BodyC *body_ptr
+            cpVect center_of_gravity_data
+            Vec2 center_of_gravity
+        body_ptr = self.body_get_ptr(body)
+        center_of_gravity_data = cpBodyGetCenterOfGravity(&body_ptr.cp)
+        center_of_gravity = Vec2(center_of_gravity_data.x, center_of_gravity_data.y)
+        return center_of_gravity
+
+    cpdef void body_set_center_of_gravity(self, Handle body, Vec2 center_of_gravity) except *:
+        cdef:
+            BodyC *body_ptr
+            cpVect *center_of_gravity_ptr
+        body_ptr = self.body_get_ptr(body)
+        center_of_gravity_ptr = <cpVect *>&center_of_gravity.data
+        cpBodySetCenterOfGravity(&body_ptr.cp, center_of_gravity_ptr[0])
+
     cpdef Vec2 body_get_velocity(self, Handle body):
         cdef:
             BodyC *body_ptr
@@ -179,6 +223,66 @@ cdef class PhysicsManager:
         velocity_data = cpBodyGetVelocity(&body_ptr.cp)
         velocity = Vec2(velocity_data.x, velocity_data.y)
         return velocity
+
+    cpdef void body_set_velocity(self, Handle body, Vec2 velocity) except *:
+        cdef:
+            BodyC *body_ptr
+            cpVect *velocity_ptr
+        body_ptr = self.body_get_ptr(body)
+        velocity_ptr = <cpVect *>&velocity.data
+        cpBodySetVelocity(&body_ptr.cp, velocity_ptr[0])
+
+    cpdef Vec2 body_get_force(self, Handle body):
+        cdef:
+            BodyC *body_ptr
+            cpVect force_data
+            Vec2 force
+        body_ptr = self.body_get_ptr(body)
+        force_data = cpBodyGetForce(&body_ptr.cp)
+        force = Vec2(force_data.x, force_data.y)
+        return force
+
+    cpdef void body_set_force(self, Handle body, Vec2 force) except *:
+        cdef:
+            BodyC *body_ptr
+            cpVect *force_ptr
+        body_ptr = self.body_get_ptr(body)
+        force_ptr = <cpVect *>&force.data
+        cpBodySetForce(&body_ptr.cp, force_ptr[0])
+
+    cpdef float body_get_angle(self, Handle body) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        return cpBodyGetAngle(&body_ptr.cp)
+
+    cpdef void body_set_angle(self, Handle body, float angle) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        cpBodySetAngle(&body_ptr.cp, angle)
+
+    cpdef float body_get_angular_velocity(self, Handle body) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        return cpBodyGetAngularVelocity(&body_ptr.cp)
+
+    cpdef void body_set_angular_velocity(self, Handle body, float angular_velocity) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        cpBodySetAngularVelocity(&body_ptr.cp, angular_velocity)
+
+    cpdef float body_get_torque(self, Handle body) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        return cpBodyGetTorque(&body_ptr.cp)
+
+    cpdef void body_set_torque(self, Handle body, float torque) except *:
+        cdef BodyC *body_ptr = self.body_get_ptr(body)
+        cpBodySetTorque(&body_ptr.cp, torque)
+    
+    cpdef Vec2 body_get_rotation(self, Handle body):
+        cdef:
+            BodyC *body_ptr
+            cpVect rotation_data
+            Vec2 rotation
+        body_ptr = self.body_get_ptr(body)
+        rotation_data = cpBodyGetRotation(&body_ptr.cp)
+        rotation = Vec2(rotation_data.x, rotation_data.y)
+        return rotation
 
     cdef ShapeC *shape_get_ptr(self, Handle shape) except *:
         return <ShapeC *>self.shapes.c_get_ptr(shape)
@@ -195,6 +299,7 @@ cdef class PhysicsManager:
         body_ptr = self.body_get_ptr(body)
         offset_ptr = <cpVect *>&offset.data
         cpCircleShapeInit(&shape_ptr.cp.circle, &body_ptr.cp, radius, offset_ptr[0])
+        cpShapeSetUserData(&shape_ptr.cp.shape, <void *>shape)
         return shape
 
     cpdef Handle shape_create_segment(self, Handle body, Vec2 a, Vec2 b, float radius) except *:
@@ -211,6 +316,7 @@ cdef class PhysicsManager:
         a_ptr = <cpVect *>&a.data
         b_ptr = <cpVect *>&b.data
         cpSegmentShapeInit(&shape_ptr.cp.segment, &body_ptr.cp, a_ptr[0], b_ptr[0], radius)
+        cpShapeSetUserData(&shape_ptr.cp.shape, <void *>shape)
         return shape
 
     #cpdef Handle shape_create_poly_line(self) except *
@@ -227,65 +333,8 @@ cdef class PhysicsManager:
         shape_ptr = self.shape_get_ptr(shape)
         cpShapeSetFriction(&shape_ptr.cp.shape, friction)
 
-import time
-
-cdef:
-    PhysicsManager physics
-    Handle space
-    float time_step = 1.0/60.0
-    float total_time = 0.0
-    str base_out = "t: {0}, pos_x: {1}, pos_y: {2}, vel_x: {3}, vel_y: {4}"
-    str out
-
-    Handle ground_body
-    Handle ground_shape
-    Vec2 a = Vec2(-20.0, -5.0)
-    Vec2 b = Vec2(20.0, -5.0)
-
-    Handle ball_body
-    Handle ball_shape
-    float radius = 5.0
-    float mass = 1.0
-    float moment
-    Vec2 pos = Vec2(0.0, 15.0)
-    Vec2 offset = Vec2()
-    cpFloat ball_friction = 0.7
-
-physics = PhysicsManager()
-space = physics.space_create()
-physics.space_set_gravity(space, Vec2(0.0, -10.0))
-
-ground_body = physics.body_create(type=BODY_TYPE_STATIC)
-physics.space_add_body(space, ground_body)
-ground_shape = physics.shape_create_segment(ground_body, a, b, 0)
-physics.shape_set_friction(ground_shape, 0.5)
-physics.space_add_shape(space, ground_shape)
-
-moment = physics.moment_for_circle(mass, 0, radius, offset)
-ball_body = physics.body_create(mass, moment)
-physics.space_add_body(space, ball_body)
-physics.body_set_position(ball_body, pos)
-ball_shape = physics.shape_create_circle(ball_body, radius, offset)
-physics.shape_set_friction(ball_shape, ball_friction)
-physics.space_add_shape(space, ball_shape)
-
-while True:
-    physics.space_step(space, time_step)
-    pos = physics.body_get_position(ball_body)
-    vel = physics.body_get_velocity(ball_body)
-    out = base_out.format(
-        round(total_time, 3), 
-        round(pos.x, 3), 
-        round(pos.y, 3), 
-        round(vel.x, 3), 
-        round(vel.y, 3),
-    )
-    print(out)
-    total_time += time_step
-    time.sleep(time_step)
-
-physics.space_delete(space)
-physics.body_delete(ground_body)
-physics.shape_delete(ground_shape)
-physics.body_delete(ball_body)
-physics.shape_delete(ball_shape)
+    cpdef void update(self, double delta) except *:
+        #update sprite batches
+        for i in range(self.spaces.items.num_items):
+            space_ptr = <SpaceC *>self.spaces.items.c_get_ptr(i)
+            self.space_step(space_ptr.handle, delta)

@@ -1,6 +1,7 @@
 from cpython.exc cimport PyErr_CheckSignals
 from pyorama.event.event_manager cimport *
 from pyorama.graphics.graphics_manager cimport *
+from pyorama.physics.physics_manager cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.gles2 cimport *
 from pyorama.libs.sdl2 cimport *
@@ -18,5 +19,6 @@ cdef class App:
         readonly bint is_running
         readonly GraphicsManager graphics
         readonly EventManager event
+        readonly PhysicsManager physics
     
     cdef double c_get_current_time(self) nogil

@@ -25,6 +25,7 @@ cdef class App:
 
         self.graphics = GraphicsManager()
         self.event = EventManager()
+        self.physics = PhysicsManager()
 
         self.accumulated_time = 0.0
         self.delta = 0.0
@@ -55,6 +56,7 @@ cdef class App:
                 PyErr_CheckSignals()
                 self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
                 self.event.update(self.timestamp)
+                self.physics.update(self.ms_per_update/1000)
                 self.graphics.update()#differs from fix your timestep (avoids interpolation), will decide in more intensive demos
                 self.accumulated_time -= self.ms_per_update/1000
             self.previous_time = self.current_time

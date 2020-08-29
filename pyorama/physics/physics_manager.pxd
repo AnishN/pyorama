@@ -42,10 +42,26 @@ cdef class PhysicsManager:
     cdef BodyC *body_get_ptr(self, Handle body) except *
     cpdef Handle body_create(self, float mass=*, float moment=*, BodyType type=*) except *
     cpdef void body_delete(self, Handle body) except *
+    cpdef Handle body_get_space(self, Handle body) except *
+    cpdef float body_get_mass(self, Handle body) except *
+    cpdef void body_set_mass(self, Handle body, float mass) except *
+    cpdef float body_get_moment(self, Handle body) except *
+    cpdef void body_set_moment(self, Handle body, float moment) except *
     cpdef Vec2 body_get_position(self, Handle body)
     cpdef void body_set_position(self, Handle body, Vec2 position) except *
+    cpdef Vec2 body_get_center_of_gravity(self, Handle body)
+    cpdef void body_set_center_of_gravity(self, Handle body, Vec2 center_of_gravity) except *
     cpdef Vec2 body_get_velocity(self, Handle body)
-
+    cpdef void body_set_velocity(self, Handle body, Vec2 velocity) except *
+    cpdef Vec2 body_get_force(self, Handle body)
+    cpdef void body_set_force(self, Handle body, Vec2 force) except *
+    cpdef float body_get_angle(self, Handle body) except *
+    cpdef void body_set_angle(self, Handle body, float angle) except *
+    cpdef float body_get_angular_velocity(self, Handle body) except *
+    cpdef void body_set_angular_velocity(self, Handle body, float angular_velocity) except *
+    cpdef float body_get_torque(self, Handle body) except *
+    cpdef void body_set_torque(self, Handle body, float torque) except *
+    cpdef Vec2 body_get_rotation(self, Handle body)
     
     cdef ShapeC *shape_get_ptr(self, Handle shape) except *
     cpdef Handle shape_create_circle(self, Handle body, float radius, Vec2 offset) except *
@@ -55,3 +71,5 @@ cdef class PhysicsManager:
     #cpdef Handle shape_create_poly_box(self) except *
     cpdef void shape_delete(self, Handle shape) except *
     cpdef void shape_set_friction(self, Handle shape, float friction) except *
+
+    cpdef void update(self, double delta) except *
