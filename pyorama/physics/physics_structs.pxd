@@ -3,18 +3,20 @@ from pyorama.libs.chipmunk cimport *
 
 ctypedef struct SpaceC:
     Handle handle
-    cpSpace cp
+    cpSpace *cp
 
 ctypedef struct BodyC:
     Handle handle
-    cpBody cp
+    cpBody *cp
 
+"""
 cdef union ShapeTypeC:
-    cpSegmentShape segment
-    cpCircleShape circle
-    cpPolyShape poly
-    cpShape shape
+    cpSegmentShape *segment
+    cpCircleShape *circle
+    cpPolyShape *poly
+    cpShape *shape
+"""
 
 ctypedef struct ShapeC:
     Handle handle
-    ShapeTypeC cp
+    cpShape *cp

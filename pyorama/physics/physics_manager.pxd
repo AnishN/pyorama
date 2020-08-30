@@ -72,4 +72,4 @@ cdef class PhysicsManager:
     cpdef void shape_delete(self, Handle shape) except *
     cpdef void shape_set_friction(self, Handle shape, float friction) except *
 
-    cpdef void update(self, double delta) except *
+    cpdef void update(self, float delta) except *

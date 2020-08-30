@@ -41,6 +41,7 @@ libraries = {
 }
 language = "c"
 args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+#args = ["-w", "-std=c11", "-O0", "-g"]
 #link_args = ["-std=c11"]
 include_dirs = [np.get_include(), "./pyorama/libs/include"]
 library_dirs = ["./pyorama/libs/shared"]

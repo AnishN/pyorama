@@ -12,7 +12,6 @@ cdef uint64_t INDEX_MASK = mask_range(INDEX_BIT, NUM_INDEX_BITS)
 cdef uint64_t VERSION_MASK = mask_range(VERSION_BIT, NUM_VERSION_BITS)
 cdef uint64_t TYPE_MASK = mask_range(TYPE_BIT, NUM_TYPE_BITS)
 cdef uint64_t FREE_MASK = mask_range(FREE_BIT, NUM_FREE_BITS)
-#print("{0:X}, {1:X}, {2:X}, {3:X}".format(INDEX_MASK, VERSION_MASK, TYPE_MASK, FREE_MASK))
 
 cdef uint64_t mask_range(uint64_t n, uint64_t r) nogil:
     cdef:

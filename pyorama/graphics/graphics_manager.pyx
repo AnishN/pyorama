@@ -8,7 +8,6 @@ cdef class GraphicsManager:
             raise ValueError("GraphicsManager: failed to create OpenGL context")
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
         
-        #print(glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION))
         self.c_check_gl_extensions()
         self.c_create_slot_maps()
         self.c_create_predefined_uniform_formats()
@@ -1370,8 +1369,6 @@ cdef class GraphicsManager:
                 memcpy(ibo_index, &index, sizeof(uint32_t))
         self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
         self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
-        #import numpy as np
-        #print(np.array(<uint8_t[:vbo_size]>vbo))
         free(vbo)
         free(ibo)
         """
@@ -1625,8 +1622,6 @@ cdef class GraphicsManager:
                 memcpy(ibo_index, &index, sizeof(uint32_t))
         self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
         self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
-        #import numpy as np
-        #print(np.array(<uint8_t[:vbo_size]>vbo))
         free(vbo)
         free(ibo)
     
@@ -1673,6 +1668,8 @@ cdef class GraphicsManager:
                 uniform_ptr = self.uniform_get_ptr(view_ptr.uniforms[i])
                 self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
 
+            glEnable(GL_BLEND); self.c_check_gl()
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()
             glEnable(GL_CULL_FACE); self.c_check_gl()
             glEnable(GL_DEPTH_TEST); self.c_check_gl()
             glDepthFunc(GL_LESS); self.c_check_gl()

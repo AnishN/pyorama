@@ -8,6 +8,7 @@ uniform vec4 u_rect;
 uniform mat4 u_view;
 uniform mat4 u_proj;
 varying vec2 v_tex_coord_0;
+varying vec4 v_tint_alpha;
 
 void main()
 {
@@ -35,4 +36,5 @@ void main()
     vec4 position = vec4((a_vertex_tex_coord.xy - a_anchor.xy) * a_size_scale.xy, 0.0, 1.0);
     gl_Position = u_proj * u_view * model * position;
     v_tex_coord_0 = a_vertex_tex_coord.zw;
+    v_tint_alpha = a_tint_alpha;
 }

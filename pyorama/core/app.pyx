@@ -38,6 +38,7 @@ cdef class App:
     def quit(self):
         self.graphics = None
         self.event = None
+        self.physics = None
         IMG_Quit()
         SDL_Quit()
         os._exit(-1)

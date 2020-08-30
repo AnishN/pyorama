@@ -4,7 +4,6 @@ cdef object INVALID_INDEX_ERROR = ValueError("ItemArray: invalid index")
 cdef class ItemArray:
     
     def __cinit__(self, size_t item_size, size_t max_items):
-        #print("init {0}".format(self))
         self.max_items = max_items
         self.item_size = item_size
         self.items = <char *>calloc(self.max_items, self.item_size)
@@ -12,7 +11,6 @@ cdef class ItemArray:
             raise MEMORY_ERROR
     
     def __dealloc__(self):
-        #print("free {0}".format(self))
         self.max_items = 0
         self.item_size = 0
         free(self.items)

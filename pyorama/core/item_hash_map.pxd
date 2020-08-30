@@ -20,12 +20,12 @@ cdef class ItemHashMap:
         ItemVector items
         size_t num_items
 
-    cdef inline void c_insert(self, uint64_t key, uint64_t value) except *
-    cdef inline void c_remove(self, uint64_t key) except *
-    cdef inline uint64_t c_get(self, uint64_t key) except *
-    cdef inline size_t c_get_index(self, uint64_t key) except *
-    cdef inline uint64_t c_hash(self, uint64_t key) nogil
-    cdef inline bint c_contains(self, uint64_t key) nogil
-    cdef inline void c_grow_if_needed(self) except *
-    cdef inline void c_shrink_if_needed(self) except *
-    cdef inline void c_resize(self, size_t new_max_items) except *
+    cdef void c_insert(self, uint64_t key, uint64_t value) except *
+    cdef void c_remove(self, uint64_t key) except *
+    cdef uint64_t c_get(self, uint64_t key) except *
+    cdef size_t c_get_index(self, uint64_t key) except *
+    cdef uint64_t c_hash(self, uint64_t key) nogil
+    cdef bint c_contains(self, uint64_t key) nogil
+    cdef void c_grow_if_needed(self) except *
+    cdef void c_shrink_if_needed(self) except *
+    cdef void c_resize(self, size_t new_max_items) except *

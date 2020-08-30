@@ -20,7 +20,7 @@ cdef class Vec2:
 
     def __releasebuffer__(self, Py_buffer *buffer):
         pass
-
+    
     property x:
         def __get__(self): return self.data.x
         def __set__(self, float new_x): self.data.x = new_x
@@ -104,6 +104,10 @@ cdef class Vec2:
     @staticmethod
     def random(Vec2 out):
         Vec2.c_random(&out.data)
+
+    @staticmethod
+    def rotate(Vec2 out, Vec2 a, Vec2 b, float radians):
+        Vec2.c_rotate(&out.data, &a.data, &b.data, radians)
 
     @staticmethod
     def round(Vec2 out, Vec2 a):
@@ -246,6 +250,16 @@ cdef class Vec2:
     cdef void c_random(Vec2C *out) nogil:
         out.x = rand() / <float>RAND_MAX
         out.y = rand() / <float>RAND_MAX
+
+    @staticmethod
+    cdef void c_rotate(Vec2C *out, Vec2C *a, Vec2C *b, float radians) nogil:
+        cdef:
+            float dx = a.x - b.x
+            float dy = a.y - b.y
+            float s = c_math.sin(radians)
+            float c = c_math.cos(radians)
+        out.x = (dx * c) - (dy * s) + b.x
+        out.y = (dx * s) + (dy * c) + b.y
 
     @staticmethod
     cdef void c_round(Vec2C *out, Vec2C *a) nogil:

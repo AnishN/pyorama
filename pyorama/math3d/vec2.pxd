@@ -47,6 +47,8 @@ cdef class Vec2:
     @staticmethod
     cdef void c_random(Vec2C *out) nogil
     @staticmethod
+    cdef void c_rotate(Vec2C *out, Vec2C *a, Vec2C *b, float radians) nogil
+    @staticmethod
     cdef void c_round(Vec2C *out, Vec2C *a) nogil
     @staticmethod
     cdef void c_scale_add(Vec2C *out, Vec2C *a, float scale=*, float add=*) nogil

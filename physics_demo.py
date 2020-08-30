@@ -13,10 +13,11 @@ physics.space_set_gravity(space, gravity)
 
 a = Vec2(-20.0, -5.0)
 b = Vec2(20.0, -5.0)
+ground_friction = 0.5
 ground_body = physics.body_create(type=BODY_TYPE_STATIC)
 physics.space_add_body(space, ground_body)
 ground_shape = physics.shape_create_segment(ground_body, a, b, 0)
-physics.shape_set_friction(ground_shape, 0.5)
+physics.shape_set_friction(ground_shape, ground_friction)
 physics.space_add_shape(space, ground_shape)
 
 radius = 5.0
@@ -25,12 +26,13 @@ pos = Vec2(0.0, 15.0)
 offset = Vec2()
 ball_friction = 0.7
 moment = physics.moment_for_circle(mass, 0, radius, offset)
-ball_body = physics.body_create(mass, moment)
-physics.space_add_body(space, ball_body)
-physics.body_set_position(ball_body, pos)
-ball_shape = physics.shape_create_circle(ball_body, radius, offset)
-physics.shape_set_friction(ball_shape, ball_friction)
-physics.space_add_shape(space, ball_shape)
+for i in range(10):
+    ball_body = physics.body_create(mass, moment)
+    physics.space_add_body(space, ball_body)
+#physics.body_set_position(ball_body, pos)
+#ball_shape = physics.shape_create_circle(ball_body, radius, offset)
+#physics.shape_set_friction(ball_shape, ball_friction)
+#physics.space_add_shape(space, ball_shape)
 
 while True:
     physics.update(time_step)

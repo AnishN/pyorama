@@ -19,7 +19,7 @@ cdef class ItemHashMap:
     def __dealloc__(self):
         pass
 
-    cdef inline void c_insert(self, uint64_t key, uint64_t value) except *:
+    cdef void c_insert(self, uint64_t key, uint64_t value) except *:
         cdef:
             size_t i
             uint64_t hashed_key
@@ -42,7 +42,7 @@ cdef class ItemHashMap:
                 self.num_items += 1
                 return
 
-    cdef inline void c_remove(self, uint64_t key) except *:
+    cdef void c_remove(self, uint64_t key) except *:
         cdef:
             size_t index
             ItemC *item_ptr
@@ -55,7 +55,7 @@ cdef class ItemHashMap:
         item_ptr.used = False
         self.num_items -= 1
 
-    cdef inline uint64_t c_get(self, uint64_t key) except *:
+    cdef uint64_t c_get(self, uint64_t key) except *:
         cdef:
             size_t index
             ItemC *item_ptr
@@ -64,7 +64,7 @@ cdef class ItemHashMap:
         item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
         return item_ptr.value
     
-    cdef inline size_t c_get_index(self, uint64_t key) except *:
+    cdef size_t c_get_index(self, uint64_t key) except *:
         cdef:
             size_t i
             uint64_t hashed_key
@@ -80,7 +80,7 @@ cdef class ItemHashMap:
                     return index
         raise KEY_ERROR
     
-    cdef inline uint64_t c_hash(self, uint64_t key) nogil:
+    cdef uint64_t c_hash(self, uint64_t key) nogil:
         #Uses murmurhash-style finalizer
         cdef uint64_t out = key
         out ^= out >> 33
@@ -90,7 +90,7 @@ cdef class ItemHashMap:
         out ^= out >> 33
         return out
 
-    cdef inline bint c_contains(self, uint64_t key) nogil:
+    cdef bint c_contains(self, uint64_t key) nogil:
         cdef:
             size_t i
             uint64_t hashed_key
@@ -106,19 +106,19 @@ cdef class ItemHashMap:
                     return True
         return False
 
-    cdef inline void c_grow_if_needed(self) except *:
+    cdef void c_grow_if_needed(self) except *:
         cdef size_t new_max_items
         if self.num_items >= self.items.max_items * HASH_MAP_LOAD_FACTOR:
             new_max_items = <size_t>(self.items.max_items * HASH_MAP_GROWTH_RATE)
             self.c_resize(new_max_items)
 
-    cdef inline void c_shrink_if_needed(self) except *:
+    cdef void c_shrink_if_needed(self) except *:
         cdef size_t new_max_items
         if self.num_items <= self.items.max_items * HASH_MAP_UNLOAD_FACTOR:
             new_max_items = <size_t>(self.items.max_items * HASH_MAP_SHRINK_RATE)
             self.c_resize(new_max_items)
 
-    cdef inline void c_resize(self, size_t new_max_items) except *: 
+    cdef void c_resize(self, size_t new_max_items) except *: 
         cdef:
             ItemC *new_items
             uint64_t hashed_key

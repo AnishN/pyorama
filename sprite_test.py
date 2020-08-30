@@ -64,7 +64,7 @@ class Game(App):
         self.update_view()
         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
-    
+        
     def quit(self):
         super().quit()
     
