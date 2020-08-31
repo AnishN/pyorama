@@ -22,12 +22,12 @@ class Game(App):
         #setup sprites
         image_path = b"./resources/textures/carrom_base.png"
         self.image = self.graphics.image_create_from_file(image_path)
-        self.texture = self.graphics.texture_create()
+        self.texture = self.graphics.texture_create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
         self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
 
         self.width = 800
         self.height = 600
-        self.radius = 25.0
+        self.radius = 16.0
         self.center = Vec2(self.width / 2.0, self.height / 2.0)
         self.inner_offset = Vec2(2.0 * self.radius, 0.0)
         self.outer_corner_offset = Vec2(4.0 * self.radius, 0.0)
@@ -109,32 +109,25 @@ class Game(App):
             shape = self.physics.shape_create_circle(body, self.radius, offset)
             self.bodies.append(body)
             self.shapes.append(shape)
-        
-        for i in range(self.num_pieces):
+
             self.physics.space_add_body(self.space, self.bodies[i])
             self.physics.body_set_position(self.bodies[i], positions[i])
-        for i in range(self.num_pieces):
             self.physics.shape_set_friction(self.shapes[i], piece_friction)
             self.physics.space_add_shape(self.space, self.shapes[i])
 
-        """
-        self.images = np.array([self.image], dtype=np.uint64)
-        self.image_atlas = self.graphics.image_atlas_create(self.images)
-        """
-
+        self.physics.body_set_force(self.bodies[0], Vec2(5000.0, 5000.0))
+        
         self.setup_view()
         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
-
-        #self.speed = Vec2(3.0, 3.0)
         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
         
     def quit(self):
         super().quit()
-
+    
     def setup_window(self):
         self.width = 800
         self.height = 600
-        self.window = self.graphics.window_create(self.width, self.height, b"Hello World!")
+        self.window = self.graphics.window_create(self.width, self.height, b"Carrom")
 
     def setup_uniforms(self):
         self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
@@ -187,8 +180,10 @@ class Game(App):
             self.quit()
 
     def on_enter_frame(self, event_data, *args, **kwargs):
-        pass
-
+        for sprite, body in zip(self.sprites, self.bodies):
+            position = self.physics.body_get_position(body)
+            self.graphics.sprite_set_position(sprite, position)
+    
 if __name__ == "__main__":
     game = Game()
     game.run()
