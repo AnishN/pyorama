@@ -37,10 +37,10 @@ bodies = []
 
 piece_mass = 1.0
 piece_moment = 100
-n = 19
+n = 1000000
 for i in range(n):
     body = physics.body_create(piece_mass, piece_moment)
     physics.space_add_body(space, body)
     bodies.append(body)
-print(bodies)
+#print(bodies)
 physics.update(1/60.0)

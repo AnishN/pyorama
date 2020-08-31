@@ -1,1 +1,0 @@
-from pyorama.physics.physics_test import *

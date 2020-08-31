@@ -10,7 +10,6 @@ cdef size_t VECTOR_INITIAL_MAX_ITEMS = 4
 cdef class ItemVector:
 
     def __cinit__(self, size_t item_size):
-        #print("init {0}".format(self))
         self.max_items = VECTOR_INITIAL_MAX_ITEMS
         self.item_size = item_size
         self.num_items = 0
@@ -19,7 +18,6 @@ cdef class ItemVector:
             raise MEMORY_ERROR
 
     def __dealloc__(self):
-        #print("free {0}".format(self))
         self.max_items = 0
         self.item_size = 0
         self.num_items = 0

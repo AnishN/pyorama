@@ -33,22 +33,13 @@ cdef class App:
         self.start_time = self.c_get_current_time()
         self.current_time = self.start_time
         self.previous_time = self.current_time
-        self.is_running = True
 
     def quit(self):
-        self.graphics = None
-        self.event = None
-        self.physics = None
-        IMG_Quit()
-        SDL_Quit()
         os._exit(-1)
-    
-    def trigger_quit(self):
-        self.is_running = False
 
     def run(self):
         self.init()
-        while self.is_running:
+        while True:
             self.current_time = self.c_get_current_time()
             self.delta = self.current_time - self.previous_time
             self.accumulated_time += self.delta

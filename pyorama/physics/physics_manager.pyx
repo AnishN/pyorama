@@ -70,13 +70,15 @@ cdef class PhysicsManager:
         space = self.spaces.c_create()
         space_ptr = self.space_get_ptr(space)
         space_ptr.cp = cpSpaceNew()
+        if space_ptr.cp == NULL:
+            raise MemoryError("Physics Space: cannot allocate memory")
         cpSpaceSetUserData(space_ptr.cp, <void *>space)
         return space
 
     cpdef void space_delete(self, Handle space) except *:
         cdef SpaceC *space_ptr
         space_ptr = self.space_get_ptr(space)
-        cpSpaceDestroy(space_ptr.cp)
+        cpSpaceFree(space_ptr.cp)
         self.spaces.c_delete(space)
 
     cpdef Vec2 space_get_gravity(self, Handle space):
@@ -144,6 +146,8 @@ cdef class PhysicsManager:
         body = self.bodies.c_create()
         body_ptr = self.body_get_ptr(body)
         body_ptr.cp = cpBodyNew(mass, moment)
+        if body_ptr.cp == NULL:
+            raise MemoryError("Physics Body: cannot allocate memory")
         cpBodySetUserData(body_ptr.cp, <void *>body)
         cpBodySetType(body_ptr.cp, <cpBodyType>type)
         return body
@@ -151,7 +155,7 @@ cdef class PhysicsManager:
     cpdef void body_delete(self, Handle body) except *:
         cdef BodyC *body_ptr
         body_ptr = self.body_get_ptr(body)
-        cpBodyDestroy(body_ptr.cp)
+        cpBodyFree(body_ptr.cp)
         self.bodies.c_delete(body)
 
     cpdef Handle body_get_space(self, Handle body) except *:
@@ -299,6 +303,8 @@ cdef class PhysicsManager:
         body_ptr = self.body_get_ptr(body)
         offset_ptr = <cpVect *>&offset.data
         shape_ptr.cp = cpCircleShapeNew(body_ptr.cp, radius, offset_ptr[0])
+        if shape_ptr.cp == NULL:
+            raise MemoryError("Physics Shape: cannot allocate memory")
         cpShapeSetUserData(shape_ptr.cp, <void *>shape)
         return shape
 
@@ -316,6 +322,8 @@ cdef class PhysicsManager:
         a_ptr = <cpVect *>&a.data
         b_ptr = <cpVect *>&b.data
         shape_ptr.cp = cpSegmentShapeNew(body_ptr.cp, a_ptr[0], b_ptr[0], radius)
+        if shape_ptr.cp == NULL:
+            raise MemoryError("Physics Shape: cannot allocate memory")
         cpShapeSetUserData(shape_ptr.cp, <void *>shape)
         return shape
 
@@ -325,7 +333,7 @@ cdef class PhysicsManager:
     cpdef void shape_delete(self, Handle shape) except *:
         cdef ShapeC *shape_ptr
         shape_ptr = self.shape_get_ptr(shape)
-        cpShapeDestroy(shape_ptr.cp)
+        cpShapeFree(shape_ptr.cp)
         self.shapes.c_delete(shape)
 
     cpdef void shape_set_friction(self, Handle shape, float friction) except *:

@@ -16,7 +16,6 @@ cdef class App:
         double delta
         double timestamp
         uint64_t frequency
-        readonly bint is_running
         readonly GraphicsManager graphics
         readonly EventManager event
         readonly PhysicsManager physics
