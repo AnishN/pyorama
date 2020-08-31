@@ -99,6 +99,14 @@ cdef class PhysicsManager:
         gravity_ptr = <cpVect *>(&gravity.data)
         cpSpaceSetGravity(space_ptr.cp, gravity_ptr[0])
     
+    cpdef float space_get_damping(self, Handle space) except *:
+        cdef SpaceC *space_ptr = self.space_get_ptr(space)
+        return cpSpaceGetDamping(space_ptr.cp)
+
+    cpdef void space_set_damping(self, Handle space, float damping) except *:
+        cdef SpaceC *space_ptr = self.space_get_ptr(space)
+        cpSpaceSetDamping(space_ptr.cp, damping)
+
     cpdef void space_add_body(self, Handle space, Handle body) except *:
         cdef:
             SpaceC *space_ptr

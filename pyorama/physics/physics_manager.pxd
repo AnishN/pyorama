@@ -33,6 +33,9 @@ cdef class PhysicsManager:
     cpdef void space_delete(self, Handle space) except *
     cpdef Vec2 space_get_gravity(self, Handle space)
     cpdef void space_set_gravity(self, Handle space, Vec2 gravity) except *
+    cpdef float space_get_damping(self, Handle space) except *
+    cpdef void space_set_damping(self, Handle space, float damping) except *
+
     cpdef void space_add_body(self, Handle space, Handle body) except *
     cpdef void space_remove_body(self, Handle space, Handle body) except *
     cpdef void space_add_shape(self, Handle space, Handle shape) except *

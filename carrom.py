@@ -95,6 +95,7 @@ class Game(App):
         #print(self.num_pieces)
         self.space = self.physics.space_create()
         self.physics.space_set_gravity(self.space, Vec2())
+        self.physics.space_set_damping(self.space, 0.4)#simulates friction with board...
         self.bodies = []
         self.shapes = []
 
@@ -115,7 +116,7 @@ class Game(App):
             self.physics.shape_set_friction(self.shapes[i], piece_friction)
             self.physics.space_add_shape(self.space, self.shapes[i])
 
-        self.physics.body_set_force(self.bodies[0], Vec2(5000.0, 5000.0))
+        self.physics.body_set_force(self.bodies[0], Vec2(70000.0, 70000.0))
         
         self.setup_view()
         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
