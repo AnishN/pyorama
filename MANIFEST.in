@@ -1,5 +1,0 @@
-recursive-include pyorama *.py
-recursive-include pyorama *.pyx
-recursive-include pyorama *.pxd
-recursive-include pyorama *.c
-recursive-include pyorama *.h

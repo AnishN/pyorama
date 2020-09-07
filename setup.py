@@ -76,7 +76,6 @@ if __name__ == "__main__":
                     libraries=libs,
                     language=language,
                     extra_compile_args=args,
-                    #extra_link_args=link_args,
                     include_dirs=include_dirs,
                     library_dirs=library_dirs,
                     runtime_library_dirs=library_dirs,
