@@ -73,6 +73,7 @@ cdef class PhysicsManager:
     #cpdef Handle shape_create_poly_shape(self) except *
     #cpdef Handle shape_create_poly_box(self) except *
     cpdef void shape_delete(self, Handle shape) except *
+    cpdef void shape_set_elasticity(self, Handle shape, float elasticity) except *
     cpdef void shape_set_friction(self, Handle shape, float friction) except *
 
     cpdef void update(self, float delta) except *

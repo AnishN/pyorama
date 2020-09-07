@@ -79,7 +79,7 @@ cdef class ItemVector:
         else:
             raise INVALID_INDEX_ERROR
 
-    cdef void c_clear_all(self) nogil:
+    cdef void c_clear_all(self) except *:
         memset(self.items, 0, self.max_items * self.item_size)
 
     cdef void c_swap(self, size_t a, size_t b) except *:

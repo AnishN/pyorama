@@ -69,7 +69,7 @@ cdef class GraphicsManager:
         self.meshes = ItemSlotMap(sizeof(MeshC), GRAPHICS_ITEM_TYPE_MESH)
         self.mesh_batches = ItemSlotMap(sizeof(MeshBatchC), GRAPHICS_ITEM_TYPE_MESH_BATCH)
         self.sprites = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE)
-        self.sprite_batches = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
+        self.sprite_batches = ItemSlotMap(sizeof(SpriteBatchC), GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
 
     cdef void c_delete_slot_maps(self) except *:
         self.windows = None
@@ -146,8 +146,8 @@ cdef class GraphicsManager:
         cdef:
             float[16] quad_vbo_data
             uint32_t[6] quad_ibo_data
-            uint8_t[:] quad_vbo_mv
-            uint8_t[:] quad_ibo_mv
+            uint8_t[::1] quad_vbo_mv
+            uint8_t[::1] quad_ibo_mv
         quad_vbo_data = [
             -1.0, -1.0, 0.0, 0.0,
             -1.0, 1.0, 0.0, 1.0,
@@ -193,11 +193,7 @@ cdef class GraphicsManager:
         )
         window_ptr.width = width
         window_ptr.height = height
-        title_length = len(title)
-        if title_length >= 256:
-            raise ValueError("Window: title cannot exceed 255 characters")
-        memcpy(window_ptr.title, <char *>title, title_length)
-        window_ptr.title_length = title_length
+        self.window_set_title(window, title)
         self.window_clear(window)
         return window
 
@@ -255,6 +251,19 @@ cdef class GraphicsManager:
             SDL_GL_SwapWindow(window_ptr.sdl_ptr)
             glUseProgram(0); self.c_check_gl()
         SDL_GL_MakeCurrent(self.root_window, self.root_context)
+
+    cpdef void window_set_title(self, Handle window, bytes title) except *:
+        cdef:
+            WindowC *window_ptr
+            size_t title_length
+        window_ptr = self.window_get_ptr(window)
+        title_length = len(title)
+        if title_length >= 256:
+            raise ValueError("Window: title cannot exceed 255 characters")
+        memcpy(window_ptr.title, <char *>title, title_length)
+        window_ptr.title_length = title_length
+        window_ptr.title[title_length] = b"\0"
+        SDL_SetWindowTitle(window_ptr.sdl_ptr, window_ptr.title)
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *:
         return <VertexFormatC *>self.vertex_formats.c_get_ptr(format)
@@ -334,7 +343,7 @@ cdef class GraphicsManager:
         glDeleteBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
         self.vertex_buffers.c_delete(buffer)
 
-    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *:
+    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *:
         cdef:
             VertexBufferC *buffer_ptr
             size_t data_size
@@ -355,12 +364,12 @@ cdef class GraphicsManager:
     cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
         cdef:
             MeshC *mesh_ptr
-            uint8_t[:] data
+            uint8_t[::1] data
         mesh_ptr = self.mesh_get_ptr(mesh)
         data = <uint8_t[:mesh_ptr.vertex_data_size]>mesh_ptr.vertex_data
         self.vertex_buffer_set_data(buffer, data)
 
-    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *:
+    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *:
         cdef:
             VertexBufferC *buffer_ptr
             size_t data_size
@@ -378,7 +387,7 @@ cdef class GraphicsManager:
     cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
         cdef:
             MeshC *mesh_ptr
-            uint8_t[:] data
+            uint8_t[::1] data
         mesh_ptr = self.mesh_get_ptr(mesh)
         data = <uint8_t[:mesh_ptr.vertex_data_size]>mesh_ptr.vertex_data
         self.vertex_buffer_set_sub_data(buffer, data, offset)
@@ -412,7 +421,7 @@ cdef class GraphicsManager:
         glDeleteBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
         self.index_buffers.c_delete(buffer)
     
-    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *:
+    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *:
         cdef:
             IndexBufferC *buffer_ptr
             size_t data_size
@@ -433,12 +442,12 @@ cdef class GraphicsManager:
     cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
         cdef:
             MeshC *mesh_ptr
-            uint8_t[:] data
+            uint8_t[::1] data
         mesh_ptr = self.mesh_get_ptr(mesh)
         data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
         self.index_buffer_set_data(buffer, data)
 
-    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *:
+    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *:
         cdef:
             IndexBufferC *buffer_ptr
             size_t data_size
@@ -456,7 +465,7 @@ cdef class GraphicsManager:
     cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
         cdef:
             MeshC *mesh_ptr
-            uint8_t[:] data
+            uint8_t[::1] data
         mesh_ptr = self.mesh_get_ptr(mesh)
         data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
         self.index_buffer_set_sub_data(buffer, data, offset)
@@ -805,7 +814,7 @@ cdef class GraphicsManager:
     cdef ImageC *image_get_ptr(self, Handle image) except *:
         return <ImageC *>self.images.c_get_ptr(image)
 
-    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=None, size_t bytes_per_channel=1, size_t num_channels=4) except *:
+    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[::1] data=None, size_t bytes_per_channel=1, size_t num_channels=4) except *:
         cdef:
             Handle image
             ImageC *image_ptr
@@ -838,7 +847,7 @@ cdef class GraphicsManager:
             size_t x, y, z
             size_t src, dst
             uint8_t *data_ptr
-            uint8_t[:] data
+            uint8_t[::1] data
         surface = IMG_Load(file_path)
         if surface == NULL:
             raise ValueError("Image: cannot load from path")
@@ -866,7 +875,7 @@ cdef class GraphicsManager:
         free(image_ptr.data)
         self.images.c_delete(image)
 
-    cpdef void image_set_data(self, Handle image, uint8_t[:] data=None) except *:
+    cpdef void image_set_data(self, Handle image, uint8_t[::1] data=None) except *:
         cdef:
             ImageC *image_ptr
         image_ptr = self.image_get_ptr(image)
@@ -889,7 +898,7 @@ cdef class GraphicsManager:
         image_ptr = self.image_get_ptr(image)
         return image_ptr.height
 
-    cpdef uint8_t[:] image_get_data(self, Handle image) except *:
+    cpdef uint8_t[::1] image_get_data(self, Handle image) except *:
         cdef:
             ImageC *image_ptr
         image_ptr = self.image_get_ptr(image)
@@ -1069,6 +1078,11 @@ cdef class GraphicsManager:
             ViewC *view_ptr
         view = self.views.c_create()
         view_ptr = self.view_get_ptr(view)
+        view_ptr.clear_flags = VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL
+        view_ptr.clear_color = Vec4C(0.0, 0.0, 0.0, 1.0)
+        view_ptr.clear_depth = 1.0
+        view_ptr.clear_stencil = 0
+        view_ptr.rect = (0, 0, 1, 1)
         return view
 
     cpdef void view_delete(self, Handle view) except *:
@@ -1113,7 +1127,7 @@ cdef class GraphicsManager:
         view_ptr = self.view_get_ptr(view)
         view_ptr.program = program
 
-    cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *:
+    cpdef void view_set_uniforms(self, Handle view, Handle[::1] uniforms) except *:
         cdef:
             ViewC *view_ptr
             size_t num_uniforms
@@ -1165,7 +1179,7 @@ cdef class GraphicsManager:
     cdef MeshC *mesh_get_ptr(self, Handle mesh) except *:
         return <MeshC *>self.meshes.c_get_ptr(mesh)
 
-    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *:
+    cpdef Handle mesh_create(self, uint8_t[::1] vertex_data, uint8_t[::1] index_data) except *:
         cdef:
             Handle mesh
             MeshC *mesh_ptr
@@ -1297,7 +1311,7 @@ cdef class GraphicsManager:
     cpdef void mesh_batch_delete(self, Handle batch) except *:
         self.mesh_batches.c_delete(batch)
 
-    cpdef void mesh_batch_set_meshes(self, Handle batch, uint64_t[:] meshes) except *:
+    cpdef void mesh_batch_set_meshes(self, Handle batch, Handle[::1] meshes) except *:
         cdef:
             MeshBatchC *batch_ptr
             
@@ -1403,7 +1417,7 @@ cdef class GraphicsManager:
     cpdef void sprite_delete(self, Handle sprite) except *:
         self.sprites.c_delete(sprite)
 
-    cpdef void sprite_set_tex_coords(self, Handle sprite, float[:] tex_coords) except *:
+    cpdef void sprite_set_tex_coords(self, Handle sprite, float[::1] tex_coords) except *:
         cdef:
             SpriteC *sprite_ptr
             float *tex_coords_ptr
@@ -1471,9 +1485,9 @@ cdef class GraphicsManager:
         sprite_ptr = self.sprite_get_ptr(sprite)
         sprite_ptr.alpha = alpha
 
-    cpdef float[:] sprite_get_tex_coords(self, Handle sprite) except *:
+    cpdef float[::1] sprite_get_tex_coords(self, Handle sprite) except *:
         cdef:
-            float[:] tex_coords
+            float[::1] tex_coords
             SpriteC *sprite_ptr
         sprite_ptr = self.sprite_get_ptr(sprite)
         tex_coords = <float[:12]>sprite_ptr.tex_coords
@@ -1545,14 +1559,14 @@ cdef class GraphicsManager:
 
         batch = self.sprite_batches.c_create()
         batch_ptr = self.sprite_batch_get_ptr(batch)
-        batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite)
-        batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite)
+        batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+        batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
         return batch
 
     cpdef void sprite_batch_delete(self, Handle batch) except *:
         self.sprite_batches.c_delete(batch)
 
-    cpdef void sprite_batch_set_sprites(self, Handle batch, uint64_t[:] sprites) except *:
+    cpdef void sprite_batch_set_sprites(self, Handle batch, Handle[::1] sprites) except *:
         cdef:
             SpriteBatchC *batch_ptr
             
@@ -1657,8 +1671,8 @@ cdef class GraphicsManager:
         #update mesh batches
         pass
 
-        if self.views.items.num_items > 0:
-            view_ptr = <ViewC *>self.views.items.c_get_ptr(0)
+        for i in range(self.views.items.num_items):
+            view_ptr = <ViewC *>self.views.items.c_get_ptr(i)
             program_ptr = self.program_get_ptr(view_ptr.program)
             vbo_ptr = self.vertex_buffer_get_ptr(view_ptr.vertex_buffer)
             ibo_ptr = self.index_buffer_get_ptr(view_ptr.index_buffer)
@@ -1711,4 +1725,5 @@ cdef class GraphicsManager:
         for i in range(self.windows.items.num_items):
             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
             self.window_render(window_ptr.handle)
+        
         self._swap_root_window()

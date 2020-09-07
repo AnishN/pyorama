@@ -344,9 +344,12 @@ cdef class PhysicsManager:
         cpShapeFree(shape_ptr.cp)
         self.shapes.c_delete(shape)
 
+    cpdef void shape_set_elasticity(self, Handle shape, float elasticity) except *:
+        cdef ShapeC *shape_ptr = self.shape_get_ptr(shape)
+        cpShapeSetElasticity(shape_ptr.cp, elasticity)
+
     cpdef void shape_set_friction(self, Handle shape, float friction) except *:
-        cdef ShapeC *shape_ptr
-        shape_ptr = self.shape_get_ptr(shape)
+        cdef ShapeC *shape_ptr = self.shape_get_ptr(shape)
         cpShapeSetFriction(shape_ptr.cp, friction)
 
     cpdef void update(self, float delta) except *:

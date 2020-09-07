@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="256"
+   height="256"
+   viewBox="0 0 67.733332 67.733335"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="carrom_striker.svg"
+   inkscape:export-filename="/home/anish/projects/pyorama/resources/textures/carrom_striker.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2"
+     inkscape:cx="22.5"
+     inkscape:cy="143.42982"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1030"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-229.26665)">
+    <circle
+       id="path3721"
+       cx="33.866665"
+       cy="263.13333"
+       style="stroke-width:0.26458332;fill:#32557a;fill-opacity:1"
+       r="33.866665"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <circle
+       id="path3721-3"
+       cx="33.866669"
+       cy="263.13333"
+       style="opacity:1;vector-effect:none;fill:#ececec;fill-opacity:1;stroke-width:0.23564455;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       r="30.1625" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;vector-effect:none;fill:#4875b0;fill-opacity:1;stroke:#32557a;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path1443"
+       sodipodi:sides="8"
+       sodipodi:cx="27.913542"
+       sodipodi:cy="253.47601"
+       sodipodi:r1="17.68755"
+       sodipodi:r2="5.3062649"
+       sodipodi:arg1="0.96619774"
+       sodipodi:arg2="1.3588968"
+       inkscape:flatsided="false"
+       inkscape:rounded="0.9"
+       inkscape:randomized="0"
+       d="m 37.967709,268.0281 c -9.585556,6.62274 2.452146,-11.81489 -8.938168,-9.36451 -11.390314,2.45039 7.164494,14.30669 -4.296507,12.21167 -11.461,-2.09502 10.088319,-6.62046 0.301465,-12.94194 -9.786854,-6.32149 -5.050293,15.18242 -11.673041,5.59686 -6.6227474,-9.58556 11.814891,2.45215 9.364503,-8.93817 -2.450387,-11.39031 -14.3066873,7.1645 -12.211666,-4.2965 2.095022,-11.46101 6.62046,10.08831 12.941943,0.30146 6.321482,-9.78685 -15.1824183,-5.05029 -5.596863,-11.67304 9.585555,-6.62275 -2.452147,11.81489 8.938167,9.3645 11.390315,-2.45038 -7.164494,-14.30668 4.296507,-12.21166 11.461001,2.09502 -10.088318,6.62046 -0.301465,12.94194 9.786854,6.32148 5.050294,-15.18242 11.673041,-5.59686 6.622748,9.58555 -11.81489,-2.45215 -9.364503,8.93816 2.450388,11.39032 14.306688,-7.16449 12.211666,4.29651 -2.095021,11.461 -6.620459,-10.08832 -12.941942,-0.30146 -6.321483,9.78685 15.182418,5.05029 5.596863,11.67304 z"
+       inkscape:transform-center-x="-0.19136744"
+       inkscape:transform-center-y="-2.3182484"
+       transform="matrix(1.4762047,0,0,1.4810826,-7.355451,-112.35695)" />
+  </g>
+</svg>

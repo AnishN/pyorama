@@ -40,9 +40,8 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
-#args = ["-w", "-std=c11", "-O0", "-g"]
-#link_args = ["-std=c11"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native", "-g"]
+#args = ["-w", "-std=c11"]#, "-O3", "-ffast-math", "-march=native", "-g"]
 include_dirs = [np.get_include(), "./pyorama/libs/include"]
 library_dirs = ["./pyorama/libs/shared"]
 annotate = True
@@ -79,9 +78,9 @@ if __name__ == "__main__":
                     language=language,
                     extra_compile_args=args,
                     #extra_link_args=link_args,
-                    include_dirs = include_dirs,
-                    library_dirs = library_dirs,
-                    runtime_library_dirs = library_dirs,
+                    include_dirs=include_dirs,
+                    library_dirs=library_dirs,
+                    runtime_library_dirs=library_dirs,
                 )
                 extensions.append(ext)
     

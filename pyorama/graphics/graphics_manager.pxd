@@ -73,6 +73,7 @@ cdef class GraphicsManager:
     cpdef void window_set_texture(self, Handle window, Handle texture) except *
     cpdef void window_clear(self, Handle window) except *
     cpdef void window_render(self, Handle window) except *
+    cpdef void window_set_title(self, Handle window, bytes title) except *
 
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *
     cpdef Handle vertex_format_create(self, list comps) except *
@@ -81,18 +82,18 @@ cdef class GraphicsManager:
     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *
     cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage=*) except *
     cpdef void vertex_buffer_delete(self, Handle buffer) except *
-    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *
+    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *
     cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
-    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *
+    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *
     cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
     
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *
     cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage=*) except *
     cpdef void index_buffer_delete(self, Handle buffer) except *
-    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[:] data) except *
+    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *
     cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
     cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
-    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[:] data, size_t offset) except *
+    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *
     cdef void _index_buffer_draw(self, Handle buffer) except *
 
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
@@ -120,13 +121,13 @@ cdef class GraphicsManager:
     cdef void _program_bind_uniform(self, Handle program, Handle uniform) except *
 
     cdef ImageC *image_get_ptr(self, Handle image) except *
-    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[:] data=*, size_t bytes_per_channel=*, size_t num_channels=*) except *
+    cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[::1] data=*, size_t bytes_per_channel=*, size_t num_channels=*) except *
     cpdef Handle image_create_from_file(self, bytes file_path, bint flip_x=*, bint flip_y=*) except *
     cpdef void image_delete(self, Handle image) except *
-    cpdef void image_set_data(self, Handle image, uint8_t[:] data=*) except *
+    cpdef void image_set_data(self, Handle image, uint8_t[::1] data=*) except *
     cpdef uint16_t image_get_width(self, Handle image) except *
     cpdef uint16_t image_get_height(self, Handle image) except *
-    cpdef uint8_t[:] image_get_data(self, Handle image) except *
+    cpdef uint8_t[::1] image_get_data(self, Handle image) except *
 
     cdef TextureC *texture_get_ptr(self, Handle texture) except *
     cpdef Handle texture_create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *
@@ -152,21 +153,21 @@ cdef class GraphicsManager:
     cpdef void view_set_clear_stencil(self, Handle view, uint32_t stencil) except *
     cpdef void view_set_rect(self, Handle view, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *
     cpdef void view_set_program(self, Handle view, Handle program) except *
-    cpdef void view_set_uniforms(self, Handle view, Handle[:] uniforms) except *
+    cpdef void view_set_uniforms(self, Handle view, Handle[::1] uniforms) except *
     cpdef void view_set_vertex_buffer(self, Handle view, Handle buffer) except *
     cpdef void view_set_index_buffer(self, Handle view, Handle buffer) except *
     cpdef void view_set_textures(self, Handle view, dict textures) except *
     cpdef void view_set_frame_buffer(self, Handle view, Handle frame_buffer) except *
     
     cdef MeshC *mesh_get_ptr(self, Handle mesh) except *
-    cpdef Handle mesh_create(self, uint8_t[:] vertex_data, uint8_t[:] index_data) except *
+    cpdef Handle mesh_create(self, uint8_t[::1] vertex_data, uint8_t[::1] index_data) except *
     cpdef Handle mesh_create_from_file(self, bytes file_path) except *
     cpdef void mesh_delete(self, Handle mesh) except *
 
     cdef MeshBatchC *mesh_batch_get_ptr(self, Handle batch) except *
     cpdef Handle mesh_batch_create(self) except *
     cpdef void mesh_batch_delete(self, Handle batch) except *
-    cpdef void mesh_batch_set_meshes(self, Handle batch, uint64_t[:] meshes) except *
+    cpdef void mesh_batch_set_meshes(self, Handle batch, Handle[::1] meshes) except *
     cpdef Handle mesh_batch_get_vertex_buffer(self, Handle batch) except *
     cpdef Handle mesh_batch_get_index_buffer(self, Handle batch) except *
     cdef void _mesh_batch_update(self, Handle batch) except *
@@ -174,7 +175,7 @@ cdef class GraphicsManager:
     cdef SpriteC *sprite_get_ptr(self, Handle sprite) except *
     cpdef Handle sprite_create(self, float width, float height) except *
     cpdef void sprite_delete(self, Handle sprite) except *
-    cpdef void sprite_set_tex_coords(self, Handle sprite, float[:] tex_coords) except *
+    cpdef void sprite_set_tex_coords(self, Handle sprite, float[::1] tex_coords) except *
     cpdef void sprite_set_tex_coords_from_rect(self, Handle sprite, Vec4 rect) except *
     cpdef void sprite_set_position(self, Handle sprite, Vec2 position) except *
     cpdef void sprite_set_anchor(self, Handle sprite, Vec2 anchor) except *
@@ -185,7 +186,7 @@ cdef class GraphicsManager:
     cpdef void sprite_set_tint(self, Handle sprite, Vec3 tint) except *
     cpdef void sprite_set_alpha(self, Handle sprite, float alpha) except *
 
-    cpdef float[:] sprite_get_tex_coords(self, Handle sprite) except *
+    cpdef float[::1] sprite_get_tex_coords(self, Handle sprite) except *
     #cpdef Vec4 sprite_get_tex_coords_from_rect(self, Handle sprite)
     cpdef Vec2 sprite_get_position(self, Handle sprite)
     cpdef Vec2 sprite_get_anchor(self, Handle sprite)
@@ -199,7 +200,7 @@ cdef class GraphicsManager:
     cdef SpriteBatchC *sprite_batch_get_ptr(self, Handle batch) except *
     cpdef Handle sprite_batch_create(self) except *
     cpdef void sprite_batch_delete(self, Handle batch) except *
-    cpdef void sprite_batch_set_sprites(self, Handle batch, uint64_t[:] sprites) except *
+    cpdef void sprite_batch_set_sprites(self, Handle batch, Handle[::1] sprites) except *
     cpdef Handle sprite_batch_get_vertex_buffer(self, Handle batch) except *
     cpdef Handle sprite_batch_get_index_buffer(self, Handle batch) except *
     cdef void _sprite_batch_update(self, Handle batch) except *

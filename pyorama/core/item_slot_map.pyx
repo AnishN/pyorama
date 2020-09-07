@@ -105,7 +105,7 @@ cdef class ItemSlotMap:
             item_ptr = self.items.c_get_ptr(c_handle_get_index(&inner_id))
             return item_ptr
 
-    cdef bint c_is_free_list_empty(self) nogil:
+    cdef bint c_is_free_list_empty(self) except *:
         return self.free_list_front == <uint32_t>0xFFFFFFFF
 
     cdef bint c_is_handle_valid(self, Handle handle) except *:

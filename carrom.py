@@ -5,6 +5,7 @@ from pyorama.event.event_enums import *
 from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import *
+from pyorama.physics.physics_enums import *
 from pyorama.physics.physics_manager import *
 from pyorama.math3d.vec2 import Vec2
 from pyorama.math3d.vec3 import Vec3
@@ -20,10 +21,15 @@ class Game(App):
         self.setup_shaders()
         
         #setup sprites
-        image_path = b"./resources/textures/carrom_base.png"
-        self.image = self.graphics.image_create_from_file(image_path)
-        self.texture = self.graphics.texture_create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
-        self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
+        coin_image_path = b"./resources/textures/carrom_base.png"
+        self.coin_image = self.graphics.image_create_from_file(coin_image_path)
+        self.coin_texture = self.graphics.texture_create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
+        self.graphics.texture_set_data_2d_from_image(self.coin_texture, self.coin_image)
+
+        board_image_path = b"./resources/textures/carrom_board.png"
+        self.board_image = self.graphics.image_create_from_file(board_image_path)
+        self.board_texture = self.graphics.texture_create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
+        self.graphics.texture_set_data_2d_from_image(self.board_texture, self.board_image)
 
         self.width = 800
         self.height = 600
@@ -40,7 +46,7 @@ class Game(App):
         self.black_positions = []
         self.base_offset = Vec2()
         Vec2.add(self.base_offset, self.center, self.inner_offset)
-
+        
         #white inner
         for i in range(3):
             offset = Vec2()
@@ -91,32 +97,47 @@ class Game(App):
         self.vbo = self.graphics.sprite_batch_get_vertex_buffer(self.sprite_batch)
         self.ibo = self.graphics.sprite_batch_get_index_buffer(self.sprite_batch)
 
-        self.num_pieces = 19#len(self.sprites)
-        #print(self.num_pieces)
+        self.num_pieces = len(self.sprites)
+        self.damping = 0.5
+        self.friction = 0.4
+        self.elasticity = 0.7
         self.space = self.physics.space_create()
         self.physics.space_set_gravity(self.space, Vec2())
-        self.physics.space_set_damping(self.space, 0.4)#simulates friction with board...
+        self.physics.space_set_damping(self.space, self.damping)#simulates friction with board...
         self.bodies = []
         self.shapes = []
 
         offset = Vec2()
-        piece_mass = 1.0
-        piece_friction = 0.4
-        piece_moment = self.physics.moment_for_circle(piece_mass, 0, self.radius, offset)
+        self.piece_mass = 0.5
+        self.piece_moment = self.physics.moment_for_circle(self.piece_mass, 0, self.radius, offset)
         positions = self.red_positions + self.white_positions + self.black_positions
         self.num_pieces = 19
         for i in range(self.num_pieces):
-            body = self.physics.body_create(piece_mass, piece_moment)
+            body = self.physics.body_create(self.piece_mass, self.piece_moment)
             shape = self.physics.shape_create_circle(body, self.radius, offset)
+            self.physics.space_add_body(self.space, body)
+            self.physics.body_set_position(body, positions[i])
+            self.physics.shape_set_friction(shape, self.friction)
+            self.physics.shape_set_elasticity(shape, self.elasticity)
+            self.physics.space_add_shape(self.space, shape)
             self.bodies.append(body)
             self.shapes.append(shape)
+        
+        self.physics.body_set_force(self.bodies[0], Vec2(100000.0, 30000.0))
 
-            self.physics.space_add_body(self.space, self.bodies[i])
-            self.physics.body_set_position(self.bodies[i], positions[i])
-            self.physics.shape_set_friction(self.shapes[i], piece_friction)
-            self.physics.space_add_shape(self.space, self.shapes[i])
-
-        self.physics.body_set_force(self.bodies[0], Vec2(70000.0, 70000.0))
+        self.board_body = self.physics.body_create(type=BODY_TYPE_STATIC)
+        self.physics.space_add_body(self.space, self.board_body)
+        self.board_top = (Vec2(0.0, self.height), Vec2(self.width, self.height))
+        self.board_bottom = (Vec2(0.0, 0.0), Vec2(self.width, 0.0))
+        self.board_left = (Vec2(0.0, 0.0), Vec2(0.0, self.height))
+        self.board_right = (Vec2(self.width, 0.0), Vec2(self.width, self.height))
+        self.board_edges = [self.board_top, self.board_bottom, self.board_left, self.board_right]
+        self.edge_shapes = []
+        for edge in self.board_edges:
+            edge_shape = self.physics.shape_create_segment(self.board_body, *edge, 0.0)
+            self.physics.shape_set_elasticity(edge_shape, self.elasticity)
+            self.physics.space_add_shape(self.space, edge_shape)
+            self.edge_shapes.append(edge_shape)
         
         self.setup_view()
         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
@@ -159,23 +180,35 @@ class Game(App):
         self.graphics.frame_buffer_attach_textures(self.fbo, {
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
         })
-        self.view = self.graphics.view_create()
-        self.update_view()
+        
+        self.board_view = self.graphics.view_create()
+        self.update_board_view()
+        self.coin_view = self.graphics.view_create()
+        self.update_coin_view()
 
-    def update_view(self):
-        self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)
-        self.graphics.view_set_clear_color(self.view, Vec4(0.0, 0.0, 0.0, 1.0))
-        self.graphics.view_set_clear_depth(self.view, 1.0)
-        self.graphics.view_set_rect(self.view, 0, 0, self.width, self.height)
-        self.graphics.view_set_program(self.view, self.program)
-        self.graphics.view_set_uniforms(self.view, self.uniforms)
-        self.graphics.view_set_vertex_buffer(self.view, self.vbo)
-        self.graphics.view_set_index_buffer(self.view, self.ibo)
-        self.graphics.view_set_textures(self.view, {
-            TEXTURE_UNIT_0: self.texture,
+    def update_coin_view(self):
+        self.graphics.view_set_clear_flags(self.coin_view, 0)
+        self.graphics.view_set_rect(self.coin_view, 0, 0, self.width, self.height)
+        self.graphics.view_set_program(self.coin_view, self.program)
+        self.graphics.view_set_uniforms(self.coin_view, self.uniforms)
+        self.graphics.view_set_vertex_buffer(self.coin_view, self.vbo)
+        self.graphics.view_set_index_buffer(self.coin_view, self.ibo)
+        self.graphics.view_set_textures(self.coin_view, {
+            TEXTURE_UNIT_0: self.coin_texture,
         })
-        self.graphics.view_set_frame_buffer(self.view, self.fbo)
+        self.graphics.view_set_frame_buffer(self.coin_view, self.fbo)
     
+    def update_board_view(self):
+        self.graphics.view_set_rect(self.board_view, 0, 0, self.width, self.height)
+        self.graphics.view_set_program(self.board_view, self.program)
+        self.graphics.view_set_uniforms(self.board_view, self.uniforms)
+        self.graphics.view_set_vertex_buffer(self.board_view, self.vbo)
+        self.graphics.view_set_index_buffer(self.board_view, self.ibo)
+        self.graphics.view_set_textures(self.board_view, {
+            TEXTURE_UNIT_0: self.board_texture,
+        })
+        self.graphics.view_set_frame_buffer(self.board_view, self.fbo)
+
     def on_window(self, event_data, *args, **kwargs):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
             self.quit()
