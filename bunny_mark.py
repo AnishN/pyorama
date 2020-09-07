@@ -97,20 +97,6 @@ class Game(App):
         
         self.view = self.graphics.view_create()
         self.update_view()
-        self.coin_view = self.graphics.view_create()
-        self.update_coin_view()
-
-    def update_coin_view(self):
-        self.graphics.view_set_clear_flags(self.coin_view, 0)
-        self.graphics.view_set_rect(self.coin_view, 0, 0, self.width, self.height)
-        self.graphics.view_set_program(self.coin_view, self.program)
-        self.graphics.view_set_uniforms(self.coin_view, self.uniforms)
-        self.graphics.view_set_vertex_buffer(self.coin_view, self.vbo)
-        self.graphics.view_set_index_buffer(self.coin_view, self.ibo)
-        self.graphics.view_set_textures(self.coin_view, {
-            TEXTURE_UNIT_0: self.texture,
-        })
-        self.graphics.view_set_frame_buffer(self.coin_view, self.fbo)
     
     def update_view(self):
         self.graphics.view_set_rect(self.view, 0, 0, self.width, self.height)
