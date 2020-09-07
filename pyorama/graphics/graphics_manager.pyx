@@ -1428,7 +1428,7 @@ cdef class GraphicsManager:
         tex_coords_ptr = &tex_coords[0]
         memcpy(sprite_ptr.tex_coords, tex_coords_ptr, sizeof(float) * 12)
 
-    cpdef void sprite_set_tex_coords_from_rect(self, Handle sprite, Vec4 rect) except *:
+    cpdef void sprite_set_tex_coords_as_rect(self, Handle sprite, Vec4 rect) except *:
         cdef:
             SpriteC *sprite_ptr
             float *tex_coords_ptr
@@ -1492,6 +1492,19 @@ cdef class GraphicsManager:
         sprite_ptr = self.sprite_get_ptr(sprite)
         tex_coords = <float[:12]>sprite_ptr.tex_coords
         return tex_coords
+    
+    cpdef Vec4 sprite_get_tex_coords_as_rect(self, Handle sprite):
+        cdef:
+            Vec4 rect
+            SpriteC *sprite_ptr
+        sprite_ptr = self.sprite_get_ptr(sprite)
+        rect = Vec4(
+            sprite_ptr.tex_coords[0],
+            sprite_ptr.tex_coords[1],
+            sprite_ptr.tex_coords[2],
+            sprite_ptr.tex_coords[5],
+        )
+        return rect
     
     cpdef Vec2 sprite_get_position(self, Handle sprite):
         cdef:
@@ -1700,7 +1713,7 @@ cdef class GraphicsManager:
 
             glEnable(GL_BLEND); self.c_check_gl()
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()
-            glEnable(GL_CULL_FACE); self.c_check_gl()
+            #glEnable(GL_CULL_FACE); self.c_check_gl()
             glEnable(GL_DEPTH_TEST); self.c_check_gl()
             glDepthFunc(GL_LESS); self.c_check_gl()
             glDepthMask(True); self.c_check_gl()

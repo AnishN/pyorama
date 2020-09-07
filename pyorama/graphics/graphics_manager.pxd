@@ -176,7 +176,7 @@ cdef class GraphicsManager:
     cpdef Handle sprite_create(self, float width, float height) except *
     cpdef void sprite_delete(self, Handle sprite) except *
     cpdef void sprite_set_tex_coords(self, Handle sprite, float[::1] tex_coords) except *
-    cpdef void sprite_set_tex_coords_from_rect(self, Handle sprite, Vec4 rect) except *
+    cpdef void sprite_set_tex_coords_as_rect(self, Handle sprite, Vec4 rect) except *
     cpdef void sprite_set_position(self, Handle sprite, Vec2 position) except *
     cpdef void sprite_set_anchor(self, Handle sprite, Vec2 anchor) except *
     cpdef void sprite_set_rotation(self, Handle sprite, float rotation) except *
@@ -187,7 +187,7 @@ cdef class GraphicsManager:
     cpdef void sprite_set_alpha(self, Handle sprite, float alpha) except *
 
     cpdef float[::1] sprite_get_tex_coords(self, Handle sprite) except *
-    #cpdef Vec4 sprite_get_tex_coords_from_rect(self, Handle sprite)
+    cpdef Vec4 sprite_get_tex_coords_as_rect(self, Handle sprite)
     cpdef Vec2 sprite_get_position(self, Handle sprite)
     cpdef Vec2 sprite_get_anchor(self, Handle sprite)
     cpdef float sprite_get_rotation(self, Handle sprite) except *
