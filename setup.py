@@ -40,8 +40,7 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native", "-g"]
-#args = ["-w", "-std=c11"]#, "-O3", "-ffast-math", "-march=native", "-g"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
 include_dirs = [np.get_include(), "./pyorama/libs/include"]
 library_dirs = ["./pyorama/libs/shared"]
 annotate = True

@@ -1556,14 +1556,31 @@ cdef class GraphicsManager:
         cdef:
             Handle batch
             SpriteBatchC *batch_ptr
-
+            VertexFormatC *v_fmt_ptr
+            size_t max_sprites = 2 ** 16
+            size_t vbo_size
+            size_t ibo_size
         batch = self.sprite_batches.c_create()
         batch_ptr = self.sprite_batch_get_ptr(batch)
         batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+        v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
+        vbo_size = v_fmt_ptr.stride * 6 * max_sprites
+        batch_ptr.vertex_data_ptr = <uint8_t *>calloc(1, vbo_size)
+        if batch_ptr.vertex_data_ptr == NULL:
+            raise MemoryError("SpriteBatch: cannot allocate vertex buffer memory")
         batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+        ibo_size = sizeof(uint32_t) * 6 * max_sprites
+        batch_ptr.index_data_ptr = <uint8_t *>calloc(1, ibo_size)
+        if batch_ptr.index_data_ptr == NULL:
+            raise MemoryError("SpriteBatch: cannot allocate index buffer memory")
         return batch
 
     cpdef void sprite_batch_delete(self, Handle batch) except *:
+        cdef:
+            SpriteBatchC *batch_ptr
+        batch_ptr = self.sprite_batch_get_ptr(batch)
+        free(batch_ptr.vertex_data_ptr)
+        free(batch_ptr.index_data_ptr)
         self.sprite_batches.c_delete(batch)
 
     cpdef void sprite_batch_set_sprites(self, Handle batch, Handle[::1] sprites) except *:
@@ -1610,13 +1627,9 @@ cdef class GraphicsManager:
         v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
         batch_ptr = self.sprite_batch_get_ptr(batch)
         vbo_size = v_fmt_ptr.stride * 6 * batch_ptr.num_sprites
-        ibo_size = 6 * batch_ptr.num_sprites * sizeof(uint32_t)
-        vbo = <uint8_t *>calloc(1, vbo_size)
-        if vbo == NULL:
-            raise MemoryError("SpriteBatch: cannot allocate temporary vertex buffer memory")
-        ibo = <uint8_t *>calloc(1, ibo_size)
-        if ibo == NULL:
-            raise MemoryError("SpriteBatch: cannot allocate temporary index buffer memory")
+        ibo_size = sizeof(uint32_t) * 6 * batch_ptr.num_sprites
+        vbo = batch_ptr.vertex_data_ptr
+        ibo = batch_ptr.index_data_ptr
         for i in range(batch_ptr.num_sprites):
             sprite_ptr = self.sprite_get_ptr(batch_ptr.sprites[i])
             for j in range(6):
@@ -1636,8 +1649,6 @@ cdef class GraphicsManager:
                 memcpy(ibo_index, &index, sizeof(uint32_t))
         self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
         self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
-        free(vbo)
-        free(ibo)
     
     cdef void _swap_root_window(self) except *:
         SDL_GL_MakeCurrent(self.root_window, self.root_context)

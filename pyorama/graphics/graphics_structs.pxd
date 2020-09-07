@@ -145,7 +145,9 @@ ctypedef struct SpriteBatchC:
     uint16_t num_sprites
     Handle[65536] sprites
     Handle vertex_buffer
+    uint8_t *vertex_data_ptr
     Handle index_buffer
+    uint8_t *index_data_ptr
     Handle texture
 
 ctypedef struct ViewC:

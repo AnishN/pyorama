@@ -2,15 +2,12 @@
 import os
 import time
 
-
-#os.environ["LD_LIBRARY_PATH"] = "./pyorama/libs/shared"
-
 cdef class App:
 
-    def init(self, double ms_per_update=1000.0/60.0, bint use_vsync=True, bint use_sleep=False):
+    def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):
         self.ms_per_update = ms_per_update
-        self.use_vsync = use_vsync
-        self.use_sleep = use_sleep
+        #self.use_vsync = use_vsync
+        #self.use_sleep = use_sleep
 
         #py_atexit.register(App.quit, self)
         SDL_Init(SDL_INIT_EVERYTHING)
@@ -33,7 +30,6 @@ cdef class App:
         self.start_time = self.c_get_current_time()
         self.current_time = self.start_time
         self.previous_time = self.current_time
-        self.tick_time = self.current_time
 
     def quit(self):
         os._exit(-1)
@@ -84,7 +80,7 @@ cdef class App:
             self.event.update(self.timestamp)
             self.physics.update(self.ms_per_update/1000)
             self.graphics.update()#differs from fix your timestep (avoids interpolation), will decide in more intensive demos
-            print(self.ms_per_update/1000, self.delta)
+            print(time.time())
             time.sleep(max(0.0, self.ms_per_update/1000 - self.delta))
             self.previous_time = self.current_time
         """

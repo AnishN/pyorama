@@ -1,18 +1,7 @@
 import math
 import numpy as np
-from pyorama.core.app import *
-from pyorama.event.event_enums import *
-from pyorama.event.event_manager import *
-from pyorama.graphics.graphics_enums import *
-from pyorama.graphics.graphics_manager import *
-from pyorama.physics.physics_enums import *
-from pyorama.physics.physics_manager import *
-from pyorama.math3d.vec2 import Vec2
-from pyorama.math3d.vec3 import Vec3
-from pyorama.math3d.vec4 import Vec4
-from pyorama.math3d.mat4 import Mat4
 
-class Game(App):
+cdef class Game(App):
     
     def init(self):
         super().init(ms_per_update=1000.0/60.0)
@@ -23,7 +12,7 @@ class Game(App):
         #setup sprites
         image_path = b"./resources/textures/bunny.png"
         self.image = self.graphics.image_create_from_file(image_path)
-        self.texture = self.graphics.texture_create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
+        self.texture = self.graphics.texture_create()#mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
         self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
 
         self.width = 800
@@ -32,9 +21,9 @@ class Game(App):
         self.bunny_height = 37
 
         #setup piece sprites
-        self.sprites = []
-        #self.num_sprites = 2 ** 16 - 1
         self.num_sprites = 50000
+        self.sprites = np.array([0] * self.num_sprites, dtype=np.uint64)
+        
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):
@@ -43,9 +32,8 @@ class Game(App):
             sprite = self.graphics.sprite_create(self.bunny_width, self.bunny_height)
             self.graphics.sprite_set_position(sprite, position)
             self.graphics.sprite_set_anchor(sprite, Vec2(0.5, 0.5))
-            self.sprites.append(sprite)
+            self.sprites[i] = sprite
         self.sprite_batch = self.graphics.sprite_batch_create()
-        self.sprites = np.array(self.sprites, dtype=np.uint64)
         self.graphics.sprite_batch_set_sprites(self.sprite_batch, self.sprites)
         self.vbo = self.graphics.sprite_batch_get_vertex_buffer(self.sprite_batch)
         self.ibo = self.graphics.sprite_batch_get_index_buffer(self.sprite_batch)
@@ -87,30 +75,16 @@ class Game(App):
         self.program = self.graphics.program_create(self.vs, self.fs)
 
     def setup_view(self):
-        self.out_color = self.graphics.texture_create()
-        self.graphics.texture_clear(self.out_color, self.width, self.height)
-        self.graphics.window_set_texture(self.window, self.out_color)
+        out_color = self.graphics.texture_create()
+        self.graphics.texture_clear(out_color, self.width, self.height)
+        self.graphics.window_set_texture(self.window, out_color)
         self.fbo = self.graphics.frame_buffer_create()
         self.graphics.frame_buffer_attach_textures(self.fbo, {
-            FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
+            FRAME_BUFFER_ATTACHMENT_COLOR_0: out_color,
         })
         
         self.view = self.graphics.view_create()
         self.update_view()
-        self.coin_view = self.graphics.view_create()
-        self.update_coin_view()
-
-    def update_coin_view(self):
-        self.graphics.view_set_clear_flags(self.coin_view, 0)
-        self.graphics.view_set_rect(self.coin_view, 0, 0, self.width, self.height)
-        self.graphics.view_set_program(self.coin_view, self.program)
-        self.graphics.view_set_uniforms(self.coin_view, self.uniforms)
-        self.graphics.view_set_vertex_buffer(self.coin_view, self.vbo)
-        self.graphics.view_set_index_buffer(self.coin_view, self.ibo)
-        self.graphics.view_set_textures(self.coin_view, {
-            TEXTURE_UNIT_0: self.texture,
-        })
-        self.graphics.view_set_frame_buffer(self.coin_view, self.fbo)
     
     def update_view(self):
         self.graphics.view_set_rect(self.view, 0, 0, self.width, self.height)
@@ -128,21 +102,24 @@ class Game(App):
             self.quit()
 
     def on_enter_frame(self, event_data, *args, **kwargs):
+        cdef:
+            SpriteC *sprite_ptr
+            Vec2C position
+            Vec2C shift
+            size_t i
+            double fps
+            bytes title
         self.current_time = event_data["timestamp"]
-        position = Vec2()
-        shift = Vec2()
         for i in range(self.num_sprites):
-            Vec2.random(shift)
-            Vec2.scale_add(shift, shift, 2.0, -1.0)
-            position = self.graphics.sprite_get_position(self.sprites[i])
-            Vec2.add(position, position, shift)
-            self.graphics.sprite_set_position(self.sprites[i], position)
+            sprite_ptr = self.graphics.sprite_get_ptr(self.sprites[i])
+            Vec2.c_random(&shift)
+            Vec2.c_scale_add(&shift, &shift, 2, -1.0)
+            Vec2.c_add(&sprite_ptr.position, &sprite_ptr.position, &shift)
         self.time_delta = self.current_time - self.previous_time
         fps = min(round(1000.0 / self.ms_per_update), round(1.0 / self.time_delta))
         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
         self.graphics.window_set_title(self.window, title)
         self.previous_time = self.current_time
     
-if __name__ == "__main__":
-    game = Game()
-    game.run()
+game = Game()
+game.run()
