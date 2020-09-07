@@ -12,7 +12,7 @@ cdef class Game(App):
         #setup sprites
         image_path = b"./resources/textures/bunny.png"
         self.image = self.graphics.image_create_from_file(image_path)
-        self.texture = self.graphics.texture_create()#mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
+        self.texture = self.graphics.texture_create(format=TEXTURE_FORMAT_RGBA_8U, mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
         self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
 
         self.width = 800
@@ -21,7 +21,7 @@ cdef class Game(App):
         self.bunny_height = 37
 
         #setup piece sprites
-        self.num_sprites = 50000
+        self.num_sprites = 100000
         self.sprites = np.array([0] * self.num_sprites, dtype=np.uint64)
         
         position = Vec2()

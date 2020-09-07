@@ -1553,32 +1553,14 @@ cdef class GraphicsManager:
         return <SpriteBatchC *>self.sprite_batches.c_get_ptr(batch)
 
     cpdef Handle sprite_batch_create(self) except *:
-        cdef:
-            Handle batch
-            SpriteBatchC *batch_ptr
-            VertexFormatC *v_fmt_ptr
-            size_t max_sprites = 2 ** 16
-            size_t vbo_size
-            size_t ibo_size
-        batch = self.sprite_batches.c_create()
-        batch_ptr = self.sprite_batch_get_ptr(batch)
-        batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
-        v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
-        vbo_size = v_fmt_ptr.stride * 6 * max_sprites
-        batch_ptr.vertex_data_ptr = <uint8_t *>calloc(1, vbo_size)
-        if batch_ptr.vertex_data_ptr == NULL:
-            raise MemoryError("SpriteBatch: cannot allocate vertex buffer memory")
-        batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
-        ibo_size = sizeof(uint32_t) * 6 * max_sprites
-        batch_ptr.index_data_ptr = <uint8_t *>calloc(1, ibo_size)
-        if batch_ptr.index_data_ptr == NULL:
-            raise MemoryError("SpriteBatch: cannot allocate index buffer memory")
+        cdef Handle batch = self.sprite_batches.c_create()
         return batch
 
     cpdef void sprite_batch_delete(self, Handle batch) except *:
         cdef:
             SpriteBatchC *batch_ptr
         batch_ptr = self.sprite_batch_get_ptr(batch)
+        free(batch_ptr.sprites)
         free(batch_ptr.vertex_data_ptr)
         free(batch_ptr.index_data_ptr)
         self.sprite_batches.c_delete(batch)
@@ -1586,12 +1568,35 @@ cdef class GraphicsManager:
     cpdef void sprite_batch_set_sprites(self, Handle batch, Handle[::1] sprites) except *:
         cdef:
             SpriteBatchC *batch_ptr
+            size_t num_sprites = sprites.shape[0]
             
         batch_ptr = self.sprite_batch_get_ptr(batch)
-        if sprites.shape[0] > 65535:
-            raise ValueError("SpriteBatch: > 65535 sprites not supported")
-        batch_ptr.num_sprites = sprites.shape[0]
-        memcpy(batch_ptr.sprites, &sprites[0], sizeof(Handle) * batch_ptr.num_sprites)
+        if num_sprites != batch_ptr.num_sprites:
+            #recreate sprite handles buffer
+            free(batch_ptr.sprites)
+            batch_ptr.sprites = <Handle *>calloc(num_sprites, sizeof(Handle))
+            if batch_ptr.sprites == NULL:
+                raise MemoryError("SpriteBatch: cannot allocate sprite handles")
+
+            #recreate vertex buffer
+            free(batch_ptr.vertex_data_ptr)
+            batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
+            vbo_size = v_fmt_ptr.stride * 6 * num_sprites
+            batch_ptr.vertex_data_ptr = <uint8_t *>calloc(1, vbo_size)
+            if batch_ptr.vertex_data_ptr == NULL:
+                raise MemoryError("SpriteBatch: cannot allocate vertex data")
+
+            #recreate index buffer
+            free(batch_ptr.index_data_ptr)
+            batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            ibo_size = sizeof(uint32_t) * 6 * num_sprites
+            batch_ptr.index_data_ptr = <uint8_t *>calloc(1, ibo_size)
+            if batch_ptr.index_data_ptr == NULL:
+                raise MemoryError("SpriteBatch: cannot allocate index data")
+
+        batch_ptr.num_sprites = num_sprites
+        memcpy(batch_ptr.sprites, &sprites[0], sizeof(Handle) * num_sprites)
 
     cpdef Handle sprite_batch_get_vertex_buffer(self, Handle batch) except *:
         cdef SpriteBatchC *batch_ptr
