@@ -53,8 +53,8 @@
 #endif
 
 #ifndef CP_USE_DOUBLES
-	// Use floats by default for lower precision.
-	#define CP_USE_DOUBLES 0
+	// Use doubles by default for higher precision.
+	#define CP_USE_DOUBLES 1
 #endif
 
 /// @defgroup basicTypes Basic Types

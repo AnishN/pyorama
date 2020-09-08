@@ -11,12 +11,9 @@
             "-ffast-math",
             "-march=native"
         ],
-        "extra_link_args": [
-            "-std=c11"
-        ],
         "include_dirs": [
-            "/home/anish/.local/lib/python3.8/site-packages/numpy/core/include",
-            "."
+            "/home/anish/.local/lib/python3.6/site-packages/numpy/core/include",
+            "./pyorama/libs/include"
         ],
         "language": "c",
         "libraries": [
@@ -29,12 +26,18 @@
             "vorbis",
             "vorbisfile",
             "vorbisenc",
-            "opusfile",
+            "opus",
             "FLAC",
-            "chipmunk",
-            "assimp"
+            "assimp",
+            "chipmunk"
+        ],
+        "library_dirs": [
+            "./pyorama/libs/shared"
         ],
         "name": "pyorama.event.event_utils",
+        "runtime_library_dirs": [
+            "./pyorama/libs/shared"
+        ],
         "sources": [
             "./pyorama/event/event_utils.pyx"
         ]

@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2020, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -63,7 +63,7 @@ namespace Assimp    {
  *  @code
  * // open the file
  * std::unique_ptr<IOStream> file( pIOHandler->Open( pFile));
- * if( file.get() == nullptr ) {
+ * if( file.get() == NULL) {
  *    throw DeadlyImportError( "Failed to open file " + pFile + ".");
  * }
  *

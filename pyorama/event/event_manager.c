@@ -9,14 +9,14 @@
             "pyorama/libs/include/SDL2/SDL_mixer.h"
         ],
         "extra_compile_args": [
+            "-w",
             "-std=c11",
-            "-Wall",
-            "-Wextra",
-            "-O0",
-            "-g"
+            "-O3",
+            "-ffast-math",
+            "-march=native"
         ],
         "include_dirs": [
-            "/home/anish/.local/lib/python3.8/site-packages/numpy/core/include",
+            "/home/anish/.local/lib/python3.6/site-packages/numpy/core/include",
             "./pyorama/libs/include"
         ],
         "language": "c",
