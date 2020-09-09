@@ -286,75 +286,6 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
-.cython .hll { background-color: #ffffcc }
-.cython  { background: #f8f8f8; }
-.cython .c { color: #408080; font-style: italic } /* Comment */
-.cython .err { border: 1px solid #FF0000 } /* Error */
-.cython .k { color: #008000; font-weight: bold } /* Keyword */
-.cython .o { color: #666666 } /* Operator */
-.cython .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-.cython .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.cython .cp { color: #BC7A00 } /* Comment.Preproc */
-.cython .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-.cython .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.cython .cs { color: #408080; font-style: italic } /* Comment.Special */
-.cython .gd { color: #A00000 } /* Generic.Deleted */
-.cython .ge { font-style: italic } /* Generic.Emph */
-.cython .gr { color: #FF0000 } /* Generic.Error */
-.cython .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.cython .gi { color: #00A000 } /* Generic.Inserted */
-.cython .go { color: #888888 } /* Generic.Output */
-.cython .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.cython .gs { font-weight: bold } /* Generic.Strong */
-.cython .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.cython .gt { color: #0044DD } /* Generic.Traceback */
-.cython .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.cython .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.cython .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.cython .kp { color: #008000 } /* Keyword.Pseudo */
-.cython .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.cython .kt { color: #B00040 } /* Keyword.Type */
-.cython .m { color: #666666 } /* Literal.Number */
-.cython .s { color: #BA2121 } /* Literal.String */
-.cython .na { color: #7D9029 } /* Name.Attribute */
-.cython .nb { color: #008000 } /* Name.Builtin */
-.cython .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.cython .no { color: #880000 } /* Name.Constant */
-.cython .nd { color: #AA22FF } /* Name.Decorator */
-.cython .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.cython .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.cython .nf { color: #0000FF } /* Name.Function */
-.cython .nl { color: #A0A000 } /* Name.Label */
-.cython .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.cython .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.cython .nv { color: #19177C } /* Name.Variable */
-.cython .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.cython .w { color: #bbbbbb } /* Text.Whitespace */
-.cython .mb { color: #666666 } /* Literal.Number.Bin */
-.cython .mf { color: #666666 } /* Literal.Number.Float */
-.cython .mh { color: #666666 } /* Literal.Number.Hex */
-.cython .mi { color: #666666 } /* Literal.Number.Integer */
-.cython .mo { color: #666666 } /* Literal.Number.Oct */
-.cython .sa { color: #BA2121 } /* Literal.String.Affix */
-.cython .sb { color: #BA2121 } /* Literal.String.Backtick */
-.cython .sc { color: #BA2121 } /* Literal.String.Char */
-.cython .dl { color: #BA2121 } /* Literal.String.Delimiter */
-.cython .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.cython .s2 { color: #BA2121 } /* Literal.String.Double */
-.cython .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.cython .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.cython .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.cython .sx { color: #008000 } /* Literal.String.Other */
-.cython .sr { color: #BB6688 } /* Literal.String.Regex */
-.cython .s1 { color: #BA2121 } /* Literal.String.Single */
-.cython .ss { color: #19177C } /* Literal.String.Symbol */
-.cython .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.cython .fm { color: #0000FF } /* Name.Function.Magic */
-.cython .vc { color: #19177C } /* Name.Variable.Class */
-.cython .vg { color: #19177C } /* Name.Variable.Global */
-.cython .vi { color: #19177C } /* Name.Variable.Instance */
-.cython .vm { color: #19177C } /* Name.Variable.Magic */
-.cython .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 </head>
 <body class="cython">
@@ -364,7 +295,7 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="graphics_utils.c">graphics_utils.c</a></p>
-<div class="cython"><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_buffer_usage_to_gl</span><span class="p">(</span><span class="n">BufferUsage</span> <span class="n">usage</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<div class="cython"><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: cdef uint32_t c_buffer_usage_to_gl(BufferUsage usage) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_buffer_usage_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_BufferUsage __pyx_v_usage) {
   uint32_t __pyx_r;
 /* … */
@@ -373,30 +304,30 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">002</span>:     <span class="k">if</span> <span class="n">usage</span> <span class="o">==</span> <span class="n">BUFFER_USAGE_STATIC</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">002</span>:     if usage == BUFFER_USAGE_STATIC:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_usage) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_BUFFER_USAGE_STATIC:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_BUFFER_USAGE_DYNAMIC:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">003</span>:         <span class="k">return</span> <span class="n">GL_STATIC_DRAW</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">003</span>:         return GL_STATIC_DRAW</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_STATIC_DRAW;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">004</span>:     <span class="k">elif</span> <span class="n">usage</span> <span class="o">==</span> <span class="n">BUFFER_USAGE_DYNAMIC</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">004</span>:     elif usage == BUFFER_USAGE_DYNAMIC:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_BUFFER_USAGE_STREAM:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">005</span>:         <span class="k">return</span> <span class="n">GL_DYNAMIC_DRAW</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">005</span>:         return GL_DYNAMIC_DRAW</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_DYNAMIC_DRAW;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">006</span>:     <span class="k">elif</span> <span class="n">usage</span> <span class="o">==</span> <span class="n">BUFFER_USAGE_STREAM</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">006</span>:     elif usage == BUFFER_USAGE_STREAM:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">007</span>:         <span class="k">return</span> <span class="n">GL_STREAM_DRAW</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">007</span>:         return GL_STREAM_DRAW</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_STREAM_DRAW;
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">008</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">009</span>: <span class="k">cdef</span> <span class="kt">size_t</span> <span class="nf">c_index_format_get_size</span><span class="p">(</span><span class="n">IndexFormat</span> <span class="n">format</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">009</span>: cdef size_t c_index_format_get_size(IndexFormat format) nogil:</pre>
 <pre class='cython code score-0 '>static size_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_index_format_get_size(enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat __pyx_v_format) {
   size_t __pyx_r;
 /* … */
@@ -405,30 +336,30 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">010</span>:     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="n">INDEX_FORMAT_U8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">010</span>:     if format == INDEX_FORMAT_U8:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_format) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_INDEX_FORMAT_U8:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_INDEX_FORMAT_U16:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">uint8_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>:         return sizeof(uint8_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(uint8_t));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">INDEX_FORMAT_U16</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>:     elif format == INDEX_FORMAT_U16:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_INDEX_FORMAT_U32:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">uint16_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:         return sizeof(uint16_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(uint16_t));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">INDEX_FORMAT_U32</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:     elif format == INDEX_FORMAT_U32:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">uint32_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         return sizeof(uint32_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(uint32_t));
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">016</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_index_format_to_gl</span><span class="p">(</span><span class="n">IndexFormat</span> <span class="n">format</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>: cdef uint32_t c_index_format_to_gl(IndexFormat format) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_index_format_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat __pyx_v_format) {
   uint32_t __pyx_r;
 /* … */
@@ -437,30 +368,30 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">018</span>:     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="n">INDEX_FORMAT_U8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">018</span>:     if format == INDEX_FORMAT_U8:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_format) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_INDEX_FORMAT_U8:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_INDEX_FORMAT_U16:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">019</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_BYTE</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">019</span>:         return GL_UNSIGNED_BYTE</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_BYTE;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">020</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">INDEX_FORMAT_U16</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">020</span>:     elif format == INDEX_FORMAT_U16:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_INDEX_FORMAT_U32:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_SHORT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>:         return GL_UNSIGNED_SHORT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_SHORT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">INDEX_FORMAT_U32</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:     elif format == INDEX_FORMAT_U32:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_INT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:         return GL_UNSIGNED_INT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_INT;
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">024</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>: <span class="k">cdef</span> <span class="kt">size_t</span> <span class="nf">c_uniform_type_get_size</span><span class="p">(</span><span class="n">UniformType</span> <span class="nb">type</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>: cdef size_t c_uniform_type_get_size(UniformType type) nogil:</pre>
 <pre class='cython code score-0 '>static size_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_uniform_type_get_size(enum __pyx_t_7pyorama_8graphics_14graphics_enums_UniformType __pyx_v_type) {
   size_t __pyx_r;
 /* … */
@@ -469,60 +400,60 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_INT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:     if type == UNIFORM_TYPE_INT:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_type) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_INT:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_FLOAT:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">int32_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:         return sizeof(int32_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(int32_t));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_FLOAT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:     elif type == UNIFORM_TYPE_FLOAT:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_VEC2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:         return sizeof(float)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(float));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_VEC2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:     elif type == UNIFORM_TYPE_VEC2:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_VEC3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">031</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">Vec2C</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">031</span>:         return sizeof(Vec2C)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(__pyx_t_7pyorama_6math3d_6common_Vec2C));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_VEC3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:     elif type == UNIFORM_TYPE_VEC3:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_VEC4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">Vec3C</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:         return sizeof(Vec3C)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(__pyx_t_7pyorama_6math3d_6common_Vec3C));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">034</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_VEC4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">034</span>:     elif type == UNIFORM_TYPE_VEC4:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_MAT2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">Vec4C</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">035</span>:         return sizeof(Vec4C)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(__pyx_t_7pyorama_6math3d_6common_Vec4C));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_MAT2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:     elif type == UNIFORM_TYPE_MAT2:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_MAT3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">037</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">Mat2C</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">037</span>:         return sizeof(Mat2C)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(__pyx_t_7pyorama_6math3d_6common_Mat2C));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_MAT3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:     elif type == UNIFORM_TYPE_MAT3:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_MAT4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">Mat3C</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:         return sizeof(Mat3C)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(__pyx_t_7pyorama_6math3d_6common_Mat3C));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">UNIFORM_TYPE_MAT4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:     elif type == UNIFORM_TYPE_MAT4:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">041</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">Mat4C</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">041</span>:         return sizeof(Mat4C)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(__pyx_t_7pyorama_6math3d_6common_Mat4C));
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">042</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_shader_type_to_gl</span><span class="p">(</span><span class="n">ShaderType</span> <span class="nb">type</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>: cdef uint32_t c_shader_type_to_gl(ShaderType type) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_shader_type_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_ShaderType __pyx_v_type) {
   uint32_t __pyx_r;
 /* … */
@@ -531,24 +462,24 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">044</span>:     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">SHADER_TYPE_VERTEX</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">044</span>:     if type == SHADER_TYPE_VERTEX:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_type) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_SHADER_TYPE_VERTEX:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_SHADER_TYPE_FRAGMENT:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">045</span>:         <span class="k">return</span> <span class="n">GL_VERTEX_SHADER</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">045</span>:         return GL_VERTEX_SHADER</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_VERTEX_SHADER;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">SHADER_TYPE_FRAGMENT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:     elif type == SHADER_TYPE_FRAGMENT:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">047</span>:         <span class="k">return</span> <span class="n">GL_FRAGMENT_SHADER</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">047</span>:         return GL_FRAGMENT_SHADER</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_FRAGMENT_SHADER;
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">048</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_vertex_comp_type_to_gl</span><span class="p">(</span><span class="n">VertexCompType</span> <span class="nb">type</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>: cdef uint32_t c_vertex_comp_type_to_gl(VertexCompType type) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_vertex_comp_type_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_VertexCompType __pyx_v_type) {
   uint32_t __pyx_r;
 /* … */
@@ -557,42 +488,42 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_F32</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">050</span>:     if type == VERTEX_COMP_TYPE_F32:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_type) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_F32:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_I8:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:         <span class="k">return</span> <span class="n">GL_FLOAT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:         return GL_FLOAT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_FLOAT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_I8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:     elif type == VERTEX_COMP_TYPE_I8:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_U8:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">053</span>:         <span class="k">return</span> <span class="n">GL_BYTE</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">053</span>:         return GL_BYTE</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_BYTE;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_U8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:     elif type == VERTEX_COMP_TYPE_U8:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_I16:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_BYTE</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         return GL_UNSIGNED_BYTE</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_BYTE;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_I16</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:     elif type == VERTEX_COMP_TYPE_I16:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_U16:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         <span class="k">return</span> <span class="n">GL_SHORT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         return GL_SHORT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_SHORT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_U16</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:     elif type == VERTEX_COMP_TYPE_U16:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_SHORT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:         return GL_UNSIGNED_SHORT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_SHORT;
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">060</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>: <span class="k">cdef</span> <span class="kt">size_t</span> <span class="nf">c_vertex_comp_type_get_size</span><span class="p">(</span><span class="n">VertexCompType</span> <span class="nb">type</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>: cdef size_t c_vertex_comp_type_get_size(VertexCompType type) nogil:</pre>
 <pre class='cython code score-0 '>static size_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_vertex_comp_type_get_size(enum __pyx_t_7pyorama_8graphics_14graphics_enums_VertexCompType __pyx_v_type) {
   size_t __pyx_r;
 /* … */
@@ -601,42 +532,42 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_F32</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:     if type == VERTEX_COMP_TYPE_F32:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_type) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_F32:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_I8:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:         return sizeof(float)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(float));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">064</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_I8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">064</span>:     elif type == VERTEX_COMP_TYPE_I8:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_U8:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">065</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">int8_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">065</span>:         return sizeof(int8_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(int8_t));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_U8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:     elif type == VERTEX_COMP_TYPE_U8:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_I16:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">uint8_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         return sizeof(uint8_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(uint8_t));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_I16</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:     elif type == VERTEX_COMP_TYPE_I16:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_VERTEX_COMP_TYPE_U16:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">int16_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:         return sizeof(int16_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(int16_t));
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:     <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">VERTEX_COMP_TYPE_U16</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:     elif type == VERTEX_COMP_TYPE_U16:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">071</span>:         <span class="k">return</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">uint16_t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">071</span>:         return sizeof(uint16_t)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (sizeof(uint16_t));
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">072</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_texture_filter_to_gl</span><span class="p">(</span><span class="n">TextureFilter</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">bint</span> <span class="n">mipmaps</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>: cdef uint32_t c_texture_filter_to_gl(TextureFilter filter, bint mipmaps) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_filter_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_TextureFilter __pyx_v_filter, int __pyx_v_mipmaps) {
   uint32_t __pyx_r;
 /* … */
@@ -645,30 +576,30 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:     <span class="k">if</span> <span class="n">mipmaps</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:     if mipmaps:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = (__pyx_v_mipmaps != 0);
   if (__pyx_t_1) {
 /* … */
     goto __pyx_L3;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">075</span>:         <span class="k">if</span> <span class="nb">filter</span> <span class="o">==</span> <span class="n">TEXTURE_FILTER_NEAREST</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">075</span>:         if filter == TEXTURE_FILTER_NEAREST:</pre>
 <pre class='cython code score-0 '>    switch (__pyx_v_filter) {
       case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FILTER_NEAREST:
 /* … */
       break;
       case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FILTER_LINEAR:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">076</span>:             <span class="k">return</span> <span class="n">GL_NEAREST_MIPMAP_NEAREST</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">076</span>:             return GL_NEAREST_MIPMAP_NEAREST</pre>
 <pre class='cython code score-0 '>      __pyx_r = GL_NEAREST_MIPMAP_NEAREST;
       goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">077</span>:         <span class="k">elif</span> <span class="nb">filter</span> <span class="o">==</span> <span class="n">TEXTURE_FILTER_LINEAR</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">077</span>:         elif filter == TEXTURE_FILTER_LINEAR:</pre>
 <pre class='cython code score-0 '>      break;
       default: break;
     }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:             <span class="k">return</span> <span class="n">GL_LINEAR_MIPMAP_LINEAR</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:             return GL_LINEAR_MIPMAP_LINEAR</pre>
 <pre class='cython code score-0 '>      __pyx_r = GL_LINEAR_MIPMAP_LINEAR;
       goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">079</span>:     <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">080</span>:         <span class="k">if</span> <span class="nb">filter</span> <span class="o">==</span> <span class="n">TEXTURE_FILTER_NEAREST</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">079</span>:     else:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">080</span>:         if filter == TEXTURE_FILTER_NEAREST:</pre>
 <pre class='cython code score-0 '>  /*else*/ {
 /* … */
     switch (__pyx_v_filter) {
@@ -676,20 +607,20 @@ body.cython { font-family: courier; font-size: 12; }
 /* … */
       break;
       case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FILTER_LINEAR:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">081</span>:             <span class="k">return</span> <span class="n">GL_NEAREST</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">081</span>:             return GL_NEAREST</pre>
 <pre class='cython code score-0 '>      __pyx_r = GL_NEAREST;
       goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:         <span class="k">elif</span> <span class="nb">filter</span> <span class="o">==</span> <span class="n">TEXTURE_FILTER_LINEAR</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:         elif filter == TEXTURE_FILTER_LINEAR:</pre>
 <pre class='cython code score-0 '>      break;
       default: break;
     }
   }
   __pyx_L3:;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">083</span>:             <span class="k">return</span> <span class="n">GL_LINEAR</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">083</span>:             return GL_LINEAR</pre>
 <pre class='cython code score-0 '>      __pyx_r = GL_LINEAR;
       goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">084</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">085</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_texture_wrap_to_gl</span><span class="p">(</span><span class="n">TextureWrap</span> <span class="n">wrap</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">085</span>: cdef uint32_t c_texture_wrap_to_gl(TextureWrap wrap) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_wrap_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_TextureWrap __pyx_v_wrap) {
   uint32_t __pyx_r;
 /* … */
@@ -698,32 +629,32 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">086</span>:     <span class="k">if</span> <span class="n">wrap</span> <span class="o">==</span> <span class="n">TEXTURE_WRAP_REPEAT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">086</span>:     if wrap == TEXTURE_WRAP_REPEAT:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_wrap) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_WRAP_REPEAT:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_WRAP_MIRRORED_REPEAT:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">087</span>:         <span class="k">return</span> <span class="n">GL_REPEAT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">087</span>:         return GL_REPEAT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_REPEAT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">088</span>:     <span class="k">elif</span> <span class="n">wrap</span> <span class="o">==</span> <span class="n">TEXTURE_WRAP_MIRRORED_REPEAT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">088</span>:     elif wrap == TEXTURE_WRAP_MIRRORED_REPEAT:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_WRAP_CLAMP_TO_EDGE:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">089</span>:         <span class="k">return</span> <span class="n">GL_MIRRORED_REPEAT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">089</span>:         return GL_MIRRORED_REPEAT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_MIRRORED_REPEAT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">090</span>:     <span class="k">elif</span> <span class="n">wrap</span> <span class="o">==</span> <span class="n">TEXTURE_WRAP_CLAMP_TO_EDGE</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">090</span>:     elif wrap == TEXTURE_WRAP_CLAMP_TO_EDGE:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:         <span class="k">return</span> <span class="n">GL_CLAMP_TO_EDGE</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:         return GL_CLAMP_TO_EDGE</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_CLAMP_TO_EDGE;
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">092</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">093</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">094</span>: </pre>
-<pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">095</span>: <span class="k">cdef</span> <span class="kt">AttributeType</span> <span class="nf">c_attribute_type_from_gl</span><span class="p">(</span><span class="n">uint32_t</span> <span class="n">gl_type</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">095</span>: cdef AttributeType c_attribute_type_from_gl(uint32_t gl_type) except *:</pre>
 <pre class='cython code score-6 '>static enum __pyx_t_7pyorama_8graphics_14graphics_enums_AttributeType __pyx_f_7pyorama_8graphics_14graphics_utils_c_attribute_type_from_gl(uint32_t __pyx_v_gl_type) {
   enum __pyx_t_7pyorama_8graphics_14graphics_enums_AttributeType __pyx_r;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -741,59 +672,59 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">096</span>:     <span class="k">if</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_INT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">096</span>:     if gl_type == GL_INT:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_gl_type) {
     case GL_INT:
 /* … */
     break;
     case GL_FLOAT:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_INT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>:         return ATTRIBUTE_TYPE_INT</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_INT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">098</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">098</span>:     elif gl_type == GL_FLOAT:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_VEC2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">099</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_FLOAT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">099</span>:         return ATTRIBUTE_TYPE_FLOAT</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_FLOAT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">100</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_VEC2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">100</span>:     elif gl_type == GL_FLOAT_VEC2:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_VEC3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">101</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_VEC2</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">101</span>:         return ATTRIBUTE_TYPE_VEC2</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_VEC2;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">102</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_VEC3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">102</span>:     elif gl_type == GL_FLOAT_VEC3:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_VEC4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">103</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_VEC3</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">103</span>:         return ATTRIBUTE_TYPE_VEC3</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_VEC3;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">104</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_VEC4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">104</span>:     elif gl_type == GL_FLOAT_VEC4:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_MAT2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_VEC4</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">105</span>:         return ATTRIBUTE_TYPE_VEC4</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_VEC4;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">106</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_MAT2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">106</span>:     elif gl_type == GL_FLOAT_MAT2:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_MAT3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">107</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_MAT2</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">107</span>:         return ATTRIBUTE_TYPE_MAT2</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_MAT2;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">108</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_MAT3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">108</span>:     elif gl_type == GL_FLOAT_MAT3:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_MAT4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_MAT3</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:         return ATTRIBUTE_TYPE_MAT3</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_MAT3;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">110</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_MAT4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">110</span>:     elif gl_type == GL_FLOAT_MAT4:</pre>
 <pre class='cython code score-0 '>    break;
     default:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>:         <span class="k">return</span> <span class="n">ATTRIBUTE_TYPE_MAT4</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>:         return ATTRIBUTE_TYPE_MAT4</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_ATTRIBUTE_TYPE_MAT4;
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">112</span>:     <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-23" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">113</span>:         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Program: unsupported OpenGL attribute data type {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gl_type</span><span class="p">))</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">112</span>:     else:</pre>
+<pre class="cython line score-23" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">113</span>:         raise ValueError("Program: unsupported OpenGL attribute data type {0}".format(gl_type))</pre>
 <pre class='cython code score-23 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_kp_u_Program_unsupported_OpenGL_attri, __pyx_n_s_format);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
     __pyx_t_3 = __Pyx_PyInt_From_uint32_t(__pyx_v_gl_type);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 113, __pyx_L1_error)</span>
@@ -823,7 +754,7 @@ body.cython { font-family: courier; font-size: 12; }
     break;
   }
 </pre><pre class="cython line score-0">&#xA0;<span class="">114</span>: </pre>
-<pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">115</span>: <span class="k">cdef</span> <span class="kt">UniformType</span> <span class="nf">c_uniform_type_from_gl</span><span class="p">(</span><span class="n">uint32_t</span> <span class="n">gl_type</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">115</span>: cdef UniformType c_uniform_type_from_gl(uint32_t gl_type) except *:</pre>
 <pre class='cython code score-6 '>static enum __pyx_t_7pyorama_8graphics_14graphics_enums_UniformType __pyx_f_7pyorama_8graphics_14graphics_utils_c_uniform_type_from_gl(uint32_t __pyx_v_gl_type) {
   enum __pyx_t_7pyorama_8graphics_14graphics_enums_UniformType __pyx_r;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -841,7 +772,7 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">116</span>:     <span class="k">if</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_INT</span> <span class="ow">or</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_SAMPLER_2D</span> <span class="ow">or</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_SAMPLER_CUBE</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">116</span>:     if gl_type == GL_INT or gl_type == GL_SAMPLER_2D or gl_type == GL_SAMPLER_CUBE:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_gl_type) {
     case GL_INT:
     case GL_SAMPLER_2D:
@@ -849,53 +780,53 @@ body.cython { font-family: courier; font-size: 12; }
 /* … */
     break;
     case GL_FLOAT:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">117</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_INT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">117</span>:         return UNIFORM_TYPE_INT</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_INT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">118</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">118</span>:     elif gl_type == GL_FLOAT:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_VEC2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">119</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_FLOAT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">119</span>:         return UNIFORM_TYPE_FLOAT</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_FLOAT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">120</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_VEC2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">120</span>:     elif gl_type == GL_FLOAT_VEC2:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_VEC3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">121</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_VEC2</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">121</span>:         return UNIFORM_TYPE_VEC2</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_VEC2;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">122</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_VEC3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">122</span>:     elif gl_type == GL_FLOAT_VEC3:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_VEC4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">123</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_VEC3</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">123</span>:         return UNIFORM_TYPE_VEC3</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_VEC3;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">124</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_VEC4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">124</span>:     elif gl_type == GL_FLOAT_VEC4:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_MAT2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">125</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_VEC4</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">125</span>:         return UNIFORM_TYPE_VEC4</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_VEC4;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">126</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_MAT2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">126</span>:     elif gl_type == GL_FLOAT_MAT2:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_MAT3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">127</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_MAT2</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">127</span>:         return UNIFORM_TYPE_MAT2</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_MAT2;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">128</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_MAT3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">128</span>:     elif gl_type == GL_FLOAT_MAT3:</pre>
 <pre class='cython code score-0 '>    break;
     case GL_FLOAT_MAT4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">129</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_MAT3</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">129</span>:         return UNIFORM_TYPE_MAT3</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_MAT3;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">130</span>:     <span class="k">elif</span> <span class="n">gl_type</span> <span class="o">==</span> <span class="n">GL_FLOAT_MAT4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">130</span>:     elif gl_type == GL_FLOAT_MAT4:</pre>
 <pre class='cython code score-0 '>    break;
     default:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:         <span class="k">return</span> <span class="n">UNIFORM_TYPE_MAT4</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">131</span>:         return UNIFORM_TYPE_MAT4</pre>
 <pre class='cython code score-0 '>    __pyx_r = __pyx_e_7pyorama_8graphics_14graphics_enums_UNIFORM_TYPE_MAT4;
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">132</span>:     <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-23" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">133</span>:         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Program: unsupported OpenGL uniform data type {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gl_type</span><span class="p">))</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">132</span>:     else:</pre>
+<pre class="cython line score-23" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">133</span>:         raise ValueError("Program: unsupported OpenGL uniform data type {0}".format(gl_type))</pre>
 <pre class='cython code score-23 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_kp_u_Program_unsupported_OpenGL_unifo, __pyx_n_s_format);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
     __pyx_t_3 = __Pyx_PyInt_From_uint32_t(__pyx_v_gl_type);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)</span>
@@ -925,7 +856,7 @@ body.cython { font-family: courier; font-size: 12; }
     break;
   }
 </pre><pre class="cython line score-0">&#xA0;<span class="">134</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">135</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_image_data_flip_x</span><span class="p">(</span><span class="n">uint16_t</span> <span class="n">width</span><span class="p">,</span> <span class="n">uint16_t</span> <span class="n">height</span><span class="p">,</span> <span class="n">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">135</span>: cdef void c_image_data_flip_x(uint16_t width, uint16_t height, uint8_t *data) nogil:</pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_8graphics_14graphics_utils_c_image_data_flip_x(uint16_t __pyx_v_width, uint16_t __pyx_v_height, uint8_t *__pyx_v_data) {
   uint32_t *__pyx_v_data_ptr;
   size_t __pyx_v_y;
@@ -936,43 +867,43 @@ body.cython { font-family: courier; font-size: 12; }
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">136</span>:     <span class="k">cdef</span><span class="p">:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">137</span>:         <span class="n">uint32_t</span> <span class="o">*</span><span class="n">data_ptr</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">138</span>:         <span class="n">size_t</span> <span class="n">y</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">139</span>:         <span class="n">size_t</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">140</span>:         <span class="n">uint16_t</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">141</span>:     <span class="n">data_ptr</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">uint32_t</span> <span class="o">*&gt;</span><span class="n">data</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">136</span>:     cdef:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">137</span>:         uint32_t *data_ptr</pre>
+<pre class="cython line score-0">&#xA0;<span class="">138</span>:         size_t y</pre>
+<pre class="cython line score-0">&#xA0;<span class="">139</span>:         size_t src, dst</pre>
+<pre class="cython line score-0">&#xA0;<span class="">140</span>:         uint16_t left, right</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">141</span>:     data_ptr = &lt;uint32_t *&gt;data</pre>
 <pre class='cython code score-0 '>  __pyx_v_data_ptr = ((uint32_t *)__pyx_v_data);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">142</span>:     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">142</span>:     for y in range(height):</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = __pyx_v_height;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 &lt; __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_y = __pyx_t_3;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">143</span>:         <span class="n">left</span> <span class="o">=</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">143</span>:         left = 0</pre>
 <pre class='cython code score-0 '>    __pyx_v_left = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">144</span>:         <span class="n">right</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mf">1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">144</span>:         right = width - 1</pre>
 <pre class='cython code score-0 '>    __pyx_v_right = (__pyx_v_width - 1);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">145</span>:         <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">145</span>:         while left &lt; right:</pre>
 <pre class='cython code score-0 '>    while (1) {
       __pyx_t_4 = ((__pyx_v_left &lt; __pyx_v_right) != 0);
       if (!__pyx_t_4) break;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">146</span>:             <span class="n">src</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">left</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">146</span>:             src = y * width + left</pre>
 <pre class='cython code score-0 '>      __pyx_v_src = ((__pyx_v_y * __pyx_v_width) + __pyx_v_left);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">147</span>:             <span class="n">dst</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">right</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">147</span>:             dst = y * width + right</pre>
 <pre class='cython code score-0 '>      __pyx_v_dst = ((__pyx_v_y * __pyx_v_width) + __pyx_v_right);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">148</span>:             <span class="n">data_ptr</span><span class="p">[</span><span class="n">src</span><span class="p">],</span> <span class="n">data_ptr</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_ptr</span><span class="p">[</span><span class="n">dst</span><span class="p">],</span> <span class="n">data_ptr</span><span class="p">[</span><span class="n">src</span><span class="p">]</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">148</span>:             data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]</pre>
 <pre class='cython code score-0 '>      __pyx_t_5 = (__pyx_v_data_ptr[__pyx_v_dst]);
       __pyx_t_6 = (__pyx_v_data_ptr[__pyx_v_src]);
       (__pyx_v_data_ptr[__pyx_v_src]) = __pyx_t_5;
       (__pyx_v_data_ptr[__pyx_v_dst]) = __pyx_t_6;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">149</span>:             <span class="n">left</span> <span class="o">+=</span> <span class="mf">1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">149</span>:             left += 1</pre>
 <pre class='cython code score-0 '>      __pyx_v_left = (__pyx_v_left + 1);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">150</span>:             <span class="n">right</span> <span class="o">-=</span> <span class="mf">1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">150</span>:             right -= 1</pre>
 <pre class='cython code score-0 '>      __pyx_v_right = (__pyx_v_right - 1);
     }
   }
 </pre><pre class="cython line score-0">&#xA0;<span class="">151</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">152</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_image_data_flip_y</span><span class="p">(</span><span class="n">uint16_t</span> <span class="n">width</span><span class="p">,</span> <span class="n">uint16_t</span> <span class="n">height</span><span class="p">,</span> <span class="n">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">152</span>: cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) nogil:</pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_8graphics_14graphics_utils_c_image_data_flip_y(uint16_t __pyx_v_width, uint16_t __pyx_v_height, uint8_t *__pyx_v_data) {
   uint32_t *__pyx_v_data_ptr;
   size_t __pyx_v_x;
@@ -983,43 +914,43 @@ body.cython { font-family: courier; font-size: 12; }
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">153</span>:     <span class="k">cdef</span><span class="p">:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">154</span>:         <span class="n">uint32_t</span> <span class="o">*</span><span class="n">data_ptr</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">155</span>:         <span class="n">size_t</span> <span class="n">x</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">156</span>:         <span class="n">size_t</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">157</span>:         <span class="n">uint16_t</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">158</span>:     <span class="n">data_ptr</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">uint32_t</span> <span class="o">*&gt;</span><span class="n">data</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">153</span>:     cdef:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">154</span>:         uint32_t *data_ptr</pre>
+<pre class="cython line score-0">&#xA0;<span class="">155</span>:         size_t x</pre>
+<pre class="cython line score-0">&#xA0;<span class="">156</span>:         size_t src, dst</pre>
+<pre class="cython line score-0">&#xA0;<span class="">157</span>:         uint16_t top, bottom</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">158</span>:     data_ptr = &lt;uint32_t *&gt;data</pre>
 <pre class='cython code score-0 '>  __pyx_v_data_ptr = ((uint32_t *)__pyx_v_data);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">159</span>:     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">159</span>:     for x in range(width):</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = __pyx_v_width;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 &lt; __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_x = __pyx_t_3;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">160</span>:         <span class="n">top</span> <span class="o">=</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">160</span>:         top = 0</pre>
 <pre class='cython code score-0 '>    __pyx_v_top = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">161</span>:         <span class="n">bottom</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="mf">1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">161</span>:         bottom = height - 1</pre>
 <pre class='cython code score-0 '>    __pyx_v_bottom = (__pyx_v_height - 1);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">162</span>:         <span class="k">while</span> <span class="n">top</span> <span class="o">&lt;</span> <span class="n">bottom</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">162</span>:         while top &lt; bottom:</pre>
 <pre class='cython code score-0 '>    while (1) {
       __pyx_t_4 = ((__pyx_v_top &lt; __pyx_v_bottom) != 0);
       if (!__pyx_t_4) break;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">163</span>:             <span class="n">src</span> <span class="o">=</span> <span class="n">top</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">x</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">163</span>:             src = top * width + x</pre>
 <pre class='cython code score-0 '>      __pyx_v_src = ((__pyx_v_top * __pyx_v_width) + __pyx_v_x);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">164</span>:             <span class="n">dst</span> <span class="o">=</span> <span class="n">bottom</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">x</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">164</span>:             dst = bottom * width + x</pre>
 <pre class='cython code score-0 '>      __pyx_v_dst = ((__pyx_v_bottom * __pyx_v_width) + __pyx_v_x);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">165</span>:             <span class="n">data_ptr</span><span class="p">[</span><span class="n">src</span><span class="p">],</span> <span class="n">data_ptr</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_ptr</span><span class="p">[</span><span class="n">dst</span><span class="p">],</span> <span class="n">data_ptr</span><span class="p">[</span><span class="n">src</span><span class="p">]</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">165</span>:             data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]</pre>
 <pre class='cython code score-0 '>      __pyx_t_5 = (__pyx_v_data_ptr[__pyx_v_dst]);
       __pyx_t_6 = (__pyx_v_data_ptr[__pyx_v_src]);
       (__pyx_v_data_ptr[__pyx_v_src]) = __pyx_t_5;
       (__pyx_v_data_ptr[__pyx_v_dst]) = __pyx_t_6;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">166</span>:             <span class="n">top</span> <span class="o">+=</span> <span class="mf">1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">166</span>:             top += 1</pre>
 <pre class='cython code score-0 '>      __pyx_v_top = (__pyx_v_top + 1);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">167</span>:             <span class="n">bottom</span> <span class="o">-=</span> <span class="mf">1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">167</span>:             bottom -= 1</pre>
 <pre class='cython code score-0 '>      __pyx_v_bottom = (__pyx_v_bottom - 1);
     }
   }
 </pre><pre class="cython line score-0">&#xA0;<span class="">168</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">169</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_clear_flags_to_gl</span><span class="p">(</span><span class="n">uint32_t</span> <span class="n">flags</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">169</span>: cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_clear_flags_to_gl(uint32_t __pyx_v_flags) {
   uint32_t __pyx_v_gl_flags;
   uint32_t __pyx_r;
@@ -1028,34 +959,34 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">170</span>:     <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">gl_flags</span> <span class="o">=</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">170</span>:     cdef uint32_t gl_flags = 0</pre>
 <pre class='cython code score-0 '>  __pyx_v_gl_flags = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">171</span>:     <span class="k">if</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="n">VIEW_CLEAR_COLOR</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">171</span>:     if flags &amp; VIEW_CLEAR_COLOR:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((__pyx_v_flags &amp; __pyx_e_7pyorama_8graphics_14graphics_enums_VIEW_CLEAR_COLOR) != 0);
   if (__pyx_t_1) {
 /* … */
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">172</span>:         <span class="n">gl_flags</span> <span class="o">|=</span> <span class="n">GL_COLOR_BUFFER_BIT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">172</span>:         gl_flags |= GL_COLOR_BUFFER_BIT</pre>
 <pre class='cython code score-0 '>    __pyx_v_gl_flags = (__pyx_v_gl_flags | GL_COLOR_BUFFER_BIT);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">173</span>:     <span class="k">if</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="n">VIEW_CLEAR_DEPTH</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">173</span>:     if flags &amp; VIEW_CLEAR_DEPTH:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((__pyx_v_flags &amp; __pyx_e_7pyorama_8graphics_14graphics_enums_VIEW_CLEAR_DEPTH) != 0);
   if (__pyx_t_1) {
 /* … */
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">174</span>:         <span class="n">gl_flags</span> <span class="o">|=</span> <span class="n">GL_DEPTH_BUFFER_BIT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">174</span>:         gl_flags |= GL_DEPTH_BUFFER_BIT</pre>
 <pre class='cython code score-0 '>    __pyx_v_gl_flags = (__pyx_v_gl_flags | GL_DEPTH_BUFFER_BIT);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">175</span>:     <span class="k">if</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="n">VIEW_CLEAR_STENCIL</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">175</span>:     if flags &amp; VIEW_CLEAR_STENCIL:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((__pyx_v_flags &amp; __pyx_e_7pyorama_8graphics_14graphics_enums_VIEW_CLEAR_STENCIL) != 0);
   if (__pyx_t_1) {
 /* … */
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">176</span>:         <span class="n">gl_flags</span> <span class="o">|=</span> <span class="n">GL_STENCIL_BUFFER_BIT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">176</span>:         gl_flags |= GL_STENCIL_BUFFER_BIT</pre>
 <pre class='cython code score-0 '>    __pyx_v_gl_flags = (__pyx_v_gl_flags | GL_STENCIL_BUFFER_BIT);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">177</span>:     <span class="k">return</span> <span class="n">gl_flags</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">177</span>:     return gl_flags</pre>
 <pre class='cython code score-0 '>  __pyx_r = __pyx_v_gl_flags;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">178</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">179</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_texture_unit_to_gl</span><span class="p">(</span><span class="n">TextureUnit</span> <span class="n">unit</span><span class="p">):</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">179</span>: cdef uint32_t c_texture_unit_to_gl(TextureUnit unit):</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_unit_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_TextureUnit __pyx_v_unit) {
   uint32_t __pyx_r;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -1067,108 +998,108 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">180</span>:     <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_0</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">180</span>:     if unit == TEXTURE_UNIT_0:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_unit) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_0:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_1:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">181</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">181</span>:         return GL_TEXTURE0</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE0;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">182</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_1</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">182</span>:     elif unit == TEXTURE_UNIT_1:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_2:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">183</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE1</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">183</span>:         return GL_TEXTURE1</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE1;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">184</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_2</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">184</span>:     elif unit == TEXTURE_UNIT_2:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_3:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">185</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE2</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">185</span>:         return GL_TEXTURE2</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE2;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">186</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_3</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">186</span>:     elif unit == TEXTURE_UNIT_3:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_4:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">187</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE3</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">187</span>:         return GL_TEXTURE3</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE3;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">188</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_4</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">188</span>:     elif unit == TEXTURE_UNIT_4:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_5:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">189</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE4</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">189</span>:         return GL_TEXTURE4</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE4;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">190</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_5</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">190</span>:     elif unit == TEXTURE_UNIT_5:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_6:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">191</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE5</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">191</span>:         return GL_TEXTURE5</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE5;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">192</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_6</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">192</span>:     elif unit == TEXTURE_UNIT_6:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_7:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">193</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE6</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">193</span>:         return GL_TEXTURE6</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE6;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">194</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_7</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">194</span>:     elif unit == TEXTURE_UNIT_7:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_8:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">195</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE7</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">195</span>:         return GL_TEXTURE7</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE7;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">196</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_8</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">196</span>:     elif unit == TEXTURE_UNIT_8:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_9:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">197</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE8</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">197</span>:         return GL_TEXTURE8</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE8;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">198</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_9</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">198</span>:     elif unit == TEXTURE_UNIT_9:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_10:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">199</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE9</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">199</span>:         return GL_TEXTURE9</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE9;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">200</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_10</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">200</span>:     elif unit == TEXTURE_UNIT_10:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_11:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">201</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE10</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">201</span>:         return GL_TEXTURE10</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE10;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">202</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_11</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">202</span>:     elif unit == TEXTURE_UNIT_11:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_12:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">203</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE11</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">203</span>:         return GL_TEXTURE11</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE11;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">204</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_12</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">204</span>:     elif unit == TEXTURE_UNIT_12:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_13:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">205</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE12</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">205</span>:         return GL_TEXTURE12</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE12;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">206</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_13</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">206</span>:     elif unit == TEXTURE_UNIT_13:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_14:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">207</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE13</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">207</span>:         return GL_TEXTURE13</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE13;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">208</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_14</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">208</span>:     elif unit == TEXTURE_UNIT_14:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_15:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">209</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE14</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">209</span>:         return GL_TEXTURE14</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE14;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">210</span>:     <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="n">TEXTURE_UNIT_15</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">210</span>:     elif unit == TEXTURE_UNIT_15:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">211</span>:         <span class="k">return</span> <span class="n">GL_TEXTURE15</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">211</span>:         return GL_TEXTURE15</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_TEXTURE15;
     goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">212</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">213</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_frame_buffer_attachment_to_gl</span><span class="p">(</span><span class="n">FrameBufferAttachment</span> <span class="n">attachment</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">213</span>: cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_frame_buffer_attachment_to_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_FrameBufferAttachment __pyx_v_attachment) {
   uint32_t __pyx_r;
 /* … */
@@ -1177,62 +1108,62 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">214</span>:     <span class="k">if</span> <span class="n">attachment</span> <span class="o">==</span> <span class="n">FRAME_BUFFER_ATTACHMENT_COLOR_0</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">214</span>:     if attachment == FRAME_BUFFER_ATTACHMENT_COLOR_0:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_attachment) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_FRAME_BUFFER_ATTACHMENT_COLOR_0:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_FRAME_BUFFER_ATTACHMENT_DEPTH:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">215</span>:         <span class="k">return</span> <span class="n">GL_COLOR_ATTACHMENT0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">215</span>:         return GL_COLOR_ATTACHMENT0</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_COLOR_ATTACHMENT0;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">216</span>:     <span class="k">elif</span> <span class="n">attachment</span> <span class="o">==</span> <span class="n">FRAME_BUFFER_ATTACHMENT_DEPTH</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">216</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_DEPTH:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_FRAME_BUFFER_ATTACHMENT_STENCIL:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">217</span>:         <span class="k">return</span> <span class="n">GL_DEPTH_ATTACHMENT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">217</span>:         return GL_DEPTH_ATTACHMENT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_DEPTH_ATTACHMENT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">218</span>:     <span class="k">elif</span> <span class="n">attachment</span> <span class="o">==</span> <span class="n">FRAME_BUFFER_ATTACHMENT_STENCIL</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">218</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_STENCIL:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">219</span>:         <span class="k">return</span> <span class="n">GL_STENCIL_ATTACHMENT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">219</span>:         return GL_STENCIL_ATTACHMENT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_STENCIL_ATTACHMENT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">220</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">221</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_1:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">222</span>: <span class="sd">        return GL_COLOR_ATTACHMENT1</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">223</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_2:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">224</span>: <span class="sd">        return GL_COLOR_ATTACHMENT2</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">225</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_3:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">226</span>: <span class="sd">        return GL_COLOR_ATTACHMENT3</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">227</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_4:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">228</span>: <span class="sd">        return GL_COLOR_ATTACHMENT4</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">229</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_5:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">230</span>: <span class="sd">        return GL_COLOR_ATTACHMENT5</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">231</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_6:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">232</span>: <span class="sd">        return GL_COLOR_ATTACHMENT6</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">233</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_7:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">234</span>: <span class="sd">        return GL_COLOR_ATTACHMENT7</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">235</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_8:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">236</span>: <span class="sd">        return GL_COLOR_ATTACHMENT8</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">237</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_9:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">238</span>: <span class="sd">        return GL_COLOR_ATTACHMENT9</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">239</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_10:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">240</span>: <span class="sd">        return GL_COLOR_ATTACHMENT10</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">241</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_11:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">242</span>: <span class="sd">        return GL_COLOR_ATTACHMENT11</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">243</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_12:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">244</span>: <span class="sd">        return GL_COLOR_ATTACHMENT12</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">245</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_13:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">246</span>: <span class="sd">        return GL_COLOR_ATTACHMENT13</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">247</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_14:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">248</span>: <span class="sd">        return GL_COLOR_ATTACHMENT14</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">249</span>: <span class="sd">    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_15:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">250</span>: <span class="sd">        return GL_COLOR_ATTACHMENT15</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">251</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">220</span>:     """</pre>
+<pre class="cython line score-0">&#xA0;<span class="">221</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_1:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">222</span>:         return GL_COLOR_ATTACHMENT1</pre>
+<pre class="cython line score-0">&#xA0;<span class="">223</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_2:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">224</span>:         return GL_COLOR_ATTACHMENT2</pre>
+<pre class="cython line score-0">&#xA0;<span class="">225</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_3:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">226</span>:         return GL_COLOR_ATTACHMENT3</pre>
+<pre class="cython line score-0">&#xA0;<span class="">227</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_4:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">228</span>:         return GL_COLOR_ATTACHMENT4</pre>
+<pre class="cython line score-0">&#xA0;<span class="">229</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_5:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">230</span>:         return GL_COLOR_ATTACHMENT5</pre>
+<pre class="cython line score-0">&#xA0;<span class="">231</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_6:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">232</span>:         return GL_COLOR_ATTACHMENT6</pre>
+<pre class="cython line score-0">&#xA0;<span class="">233</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_7:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">234</span>:         return GL_COLOR_ATTACHMENT7</pre>
+<pre class="cython line score-0">&#xA0;<span class="">235</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_8:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">236</span>:         return GL_COLOR_ATTACHMENT8</pre>
+<pre class="cython line score-0">&#xA0;<span class="">237</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_9:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">238</span>:         return GL_COLOR_ATTACHMENT9</pre>
+<pre class="cython line score-0">&#xA0;<span class="">239</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_10:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">240</span>:         return GL_COLOR_ATTACHMENT10</pre>
+<pre class="cython line score-0">&#xA0;<span class="">241</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_11:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">242</span>:         return GL_COLOR_ATTACHMENT11</pre>
+<pre class="cython line score-0">&#xA0;<span class="">243</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_12:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">244</span>:         return GL_COLOR_ATTACHMENT12</pre>
+<pre class="cython line score-0">&#xA0;<span class="">245</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_13:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">246</span>:         return GL_COLOR_ATTACHMENT13</pre>
+<pre class="cython line score-0">&#xA0;<span class="">247</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_14:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">248</span>:         return GL_COLOR_ATTACHMENT14</pre>
+<pre class="cython line score-0">&#xA0;<span class="">249</span>:     elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_15:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">250</span>:         return GL_COLOR_ATTACHMENT15</pre>
+<pre class="cython line score-0">&#xA0;<span class="">251</span>:     """</pre>
 <pre class="cython line score-0">&#xA0;<span class="">252</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">253</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_texture_format_to_internal_format_gl</span><span class="p">(</span><span class="n">TextureFormat</span> <span class="n">format</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">253</span>: cdef uint32_t c_texture_format_to_internal_format_gl(TextureFormat format) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_format_to_internal_format_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_TextureFormat __pyx_v_format) {
   uint32_t __pyx_r;
 /* … */
@@ -1241,38 +1172,38 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">254</span>:     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_RGBA_8U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">254</span>:     if format == TEXTURE_FORMAT_RGBA_8U:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_format) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_8U:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_32F:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">255</span>:         <span class="k">return</span> <span class="n">GL_RGBA</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">255</span>:         return GL_RGBA</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_RGBA;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">256</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_RGBA_32F</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">256</span>:     elif format == TEXTURE_FORMAT_RGBA_32F:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_DEPTH_16U:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">257</span>:         <span class="k">return</span> <span class="n">GL_RGBA</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">257</span>:         return GL_RGBA</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_RGBA;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">258</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_DEPTH_16U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">258</span>:     elif format == TEXTURE_FORMAT_DEPTH_16U:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_DEPTH_32U:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">259</span>:         <span class="k">return</span> <span class="n">GL_DEPTH_COMPONENT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">259</span>:         return GL_DEPTH_COMPONENT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_DEPTH_COMPONENT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">260</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_DEPTH_32U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">260</span>:     elif format == TEXTURE_FORMAT_DEPTH_32U:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">261</span>:         <span class="k">return</span> <span class="n">GL_DEPTH_COMPONENT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">261</span>:         return GL_DEPTH_COMPONENT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_DEPTH_COMPONENT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">262</span>:     <span class="c">#elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">263</span>:     <span class="c">#    return GL_DEPTH_STENCIL</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">262</span>:     #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">263</span>:     #    return GL_DEPTH_STENCIL</pre>
 <pre class="cython line score-0">&#xA0;<span class="">264</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">265</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_texture_format_to_format_gl</span><span class="p">(</span><span class="n">TextureFormat</span> <span class="n">format</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">265</span>: cdef uint32_t c_texture_format_to_format_gl(TextureFormat format) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_format_to_format_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_TextureFormat __pyx_v_format) {
   uint32_t __pyx_r;
 /* … */
@@ -1281,38 +1212,38 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">266</span>:     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_RGBA_8U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">266</span>:     if format == TEXTURE_FORMAT_RGBA_8U:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_format) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_8U:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_32F:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">267</span>:         <span class="k">return</span> <span class="n">GL_RGBA</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">267</span>:         return GL_RGBA</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_RGBA;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">268</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_RGBA_32F</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">268</span>:     elif format == TEXTURE_FORMAT_RGBA_32F:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_DEPTH_16U:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">269</span>:         <span class="k">return</span> <span class="n">GL_RGBA</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">269</span>:         return GL_RGBA</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_RGBA;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">270</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_DEPTH_16U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">270</span>:     elif format == TEXTURE_FORMAT_DEPTH_16U:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_DEPTH_32U:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">271</span>:         <span class="k">return</span> <span class="n">GL_DEPTH_COMPONENT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">271</span>:         return GL_DEPTH_COMPONENT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_DEPTH_COMPONENT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">272</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_DEPTH_32U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">272</span>:     elif format == TEXTURE_FORMAT_DEPTH_32U:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">273</span>:         <span class="k">return</span> <span class="n">GL_DEPTH_COMPONENT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">273</span>:         return GL_DEPTH_COMPONENT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_DEPTH_COMPONENT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">274</span>:     <span class="c">#elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">275</span>:     <span class="c">#    return GL_DEPTH_STENCIL</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">274</span>:     #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">275</span>:     #    return GL_DEPTH_STENCIL</pre>
 <pre class="cython line score-0">&#xA0;<span class="">276</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">277</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_texture_format_to_type_gl</span><span class="p">(</span><span class="n">TextureFormat</span> <span class="n">format</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">277</span>: cdef uint32_t c_texture_format_to_type_gl(TextureFormat format) nogil:</pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_format_to_type_gl(enum __pyx_t_7pyorama_8graphics_14graphics_enums_TextureFormat __pyx_v_format) {
   uint32_t __pyx_r;
 /* … */
@@ -1321,34 +1252,34 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">278</span>:     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_RGBA_8U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">278</span>:     if format == TEXTURE_FORMAT_RGBA_8U:</pre>
 <pre class='cython code score-0 '>  switch (__pyx_v_format) {
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_8U:
 /* … */
     break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_32F:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">279</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_BYTE</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">279</span>:         return GL_UNSIGNED_BYTE</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_BYTE;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">280</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_RGBA_32F</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">280</span>:     elif format == TEXTURE_FORMAT_RGBA_32F:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_DEPTH_16U:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">281</span>:         <span class="k">return</span> <span class="n">GL_FLOAT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">281</span>:         return GL_FLOAT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_FLOAT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">282</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_DEPTH_16U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">282</span>:     elif format == TEXTURE_FORMAT_DEPTH_16U:</pre>
 <pre class='cython code score-0 '>    break;
     case __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_DEPTH_32U:
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">283</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_SHORT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">283</span>:         return GL_UNSIGNED_SHORT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_SHORT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">284</span>:     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="n">TEXTURE_FORMAT_DEPTH_32U</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">284</span>:     elif format == TEXTURE_FORMAT_DEPTH_32U:</pre>
 <pre class='cython code score-0 '>    break;
     default: break;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">285</span>:         <span class="k">return</span> <span class="n">GL_UNSIGNED_INT</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">285</span>:         return GL_UNSIGNED_INT</pre>
 <pre class='cython code score-0 '>    __pyx_r = GL_UNSIGNED_INT;
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">286</span>:     <span class="c">#elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">287</span>:     <span class="c">#    return GL_UNSIGNED_INT_24_8</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">286</span>:     #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">287</span>:     #    return GL_UNSIGNED_INT_24_8</pre>
 </div></body></html>
