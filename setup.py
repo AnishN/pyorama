@@ -24,7 +24,7 @@ import platform
 libraries = {
     "Linux": [
         "GLESv2",
-        "z", "jpeg", "png", "webp",      
+        "z", "jpeg", "png", "webp", "jbig",     
         "SDL2", "SDL2_image", "SDL2_mixer",
         "openal",
         "ogg", 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         #download_url="https://github.com/AnishN/pyorama/archive/v0.0.2.tar.gz",
         author="Anish Narayanan",
         author_email="anish.narayanan32@gmail.com",
-        install_requires=["cython"],
+        install_requires=["cython", "numpy", "setuptools"],
         packages=find_packages(),
         package_data=data_files,
         keywords=["game", "2D", "3D", "rendering", "cython", "performance"],

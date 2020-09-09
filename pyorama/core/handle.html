@@ -286,6 +286,75 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
+.cython .hll { background-color: #ffffcc }
+.cython  { background: #f8f8f8; }
+.cython .c { color: #408080; font-style: italic } /* Comment */
+.cython .err { border: 1px solid #FF0000 } /* Error */
+.cython .k { color: #008000; font-weight: bold } /* Keyword */
+.cython .o { color: #666666 } /* Operator */
+.cython .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.cython .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.cython .cp { color: #BC7A00 } /* Comment.Preproc */
+.cython .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.cython .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.cython .cs { color: #408080; font-style: italic } /* Comment.Special */
+.cython .gd { color: #A00000 } /* Generic.Deleted */
+.cython .ge { font-style: italic } /* Generic.Emph */
+.cython .gr { color: #FF0000 } /* Generic.Error */
+.cython .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.cython .gi { color: #00A000 } /* Generic.Inserted */
+.cython .go { color: #888888 } /* Generic.Output */
+.cython .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.cython .gs { font-weight: bold } /* Generic.Strong */
+.cython .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.cython .gt { color: #0044DD } /* Generic.Traceback */
+.cython .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.cython .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.cython .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.cython .kp { color: #008000 } /* Keyword.Pseudo */
+.cython .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.cython .kt { color: #B00040 } /* Keyword.Type */
+.cython .m { color: #666666 } /* Literal.Number */
+.cython .s { color: #BA2121 } /* Literal.String */
+.cython .na { color: #7D9029 } /* Name.Attribute */
+.cython .nb { color: #008000 } /* Name.Builtin */
+.cython .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.cython .no { color: #880000 } /* Name.Constant */
+.cython .nd { color: #AA22FF } /* Name.Decorator */
+.cython .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.cython .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.cython .nf { color: #0000FF } /* Name.Function */
+.cython .nl { color: #A0A000 } /* Name.Label */
+.cython .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.cython .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.cython .nv { color: #19177C } /* Name.Variable */
+.cython .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.cython .w { color: #bbbbbb } /* Text.Whitespace */
+.cython .mb { color: #666666 } /* Literal.Number.Bin */
+.cython .mf { color: #666666 } /* Literal.Number.Float */
+.cython .mh { color: #666666 } /* Literal.Number.Hex */
+.cython .mi { color: #666666 } /* Literal.Number.Integer */
+.cython .mo { color: #666666 } /* Literal.Number.Oct */
+.cython .sa { color: #BA2121 } /* Literal.String.Affix */
+.cython .sb { color: #BA2121 } /* Literal.String.Backtick */
+.cython .sc { color: #BA2121 } /* Literal.String.Char */
+.cython .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.cython .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.cython .s2 { color: #BA2121 } /* Literal.String.Double */
+.cython .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.cython .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.cython .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.cython .sx { color: #008000 } /* Literal.String.Other */
+.cython .sr { color: #BB6688 } /* Literal.String.Regex */
+.cython .s1 { color: #BA2121 } /* Literal.String.Single */
+.cython .ss { color: #19177C } /* Literal.String.Symbol */
+.cython .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.cython .fm { color: #0000FF } /* Name.Function.Magic */
+.cython .vc { color: #19177C } /* Name.Variable.Class */
+.cython .vg { color: #19177C } /* Name.Variable.Global */
+.cython .vi { color: #19177C } /* Name.Variable.Instance */
+.cython .vm { color: #19177C } /* Name.Variable.Magic */
+.cython .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 </head>
 <body class="cython">
@@ -295,34 +364,34 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="handle.c">handle.c</a></p>
-<div class="cython"><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">01</span>: cdef uint64_t NUM_INDEX_BITS = 32</pre>
+<div class="cython"><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">01</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">NUM_INDEX_BITS</span> <span class="o">=</span> <span class="mf">32</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_NUM_INDEX_BITS = 32;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">02</span>: cdef uint64_t NUM_VERSION_BITS = 23</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">02</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">NUM_VERSION_BITS</span> <span class="o">=</span> <span class="mf">23</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_NUM_VERSION_BITS = 23;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">03</span>: cdef uint64_t NUM_TYPE_BITS = 8</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">03</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">NUM_TYPE_BITS</span> <span class="o">=</span> <span class="mf">8</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_NUM_TYPE_BITS = 8;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">04</span>: cdef uint64_t NUM_FREE_BITS = 1</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">04</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">NUM_FREE_BITS</span> <span class="o">=</span> <span class="mf">1</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_NUM_FREE_BITS = 1;
 </pre><pre class="cython line score-0">&#xA0;<span class="">05</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">06</span>: cdef uint64_t INDEX_BIT = 0</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">06</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">INDEX_BIT</span> <span class="o">=</span> <span class="mf">0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_INDEX_BIT = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">07</span>: cdef uint64_t VERSION_BIT = NUM_INDEX_BITS</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">07</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">VERSION_BIT</span> <span class="o">=</span> <span class="n">NUM_INDEX_BITS</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_VERSION_BIT = __pyx_v_7pyorama_4core_6handle_NUM_INDEX_BITS;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">08</span>: cdef uint64_t TYPE_BIT = NUM_INDEX_BITS + NUM_VERSION_BITS</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">08</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">TYPE_BIT</span> <span class="o">=</span> <span class="n">NUM_INDEX_BITS</span> <span class="o">+</span> <span class="n">NUM_VERSION_BITS</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_TYPE_BIT = (__pyx_v_7pyorama_4core_6handle_NUM_INDEX_BITS + __pyx_v_7pyorama_4core_6handle_NUM_VERSION_BITS);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">09</span>: cdef uint64_t FREE_BIT = NUM_INDEX_BITS + NUM_VERSION_BITS + NUM_TYPE_BITS</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">09</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">FREE_BIT</span> <span class="o">=</span> <span class="n">NUM_INDEX_BITS</span> <span class="o">+</span> <span class="n">NUM_VERSION_BITS</span> <span class="o">+</span> <span class="n">NUM_TYPE_BITS</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_FREE_BIT = ((__pyx_v_7pyorama_4core_6handle_NUM_INDEX_BITS + __pyx_v_7pyorama_4core_6handle_NUM_VERSION_BITS) + __pyx_v_7pyorama_4core_6handle_NUM_TYPE_BITS);
 </pre><pre class="cython line score-0">&#xA0;<span class="">10</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">11</span>: cdef uint64_t INDEX_MASK = mask_range(INDEX_BIT, NUM_INDEX_BITS)</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">11</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">INDEX_MASK</span> <span class="o">=</span> <span class="n">mask_range</span><span class="p">(</span><span class="n">INDEX_BIT</span><span class="p">,</span> <span class="n">NUM_INDEX_BITS</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_INDEX_MASK = __pyx_f_7pyorama_4core_6handle_mask_range(__pyx_v_7pyorama_4core_6handle_INDEX_BIT, __pyx_v_7pyorama_4core_6handle_NUM_INDEX_BITS);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">12</span>: cdef uint64_t VERSION_MASK = mask_range(VERSION_BIT, NUM_VERSION_BITS)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">12</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">VERSION_MASK</span> <span class="o">=</span> <span class="n">mask_range</span><span class="p">(</span><span class="n">VERSION_BIT</span><span class="p">,</span> <span class="n">NUM_VERSION_BITS</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_VERSION_MASK = __pyx_f_7pyorama_4core_6handle_mask_range(__pyx_v_7pyorama_4core_6handle_VERSION_BIT, __pyx_v_7pyorama_4core_6handle_NUM_VERSION_BITS);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">13</span>: cdef uint64_t TYPE_MASK = mask_range(TYPE_BIT, NUM_TYPE_BITS)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">13</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">TYPE_MASK</span> <span class="o">=</span> <span class="n">mask_range</span><span class="p">(</span><span class="n">TYPE_BIT</span><span class="p">,</span> <span class="n">NUM_TYPE_BITS</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_TYPE_MASK = __pyx_f_7pyorama_4core_6handle_mask_range(__pyx_v_7pyorama_4core_6handle_TYPE_BIT, __pyx_v_7pyorama_4core_6handle_NUM_TYPE_BITS);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">14</span>: cdef uint64_t FREE_MASK = mask_range(FREE_BIT, NUM_FREE_BITS)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">14</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">FREE_MASK</span> <span class="o">=</span> <span class="n">mask_range</span><span class="p">(</span><span class="n">FREE_BIT</span><span class="p">,</span> <span class="n">NUM_FREE_BITS</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_7pyorama_4core_6handle_FREE_MASK = __pyx_f_7pyorama_4core_6handle_mask_range(__pyx_v_7pyorama_4core_6handle_FREE_BIT, __pyx_v_7pyorama_4core_6handle_NUM_FREE_BITS);
 </pre><pre class="cython line score-0">&#xA0;<span class="">15</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">16</span>: cdef uint64_t mask_range(uint64_t n, uint64_t r) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">16</span>: <span class="k">cdef</span> <span class="kt">uint64_t</span> <span class="nf">mask_range</span><span class="p">(</span><span class="n">uint64_t</span> <span class="n">n</span><span class="p">,</span> <span class="n">uint64_t</span> <span class="n">r</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static uint64_t __pyx_f_7pyorama_4core_6handle_mask_range(uint64_t __pyx_v_n, uint64_t __pyx_v_r) {
   uint64_t __pyx_v_a;
   uint64_t __pyx_v_b;
@@ -334,25 +403,25 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">17</span>:     cdef:</pre>
-<pre class="cython line score-0">&#xA0;<span class="">18</span>:         uint64_t a</pre>
-<pre class="cython line score-0">&#xA0;<span class="">19</span>:         uint64_t b</pre>
-<pre class="cython line score-0">&#xA0;<span class="">20</span>:         uint64_t one</pre>
-<pre class="cython line score-0">&#xA0;<span class="">21</span>:         uint64_t mask</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">17</span>:     <span class="k">cdef</span><span class="p">:</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">18</span>:         <span class="n">uint64_t</span> <span class="n">a</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">19</span>:         <span class="n">uint64_t</span> <span class="n">b</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">20</span>:         <span class="n">uint64_t</span> <span class="n">one</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">21</span>:         <span class="n">uint64_t</span> <span class="n">mask</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">22</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">23</span>:     one = 1</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">23</span>:     <span class="n">one</span> <span class="o">=</span> <span class="mf">1</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_one = 1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">24</span>:     a = (one &lt;&lt; n) - one</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">24</span>:     <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">one</span> <span class="o">&lt;&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="n">one</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_a = ((__pyx_v_one &lt;&lt; __pyx_v_n) - __pyx_v_one);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">25</span>:     b = (one &lt;&lt; (n + r)) - one</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">25</span>:     <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">one</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">r</span><span class="p">))</span> <span class="o">-</span> <span class="n">one</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_b = ((__pyx_v_one &lt;&lt; (__pyx_v_n + __pyx_v_r)) - __pyx_v_one);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">26</span>:     mask = a ^ b</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">26</span>:     <span class="n">mask</span> <span class="o">=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_mask = (__pyx_v_a ^ __pyx_v_b);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">27</span>:     return mask</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">27</span>:     <span class="k">return</span> <span class="n">mask</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = __pyx_v_mask;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">28</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">29</span>: cdef uint32_t c_handle_get_index(Handle *handle) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">29</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_handle_get_index</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_4core_6handle_c_handle_get_index(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle) {
   uint32_t __pyx_r;
 /* … */
@@ -360,11 +429,11 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">30</span>:     return &lt;uint32_t&gt;((handle[0] &amp; INDEX_MASK) &gt;&gt; INDEX_BIT)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">30</span>:     <span class="k">return</span> <span class="o">&lt;</span><span class="n">uint32_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">INDEX_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">INDEX_BIT</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = ((uint32_t)(((__pyx_v_handle[0]) &amp; __pyx_v_7pyorama_4core_6handle_INDEX_MASK) &gt;&gt; __pyx_v_7pyorama_4core_6handle_INDEX_BIT));
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">31</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">32</span>: cdef uint32_t c_handle_get_version(Handle *handle) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">32</span>: <span class="k">cdef</span> <span class="kt">uint32_t</span> <span class="nf">c_handle_get_version</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static uint32_t __pyx_f_7pyorama_4core_6handle_c_handle_get_version(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle) {
   uint32_t __pyx_r;
 /* … */
@@ -372,11 +441,11 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">33</span>:     return &lt;uint32_t&gt;((handle[0] &amp; VERSION_MASK) &gt;&gt; VERSION_BIT)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">33</span>:     <span class="k">return</span> <span class="o">&lt;</span><span class="n">uint32_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">VERSION_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">VERSION_BIT</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = ((uint32_t)(((__pyx_v_handle[0]) &amp; __pyx_v_7pyorama_4core_6handle_VERSION_MASK) &gt;&gt; __pyx_v_7pyorama_4core_6handle_VERSION_BIT));
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">34</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">35</span>: cdef uint8_t c_handle_get_type(Handle *handle) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">35</span>: <span class="k">cdef</span> <span class="kt">uint8_t</span> <span class="nf">c_handle_get_type</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static uint8_t __pyx_f_7pyorama_4core_6handle_c_handle_get_type(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle) {
   uint8_t __pyx_r;
 /* … */
@@ -384,11 +453,11 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">36</span>:     return &lt;uint8_t&gt;((handle[0] &amp; TYPE_MASK) &gt;&gt; TYPE_BIT)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">36</span>:     <span class="k">return</span> <span class="o">&lt;</span><span class="n">uint8_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">TYPE_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">TYPE_BIT</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = ((uint8_t)(((__pyx_v_handle[0]) &amp; __pyx_v_7pyorama_4core_6handle_TYPE_MASK) &gt;&gt; __pyx_v_7pyorama_4core_6handle_TYPE_BIT));
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">37</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">38</span>: cdef bint c_handle_get_free(Handle *handle) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">38</span>: <span class="k">cdef</span> <span class="kt">bint</span> <span class="nf">c_handle_get_free</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static int __pyx_f_7pyorama_4core_6handle_c_handle_get_free(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle) {
   int __pyx_r;
 /* … */
@@ -396,53 +465,53 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_L0:;
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">39</span>:     return &lt;bint&gt;((handle[0] &amp; FREE_MASK) &gt;&gt; FREE_BIT)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">39</span>:     <span class="k">return</span> <span class="p">&lt;</span><span class="kt">bint</span><span class="p">&gt;((</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">FREE_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">FREE_BIT</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = ((((__pyx_v_handle[0]) &amp; __pyx_v_7pyorama_4core_6handle_FREE_MASK) &gt;&gt; __pyx_v_7pyorama_4core_6handle_FREE_BIT) != 0);
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">40</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">41</span>: cdef void c_handle_set(Handle *handle, uint32_t index, uint32_t version, uint8_t type, bint free) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">41</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_handle_set</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">,</span> <span class="n">uint32_t</span> <span class="n">index</span><span class="p">,</span> <span class="n">uint32_t</span> <span class="n">version</span><span class="p">,</span> <span class="n">uint8_t</span> <span class="nb">type</span><span class="p">,</span> <span class="n">bint</span> <span class="n">free</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_4core_6handle_c_handle_set(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle, uint32_t __pyx_v_index, uint32_t __pyx_v_version, uint8_t __pyx_v_type, int __pyx_v_free) {
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">42</span>:     c_handle_set_index(handle, index)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">42</span>:     <span class="n">c_handle_set_index</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_f_7pyorama_4core_6handle_c_handle_set_index(__pyx_v_handle, __pyx_v_index);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">43</span>:     c_handle_set_version(handle, version)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">43</span>:     <span class="n">c_handle_set_version</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_f_7pyorama_4core_6handle_c_handle_set_version(__pyx_v_handle, __pyx_v_version);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">44</span>:     c_handle_set_type(handle, type)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">44</span>:     <span class="n">c_handle_set_type</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_f_7pyorama_4core_6handle_c_handle_set_type(__pyx_v_handle, __pyx_v_type);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">45</span>:     c_handle_set_free(handle, free)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">45</span>:     <span class="n">c_handle_set_free</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">free</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_f_7pyorama_4core_6handle_c_handle_set_free(__pyx_v_handle, __pyx_v_free);
 </pre><pre class="cython line score-0">&#xA0;<span class="">46</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">47</span>: cdef void c_handle_set_index(Handle *handle, uint32_t index) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">47</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_handle_set_index</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">,</span> <span class="n">uint32_t</span> <span class="n">index</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_4core_6handle_c_handle_set_index(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle, uint32_t __pyx_v_index) {
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">48</span>:     handle[0] = (handle[0] &amp; (~INDEX_MASK)) | (&lt;uint64_t&gt;index &lt;&lt; INDEX_BIT &amp; INDEX_MASK)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">48</span>:     <span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">INDEX_MASK</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">uint64_t</span><span class="o">&gt;</span><span class="n">index</span> <span class="o">&lt;&lt;</span> <span class="n">INDEX_BIT</span> <span class="o">&amp;</span> <span class="n">INDEX_MASK</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (__pyx_v_handle[0]) = (((__pyx_v_handle[0]) &amp; (~__pyx_v_7pyorama_4core_6handle_INDEX_MASK)) | ((((uint64_t)__pyx_v_index) &lt;&lt; __pyx_v_7pyorama_4core_6handle_INDEX_BIT) &amp; __pyx_v_7pyorama_4core_6handle_INDEX_MASK));
 </pre><pre class="cython line score-0">&#xA0;<span class="">49</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">50</span>: cdef void c_handle_set_version(Handle *handle, uint32_t version) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">50</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_handle_set_version</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">,</span> <span class="n">uint32_t</span> <span class="n">version</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_4core_6handle_c_handle_set_version(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle, uint32_t __pyx_v_version) {
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">51</span>:     handle[0] = (handle[0] &amp; (~VERSION_MASK)) | (&lt;uint64_t&gt;version &lt;&lt; VERSION_BIT &amp; VERSION_MASK)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">51</span>:     <span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">VERSION_MASK</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">uint64_t</span><span class="o">&gt;</span><span class="n">version</span> <span class="o">&lt;&lt;</span> <span class="n">VERSION_BIT</span> <span class="o">&amp;</span> <span class="n">VERSION_MASK</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (__pyx_v_handle[0]) = (((__pyx_v_handle[0]) &amp; (~__pyx_v_7pyorama_4core_6handle_VERSION_MASK)) | ((((uint64_t)__pyx_v_version) &lt;&lt; __pyx_v_7pyorama_4core_6handle_VERSION_BIT) &amp; __pyx_v_7pyorama_4core_6handle_VERSION_MASK));
 </pre><pre class="cython line score-0">&#xA0;<span class="">52</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">53</span>: cdef void c_handle_set_type(Handle *handle, uint8_t type) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">53</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_handle_set_type</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">,</span> <span class="n">uint8_t</span> <span class="nb">type</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_4core_6handle_c_handle_set_type(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle, uint8_t __pyx_v_type) {
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">54</span>:     handle[0] = (handle[0] &amp; (~TYPE_MASK)) | ((&lt;uint64_t&gt;type) &lt;&lt; TYPE_BIT &amp; TYPE_MASK)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">54</span>:     <span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">TYPE_MASK</span><span class="p">))</span> <span class="o">|</span> <span class="p">((</span><span class="o">&lt;</span><span class="n">uint64_t</span><span class="o">&gt;</span><span class="nb">type</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">TYPE_BIT</span> <span class="o">&amp;</span> <span class="n">TYPE_MASK</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (__pyx_v_handle[0]) = (((__pyx_v_handle[0]) &amp; (~__pyx_v_7pyorama_4core_6handle_TYPE_MASK)) | ((((uint64_t)__pyx_v_type) &lt;&lt; __pyx_v_7pyorama_4core_6handle_TYPE_BIT) &amp; __pyx_v_7pyorama_4core_6handle_TYPE_MASK));
 </pre><pre class="cython line score-0">&#xA0;<span class="">55</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">56</span>: cdef void c_handle_set_free(Handle *handle, bint free) nogil:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">56</span>: <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_handle_set_free</span><span class="p">(</span><span class="n">Handle</span> <span class="o">*</span><span class="n">handle</span><span class="p">,</span> <span class="n">bint</span> <span class="n">free</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_4core_6handle_c_handle_set_free(__pyx_t_7pyorama_4core_6handle_Handle *__pyx_v_handle, int __pyx_v_free) {
 /* … */
   /* function exit code */
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">57</span>:     handle[0] = (handle[0] &amp; (~FREE_MASK)) | (&lt;uint64_t&gt;free &lt;&lt; FREE_BIT &amp; FREE_MASK)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">57</span>:     <span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">handle</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">FREE_MASK</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">uint64_t</span><span class="o">&gt;</span><span class="n">free</span> <span class="o">&lt;&lt;</span> <span class="n">FREE_BIT</span> <span class="o">&amp;</span> <span class="n">FREE_MASK</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (__pyx_v_handle[0]) = (((__pyx_v_handle[0]) &amp; (~__pyx_v_7pyorama_4core_6handle_FREE_MASK)) | ((((uint64_t)__pyx_v_free) &lt;&lt; __pyx_v_7pyorama_4core_6handle_FREE_BIT) &amp; __pyx_v_7pyorama_4core_6handle_FREE_MASK));
 </pre></div></body></html>

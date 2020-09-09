@@ -286,6 +286,75 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
+.cython .hll { background-color: #ffffcc }
+.cython  { background: #f8f8f8; }
+.cython .c { color: #408080; font-style: italic } /* Comment */
+.cython .err { border: 1px solid #FF0000 } /* Error */
+.cython .k { color: #008000; font-weight: bold } /* Keyword */
+.cython .o { color: #666666 } /* Operator */
+.cython .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.cython .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.cython .cp { color: #BC7A00 } /* Comment.Preproc */
+.cython .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.cython .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.cython .cs { color: #408080; font-style: italic } /* Comment.Special */
+.cython .gd { color: #A00000 } /* Generic.Deleted */
+.cython .ge { font-style: italic } /* Generic.Emph */
+.cython .gr { color: #FF0000 } /* Generic.Error */
+.cython .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.cython .gi { color: #00A000 } /* Generic.Inserted */
+.cython .go { color: #888888 } /* Generic.Output */
+.cython .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.cython .gs { font-weight: bold } /* Generic.Strong */
+.cython .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.cython .gt { color: #0044DD } /* Generic.Traceback */
+.cython .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.cython .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.cython .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.cython .kp { color: #008000 } /* Keyword.Pseudo */
+.cython .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.cython .kt { color: #B00040 } /* Keyword.Type */
+.cython .m { color: #666666 } /* Literal.Number */
+.cython .s { color: #BA2121 } /* Literal.String */
+.cython .na { color: #7D9029 } /* Name.Attribute */
+.cython .nb { color: #008000 } /* Name.Builtin */
+.cython .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.cython .no { color: #880000 } /* Name.Constant */
+.cython .nd { color: #AA22FF } /* Name.Decorator */
+.cython .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.cython .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.cython .nf { color: #0000FF } /* Name.Function */
+.cython .nl { color: #A0A000 } /* Name.Label */
+.cython .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.cython .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.cython .nv { color: #19177C } /* Name.Variable */
+.cython .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.cython .w { color: #bbbbbb } /* Text.Whitespace */
+.cython .mb { color: #666666 } /* Literal.Number.Bin */
+.cython .mf { color: #666666 } /* Literal.Number.Float */
+.cython .mh { color: #666666 } /* Literal.Number.Hex */
+.cython .mi { color: #666666 } /* Literal.Number.Integer */
+.cython .mo { color: #666666 } /* Literal.Number.Oct */
+.cython .sa { color: #BA2121 } /* Literal.String.Affix */
+.cython .sb { color: #BA2121 } /* Literal.String.Backtick */
+.cython .sc { color: #BA2121 } /* Literal.String.Char */
+.cython .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.cython .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.cython .s2 { color: #BA2121 } /* Literal.String.Double */
+.cython .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.cython .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.cython .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.cython .sx { color: #008000 } /* Literal.String.Other */
+.cython .sr { color: #BB6688 } /* Literal.String.Regex */
+.cython .s1 { color: #BA2121 } /* Literal.String.Single */
+.cython .ss { color: #19177C } /* Literal.String.Symbol */
+.cython .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.cython .fm { color: #0000FF } /* Name.Function.Magic */
+.cython .vc { color: #19177C } /* Name.Variable.Class */
+.cython .vg { color: #19177C } /* Name.Variable.Global */
+.cython .vi { color: #19177C } /* Name.Variable.Instance */
+.cython .vm { color: #19177C } /* Name.Variable.Magic */
+.cython .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 </head>
 <body class="cython">
@@ -295,7 +364,7 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="bunny_mark_fast.c">bunny_mark_fast.c</a></p>
-<div class="cython"><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: import math</pre>
+<div class="cython"><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">001</span>: <span class="k">import</span> <span class="nn">math</span></pre>
 <pre class='cython code score-16 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_math, 0, 0);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_math, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1, __pyx_L1_error)</span>
@@ -305,20 +374,20 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_test, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">002</span>: import numpy as np</pre>
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">002</span>: <span class="k">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span></pre>
 <pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_numpy, 0, 0);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_np, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 2, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">003</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">004</span>: cdef class Game(App):</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">004</span>: <span class="k">cdef</span> <span class="k">class</span> <span class="nf">Game</span><span class="p">(</span><span class="n">App</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>struct __pyx_vtabstruct_8examples_15bunny_mark_fast_Game {
   struct __pyx_vtabstruct_7pyorama_4core_3app_App __pyx_base;
 };
 static struct __pyx_vtabstruct_8examples_15bunny_mark_fast_Game *__pyx_vtabptr_8examples_15bunny_mark_fast_Game;
 
 </pre><pre class="cython line score-0">&#xA0;<span class="">005</span>: </pre>
-<pre class="cython line score-31" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">006</span>:     def init(self):</pre>
+<pre class="cython line score-31" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">006</span>:     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-31 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_1init(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_1init = {"init", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_1init, METH_NOARGS, 0};
@@ -376,7 +445,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__21 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_init, 6, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 6, __pyx_L1_error)</span>
-</pre><pre class="cython line score-33" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">007</span>:         super().init(ms_per_update=1000.0/60.0)</pre>
+</pre><pre class="cython line score-33" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">007</span>:         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">ms_per_update</span><span class="o">=</span><span class="mf">1000.0</span><span class="o">/</span><span class="mf">60.0</span><span class="p">)</span></pre>
 <pre class='cython code score-33 '>  __pyx_t_1 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_ptype_8examples_15bunny_mark_fast_Game));
@@ -402,7 +471,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">008</span>:         self.setup_window()</pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">008</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">setup_window</span><span class="p">()</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_setup_window);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_t_1 = NULL;
@@ -421,7 +490,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">009</span>:         self.setup_uniforms()</pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">009</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">setup_uniforms</span><span class="p">()</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_setup_uniforms);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_t_1 = NULL;
@@ -440,7 +509,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">010</span>:         self.setup_shaders()</pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">010</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">setup_shaders</span><span class="p">()</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_setup_shaders);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_t_1 = NULL;
@@ -460,31 +529,31 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">011</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">012</span>:         #setup sprites</pre>
-<pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:         image_path = b"./resources/textures/bunny.png"</pre>
+<pre class="cython line score-0">&#xA0;<span class="">012</span>:         <span class="c">#setup sprites</span></pre>
+<pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:         <span class="n">image_path</span> <span class="o">=</span> <span class="n">b</span><span class="s">&quot;./resources/textures/bunny.png&quot;</span></pre>
 <pre class='cython code score-1 '>  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_kp_b_resources_textures_bunny_png);
   __pyx_v_image_path = __pyx_kp_b_resources_textures_bunny_png;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:         self.image = self.graphics.image_create_from_file(image_path)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">image_create_from_file</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;image_create_from_file(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_image_path, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L1_error)</span>
   __pyx_v_self-&gt;image = __pyx_t_4;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         self.texture = self.graphics.texture_create(format=TEXTURE_FORMAT_RGBA_8U, mipmaps=True, filter=TEXTURE_FILTER_LINEAR)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">texture_create</span><span class="p">(</span><span class="n">format</span><span class="o">=</span><span class="n">TEXTURE_FORMAT_RGBA_8U</span><span class="p">,</span> <span class="n">mipmaps</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">TEXTURE_FILTER_LINEAR</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_5.__pyx_n = 3;
   __pyx_t_5.format = __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FORMAT_RGBA_8U;
   __pyx_t_5.mipmaps = 1;
   __pyx_t_5.filter = __pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_FILTER_LINEAR;
   __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;texture_create(__pyx_v_self-&gt;__pyx_base.graphics, 0, &amp;__pyx_t_5);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L1_error)</span>
   __pyx_v_self-&gt;texture = __pyx_t_4;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">016</span>:         self.graphics.texture_set_data_2d_from_image(self.texture, self.image)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">016</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">texture_set_data_2d_from_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texture</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;texture_set_data_2d_from_image(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;texture, __pyx_v_self-&gt;image, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>:         self.bunny_width = self.graphics.image_get_width(self.image)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">017</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">bunny_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">image_get_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_6 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;image_get_width(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;image, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 17, __pyx_L1_error)</span>
   __pyx_v_self-&gt;bunny_width = __pyx_t_6;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">018</span>:         self.bunny_height = self.graphics.image_get_height(self.image)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">018</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">bunny_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">image_get_height</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_6 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;image_get_height(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;image, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L1_error)</span>
   __pyx_v_self-&gt;bunny_height = __pyx_t_6;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">019</span>:         self.num_sprites = 50000</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">019</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">num_sprites</span> <span class="o">=</span> <span class="mf">50000</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;num_sprites = 0xC350;
-</pre><pre class="cython line score-37" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">020</span>:         self.sprites = np.array([0] * self.num_sprites, dtype=np.uint64)</pre>
+</pre><pre class="cython line score-37" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">020</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_sprites</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span></pre>
 <pre class='cython code score-37 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_3, __pyx_n_s_array);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)</span>
@@ -525,12 +594,12 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 </pre><pre class="cython line score-0">&#xA0;<span class="">021</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:         position = Vec2()</pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:         <span class="n">position</span> <span class="o">=</span> <span class="n">Vec2</span><span class="p">()</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_8 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4vec2_Vec2));<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 22, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_8);
   __pyx_v_position = ((struct __pyx_obj_7pyorama_6math3d_4vec2_Vec2 *)__pyx_t_8);
   __pyx_t_8 = 0;
-</pre><pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:         window_size = Vec2(self.width, self.height)</pre>
+</pre><pre class="cython line score-14" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:         <span class="n">window_size</span> <span class="o">=</span> <span class="n">Vec2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span></pre>
 <pre class='cython code score-14 '>  __pyx_t_8 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_self-&gt;width);<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_8);
   __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_self-&gt;height);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
@@ -548,12 +617,12 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_window_size = ((struct __pyx_obj_7pyorama_6math3d_4vec2_Vec2 *)__pyx_t_3);
   __pyx_t_3 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>:         for i in range(self.num_sprites):</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>:         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_sprites</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_10 = __pyx_v_self-&gt;num_sprites;
   __pyx_t_11 = __pyx_t_10;
   for (__pyx_t_12 = 0; __pyx_t_12 &lt; __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_i = __pyx_t_12;
-</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>:             Vec2.random(position)</pre>
+</pre><pre class="cython line score-17" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>:             <span class="n">Vec2</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">position</span><span class="p">)</span></pre>
 <pre class='cython code score-17 '>    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4vec2_Vec2), __pyx_n_s_random);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
     __pyx_t_8 = NULL;
@@ -572,7 +641,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-42" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:             Vec2.mul(position, position, window_size)</pre>
+</pre><pre class="cython line score-42" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:             <span class="n">Vec2</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span></pre>
 <pre class='cython code score-42 '>    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4vec2_Vec2), __pyx_n_s_mul);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
     __pyx_t_8 = NULL;
@@ -624,12 +693,12 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
     }
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:             sprite = self.graphics.sprite_create(self.bunny_width, self.bunny_height)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:             <span class="n">sprite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bunny_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bunny_height</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;bunny_width, __pyx_v_self-&gt;bunny_height, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L1_error)</span>
     __pyx_v_sprite = __pyx_t_4;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:             self.graphics.sprite_set_position(sprite, position)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">028</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_set_position</span><span class="p">(</span><span class="n">sprite</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_set_position(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_sprite, __pyx_v_position, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L1_error)</span>
-</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:             self.graphics.sprite_set_anchor(sprite, Vec2(0.5, 0.5))</pre>
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">029</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_set_anchor</span><span class="p">(</span><span class="n">sprite</span><span class="p">,</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span></pre>
 <pre class='cython code score-8 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4vec2_Vec2), __pyx_tuple_, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
     ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_set_anchor(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_sprite, ((struct __pyx_obj_7pyorama_6math3d_4vec2_Vec2 *)__pyx_t_3), 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L1_error)</span>
@@ -638,23 +707,23 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   __pyx_tuple_ = <span class='py_c_api'>PyTuple_Pack</span>(2, __pyx_float_0_5, __pyx_float_0_5);<span class='error_goto'> if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 29, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple_);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple_);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:             self.sprites[i] = sprite</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">030</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sprite</span></pre>
 <pre class='cython code score-0 '>    __pyx_t_14 = __pyx_v_i;
     *((__pyx_t_7pyorama_4core_6handle_Handle *) ( /* dim=0 */ ((char *) (((__pyx_t_7pyorama_4core_6handle_Handle *) __pyx_v_self-&gt;sprites.data) + __pyx_t_14)) )) = __pyx_v_sprite;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">031</span>:         self.sprite_batch = self.graphics.sprite_batch_create()</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">031</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">sprite_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_batch_create</span><span class="p">()</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_batch_create(__pyx_v_self-&gt;__pyx_base.graphics, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L1_error)</span>
   __pyx_v_self-&gt;sprite_batch = __pyx_t_4;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:         self.graphics.sprite_batch_set_sprites(self.sprite_batch, self.sprites)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">032</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_batch_set_sprites</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_batch_set_sprites(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;sprite_batch, __pyx_v_self-&gt;sprites, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:         self.vbo = self.graphics.sprite_batch_get_vertex_buffer(self.sprite_batch)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">033</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">vbo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_batch_get_vertex_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite_batch</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_batch_get_vertex_buffer(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;sprite_batch, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)</span>
   __pyx_v_self-&gt;vbo = __pyx_t_4;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">034</span>:         self.ibo = self.graphics.sprite_batch_get_index_buffer(self.sprite_batch)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">034</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">ibo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_batch_get_index_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite_batch</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_batch_get_index_buffer(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;sprite_batch, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)</span>
   __pyx_v_self-&gt;ibo = __pyx_t_4;
 </pre><pre class="cython line score-0">&#xA0;<span class="">035</span>: </pre>
-<pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:         self.setup_view()</pre>
+<pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">036</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">setup_view</span><span class="p">()</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_setup_view);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = NULL;
@@ -673,26 +742,26 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_ob
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">037</span>:         self.previous_time = 0.0</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">037</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">previous_time</span> <span class="o">=</span> <span class="mf">0.0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;__pyx_base.previous_time = 0.0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:         self.current_time = 0.0</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">038</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">current_time</span> <span class="o">=</span> <span class="mf">0.0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;__pyx_base.current_time = 0.0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:         self.time_delta = 0.0</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">039</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">time_delta</span> <span class="o">=</span> <span class="mf">0.0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;time_delta = 0.0;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)</pre>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">040</span>:         <span class="n">window_listener</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">listener_create</span><span class="p">(</span><span class="n">EVENT_TYPE_WINDOW</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_window</span><span class="p">)</span></pre>
 <pre class='cython code score-3 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_on_window);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_5event_13event_manager_EventManager *)__pyx_v_self-&gt;__pyx_base.event-&gt;__pyx_vtab)-&gt;listener_create(__pyx_v_self-&gt;__pyx_base.event, __pyx_e_7pyorama_5event_11event_enums_EVENT_TYPE_WINDOW, __pyx_t_3, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 40, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_window_listener = __pyx_t_4;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">041</span>:         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)</pre>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">041</span>:         <span class="n">enter_frame_listener</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">listener_create</span><span class="p">(</span><span class="n">EVENT_TYPE_ENTER_FRAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_enter_frame</span><span class="p">)</span></pre>
 <pre class='cython code score-3 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_on_enter_frame);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_5event_13event_manager_EventManager *)__pyx_v_self-&gt;__pyx_base.event-&gt;__pyx_vtab)-&gt;listener_create(__pyx_v_self-&gt;__pyx_base.event, __pyx_e_7pyorama_5event_11event_enums_EVENT_TYPE_ENTER_FRAME, __pyx_t_3, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_enter_frame_listener = __pyx_t_4;
 </pre><pre class="cython line score-0">&#xA0;<span class="">042</span>: </pre>
-<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>:     def quit(self):</pre>
+<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">043</span>:     <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-26 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_3quit(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_3quit = {"quit", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_3quit, METH_NOARGS, 0};
@@ -737,7 +806,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_2quit(struct __pyx_o
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__23 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_quit, 43, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 43, __pyx_L1_error)</span>
-</pre><pre class="cython line score-32" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">044</span>:         super().quit()</pre>
+</pre><pre class="cython line score-32" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">044</span>:         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></pre>
 <pre class='cython code score-32 '>  __pyx_t_2 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_ptype_8examples_15bunny_mark_fast_Game));
@@ -769,7 +838,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_2quit(struct __pyx_o
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">045</span>: </pre>
-<pre class="cython line score-23" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:     def setup_window(self):</pre>
+<pre class="cython line score-23" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">046</span>:     <span class="k">def</span> <span class="nf">setup_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-23 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_5setup_window(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_5setup_window = {"setup_window", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_5setup_window, METH_NOARGS, 0};
@@ -811,15 +880,15 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_4setup_window(struct
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__25 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_setup_window, 46, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">047</span>:         self.width = 800</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">047</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mf">800</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;width = 0x320;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">048</span>:         self.height = 600</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">048</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mf">600</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;height = 0x258;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>:         self.window = self.graphics.window_create(self.width, self.height, b"BunnyMark")</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">049</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">window_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">b</span><span class="s">&quot;BunnyMark&quot;</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;window_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;width, __pyx_v_self-&gt;height, __pyx_n_b_BunnyMark, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L1_error)</span>
   __pyx_v_self-&gt;window = __pyx_t_1;
 </pre><pre class="cython line score-0">&#xA0;<span class="">050</span>: </pre>
-<pre class="cython line score-29" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:     def setup_uniforms(self):</pre>
+<pre class="cython line score-29" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">051</span>:     <span class="k">def</span> <span class="nf">setup_uniforms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-29 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_7setup_uniforms(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_7setup_uniforms = {"setup_uniforms", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_7setup_uniforms, METH_NOARGS, 0};
@@ -868,18 +937,18 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_6setup_uniforms(stru
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__27 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_setup_uniforms, 51, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 51, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:         self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">052</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">u_texture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">u_fmt_texture_0</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;__pyx_base.graphics-&gt;u_fmt_texture_0, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L1_error)</span>
   __pyx_v_self-&gt;u_texture = __pyx_t_1;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">053</span>:         self.graphics.uniform_set_data(self.u_texture, TEXTURE_UNIT_0)</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">053</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u_texture</span><span class="p">,</span> <span class="n">TEXTURE_UNIT_0</span><span class="p">)</span></pre>
 <pre class='cython code score-1 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____pyx_t_7pyorama_8graphics_14graphics_enums_TextureUnit(__pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_0);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_set_data(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;u_texture, __pyx_t_2, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:         self.u_proj = self.graphics.uniform_create(self.graphics.u_fmt_proj)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">054</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">u_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">u_fmt_proj</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;__pyx_base.graphics-&gt;u_fmt_proj, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)</span>
   __pyx_v_self-&gt;u_proj = __pyx_t_1;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         self.proj_mat = Mat4()</pre>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">055</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">proj_mat</span> <span class="o">=</span> <span class="n">Mat4</span><span class="p">()</span></pre>
 <pre class='cython code score-3 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4mat4_Mat4));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_2);
@@ -887,7 +956,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_6setup_uniforms(stru
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(((PyObject *)__pyx_v_self-&gt;proj_mat));
   __pyx_v_self-&gt;proj_mat = ((struct __pyx_obj_7pyorama_6math3d_4mat4_Mat4 *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-56" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:         Mat4.ortho(self.proj_mat, 0, self.width, 0, self.height, -1, 1)</pre>
+</pre><pre class="cython line score-56" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">056</span>:         <span class="n">Mat4</span><span class="o">.</span><span class="n">ortho</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_mat</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span></pre>
 <pre class='cython code score-56 '>  __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4mat4_Mat4), __pyx_n_s_ortho);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_self-&gt;width);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)</span>
@@ -959,12 +1028,12 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_6setup_uniforms(stru
   }
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         self.graphics.uniform_set_data(self.u_proj, self.proj_mat)</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">057</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u_proj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_mat</span><span class="p">)</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_2 = ((PyObject *)__pyx_v_self-&gt;proj_mat);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_2);
   ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_set_data(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;u_proj, __pyx_t_2, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:         self.view_mat = Mat4()</pre>
+</pre><pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">058</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">view_mat</span> <span class="o">=</span> <span class="n">Mat4</span><span class="p">()</span></pre>
 <pre class='cython code score-3 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_7pyorama_6math3d_4mat4_Mat4));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_2);
@@ -972,18 +1041,18 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_6setup_uniforms(stru
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(((PyObject *)__pyx_v_self-&gt;view_mat));
   __pyx_v_self-&gt;view_mat = ((struct __pyx_obj_7pyorama_6math3d_4mat4_Mat4 *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:         self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">059</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">u_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">u_fmt_view</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;__pyx_base.graphics-&gt;u_fmt_view, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)</span>
   __pyx_v_self-&gt;u_view = __pyx_t_1;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:         self.graphics.uniform_set_data(self.u_view, self.view_mat)</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">060</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u_view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_mat</span><span class="p">)</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_2 = ((PyObject *)__pyx_v_self-&gt;view_mat);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_t_2);
   ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_set_data(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;u_view, __pyx_t_2, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:         self.u_rect = self.graphics.uniform_create(self.graphics.u_fmt_rect)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">061</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">u_rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">u_fmt_rect</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;__pyx_base.graphics-&gt;u_fmt_rect, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 61, __pyx_L1_error)</span>
   __pyx_v_self-&gt;u_rect = __pyx_t_1;
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:         self.graphics.uniform_set_data(self.u_rect, Vec4(0, 0, self.width, self.height))</pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">062</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">uniform_set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u_rect</span><span class="p">,</span> <span class="n">Vec4</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">))</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_self-&gt;width);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_self-&gt;height);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)</span>
@@ -1007,7 +1076,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_6setup_uniforms(stru
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_8); __pyx_t_8 = 0;
   ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;uniform_set_data(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;u_rect, __pyx_t_3, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-39" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:         self.uniforms = np.array([self.u_texture, self.u_proj, self.u_view, self.u_rect], dtype=np.uint64)</pre>
+</pre><pre class="cython line score-39" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">063</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">uniforms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">u_texture</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_proj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_rect</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span></pre>
 <pre class='cython code score-39 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_3, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   __pyx_t_8 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_3, __pyx_n_s_array);<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 63, __pyx_L1_error)</span>
@@ -1061,7 +1130,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_6setup_uniforms(stru
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 </pre><pre class="cython line score-0">&#xA0;<span class="">064</span>: </pre>
-<pre class="cython line score-25" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">065</span>:     def setup_shaders(self):</pre>
+<pre class="cython line score-25" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">065</span>:     <span class="k">def</span> <span class="nf">setup_shaders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-25 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_9setup_shaders(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_9setup_shaders = {"setup_shaders", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_9setup_shaders, METH_NOARGS, 0};
@@ -1107,23 +1176,23 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_8setup_shaders(struc
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__29 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_setup_shaders, 65, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 65, __pyx_L1_error)</span>
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:         vs_path = b"./resources/shaders/sprite.vert"</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">066</span>:         <span class="n">vs_path</span> <span class="o">=</span> <span class="n">b</span><span class="s">&quot;./resources/shaders/sprite.vert&quot;</span></pre>
 <pre class='cython code score-1 '>  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_kp_b_resources_shaders_sprite_vert);
   __pyx_v_vs_path = __pyx_kp_b_resources_shaders_sprite_vert;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         self.vs = self.graphics.shader_create_from_file(SHADER_TYPE_VERTEX, vs_path)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">067</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">vs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">shader_create_from_file</span><span class="p">(</span><span class="n">SHADER_TYPE_VERTEX</span><span class="p">,</span> <span class="n">vs_path</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;shader_create_from_file(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_e_7pyorama_8graphics_14graphics_enums_SHADER_TYPE_VERTEX, __pyx_v_vs_path, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)</span>
   __pyx_v_self-&gt;vs = __pyx_t_1;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:         fs_path = b"./resources/shaders/sprite.frag"</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">068</span>:         <span class="n">fs_path</span> <span class="o">=</span> <span class="n">b</span><span class="s">&quot;./resources/shaders/sprite.frag&quot;</span></pre>
 <pre class='cython code score-1 '>  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_kp_b_resources_shaders_sprite_frag);
   __pyx_v_fs_path = __pyx_kp_b_resources_shaders_sprite_frag;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:         self.fs = self.graphics.shader_create_from_file(SHADER_TYPE_FRAGMENT, fs_path)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">069</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">shader_create_from_file</span><span class="p">(</span><span class="n">SHADER_TYPE_FRAGMENT</span><span class="p">,</span> <span class="n">fs_path</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;shader_create_from_file(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_e_7pyorama_8graphics_14graphics_enums_SHADER_TYPE_FRAGMENT, __pyx_v_fs_path, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L1_error)</span>
   __pyx_v_self-&gt;fs = __pyx_t_1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:         self.program = self.graphics.program_create(self.vs, self.fs)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">070</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">program</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">program_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;program_create(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;vs, __pyx_v_self-&gt;fs, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)</span>
   __pyx_v_self-&gt;program = __pyx_t_1;
 </pre><pre class="cython line score-0">&#xA0;<span class="">071</span>: </pre>
-<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">072</span>:     def setup_view(self):</pre>
+<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">072</span>:     <span class="k">def</span> <span class="nf">setup_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-26 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_11setup_view(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_11setup_view = {"setup_view", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_11setup_view, METH_NOARGS, 0};
@@ -1169,20 +1238,20 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__31 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_setup_view, 72, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 72, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>:         out_color = self.graphics.texture_create()</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">073</span>:         <span class="n">out_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">texture_create</span><span class="p">()</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;texture_create(__pyx_v_self-&gt;__pyx_base.graphics, 0, NULL);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L1_error)</span>
   __pyx_v_out_color = __pyx_t_1;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:         self.graphics.texture_clear(out_color, self.width, self.height)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">074</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">texture_clear</span><span class="p">(</span><span class="n">out_color</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;texture_clear(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_out_color, __pyx_v_self-&gt;width, __pyx_v_self-&gt;height, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 74, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">075</span>:         self.graphics.window_set_texture(self.window, out_color)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">075</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">window_set_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="n">out_color</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;window_set_texture(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;window, __pyx_v_out_color, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">076</span>:         self.fbo = self.graphics.frame_buffer_create()</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">076</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">fbo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">frame_buffer_create</span><span class="p">()</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;frame_buffer_create(__pyx_v_self-&gt;__pyx_base.graphics, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)</span>
   __pyx_v_self-&gt;fbo = __pyx_t_1;
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">077</span>:         self.graphics.frame_buffer_attach_textures(self.fbo, {</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">077</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">frame_buffer_attach_textures</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fbo</span><span class="p">,</span> <span class="p">{</span></pre>
 <pre class='cython code score-1 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;frame_buffer_attach_textures(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;fbo, ((PyObject*)__pyx_t_2), 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 77, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-</pre><pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:             FRAME_BUFFER_ATTACHMENT_COLOR_0: out_color,</pre>
+</pre><pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">078</span>:             <span class="n">FRAME_BUFFER_ATTACHMENT_COLOR_0</span><span class="p">:</span> <span class="n">out_color</span><span class="p">,</span></pre>
 <pre class='cython code score-9 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyInt_From_enum____pyx_t_7pyorama_8graphics_14graphics_enums_FrameBufferAttachment(__pyx_e_7pyorama_8graphics_14graphics_enums_FRAME_BUFFER_ATTACHMENT_COLOR_0);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)</span>
@@ -1192,12 +1261,12 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_t_3, __pyx_t_4) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 78, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">079</span>:         })</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">079</span>:         <span class="p">})</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">080</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">081</span>:         self.view = self.graphics.view_create()</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">081</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_create</span><span class="p">()</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_create(__pyx_v_self-&gt;__pyx_base.graphics, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L1_error)</span>
   __pyx_v_self-&gt;view = __pyx_t_1;
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:         self.update_view()</pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">082</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">update_view</span><span class="p">()</span></pre>
 <pre class='cython code score-19 '>  __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_update_view);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
   __pyx_t_3 = NULL;
@@ -1217,7 +1286,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">083</span>: </pre>
-<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">084</span>:     def update_view(self):</pre>
+<pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">084</span>:     <span class="k">def</span> <span class="nf">update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
 <pre class='cython code score-26 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_13update_view(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_13update_view = {"update_view", (PyCFunction)__pyx_pw_8examples_15bunny_mark_fast_4Game_13update_view, METH_NOARGS, 0};
@@ -1262,20 +1331,20 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_12update_view(struct
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__33 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_update_view, 84, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 84, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">085</span>:         self.graphics.view_set_rect(self.view, 0, 0, self.width, self.height)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">085</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_rect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_rect(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, 0, 0, __pyx_v_self-&gt;width, __pyx_v_self-&gt;height, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">086</span>:         self.graphics.view_set_program(self.view, self.program)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">086</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_program</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">program</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_program(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, __pyx_v_self-&gt;program, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">087</span>:         self.graphics.view_set_uniforms(self.view, self.uniforms)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">087</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_uniforms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uniforms</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_uniforms(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, __pyx_v_self-&gt;uniforms, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">088</span>:         self.graphics.view_set_vertex_buffer(self.view, self.vbo)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">088</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_vertex_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vbo</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_vertex_buffer(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, __pyx_v_self-&gt;vbo, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">089</span>:         self.graphics.view_set_index_buffer(self.view, self.ibo)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">089</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_index_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibo</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_index_buffer(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, __pyx_v_self-&gt;ibo, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)</span>
-</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">090</span>:         self.graphics.view_set_textures(self.view, {</pre>
+</pre><pre class="cython line score-1" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">090</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_textures</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="p">{</span></pre>
 <pre class='cython code score-1 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_textures(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, ((PyObject*)__pyx_t_1), 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 90, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:             TEXTURE_UNIT_0: self.texture,</pre>
+</pre><pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">091</span>:             <span class="n">TEXTURE_UNIT_0</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">texture</span><span class="p">,</span></pre>
 <pre class='cython code score-9 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyInt_From_enum____pyx_t_7pyorama_8graphics_14graphics_enums_TextureUnit(__pyx_e_7pyorama_8graphics_14graphics_enums_TEXTURE_UNIT_0);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)</span>
@@ -1285,11 +1354,11 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_12update_view(struct
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_t_2, __pyx_t_3) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 91, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">092</span>:         })</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">093</span>:         self.graphics.view_set_frame_buffer(self.view, self.fbo)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">092</span>:         <span class="p">})</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">093</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">view_set_frame_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbo</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;view_set_frame_buffer(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;view, __pyx_v_self-&gt;fbo, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">094</span>: </pre>
-<pre class="cython line score-62" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">095</span>:     def on_window(self, event_data, *args, **kwargs):</pre>
+<pre class="cython line score-62" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">095</span>:     <span class="k">def</span> <span class="nf">on_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre>
 <pre class='cython code score-62 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_15on_window(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_15on_window = {"on_window", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_8examples_15bunny_mark_fast_4Game_15on_window, METH_VARARGS|METH_KEYWORDS, 0};
@@ -1394,7 +1463,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_14on_window(struct _
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__35 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_on_window, 95, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 95, __pyx_L1_error)</span>
-</pre><pre class="cython line score-12" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">096</span>:         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:</pre>
+</pre><pre class="cython line score-12" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">096</span>:         <span class="k">if</span> <span class="n">event_data</span><span class="p">[</span><span class="s">&quot;sub_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">WINDOW_EVENT_TYPE_CLOSE</span><span class="p">:</span></pre>
 <pre class='cython code score-12 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_Dict_GetItem</span>(__pyx_v_event_data, __pyx_n_u_sub_type);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyInt_From_enum____pyx_t_7pyorama_5event_11event_enums_WindowEventType(__pyx_e_7pyorama_5event_11event_enums_WINDOW_EVENT_TYPE_CLOSE);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)</span>
@@ -1407,7 +1476,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_14on_window(struct _
   if (__pyx_t_4) {
 /* … */
   }
-</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>:             self.quit()</pre>
+</pre><pre class="cython line score-19" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">097</span>:             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></pre>
 <pre class='cython code score-19 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_quit);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
     __pyx_t_1 = NULL;
@@ -1427,7 +1496,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_14on_window(struct _
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">098</span>: </pre>
-<pre class="cython line score-65" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">099</span>:     def on_enter_frame(self, event_data, *args, **kwargs):</pre>
+<pre class="cython line score-65" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">099</span>:     <span class="k">def</span> <span class="nf">on_enter_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre>
 <pre class='cython code score-65 '>/* Python wrapper */
 static PyObject *__pyx_pw_8examples_15bunny_mark_fast_4Game_17on_enter_frame(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyMethodDef __pyx_mdef_8examples_15bunny_mark_fast_4Game_17on_enter_frame = {"on_enter_frame", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_8examples_15bunny_mark_fast_4Game_17on_enter_frame, METH_VARARGS|METH_KEYWORDS, 0};
@@ -1540,41 +1609,41 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_16on_enter_frame(str
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   <span class='py_c_api'>PyType_Modified</span>(__pyx_ptype_8examples_15bunny_mark_fast_Game);
   __pyx_codeobj__37 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_examples_bunny_mark_fast_pyx, __pyx_n_s_on_enter_frame, 99, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 99, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0">&#xA0;<span class="">100</span>:         cdef:</pre>
-<pre class="cython line score-0">&#xA0;<span class="">101</span>:             SpriteC *sprite_ptr</pre>
-<pre class="cython line score-0">&#xA0;<span class="">102</span>:             Vec2C position</pre>
-<pre class="cython line score-0">&#xA0;<span class="">103</span>:             Vec2C shift</pre>
-<pre class="cython line score-0">&#xA0;<span class="">104</span>:             size_t i</pre>
-<pre class="cython line score-0">&#xA0;<span class="">105</span>:             double fps</pre>
-<pre class="cython line score-0">&#xA0;<span class="">106</span>:             bytes title</pre>
-<pre class="cython line score-13" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">107</span>:         self.current_time = event_data["timestamp"]</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">100</span>:         <span class="k">cdef</span><span class="p">:</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">101</span>:             <span class="n">SpriteC</span> <span class="o">*</span><span class="n">sprite_ptr</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">102</span>:             <span class="n">Vec2C</span> <span class="n">position</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">103</span>:             <span class="n">Vec2C</span> <span class="n">shift</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">104</span>:             <span class="n">size_t</span> <span class="n">i</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">105</span>:             <span class="n">double</span> <span class="n">fps</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">106</span>:             <span class="nb">bytes</span> <span class="n">title</span></pre>
+<pre class="cython line score-13" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">107</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">current_time</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span></pre>
 <pre class='cython code score-13 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_Dict_GetItem</span>(__pyx_v_event_data, __pyx_n_u_timestamp);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 107, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self-&gt;__pyx_base.current_time = __pyx_t_2;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">108</span>:         for i in range(self.num_sprites):</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">108</span>:         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_sprites</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_3 = __pyx_v_self-&gt;num_sprites;
   __pyx_t_4 = __pyx_t_3;
   for (__pyx_t_5 = 0; __pyx_t_5 &lt; __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:             sprite_ptr = self.graphics.sprite_get_ptr(self.sprites[i])</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">109</span>:             <span class="n">sprite_ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">sprite_get_ptr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></pre>
 <pre class='cython code score-0 '>    __pyx_t_6 = __pyx_v_i;
     __pyx_t_7 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;sprite_get_ptr(__pyx_v_self-&gt;__pyx_base.graphics, (*((__pyx_t_7pyorama_4core_6handle_Handle *) ( /* dim=0 */ ((char *) (((__pyx_t_7pyorama_4core_6handle_Handle *) __pyx_v_self-&gt;sprites.data) + __pyx_t_6)) ))));<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L1_error)</span>
     __pyx_v_sprite_ptr = __pyx_t_7;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">110</span>:             Vec2.c_random(&amp;shift)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">110</span>:             <span class="n">Vec2</span><span class="o">.</span><span class="n">c_random</span><span class="p">(</span><span class="o">&amp;</span><span class="n">shift</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    __pyx_vtabptr_7pyorama_6math3d_4vec2_Vec2-&gt;c_random((&amp;__pyx_v_shift));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>:             Vec2.c_scale_add(&amp;shift, &amp;shift, 2, -1.0)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">111</span>:             <span class="n">Vec2</span><span class="o">.</span><span class="n">c_scale_add</span><span class="p">(</span><span class="o">&amp;</span><span class="n">shift</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">shift</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    __pyx_t_8.__pyx_n = 2;
     __pyx_t_8.scale = 2.0;
     __pyx_t_8.add = -1.0;
     __pyx_vtabptr_7pyorama_6math3d_4vec2_Vec2-&gt;c_scale_add((&amp;__pyx_v_shift), (&amp;__pyx_v_shift), &amp;__pyx_t_8); 
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">112</span>:             Vec2.c_add(&amp;sprite_ptr.position, &amp;sprite_ptr.position, &amp;shift)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">112</span>:             <span class="n">Vec2</span><span class="o">.</span><span class="n">c_add</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sprite_ptr</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sprite_ptr</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">shift</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    __pyx_vtabptr_7pyorama_6math3d_4vec2_Vec2-&gt;c_add((&amp;__pyx_v_sprite_ptr-&gt;position), (&amp;__pyx_v_sprite_ptr-&gt;position), (&amp;__pyx_v_shift));
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">113</span>:         self.time_delta = self.current_time - self.previous_time</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">113</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">time_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_time</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;time_delta = (__pyx_v_self-&gt;__pyx_base.current_time - __pyx_v_self-&gt;__pyx_base.previous_time);
-</pre><pre class="cython line score-39" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">114</span>:         fps = min(round(1000.0 / self.ms_per_update), round(1.0 / self.time_delta))</pre>
+</pre><pre class="cython line score-39" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">114</span>:         <span class="n">fps</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mf">1000.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms_per_update</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_delta</span><span class="p">))</span></pre>
 <pre class='cython code score-39 '>  __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>((1.0 / __pyx_v_self-&gt;time_delta));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_9 = <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_builtin_round, __pyx_t_1);<span class='error_goto'> if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 114, __pyx_L1_error)</span>
@@ -1600,7 +1669,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_16on_enter_frame(str
   __pyx_t_2 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 114, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_fps = __pyx_t_2;
-</pre><pre class="cython line score-49" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">115</span>:         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")</pre>
+</pre><pre class="cython line score-49" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">115</span>:         <span class="n">title</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;BunnyMark (FPS: {0})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fps</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span></pre>
 <pre class='cython code score-49 '>  __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_kp_u_BunnyMark_FPS_0, __pyx_n_s_format);<span class='error_goto'> if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 115, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_10);
   __pyx_t_11 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_fps);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 115, __pyx_L1_error)</span>
@@ -1642,18 +1711,18 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_16on_enter_frame(str
   if (!(likely(<span class='py_c_api'>PyBytes_CheckExact</span>(__pyx_t_1))||((__pyx_t_1) == Py_None)||(<span class='py_c_api'>PyErr_Format</span>(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)-&gt;tp_name), 0))) <span class='error_goto'>__PYX_ERR(0, 115, __pyx_L1_error)</span>
   __pyx_v_title = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">116</span>:         self.graphics.window_set_title(self.window, title)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">116</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">window_set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self-&gt;__pyx_base.graphics-&gt;__pyx_vtab)-&gt;window_set_title(__pyx_v_self-&gt;__pyx_base.graphics, __pyx_v_self-&gt;window, __pyx_v_title, 0);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 116, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">117</span>:         self.previous_time = self.current_time</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">117</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">previous_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_time</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_2 = __pyx_v_self-&gt;__pyx_base.current_time;
   __pyx_v_self-&gt;__pyx_base.previous_time = __pyx_t_2;
 </pre><pre class="cython line score-0">&#xA0;<span class="">118</span>: </pre>
-<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">119</span>: game = Game()</pre>
+<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">119</span>: <span class="n">game</span> <span class="o">=</span> <span class="n">Game</span><span class="p">()</span></pre>
 <pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_CallNoArg</span>(((PyObject *)__pyx_ptype_8examples_15bunny_mark_fast_Game));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_game, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 119, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">120</span>: game.run()</pre>
+</pre><pre class="cython line score-9" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">120</span>: <span class="n">game</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></pre>
 <pre class='cython code score-9 '>  <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_1, __pyx_n_s_game);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_run);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)</span>

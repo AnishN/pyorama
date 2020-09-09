@@ -3,13 +3,6 @@ import glob
 import os
 import time
 
-ctypes.cdll.LoadLibrary("./pyorama/libs/shared/libpng15.so.15")
-#hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
-#shared_libs_base_path = "./pyorama/libs/shared/*.so"
-#shared_libs = glob.glob(shared_libs_base_path)
-#for lib in shared_libs:
-#    ctypes.cdll.LoadLibrary(lib)
-
 cdef class App:
 
     def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):
@@ -17,6 +10,14 @@ cdef class App:
         #self.use_vsync = use_vsync
         #self.use_sleep = use_sleep
 
+        #hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
+        lib_base_path = "./pyorama/libs/shared/*.so"
+        lib_paths = glob.glob(lib_base_path)
+        libs = []
+        for lib_path in lib_paths:
+            lib = ctypes.CDLL(lib_path)
+            libs.append(lib)
+        
         #py_atexit.register(App.quit, self)
         SDL_Init(SDL_INIT_EVERYTHING)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
