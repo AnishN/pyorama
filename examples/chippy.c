@@ -672,6 +672,9 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+    #define CP_USE_DOUBLES 0
+    
 #include "chipmunk/chipmunk_types.h"
 #include "chipmunk/cpVect.h"
 #include "chipmunk/cpBB.h"

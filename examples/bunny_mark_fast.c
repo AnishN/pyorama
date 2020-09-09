@@ -49,6 +49,10 @@
         "language": "c",
         "libraries": [
             "GLESv2",
+            "z",
+            "jpeg",
+            "png",
+            "webp",
             "SDL2",
             "SDL2_image",
             "SDL2_mixer",
@@ -706,6 +710,9 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "assimp/cimport.h"
 #include "assimp/postprocess.h"
 #include "SDL2/SDL_opengles2.h"
+
+    #define CP_USE_DOUBLES 0
+    
 #include "chipmunk/chipmunk_types.h"
 #include "chipmunk/cpVect.h"
 #include "chipmunk/cpBB.h"

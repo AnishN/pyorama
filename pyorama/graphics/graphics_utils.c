@@ -38,6 +38,10 @@
         "language": "c",
         "libraries": [
             "GLESv2",
+            "z",
+            "jpeg",
+            "png",
+            "webp",
             "SDL2",
             "SDL2_image",
             "SDL2_mixer",

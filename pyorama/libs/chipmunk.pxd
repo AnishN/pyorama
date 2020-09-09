@@ -1,6 +1,11 @@
 #Based on chipmunk version 7.0.3
 from pyorama.libs.c cimport *
 
+cdef extern from * nogil:
+    """
+    #define CP_USE_DOUBLES 0
+    """
+
 cdef extern from "chipmunk/chipmunk_types.h" nogil:
     ctypedef float cpFloat
     cpFloat cpfmax(cpFloat a, cpFloat b)
