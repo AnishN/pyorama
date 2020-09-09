@@ -49,7 +49,10 @@
         "language": "c",
         "libraries": [
             "GLESv2",
+            "z",
+            "jpeg",
             "png",
+            "webp",
             "SDL2",
             "SDL2_image",
             "SDL2_mixer",
@@ -3599,8 +3602,8 @@ struct __pyx_vtabstruct_7pyorama_7physics_15physics_manager_PhysicsManager {
 static struct __pyx_vtabstruct_7pyorama_7physics_15physics_manager_PhysicsManager *__pyx_vtabptr_7pyorama_7physics_15physics_manager_PhysicsManager;
 
 
-/* "pyorama/core/app.pyx":12
- *     ctypes.cdll.LoadLibrary(lib)
+/* "pyorama/core/app.pyx":13
+ * #    ctypes.cdll.LoadLibrary(lib)
  * 
  * cdef class App:             # <<<<<<<<<<<<<<
  * 
@@ -4497,7 +4500,6 @@ static const char __pyx_k_c[] = "c";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_os[] = "os";
 static const char __pyx_k_App[] = "App";
-static const char __pyx_k_lib[] = "lib";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_run[] = "run";
@@ -4559,7 +4561,6 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_LoadLibrary[] = "LoadLibrary";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
-static const char __pyx_k_shared_libs[] = "shared_libs";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_use_setstate[] = "use_setstate";
@@ -4581,9 +4582,7 @@ static const char __pyx_k_pyorama_core_app_pyx[] = "pyorama/core/app.pyx";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_App___setstate_cython[] = "App.__setstate_cython__";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
-static const char __pyx_k_shared_libs_base_path[] = "shared_libs_base_path";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
-static const char __pyx_k_pyorama_libs_shared_so[] = "./pyorama/libs/shared/*.so";
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
@@ -4591,6 +4590,7 @@ static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
+static const char __pyx_k_pyorama_libs_shared_libpng15_so[] = "./pyorama/libs/shared/libpng15.so.15";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
 static const char __pyx_k_Can_only_create_a_buffer_that_is[] = "Can only create a buffer that is contiguous in memory.";
 static const char __pyx_k_Cannot_assign_to_read_only_memor[] = "Cannot assign to read-only memoryview";
@@ -4665,7 +4665,6 @@ static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_init;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
-static PyObject *__pyx_n_s_lib;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_mode;
@@ -4681,7 +4680,7 @@ static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_pyorama_core_app;
 static PyObject *__pyx_kp_s_pyorama_core_app_pyx;
-static PyObject *__pyx_kp_u_pyorama_libs_shared_so;
+static PyObject *__pyx_kp_u_pyorama_libs_shared_libpng15_so;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
 static PyObject *__pyx_n_s_pyx_getbuffer;
@@ -4701,8 +4700,6 @@ static PyObject *__pyx_n_s_self;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_n_s_shape;
-static PyObject *__pyx_n_s_shared_libs;
-static PyObject *__pyx_n_s_shared_libs_base_path;
 static PyObject *__pyx_n_s_size;
 static PyObject *__pyx_n_s_start;
 static PyObject *__pyx_n_s_state;
@@ -4802,27 +4799,28 @@ static PyObject *__pyx_tuple__17;
 static PyObject *__pyx_tuple__18;
 static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__20;
-static PyObject *__pyx_tuple__22;
-static PyObject *__pyx_tuple__24;
-static PyObject *__pyx_tuple__26;
-static PyObject *__pyx_tuple__28;
-static PyObject *__pyx_tuple__30;
-static PyObject *__pyx_tuple__32;
+static PyObject *__pyx_tuple__21;
+static PyObject *__pyx_tuple__23;
+static PyObject *__pyx_tuple__25;
+static PyObject *__pyx_tuple__27;
+static PyObject *__pyx_tuple__29;
+static PyObject *__pyx_tuple__31;
 static PyObject *__pyx_tuple__33;
 static PyObject *__pyx_tuple__34;
 static PyObject *__pyx_tuple__35;
 static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_tuple__37;
-static PyObject *__pyx_codeobj__21;
-static PyObject *__pyx_codeobj__23;
-static PyObject *__pyx_codeobj__25;
-static PyObject *__pyx_codeobj__27;
-static PyObject *__pyx_codeobj__29;
-static PyObject *__pyx_codeobj__31;
-static PyObject *__pyx_codeobj__38;
+static PyObject *__pyx_tuple__38;
+static PyObject *__pyx_codeobj__22;
+static PyObject *__pyx_codeobj__24;
+static PyObject *__pyx_codeobj__26;
+static PyObject *__pyx_codeobj__28;
+static PyObject *__pyx_codeobj__30;
+static PyObject *__pyx_codeobj__32;
+static PyObject *__pyx_codeobj__39;
 /* Late includes */
 
-/* "pyorama/core/app.pyx":14
+/* "pyorama/core/app.pyx":15
  * cdef class App:
  * 
  *     def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):             # <<<<<<<<<<<<<<
@@ -4862,7 +4860,7 @@ static PyObject *__pyx_pw_7pyorama_4core_3app_3App_1init(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "init") < 0)) __PYX_ERR(0, 14, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "init") < 0)) __PYX_ERR(0, 15, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4873,14 +4871,14 @@ static PyObject *__pyx_pw_7pyorama_4core_3app_3App_1init(PyObject *__pyx_v_self,
       }
     }
     if (values[0]) {
-      __pyx_v_ms_per_update = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_ms_per_update == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+      __pyx_v_ms_per_update = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_ms_per_update == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L3_error)
     } else {
       __pyx_v_ms_per_update = __pyx_k_;
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("init", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 14, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("init", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 15, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pyorama.core.app.App.init", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4903,7 +4901,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("init", 0);
 
-  /* "pyorama/core/app.pyx":15
+  /* "pyorama/core/app.pyx":16
  * 
  *     def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):
  *         self.ms_per_update = ms_per_update             # <<<<<<<<<<<<<<
@@ -4912,7 +4910,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   __pyx_v_self->ms_per_update = __pyx_v_ms_per_update;
 
-  /* "pyorama/core/app.pyx":20
+  /* "pyorama/core/app.pyx":21
  * 
  *         #py_atexit.register(App.quit, self)
  *         SDL_Init(SDL_INIT_EVERYTHING)             # <<<<<<<<<<<<<<
@@ -4921,7 +4919,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_Init(SDL_INIT_EVERYTHING));
 
-  /* "pyorama/core/app.pyx":21
+  /* "pyorama/core/app.pyx":22
  *         #py_atexit.register(App.quit, self)
  *         SDL_Init(SDL_INIT_EVERYTHING)
  *         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)             # <<<<<<<<<<<<<<
@@ -4930,7 +4928,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(IMG_Init(((IMG_INIT_JPG | IMG_INIT_PNG) | IMG_INIT_TIF)));
 
-  /* "pyorama/core/app.pyx":22
+  /* "pyorama/core/app.pyx":23
  *         SDL_Init(SDL_INIT_EVERYTHING)
  *         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)             # <<<<<<<<<<<<<<
@@ -4939,7 +4937,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
 
-  /* "pyorama/core/app.pyx":23
+  /* "pyorama/core/app.pyx":24
  *         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0)             # <<<<<<<<<<<<<<
@@ -4948,7 +4946,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
 
-  /* "pyorama/core/app.pyx":24
+  /* "pyorama/core/app.pyx":25
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0)
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)             # <<<<<<<<<<<<<<
@@ -4957,7 +4955,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES));
 
-  /* "pyorama/core/app.pyx":25
+  /* "pyorama/core/app.pyx":26
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0)
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)
  *         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)             # <<<<<<<<<<<<<<
@@ -4966,7 +4964,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1));
 
-  /* "pyorama/core/app.pyx":26
+  /* "pyorama/core/app.pyx":27
  *         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)
  *         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
  *         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)             # <<<<<<<<<<<<<<
@@ -4975,7 +4973,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
 
-  /* "pyorama/core/app.pyx":27
+  /* "pyorama/core/app.pyx":28
  *         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
  *         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
  *         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)             # <<<<<<<<<<<<<<
@@ -4984,7 +4982,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24));
 
-  /* "pyorama/core/app.pyx":28
+  /* "pyorama/core/app.pyx":29
  *         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
  *         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
  *         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")             # <<<<<<<<<<<<<<
@@ -4993,14 +4991,14 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   (void)(SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, ((char const *)"1")));
 
-  /* "pyorama/core/app.pyx":30
+  /* "pyorama/core/app.pyx":31
  *         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
  * 
  *         self.graphics = GraphicsManager()             # <<<<<<<<<<<<<<
  *         self.event = EventManager()
  *         self.physics = PhysicsManager()
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->graphics);
@@ -5008,14 +5006,14 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   __pyx_v_self->graphics = ((struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyorama/core/app.pyx":31
+  /* "pyorama/core/app.pyx":32
  * 
  *         self.graphics = GraphicsManager()
  *         self.event = EventManager()             # <<<<<<<<<<<<<<
  *         self.physics = PhysicsManager()
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_7pyorama_5event_13event_manager_EventManager)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_7pyorama_5event_13event_manager_EventManager)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->event);
@@ -5023,14 +5021,14 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   __pyx_v_self->event = ((struct __pyx_obj_7pyorama_5event_13event_manager_EventManager *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyorama/core/app.pyx":32
+  /* "pyorama/core/app.pyx":33
  *         self.graphics = GraphicsManager()
  *         self.event = EventManager()
  *         self.physics = PhysicsManager()             # <<<<<<<<<<<<<<
  * 
  *         self.accumulated_time = 0.0
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->physics);
@@ -5038,7 +5036,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   __pyx_v_self->physics = ((struct __pyx_obj_7pyorama_7physics_15physics_manager_PhysicsManager *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pyorama/core/app.pyx":34
+  /* "pyorama/core/app.pyx":35
  *         self.physics = PhysicsManager()
  * 
  *         self.accumulated_time = 0.0             # <<<<<<<<<<<<<<
@@ -5047,7 +5045,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   __pyx_v_self->accumulated_time = 0.0;
 
-  /* "pyorama/core/app.pyx":35
+  /* "pyorama/core/app.pyx":36
  * 
  *         self.accumulated_time = 0.0
  *         self.delta = 0.0             # <<<<<<<<<<<<<<
@@ -5056,7 +5054,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   __pyx_v_self->delta = 0.0;
 
-  /* "pyorama/core/app.pyx":36
+  /* "pyorama/core/app.pyx":37
  *         self.accumulated_time = 0.0
  *         self.delta = 0.0
  *         self.frequency = SDL_GetPerformanceFrequency()             # <<<<<<<<<<<<<<
@@ -5065,7 +5063,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   __pyx_v_self->frequency = SDL_GetPerformanceFrequency();
 
-  /* "pyorama/core/app.pyx":37
+  /* "pyorama/core/app.pyx":38
  *         self.delta = 0.0
  *         self.frequency = SDL_GetPerformanceFrequency()
  *         self.start_time = self.c_get_current_time()             # <<<<<<<<<<<<<<
@@ -5074,7 +5072,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
  */
   __pyx_v_self->start_time = ((struct __pyx_vtabstruct_7pyorama_4core_3app_App *)__pyx_v_self->__pyx_vtab)->c_get_current_time(__pyx_v_self);
 
-  /* "pyorama/core/app.pyx":38
+  /* "pyorama/core/app.pyx":39
  *         self.frequency = SDL_GetPerformanceFrequency()
  *         self.start_time = self.c_get_current_time()
  *         self.current_time = self.start_time             # <<<<<<<<<<<<<<
@@ -5084,7 +5082,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   __pyx_t_2 = __pyx_v_self->start_time;
   __pyx_v_self->current_time = __pyx_t_2;
 
-  /* "pyorama/core/app.pyx":39
+  /* "pyorama/core/app.pyx":40
  *         self.start_time = self.c_get_current_time()
  *         self.current_time = self.start_time
  *         self.previous_time = self.current_time             # <<<<<<<<<<<<<<
@@ -5094,7 +5092,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   __pyx_t_2 = __pyx_v_self->current_time;
   __pyx_v_self->previous_time = __pyx_t_2;
 
-  /* "pyorama/core/app.pyx":14
+  /* "pyorama/core/app.pyx":15
  * cdef class App:
  * 
  *     def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):             # <<<<<<<<<<<<<<
@@ -5115,7 +5113,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_init(struct __pyx_obj_7pyoram
   return __pyx_r;
 }
 
-/* "pyorama/core/app.pyx":41
+/* "pyorama/core/app.pyx":42
  *         self.previous_time = self.current_time
  * 
  *     def quit(self):             # <<<<<<<<<<<<<<
@@ -5148,16 +5146,16 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_2quit(CYTHON_UNUSED struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("quit", 0);
 
-  /* "pyorama/core/app.pyx":42
+  /* "pyorama/core/app.pyx":43
  * 
  *     def quit(self):
  *         os._exit(-1)             # <<<<<<<<<<<<<<
  * 
  *     def run(self):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_os); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_os); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_exit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_exit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -5172,12 +5170,12 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_2quit(CYTHON_UNUSED struct __
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_int_neg_1) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_int_neg_1);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyorama/core/app.pyx":41
+  /* "pyorama/core/app.pyx":42
  *         self.previous_time = self.current_time
  * 
  *     def quit(self):             # <<<<<<<<<<<<<<
@@ -5200,7 +5198,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_2quit(CYTHON_UNUSED struct __
   return __pyx_r;
 }
 
-/* "pyorama/core/app.pyx":44
+/* "pyorama/core/app.pyx":45
  *         os._exit(-1)
  * 
  *     def run(self):             # <<<<<<<<<<<<<<
@@ -5236,14 +5234,14 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run", 0);
 
-  /* "pyorama/core/app.pyx":45
+  /* "pyorama/core/app.pyx":46
  * 
  *     def run(self):
  *         self.init()             # <<<<<<<<<<<<<<
  * 
  *         #basic fixed timestep with accumulator
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_init); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_init); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5257,12 +5255,12 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyorama/core/app.pyx":48
+  /* "pyorama/core/app.pyx":49
  * 
  *         #basic fixed timestep with accumulator
  *         while True:             # <<<<<<<<<<<<<<
@@ -5271,7 +5269,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
  */
   while (1) {
 
-    /* "pyorama/core/app.pyx":49
+    /* "pyorama/core/app.pyx":50
  *         #basic fixed timestep with accumulator
  *         while True:
  *             self.current_time = self.c_get_current_time()             # <<<<<<<<<<<<<<
@@ -5280,7 +5278,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
  */
     __pyx_v_self->current_time = ((struct __pyx_vtabstruct_7pyorama_4core_3app_App *)__pyx_v_self->__pyx_vtab)->c_get_current_time(__pyx_v_self);
 
-    /* "pyorama/core/app.pyx":50
+    /* "pyorama/core/app.pyx":51
  *         while True:
  *             self.current_time = self.c_get_current_time()
  *             self.delta = self.current_time - self.previous_time             # <<<<<<<<<<<<<<
@@ -5289,7 +5287,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
  */
     __pyx_v_self->delta = (__pyx_v_self->current_time - __pyx_v_self->previous_time);
 
-    /* "pyorama/core/app.pyx":51
+    /* "pyorama/core/app.pyx":52
  *             self.current_time = self.c_get_current_time()
  *             self.delta = self.current_time - self.previous_time
  *             self.accumulated_time += self.delta             # <<<<<<<<<<<<<<
@@ -5298,7 +5296,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
  */
     __pyx_v_self->accumulated_time = (__pyx_v_self->accumulated_time + __pyx_v_self->delta);
 
-    /* "pyorama/core/app.pyx":52
+    /* "pyorama/core/app.pyx":53
  *             self.delta = self.current_time - self.previous_time
  *             self.accumulated_time += self.delta
  *             while self.accumulated_time > self.ms_per_update/1000:             # <<<<<<<<<<<<<<
@@ -5309,7 +5307,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
       __pyx_t_4 = ((__pyx_v_self->accumulated_time > (__pyx_v_self->ms_per_update / 1000.0)) != 0);
       if (!__pyx_t_4) break;
 
-      /* "pyorama/core/app.pyx":53
+      /* "pyorama/core/app.pyx":54
  *             self.accumulated_time += self.delta
  *             while self.accumulated_time > self.ms_per_update/1000:
  *                 self.timestamp = self.c_get_current_time() - self.start_time             # <<<<<<<<<<<<<<
@@ -5318,52 +5316,52 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
  */
       __pyx_v_self->timestamp = (((struct __pyx_vtabstruct_7pyorama_4core_3app_App *)__pyx_v_self->__pyx_vtab)->c_get_current_time(__pyx_v_self) - __pyx_v_self->start_time);
 
-      /* "pyorama/core/app.pyx":54
+      /* "pyorama/core/app.pyx":55
  *             while self.accumulated_time > self.ms_per_update/1000:
  *                 self.timestamp = self.c_get_current_time() - self.start_time
  *                 PyErr_CheckSignals()             # <<<<<<<<<<<<<<
  *                 self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
  *                 self.event.update(self.timestamp)
  */
-      __pyx_t_5 = PyErr_CheckSignals(); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 54, __pyx_L1_error)
+      __pyx_t_5 = PyErr_CheckSignals(); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 55, __pyx_L1_error)
 
-      /* "pyorama/core/app.pyx":55
+      /* "pyorama/core/app.pyx":56
  *                 self.timestamp = self.c_get_current_time() - self.start_time
  *                 PyErr_CheckSignals()
  *                 self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)             # <<<<<<<<<<<<<<
  *                 self.event.update(self.timestamp)
  *                 self.physics.update(self.ms_per_update/1000)
  */
-      ((struct __pyx_vtabstruct_7pyorama_5event_13event_manager_EventManager *)__pyx_v_self->event->__pyx_vtab)->event_type_emit(__pyx_v_self->event, __pyx_e_7pyorama_5event_11event_enums_EVENT_TYPE_ENTER_FRAME, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 55, __pyx_L1_error)
+      ((struct __pyx_vtabstruct_7pyorama_5event_13event_manager_EventManager *)__pyx_v_self->event->__pyx_vtab)->event_type_emit(__pyx_v_self->event, __pyx_e_7pyorama_5event_11event_enums_EVENT_TYPE_ENTER_FRAME, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 56, __pyx_L1_error)
 
-      /* "pyorama/core/app.pyx":56
+      /* "pyorama/core/app.pyx":57
  *                 PyErr_CheckSignals()
  *                 self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
  *                 self.event.update(self.timestamp)             # <<<<<<<<<<<<<<
  *                 self.physics.update(self.ms_per_update/1000)
  *                 self.graphics.update()
  */
-      ((struct __pyx_vtabstruct_7pyorama_5event_13event_manager_EventManager *)__pyx_v_self->event->__pyx_vtab)->update(__pyx_v_self->event, __pyx_v_self->timestamp, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 56, __pyx_L1_error)
+      ((struct __pyx_vtabstruct_7pyorama_5event_13event_manager_EventManager *)__pyx_v_self->event->__pyx_vtab)->update(__pyx_v_self->event, __pyx_v_self->timestamp, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L1_error)
 
-      /* "pyorama/core/app.pyx":57
+      /* "pyorama/core/app.pyx":58
  *                 self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
  *                 self.event.update(self.timestamp)
  *                 self.physics.update(self.ms_per_update/1000)             # <<<<<<<<<<<<<<
  *                 self.graphics.update()
  *                 self.accumulated_time -= self.ms_per_update/1000
  */
-      ((struct __pyx_vtabstruct_7pyorama_7physics_15physics_manager_PhysicsManager *)__pyx_v_self->physics->__pyx_vtab)->update(__pyx_v_self->physics, (__pyx_v_self->ms_per_update / 1000.0), 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L1_error)
+      ((struct __pyx_vtabstruct_7pyorama_7physics_15physics_manager_PhysicsManager *)__pyx_v_self->physics->__pyx_vtab)->update(__pyx_v_self->physics, (__pyx_v_self->ms_per_update / 1000.0), 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
 
-      /* "pyorama/core/app.pyx":58
+      /* "pyorama/core/app.pyx":59
  *                 self.event.update(self.timestamp)
  *                 self.physics.update(self.ms_per_update/1000)
  *                 self.graphics.update()             # <<<<<<<<<<<<<<
  *                 self.accumulated_time -= self.ms_per_update/1000
  *             self.previous_time = self.current_time
  */
-      ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self->graphics->__pyx_vtab)->update(__pyx_v_self->graphics, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
+      ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self->graphics->__pyx_vtab)->update(__pyx_v_self->graphics, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
 
-      /* "pyorama/core/app.pyx":59
+      /* "pyorama/core/app.pyx":60
  *                 self.physics.update(self.ms_per_update/1000)
  *                 self.graphics.update()
  *                 self.accumulated_time -= self.ms_per_update/1000             # <<<<<<<<<<<<<<
@@ -5373,7 +5371,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
       __pyx_v_self->accumulated_time = (__pyx_v_self->accumulated_time - (__pyx_v_self->ms_per_update / 1000.0));
     }
 
-    /* "pyorama/core/app.pyx":60
+    /* "pyorama/core/app.pyx":61
  *                 self.graphics.update()
  *                 self.accumulated_time -= self.ms_per_update/1000
  *             self.previous_time = self.current_time             # <<<<<<<<<<<<<<
@@ -5384,7 +5382,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
     __pyx_v_self->previous_time = __pyx_t_6;
   }
 
-  /* "pyorama/core/app.pyx":44
+  /* "pyorama/core/app.pyx":45
  *         os._exit(-1)
  * 
  *     def run(self):             # <<<<<<<<<<<<<<
@@ -5407,7 +5405,7 @@ static PyObject *__pyx_pf_7pyorama_4core_3app_3App_4run(struct __pyx_obj_7pyoram
   return __pyx_r;
 }
 
-/* "pyorama/core/app.pyx":95
+/* "pyorama/core/app.pyx":96
  *         """
  * 
  *     cdef double c_get_current_time(self) nogil:             # <<<<<<<<<<<<<<
@@ -5420,7 +5418,7 @@ static double __pyx_f_7pyorama_4core_3app_3App_c_get_current_time(struct __pyx_o
   double __pyx_v_current_time;
   double __pyx_r;
 
-  /* "pyorama/core/app.pyx":99
+  /* "pyorama/core/app.pyx":100
  *             double counter
  *             double current_time
  *         counter = SDL_GetPerformanceCounter()             # <<<<<<<<<<<<<<
@@ -5429,7 +5427,7 @@ static double __pyx_f_7pyorama_4core_3app_3App_c_get_current_time(struct __pyx_o
  */
   __pyx_v_counter = SDL_GetPerformanceCounter();
 
-  /* "pyorama/core/app.pyx":100
+  /* "pyorama/core/app.pyx":101
  *             double current_time
  *         counter = SDL_GetPerformanceCounter()
  *         current_time = counter / self.frequency             # <<<<<<<<<<<<<<
@@ -5437,7 +5435,7 @@ static double __pyx_f_7pyorama_4core_3app_3App_c_get_current_time(struct __pyx_o
  */
   __pyx_v_current_time = (__pyx_v_counter / ((double)__pyx_v_self->frequency));
 
-  /* "pyorama/core/app.pyx":101
+  /* "pyorama/core/app.pyx":102
  *         counter = SDL_GetPerformanceCounter()
  *         current_time = counter / self.frequency
  *         return current_time             # <<<<<<<<<<<<<<
@@ -5445,7 +5443,7 @@ static double __pyx_f_7pyorama_4core_3app_3App_c_get_current_time(struct __pyx_o
   __pyx_r = __pyx_v_current_time;
   goto __pyx_L0;
 
-  /* "pyorama/core/app.pyx":95
+  /* "pyorama/core/app.pyx":96
  *         """
  * 
  *     cdef double c_get_current_time(self) nogil:             # <<<<<<<<<<<<<<
@@ -20469,7 +20467,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
-  {&__pyx_n_s_lib, __pyx_k_lib, sizeof(__pyx_k_lib), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
@@ -20485,7 +20482,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_pyorama_core_app, __pyx_k_pyorama_core_app, sizeof(__pyx_k_pyorama_core_app), 0, 0, 1, 1},
   {&__pyx_kp_s_pyorama_core_app_pyx, __pyx_k_pyorama_core_app_pyx, sizeof(__pyx_k_pyorama_core_app_pyx), 0, 0, 1, 0},
-  {&__pyx_kp_u_pyorama_libs_shared_so, __pyx_k_pyorama_libs_shared_so, sizeof(__pyx_k_pyorama_libs_shared_so), 0, 1, 0, 0},
+  {&__pyx_kp_u_pyorama_libs_shared_libpng15_so, __pyx_k_pyorama_libs_shared_libpng15_so, sizeof(__pyx_k_pyorama_libs_shared_libpng15_so), 0, 1, 0, 0},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
@@ -20505,8 +20502,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
-  {&__pyx_n_s_shared_libs, __pyx_k_shared_libs, sizeof(__pyx_k_shared_libs), 0, 0, 1, 1},
-  {&__pyx_n_s_shared_libs_base_path, __pyx_k_shared_libs_base_path, sizeof(__pyx_k_shared_libs_base_path), 0, 0, 1, 1},
   {&__pyx_n_s_size, __pyx_k_size, sizeof(__pyx_k_size), 0, 0, 1, 1},
   {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
   {&__pyx_n_s_state, __pyx_k_state, sizeof(__pyx_k_state), 0, 0, 1, 1},
@@ -20736,51 +20731,62 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
 
-  /* "pyorama/core/app.pyx":14
+  /* "pyorama/core/app.pyx":6
+ * import time
+ * 
+ * ctypes.cdll.LoadLibrary("./pyorama/libs/shared/libpng15.so.15")             # <<<<<<<<<<<<<<
+ * #hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
+ * #shared_libs_base_path = "./pyorama/libs/shared/[inserted by cython to avoid comment start]*.so"
+ */
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_pyorama_libs_shared_libpng15_so); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
+
+  /* "pyorama/core/app.pyx":15
  * cdef class App:
  * 
  *     def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):             # <<<<<<<<<<<<<<
  *         self.ms_per_update = ms_per_update
  *         #self.use_vsync = use_vsync
  */
-  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_ms_per_update); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 14, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyorama_core_app_pyx, __pyx_n_s_init, 14, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_ms_per_update); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyorama_core_app_pyx, __pyx_n_s_init, 15, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 15, __pyx_L1_error)
 
-  /* "pyorama/core/app.pyx":41
+  /* "pyorama/core/app.pyx":42
  *         self.previous_time = self.current_time
  * 
  *     def quit(self):             # <<<<<<<<<<<<<<
  *         os._exit(-1)
  * 
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyorama_core_app_pyx, __pyx_n_s_quit, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyorama_core_app_pyx, __pyx_n_s_quit, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "pyorama/core/app.pyx":44
+  /* "pyorama/core/app.pyx":45
  *         os._exit(-1)
  * 
  *     def run(self):             # <<<<<<<<<<<<<<
  *         self.init()
  * 
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyorama_core_app_pyx, __pyx_n_s_run, 44, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyorama_core_app_pyx, __pyx_n_s_run, 45, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 45, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     cdef tuple state
  *     cdef object _dict
  */
-  __pyx_tuple__26 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_state, __pyx_n_s_dict_2, __pyx_n_s_use_setstate); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_reduce_cython, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_state, __pyx_n_s_dict_2, __pyx_n_s_use_setstate); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_reduce_cython, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(2, 1, __pyx_L1_error)
 
   /* "(tree fragment)":16
  *     else:
@@ -20788,20 +20794,20 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_App__set_state(self, __pyx_state)
  */
-  __pyx_tuple__28 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pyx_state); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
-  __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 16, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(2, 16, __pyx_L1_error)
+  __pyx_tuple__29 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pyx_state); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 16, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__29);
+  __Pyx_GIVEREF(__pyx_tuple__29);
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 16, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(2, 16, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_App(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__30 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_App, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__31 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
+  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_App, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(2, 1, __pyx_L1_error)
 
   /* "View.MemoryView":286
  *         return self.name
@@ -20810,9 +20816,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(2, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
 
   /* "View.MemoryView":287
  * 
@@ -20821,9 +20827,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(2, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__33);
-  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
 
   /* "View.MemoryView":288
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -20832,9 +20838,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
-  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__35);
+  __Pyx_GIVEREF(__pyx_tuple__35);
 
   /* "View.MemoryView":291
  * 
@@ -20843,9 +20849,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 291, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__35);
-  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
+  __Pyx_GIVEREF(__pyx_tuple__36);
 
   /* "View.MemoryView":292
  * 
@@ -20854,19 +20860,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__36);
-  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(2, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__37);
+  __Pyx_GIVEREF(__pyx_tuple__37);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__37 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__37);
-  __Pyx_GIVEREF(__pyx_tuple__37);
-  __pyx_codeobj__38 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__37, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__38)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__38 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__38);
+  __Pyx_GIVEREF(__pyx_tuple__38);
+  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -20932,16 +20938,16 @@ static int __Pyx_modinit_type_init_code(void) {
   /*--- Type init code ---*/
   __pyx_vtabptr_7pyorama_4core_3app_App = &__pyx_vtable_7pyorama_4core_3app_App;
   __pyx_vtable_7pyorama_4core_3app_App.c_get_current_time = (double (*)(struct __pyx_obj_7pyorama_4core_3app_App *))__pyx_f_7pyorama_4core_3app_3App_c_get_current_time;
-  if (PyType_Ready(&__pyx_type_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7pyorama_4core_3app_App.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7pyorama_4core_3app_App.tp_dictoffset && __pyx_type_7pyorama_4core_3app_App.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7pyorama_4core_3app_App.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_7pyorama_4core_3app_App.tp_dict, __pyx_vtabptr_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_App, (PyObject *)&__pyx_type_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_7pyorama_4core_3app_App.tp_dict, __pyx_vtabptr_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_App, (PyObject *)&__pyx_type_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7pyorama_4core_3app_App) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __pyx_ptype_7pyorama_4core_3app_App = &__pyx_type_7pyorama_4core_3app_App;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
@@ -21212,12 +21218,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_app(PyObject *__pyx_pyinit_module)
 {
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
-  PyObject *(*__pyx_t_5)(PyObject *);
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  static PyThread_type_lock __pyx_t_8[8];
+  static PyThread_type_lock __pyx_t_3[8];
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -21363,141 +21364,34 @@ if (!__Pyx_RefNanny) {
  * import os
  * import time             # <<<<<<<<<<<<<<
  * 
- * #hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
+ * ctypes.cdll.LoadLibrary("./pyorama/libs/shared/libpng15.so.15")
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_time, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pyorama/core/app.pyx":7
+  /* "pyorama/core/app.pyx":6
+ * import time
  * 
+ * ctypes.cdll.LoadLibrary("./pyorama/libs/shared/libpng15.so.15")             # <<<<<<<<<<<<<<
  * #hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
- * shared_libs_base_path = "./pyorama/libs/shared/[inserted by cython to avoid comment start]*.so"             # <<<<<<<<<<<<<<
- * shared_libs = glob.glob(shared_libs_base_path)
- * for lib in shared_libs:
+ * #shared_libs_base_path = "./pyorama/libs/shared/[inserted by cython to avoid comment start]*.so"
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_shared_libs_base_path, __pyx_kp_u_pyorama_libs_shared_so) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
-
-  /* "pyorama/core/app.pyx":8
- * #hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
- * shared_libs_base_path = "./pyorama/libs/shared/[inserted by cython to avoid comment start]*.so"
- * shared_libs = glob.glob(shared_libs_base_path)             # <<<<<<<<<<<<<<
- * for lib in shared_libs:
- *     ctypes.cdll.LoadLibrary(lib)
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_glob); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ctypes); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_glob); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cdll); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_shared_libs_base_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_LoadLibrary); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_shared_libs, __pyx_t_3) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pyorama/core/app.pyx":9
- * shared_libs_base_path = "./pyorama/libs/shared/[inserted by cython to avoid comment start]*.so"
- * shared_libs = glob.glob(shared_libs_base_path)
- * for lib in shared_libs:             # <<<<<<<<<<<<<<
- *     ctypes.cdll.LoadLibrary(lib)
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_shared_libs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
-    __pyx_t_5 = NULL;
-  } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 9, __pyx_L1_error)
-  }
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  for (;;) {
-    if (likely(!__pyx_t_5)) {
-      if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 9, __pyx_L1_error)
-        #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        #endif
-      } else {
-        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 9, __pyx_L1_error)
-        #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        #endif
-      }
-    } else {
-      __pyx_t_3 = __pyx_t_5(__pyx_t_1);
-      if (unlikely(!__pyx_t_3)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 9, __pyx_L1_error)
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_3);
-    }
-    if (PyDict_SetItem(__pyx_d, __pyx_n_s_lib, __pyx_t_3) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "pyorama/core/app.pyx":10
- * shared_libs = glob.glob(shared_libs_base_path)
- * for lib in shared_libs:
- *     ctypes.cdll.LoadLibrary(lib)             # <<<<<<<<<<<<<<
- * 
- * cdef class App:
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_ctypes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_cdll); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 10, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_LoadLibrary); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_lib); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 10, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_7);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_2, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_6);
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 10, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "pyorama/core/app.pyx":9
- * shared_libs_base_path = "./pyorama/libs/shared/[inserted by cython to avoid comment start]*.so"
- * shared_libs = glob.glob(shared_libs_base_path)
- * for lib in shared_libs:             # <<<<<<<<<<<<<<
- *     ctypes.cdll.LoadLibrary(lib)
- * 
- */
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "pyorama/core/app.pyx":14
+  /* "pyorama/core/app.pyx":15
  * cdef class App:
  * 
  *     def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):             # <<<<<<<<<<<<<<
@@ -21505,36 +21399,36 @@ if (!__Pyx_RefNanny) {
  *         #self.use_vsync = use_vsync
  */
   __pyx_k_ = (1000.0 / 60.0);
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_1init, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App_init, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_init, __pyx_t_1) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_1init, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App_init, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_init, __pyx_t_2) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_7pyorama_4core_3app_App);
 
-  /* "pyorama/core/app.pyx":41
+  /* "pyorama/core/app.pyx":42
  *         self.previous_time = self.current_time
  * 
  *     def quit(self):             # <<<<<<<<<<<<<<
  *         os._exit(-1)
  * 
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_3quit, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App_quit, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_quit, __pyx_t_1) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_3quit, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App_quit, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_quit, __pyx_t_2) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_7pyorama_4core_3app_App);
 
-  /* "pyorama/core/app.pyx":44
+  /* "pyorama/core/app.pyx":45
  *         os._exit(-1)
  * 
  *     def run(self):             # <<<<<<<<<<<<<<
  *         self.init()
  * 
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_5run, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App_run, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_run, __pyx_t_1) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_5run, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App_run, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_run, __pyx_t_2) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_7pyorama_4core_3app_App);
 
   /* "(tree fragment)":1
@@ -21542,10 +21436,10 @@ if (!__Pyx_RefNanny) {
  *     cdef tuple state
  *     cdef object _dict
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_7__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App___reduce_cython, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_reduce_cython, __pyx_t_1) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_7__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App___reduce_cython, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_reduce_cython, __pyx_t_2) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_7pyorama_4core_3app_App);
 
   /* "(tree fragment)":16
@@ -21554,10 +21448,10 @@ if (!__Pyx_RefNanny) {
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_App__set_state(self, __pyx_state)
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_9__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App___setstate_cython, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_setstate_cython, __pyx_t_1) < 0) __PYX_ERR(2, 16, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_3App_9__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_App___setstate_cython, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 16, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7pyorama_4core_3app_App->tp_dict, __pyx_n_s_setstate_cython, __pyx_t_2) < 0) __PYX_ERR(2, 16, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_7pyorama_4core_3app_App);
 
   /* "(tree fragment)":1
@@ -21565,20 +21459,20 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_1__pyx_unpickle_App, 0, __pyx_n_s_pyx_unpickle_App, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_App, __pyx_t_1) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7pyorama_4core_3app_1__pyx_unpickle_App, 0, __pyx_n_s_pyx_unpickle_App, NULL, __pyx_n_s_pyorama_core_app, __pyx_d, ((PyObject *)__pyx_codeobj__32)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_App, __pyx_t_2) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "pyorama/core/app.pyx":1
  * import ctypes             # <<<<<<<<<<<<<<
  * import glob
  * import os
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "View.MemoryView":209
  *         info.obj = self
@@ -21587,10 +21481,10 @@ if (!__Pyx_RefNanny) {
  * 
  *     def __dealloc__(array self):
  */
-  __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 209, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 209, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_2) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_array_type);
 
   /* "View.MemoryView":286
@@ -21600,12 +21494,12 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(generic);
-  __Pyx_DECREF_SET(generic, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(generic, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":287
  * 
@@ -21614,12 +21508,12 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(strided);
-  __Pyx_DECREF_SET(strided, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(strided, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":288
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -21628,12 +21522,12 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(indirect);
-  __Pyx_DECREF_SET(indirect, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(indirect, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":291
  * 
@@ -21642,12 +21536,12 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 291, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(contiguous);
-  __Pyx_DECREF_SET(contiguous, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(contiguous, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":292
  * 
@@ -21656,12 +21550,12 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(indirect_contiguous);
-  __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":316
  * 
@@ -21679,15 +21573,15 @@ if (!__Pyx_RefNanny) {
  *     PyThread_allocate_lock(),
  *     PyThread_allocate_lock(),
  */
-  __pyx_t_8[0] = PyThread_allocate_lock();
-  __pyx_t_8[1] = PyThread_allocate_lock();
-  __pyx_t_8[2] = PyThread_allocate_lock();
-  __pyx_t_8[3] = PyThread_allocate_lock();
-  __pyx_t_8[4] = PyThread_allocate_lock();
-  __pyx_t_8[5] = PyThread_allocate_lock();
-  __pyx_t_8[6] = PyThread_allocate_lock();
-  __pyx_t_8[7] = PyThread_allocate_lock();
-  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_8, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
+  __pyx_t_3[0] = PyThread_allocate_lock();
+  __pyx_t_3[1] = PyThread_allocate_lock();
+  __pyx_t_3[2] = PyThread_allocate_lock();
+  __pyx_t_3[3] = PyThread_allocate_lock();
+  __pyx_t_3[4] = PyThread_allocate_lock();
+  __pyx_t_3[5] = PyThread_allocate_lock();
+  __pyx_t_3[6] = PyThread_allocate_lock();
+  __pyx_t_3[7] = PyThread_allocate_lock();
+  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_3, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
 
   /* "View.MemoryView":549
  *         info.obj = self
@@ -21696,10 +21590,10 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 549, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(2, 549, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 549, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_2) < 0) __PYX_ERR(2, 549, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_memoryview_type);
 
   /* "View.MemoryView":995
@@ -21709,10 +21603,10 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 995, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(2, 995, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 995, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_2) < 0) __PYX_ERR(2, 995, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_memoryviewslice_type);
 
   /* "(tree fragment)":1
@@ -21720,10 +21614,10 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum, NULL, __pyx_n_s_View_MemoryView); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_1) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum, NULL, __pyx_n_s_View_MemoryView); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_2) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":11
  *         __pyx_unpickle_Enum__set_state(<Enum> __pyx_result, __pyx_state)
@@ -21739,9 +21633,6 @@ if (!__Pyx_RefNanny) {
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init pyorama.core.app", __pyx_clineno, __pyx_lineno, __pyx_filename);

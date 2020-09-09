@@ -96,7 +96,7 @@ class Game(App):
         self.graphics.sprite_batch_set_sprites(self.sprite_batch, self.sprites)
         self.vbo = self.graphics.sprite_batch_get_vertex_buffer(self.sprite_batch)
         self.ibo = self.graphics.sprite_batch_get_index_buffer(self.sprite_batch)
-
+        
         self.num_pieces = len(self.sprites)
         self.damping = 0.5
         self.friction = 0.4
@@ -123,6 +123,7 @@ class Game(App):
             self.bodies.append(body)
             self.shapes.append(shape)
         
+        """
         self.physics.body_set_force(self.bodies[0], Vec2(100000.0, 30000.0))
 
         self.board_body = self.physics.body_create(type=BODY_TYPE_STATIC)
@@ -138,6 +139,7 @@ class Game(App):
             self.physics.shape_set_elasticity(edge_shape, self.elasticity)
             self.physics.space_add_shape(self.space, edge_shape)
             self.edge_shapes.append(edge_shape)
+        """
         
         self.setup_view()
         window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
@@ -214,9 +216,12 @@ class Game(App):
             self.quit()
 
     def on_enter_frame(self, event_data, *args, **kwargs):
+        pass
+        """
         for sprite, body in zip(self.sprites, self.bodies):
             position = self.physics.body_get_position(body)
             self.graphics.sprite_set_position(sprite, position)
+        """
     
 if __name__ == "__main__":
     game = Game()
