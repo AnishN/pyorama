@@ -850,6 +850,7 @@ cdef class GraphicsManager:
             uint8_t[::1] data
         surface = IMG_Load(file_path)
         if surface == NULL:
+            print(IMG_GetError())
             raise ValueError("Image: cannot load from path")
         converted_surface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0)
         if converted_surface == NULL:

@@ -1,6 +1,13 @@
-#import atexit as py_atexit
+import ctypes
+import glob
 import os
 import time
+
+#hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
+shared_libs_base_path = "./pyorama/libs/shared/*.so"
+shared_libs = glob.glob(shared_libs_base_path)
+for lib in shared_libs:
+    ctypes.cdll.LoadLibrary(lib)
 
 cdef class App:
 

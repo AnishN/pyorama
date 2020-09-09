@@ -7,7 +7,22 @@
             "pyorama/libs/include/SDL2/SDL.h",
             "pyorama/libs/include/SDL2/SDL_image.h",
             "pyorama/libs/include/SDL2/SDL_mixer.h",
-            "pyorama/libs/include/SDL2/SDL_opengles2.h"
+            "pyorama/libs/include/SDL2/SDL_opengles2.h",
+            "pyorama/libs/include/assimp/anim.h",
+            "pyorama/libs/include/assimp/camera.h",
+            "pyorama/libs/include/assimp/cexport.h",
+            "pyorama/libs/include/assimp/cfileio.h",
+            "pyorama/libs/include/assimp/cimport.h",
+            "pyorama/libs/include/assimp/importerdesc.h",
+            "pyorama/libs/include/assimp/light.h",
+            "pyorama/libs/include/assimp/material.h",
+            "pyorama/libs/include/assimp/mesh.h",
+            "pyorama/libs/include/assimp/metadata.h",
+            "pyorama/libs/include/assimp/postprocess.h",
+            "pyorama/libs/include/assimp/scene.h",
+            "pyorama/libs/include/assimp/texture.h",
+            "pyorama/libs/include/assimp/types.h",
+            "pyorama/libs/include/assimp/version.h"
         ],
         "extra_compile_args": [
             "-w",
@@ -17,7 +32,7 @@
             "-march=native"
         ],
         "include_dirs": [
-            "/home/anish/.local/lib/python3.6/site-packages/numpy/core/include",
+            "/home/anish/.local/lib/python3.8/site-packages/numpy/core/include",
             "./pyorama/libs/include"
         ],
         "language": "c",

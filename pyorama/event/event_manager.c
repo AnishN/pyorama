@@ -16,7 +16,7 @@
             "-march=native"
         ],
         "include_dirs": [
-            "/home/anish/.local/lib/python3.6/site-packages/numpy/core/include",
+            "/home/anish/.local/lib/python3.8/site-packages/numpy/core/include",
             "./pyorama/libs/include"
         ],
         "language": "c",
