@@ -11,7 +11,7 @@
             "-march=native"
         ],
         "include_dirs": [
-            "/home/anish/.local/lib/python3.8/site-packages/numpy/core/include",
+            "/home/anish/.local/lib/python3.6/site-packages/numpy/core/include",
             "./pyorama/libs/include"
         ],
         "language": "c",
@@ -21,6 +21,7 @@
             "jpeg",
             "png",
             "webp",
+            "jbig",
             "SDL2",
             "SDL2_image",
             "SDL2_mixer",

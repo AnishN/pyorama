@@ -16,6 +16,7 @@ libraries = {
         "FLAC", 
         "assimp",
         "chipmunk",
+	"freetype", "harfbuzz",
     ],
     "Windows": [
         "opengl32", "libglew32", 

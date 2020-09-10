@@ -286,75 +286,6 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
-.cython .hll { background-color: #ffffcc }
-.cython  { background: #f8f8f8; }
-.cython .c { color: #408080; font-style: italic } /* Comment */
-.cython .err { border: 1px solid #FF0000 } /* Error */
-.cython .k { color: #008000; font-weight: bold } /* Keyword */
-.cython .o { color: #666666 } /* Operator */
-.cython .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-.cython .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.cython .cp { color: #BC7A00 } /* Comment.Preproc */
-.cython .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-.cython .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.cython .cs { color: #408080; font-style: italic } /* Comment.Special */
-.cython .gd { color: #A00000 } /* Generic.Deleted */
-.cython .ge { font-style: italic } /* Generic.Emph */
-.cython .gr { color: #FF0000 } /* Generic.Error */
-.cython .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.cython .gi { color: #00A000 } /* Generic.Inserted */
-.cython .go { color: #888888 } /* Generic.Output */
-.cython .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.cython .gs { font-weight: bold } /* Generic.Strong */
-.cython .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.cython .gt { color: #0044DD } /* Generic.Traceback */
-.cython .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.cython .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.cython .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.cython .kp { color: #008000 } /* Keyword.Pseudo */
-.cython .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.cython .kt { color: #B00040 } /* Keyword.Type */
-.cython .m { color: #666666 } /* Literal.Number */
-.cython .s { color: #BA2121 } /* Literal.String */
-.cython .na { color: #7D9029 } /* Name.Attribute */
-.cython .nb { color: #008000 } /* Name.Builtin */
-.cython .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.cython .no { color: #880000 } /* Name.Constant */
-.cython .nd { color: #AA22FF } /* Name.Decorator */
-.cython .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.cython .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.cython .nf { color: #0000FF } /* Name.Function */
-.cython .nl { color: #A0A000 } /* Name.Label */
-.cython .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.cython .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.cython .nv { color: #19177C } /* Name.Variable */
-.cython .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.cython .w { color: #bbbbbb } /* Text.Whitespace */
-.cython .mb { color: #666666 } /* Literal.Number.Bin */
-.cython .mf { color: #666666 } /* Literal.Number.Float */
-.cython .mh { color: #666666 } /* Literal.Number.Hex */
-.cython .mi { color: #666666 } /* Literal.Number.Integer */
-.cython .mo { color: #666666 } /* Literal.Number.Oct */
-.cython .sa { color: #BA2121 } /* Literal.String.Affix */
-.cython .sb { color: #BA2121 } /* Literal.String.Backtick */
-.cython .sc { color: #BA2121 } /* Literal.String.Char */
-.cython .dl { color: #BA2121 } /* Literal.String.Delimiter */
-.cython .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.cython .s2 { color: #BA2121 } /* Literal.String.Double */
-.cython .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.cython .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.cython .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.cython .sx { color: #008000 } /* Literal.String.Other */
-.cython .sr { color: #BB6688 } /* Literal.String.Regex */
-.cython .s1 { color: #BA2121 } /* Literal.String.Single */
-.cython .ss { color: #19177C } /* Literal.String.Symbol */
-.cython .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.cython .fm { color: #0000FF } /* Name.Function.Magic */
-.cython .vc { color: #19177C } /* Name.Variable.Class */
-.cython .vg { color: #19177C } /* Name.Variable.Global */
-.cython .vi { color: #19177C } /* Name.Variable.Instance */
-.cython .vm { color: #19177C } /* Name.Variable.Magic */
-.cython .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 </head>
 <body class="cython">
@@ -364,7 +295,7 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="item_array.c">item_array.c</a></p>
-<div class="cython"><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">01</span>: <span class="k">cdef</span> <span class="kt">object</span> <span class="nf">MEMORY_ERROR</span> <span class="o">=</span> <span class="ne">MemoryError</span><span class="p">(</span><span class="s">&quot;ItemArray: cannot allocate memory&quot;</span><span class="p">)</span></pre>
+<div class="cython"><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">01</span>: cdef object MEMORY_ERROR = MemoryError("ItemArray: cannot allocate memory")</pre>
 <pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_builtin_MemoryError, __pyx_tuple__3, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_v_7pyorama_4core_10item_array_MEMORY_ERROR);
@@ -375,7 +306,7 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_tuple__3 = <span class='py_c_api'>PyTuple_Pack</span>(1, __pyx_kp_u_ItemArray_cannot_allocate_memory);<span class='error_goto'> if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 1, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__3);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__3);
-</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">02</span>: <span class="k">cdef</span> <span class="kt">object</span> <span class="nf">INVALID_INDEX_ERROR</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;ItemArray: invalid index&quot;</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">02</span>: cdef object INVALID_INDEX_ERROR = ValueError("ItemArray: invalid index")</pre>
 <pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_builtin_ValueError, __pyx_tuple__4, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_v_7pyorama_4core_10item_array_INVALID_INDEX_ERROR);
@@ -387,7 +318,7 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__4);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__4);
 </pre><pre class="cython line score-0">&#xA0;<span class="">03</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">04</span>: <span class="k">cdef</span> <span class="k">class</span> <span class="nf">ItemArray</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">04</span>: cdef class ItemArray:</pre>
 <pre class='cython code score-0 '>struct __pyx_vtabstruct_7pyorama_4core_10item_array_ItemArray {
   void *(*c_get_ptr)(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *, size_t);
   void (*c_get)(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *, size_t, void *);
@@ -398,7 +329,7 @@ body.cython { font-family: courier; font-size: 12; }
 };
 static struct __pyx_vtabstruct_7pyorama_4core_10item_array_ItemArray *__pyx_vtabptr_7pyorama_4core_10item_array_ItemArray;
 </pre><pre class="cython line score-0">&#xA0;<span class="">05</span>: </pre>
-<pre class="cython line score-40" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">06</span>:     <span class="k">def</span> <span class="nf">__cinit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">item_size</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">max_items</span><span class="p">):</span></pre>
+<pre class="cython line score-40" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">06</span>:     def __cinit__(self, size_t item_size, size_t max_items):</pre>
 <pre class='cython code score-40 '>/* Python wrapper */
 static int __pyx_pw_7pyorama_4core_10item_array_9ItemArray_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_7pyorama_4core_10item_array_9ItemArray_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -478,22 +409,22 @@ static int __pyx_pf_7pyorama_4core_10item_array_9ItemArray___cinit__(struct __py
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">07</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span> <span class="o">=</span> <span class="n">max_items</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">07</span>:         self.max_items = max_items</pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;max_items = __pyx_v_max_items;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">08</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span> <span class="o">=</span> <span class="n">item_size</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">08</span>:         self.item_size = item_size</pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;item_size = __pyx_v_item_size;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">09</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">char</span> <span class="o">*&gt;</span><span class="n">calloc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">09</span>:         self.items = &lt;char *&gt;calloc(self.max_items, self.item_size)</pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;items = ((char *)calloc(__pyx_v_self-&gt;max_items, __pyx_v_self-&gt;item_size));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">10</span>:         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">==</span> <span class="bp">NULL</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">10</span>:         if self.items == NULL:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = ((__pyx_v_self-&gt;items == NULL) != 0);
   if (unlikely(__pyx_t_1)) {
 /* … */
   }
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">11</span>:             <span class="k">raise</span> <span class="n">MEMORY_ERROR</span></pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">11</span>:             raise MEMORY_ERROR</pre>
 <pre class='cython code score-2 '>    <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_v_7pyorama_4core_10item_array_MEMORY_ERROR, 0, 0, 0);
     <span class='error_goto'>__PYX_ERR(0, 11, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">12</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">13</span>:     <span class="k">def</span> <span class="nf">__dealloc__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">13</span>:     def __dealloc__(self):</pre>
 <pre class='cython code score-0 '>/* Python wrapper */
 static void __pyx_pw_7pyorama_4core_10item_array_9ItemArray_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
 static void __pyx_pw_7pyorama_4core_10item_array_9ItemArray_3__dealloc__(PyObject *__pyx_v_self) {
@@ -512,16 +443,16 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   /* function exit code */
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">14</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span> <span class="o">=</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">14</span>:         self.max_items = 0</pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;max_items = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">15</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span> <span class="o">=</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">15</span>:         self.item_size = 0</pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;item_size = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">16</span>:         <span class="n">free</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">16</span>:         free(self.items)</pre>
 <pre class='cython code score-0 '>  free(__pyx_v_self-&gt;items);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">17</span>:         <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">NULL</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">17</span>:         self.items = NULL</pre>
 <pre class='cython code score-0 '>  __pyx_v_self-&gt;items = NULL;
 </pre><pre class="cython line score-0">&#xA0;<span class="">18</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">19</span>:     <span class="k">cdef</span> <span class="kt">void</span> *<span class="nf">c_get_ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">19</span>:     cdef void *c_get_ptr(self, size_t index) except *:</pre>
 <pre class='cython code score-2 '>static void *__pyx_f_7pyorama_4core_10item_array_9ItemArray_c_get_ptr(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *__pyx_v_self, size_t __pyx_v_index) {
   void *__pyx_r;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -535,7 +466,7 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
   return __pyx_r;
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">20</span>:         <span class="k">if</span> <span class="mf">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">20</span>:         if 0 &lt;= index &lt; self.max_items:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = (0 &lt;= __pyx_v_index);
   if (__pyx_t_1) {
     __pyx_t_1 = (__pyx_v_index &lt; __pyx_v_self-&gt;max_items);
@@ -544,17 +475,17 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   if (likely(__pyx_t_2)) {
 /* … */
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">21</span>:             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_size</span> <span class="o">*</span> <span class="n">index</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">21</span>:             return self.items + (self.item_size * index)</pre>
 <pre class='cython code score-0 '>    __pyx_r = (__pyx_v_self-&gt;items + (__pyx_v_self-&gt;item_size * __pyx_v_index));
     goto __pyx_L0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">22</span>:         <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">23</span>:             <span class="k">raise</span> <span class="n">INVALID_INDEX_ERROR</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">22</span>:         else:</pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">23</span>:             raise INVALID_INDEX_ERROR</pre>
 <pre class='cython code score-2 '>  /*else*/ {
     <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_v_7pyorama_4core_10item_array_INVALID_INDEX_ERROR, 0, 0, 0);
     <span class='error_goto'>__PYX_ERR(0, 23, __pyx_L1_error)</span>
   }
 </pre><pre class="cython line score-0">&#xA0;<span class="">24</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">25</span>:     <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">index</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">25</span>:     cdef void c_get(self, size_t index, void *item) except *:</pre>
 <pre class='cython code score-2 '>static void __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_get(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *__pyx_v_self, size_t __pyx_v_index, void *__pyx_v_item) {
   char *__pyx_v_src;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -567,8 +498,8 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   __pyx_L0:;
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">26</span>:         <span class="k">cdef</span> <span class="kt">char</span> *<span class="nf">src</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">27</span>:         <span class="k">if</span> <span class="mf">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">26</span>:         cdef char *src</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">27</span>:         if 0 &lt;= index &lt; self.max_items:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = (0 &lt;= __pyx_v_index);
   if (__pyx_t_1) {
     __pyx_t_1 = (__pyx_v_index &lt; __pyx_v_self-&gt;max_items);
@@ -578,19 +509,19 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
 /* … */
     goto __pyx_L3;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">28</span>:             <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_size</span> <span class="o">*</span> <span class="n">index</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">28</span>:             src = self.items + (self.item_size * index)</pre>
 <pre class='cython code score-0 '>    __pyx_v_src = (__pyx_v_self-&gt;items + (__pyx_v_self-&gt;item_size * __pyx_v_index));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">29</span>:             <span class="n">memcpy</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">29</span>:             memcpy(item, src, self.item_size)</pre>
 <pre class='cython code score-0 '>    (void)(memcpy(__pyx_v_item, __pyx_v_src, __pyx_v_self-&gt;item_size));
-</pre><pre class="cython line score-0">&#xA0;<span class="">30</span>:         <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">31</span>:             <span class="k">raise</span> <span class="n">INVALID_INDEX_ERROR</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">30</span>:         else:</pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">31</span>:             raise INVALID_INDEX_ERROR</pre>
 <pre class='cython code score-2 '>  /*else*/ {
     <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_v_7pyorama_4core_10item_array_INVALID_INDEX_ERROR, 0, 0, 0);
     <span class='error_goto'>__PYX_ERR(0, 31, __pyx_L1_error)</span>
   }
   __pyx_L3:;
 </pre><pre class="cython line score-0">&#xA0;<span class="">32</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">33</span>:     <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">index</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">33</span>:     cdef void c_set(self, size_t index, void *item) except *:</pre>
 <pre class='cython code score-2 '>static void __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_set(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *__pyx_v_self, size_t __pyx_v_index, void *__pyx_v_item) {
   char *__pyx_v_dest;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -603,8 +534,8 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   __pyx_L0:;
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">34</span>:         <span class="k">cdef</span> <span class="kt">char</span> *<span class="nf">dest</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">35</span>:         <span class="k">if</span> <span class="mf">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">34</span>:         cdef char *dest</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">35</span>:         if 0 &lt;= index &lt; self.max_items:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = (0 &lt;= __pyx_v_index);
   if (__pyx_t_1) {
     __pyx_t_1 = (__pyx_v_index &lt; __pyx_v_self-&gt;max_items);
@@ -614,19 +545,19 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
 /* … */
     goto __pyx_L3;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">36</span>:             <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_size</span> <span class="o">*</span> <span class="n">index</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">36</span>:             dest = self.items + (self.item_size * index)</pre>
 <pre class='cython code score-0 '>    __pyx_v_dest = (__pyx_v_self-&gt;items + (__pyx_v_self-&gt;item_size * __pyx_v_index));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">37</span>:             <span class="n">memcpy</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">37</span>:             memcpy(dest, item, self.item_size)</pre>
 <pre class='cython code score-0 '>    (void)(memcpy(__pyx_v_dest, __pyx_v_item, __pyx_v_self-&gt;item_size));
-</pre><pre class="cython line score-0">&#xA0;<span class="">38</span>:         <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">39</span>:             <span class="k">raise</span> <span class="n">INVALID_INDEX_ERROR</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">38</span>:         else:</pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">39</span>:             raise INVALID_INDEX_ERROR</pre>
 <pre class='cython code score-2 '>  /*else*/ {
     <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_v_7pyorama_4core_10item_array_INVALID_INDEX_ERROR, 0, 0, 0);
     <span class='error_goto'>__PYX_ERR(0, 39, __pyx_L1_error)</span>
   }
   __pyx_L3:;
 </pre><pre class="cython line score-0">&#xA0;<span class="">40</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">41</span>:     <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">41</span>:     cdef void c_clear(self, size_t index) except *:</pre>
 <pre class='cython code score-2 '>static void __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_clear(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *__pyx_v_self, size_t __pyx_v_index) {
   char *__pyx_v_dest;
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
@@ -639,8 +570,8 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   __pyx_L0:;
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">42</span>:         <span class="k">cdef</span> <span class="kt">char</span> *<span class="nf">dest</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">43</span>:         <span class="k">if</span> <span class="mf">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">:</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">42</span>:         cdef char *dest</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">43</span>:         if 0 &lt;= index &lt; self.max_items:</pre>
 <pre class='cython code score-0 '>  __pyx_t_1 = (0 &lt;= __pyx_v_index);
   if (__pyx_t_1) {
     __pyx_t_1 = (__pyx_v_index &lt; __pyx_v_self-&gt;max_items);
@@ -650,19 +581,19 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
 /* … */
     goto __pyx_L3;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">44</span>:             <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_size</span> <span class="o">*</span> <span class="n">index</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">44</span>:             dest = self.items + (self.item_size * index)</pre>
 <pre class='cython code score-0 '>    __pyx_v_dest = (__pyx_v_self-&gt;items + (__pyx_v_self-&gt;item_size * __pyx_v_index));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">45</span>:             <span class="n">memset</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">45</span>:             memset(dest, 0, self.item_size)</pre>
 <pre class='cython code score-0 '>    (void)(memset(__pyx_v_dest, 0, __pyx_v_self-&gt;item_size));
-</pre><pre class="cython line score-0">&#xA0;<span class="">46</span>:         <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">47</span>:             <span class="k">raise</span> <span class="n">INVALID_INDEX_ERROR</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">46</span>:         else:</pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">47</span>:             raise INVALID_INDEX_ERROR</pre>
 <pre class='cython code score-2 '>  /*else*/ {
     <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_v_7pyorama_4core_10item_array_INVALID_INDEX_ERROR, 0, 0, 0);
     <span class='error_goto'>__PYX_ERR(0, 47, __pyx_L1_error)</span>
   }
   __pyx_L3:;
 </pre><pre class="cython line score-0">&#xA0;<span class="">48</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">49</span>:     <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_clear_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">49</span>:     cdef void c_clear_all(self) except *:</pre>
 <pre class='cython code score-0 '>static void __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_clear_all(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *__pyx_v_self) {
   <span class='refnanny'>__Pyx_RefNannyDeclarations</span>
   <span class='refnanny'>__Pyx_RefNannySetupContext</span>("c_clear_all", 0);
@@ -670,10 +601,10 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   /* function exit code */
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">50</span>:         <span class="n">memset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_size</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">50</span>:         memset(self.items, 0, self.max_items * self.item_size)</pre>
 <pre class='cython code score-0 '>  (void)(memset(__pyx_v_self-&gt;items, 0, (__pyx_v_self-&gt;max_items * __pyx_v_self-&gt;item_size)));
 </pre><pre class="cython line score-0">&#xA0;<span class="">51</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">52</span>:     <span class="k">cdef</span> <span class="kt">void</span> <span class="nf">c_swap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">a</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">b</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">52</span>:     cdef void c_swap(self, size_t a, size_t b) except *:</pre>
 <pre class='cython code score-2 '>static void __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_swap(struct __pyx_obj_7pyorama_4core_10item_array_ItemArray *__pyx_v_self, size_t __pyx_v_a, size_t __pyx_v_b) {
   char *__pyx_v_a_ptr;
   char *__pyx_v_b_ptr;
@@ -688,11 +619,11 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
   __pyx_L0:;
   <span class='refnanny'>__Pyx_RefNannyFinishContext</span>();
 }
-</pre><pre class="cython line score-0">&#xA0;<span class="">53</span>:         <span class="k">cdef</span><span class="p">:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">54</span>:             <span class="n">char</span> <span class="o">*</span><span class="n">a_ptr</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">55</span>:             <span class="n">char</span> <span class="o">*</span><span class="n">b_ptr</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">56</span>:             <span class="n">size_t</span> <span class="n">i</span></pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">57</span>:         <span class="k">if</span> <span class="p">(</span><span class="mf">0</span> <span class="o">&lt;=</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="mf">0</span> <span class="o">&lt;=</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">53</span>:         cdef:</pre>
+<pre class="cython line score-0">&#xA0;<span class="">54</span>:             char *a_ptr</pre>
+<pre class="cython line score-0">&#xA0;<span class="">55</span>:             char *b_ptr</pre>
+<pre class="cython line score-0">&#xA0;<span class="">56</span>:             size_t i</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">57</span>:         if (0 &lt;= a &lt; self.max_items) and (0 &lt;= b &lt; self.max_items):</pre>
 <pre class='cython code score-0 '>  __pyx_t_2 = (0 &lt;= __pyx_v_a);
   if (__pyx_t_2) {
     __pyx_t_2 = (__pyx_v_a &lt; __pyx_v_self-&gt;max_items);
@@ -714,25 +645,25 @@ static void __pyx_pf_7pyorama_4core_10item_array_9ItemArray_2__dealloc__(struct 
 /* … */
     goto __pyx_L3;
   }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">58</span>:                 <span class="n">a_ptr</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">char</span> <span class="o">*&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">c_get_ptr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">58</span>:                 a_ptr = &lt;char *&gt;self.c_get_ptr(a)</pre>
 <pre class='cython code score-0 '>    __pyx_t_4 = __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_get_ptr(__pyx_v_self, __pyx_v_a);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)</span>
     __pyx_v_a_ptr = ((char *)__pyx_t_4);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">59</span>:                 <span class="n">b_ptr</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">char</span> <span class="o">*&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">c_get_ptr</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">59</span>:                 b_ptr = &lt;char *&gt;self.c_get_ptr(b)</pre>
 <pre class='cython code score-0 '>    __pyx_t_4 = __pyx_f_7pyorama_4core_10item_array_9ItemArray_c_get_ptr(__pyx_v_self, __pyx_v_b);<span class='error_goto'> if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)</span>
     __pyx_v_b_ptr = ((char *)__pyx_t_4);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">60</span>:                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_size</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">60</span>:                 for i in range(self.item_size):</pre>
 <pre class='cython code score-0 '>    __pyx_t_5 = __pyx_v_self-&gt;item_size;
     __pyx_t_6 = __pyx_t_5;
     for (__pyx_t_7 = 0; __pyx_t_7 &lt; __pyx_t_6; __pyx_t_7+=1) {
       __pyx_v_i = __pyx_t_7;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">61</span>:                     <span class="n">a_ptr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_ptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_ptr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">a_ptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">61</span>:                     a_ptr[i], b_ptr[i] = b_ptr[i], a_ptr[i]</pre>
 <pre class='cython code score-0 '>      __pyx_t_8 = (__pyx_v_b_ptr[__pyx_v_i]);
       __pyx_t_9 = (__pyx_v_a_ptr[__pyx_v_i]);
       (__pyx_v_a_ptr[__pyx_v_i]) = __pyx_t_8;
       (__pyx_v_b_ptr[__pyx_v_i]) = __pyx_t_9;
     }
-</pre><pre class="cython line score-0">&#xA0;<span class="">62</span>:         <span class="k">else</span><span class="p">:</span></pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">63</span>:             <span class="k">raise</span> <span class="n">INVALID_INDEX_ERROR</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">62</span>:         else:</pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">63</span>:             raise INVALID_INDEX_ERROR</pre>
 <pre class='cython code score-2 '>  /*else*/ {
     <span class='pyx_c_api'>__Pyx_Raise</span>(__pyx_v_7pyorama_4core_10item_array_INVALID_INDEX_ERROR, 0, 0, 0);
     <span class='error_goto'>__PYX_ERR(0, 63, __pyx_L1_error)</span>
