@@ -1,2 +1,7 @@
 build/
 dist/
+*.so
+*.c
+*.html
+!pyorama/libs/**/*.so
+!pyorama/libs/**/*.c
