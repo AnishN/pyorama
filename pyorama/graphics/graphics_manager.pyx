@@ -1713,12 +1713,13 @@ cdef class GraphicsManager:
                 self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
 
             glEnable(GL_BLEND); self.c_check_gl()
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()
+            #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#unmultiplied alpha
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#pre-multiplied alpha
             #glEnable(GL_CULL_FACE); self.c_check_gl()
             glEnable(GL_DEPTH_TEST); self.c_check_gl()
             glDepthFunc(GL_LESS); self.c_check_gl()
             glDepthMask(True); self.c_check_gl()
-
+            
             fbo = view_ptr.frame_buffer
             if fbo != 0:
                 fbo_ptr = self.frame_buffer_get_ptr(fbo)

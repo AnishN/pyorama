@@ -42,6 +42,7 @@
             "jpeg",
             "png",
             "webp",
+            "jbig",
             "SDL2",
             "SDL2_image",
             "SDL2_mixer",
@@ -29593,33 +29594,33 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *                 self._program_bind_uniform(program_ptr.handle, uniform_ptr.handle)
  * 
  *             glEnable(GL_BLEND); self.c_check_gl()             # <<<<<<<<<<<<<<
- *             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()
- *             #glEnable(GL_CULL_FACE); self.c_check_gl()
+ *             #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#unmultiplied alpha
+ *             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#pre-multiplied alpha
  */
     glEnable(GL_BLEND);
     __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1715, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1716
- * 
+    /* "pyorama/graphics/graphics_manager.pyx":1717
  *             glEnable(GL_BLEND); self.c_check_gl()
- *             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()             # <<<<<<<<<<<<<<
+ *             #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#unmultiplied alpha
+ *             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#pre-multiplied alpha             # <<<<<<<<<<<<<<
  *             #glEnable(GL_CULL_FACE); self.c_check_gl()
  *             glEnable(GL_DEPTH_TEST); self.c_check_gl()
  */
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1716, __pyx_L1_error)
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1717, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1718
- *             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()
+    /* "pyorama/graphics/graphics_manager.pyx":1719
+ *             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#pre-multiplied alpha
  *             #glEnable(GL_CULL_FACE); self.c_check_gl()
  *             glEnable(GL_DEPTH_TEST); self.c_check_gl()             # <<<<<<<<<<<<<<
  *             glDepthFunc(GL_LESS); self.c_check_gl()
  *             glDepthMask(True); self.c_check_gl()
  */
     glEnable(GL_DEPTH_TEST);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1718, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1719, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1719
+    /* "pyorama/graphics/graphics_manager.pyx":1720
  *             #glEnable(GL_CULL_FACE); self.c_check_gl()
  *             glEnable(GL_DEPTH_TEST); self.c_check_gl()
  *             glDepthFunc(GL_LESS); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29627,9 +29628,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  * 
  */
     glDepthFunc(GL_LESS);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1719, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1720, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1720
+    /* "pyorama/graphics/graphics_manager.pyx":1721
  *             glEnable(GL_DEPTH_TEST); self.c_check_gl()
  *             glDepthFunc(GL_LESS); self.c_check_gl()
  *             glDepthMask(True); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29637,9 +29638,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             fbo = view_ptr.frame_buffer
  */
     glDepthMask(1);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1720, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1721, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1722
+    /* "pyorama/graphics/graphics_manager.pyx":1723
  *             glDepthMask(True); self.c_check_gl()
  * 
  *             fbo = view_ptr.frame_buffer             # <<<<<<<<<<<<<<
@@ -29649,7 +29650,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
     __pyx_t_12 = __pyx_v_view_ptr->frame_buffer;
     __pyx_v_fbo = __pyx_t_12;
 
-    /* "pyorama/graphics/graphics_manager.pyx":1723
+    /* "pyorama/graphics/graphics_manager.pyx":1724
  * 
  *             fbo = view_ptr.frame_buffer
  *             if fbo != 0:             # <<<<<<<<<<<<<<
@@ -29659,17 +29660,17 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
     __pyx_t_13 = ((__pyx_v_fbo != 0) != 0);
     if (__pyx_t_13) {
 
-      /* "pyorama/graphics/graphics_manager.pyx":1724
+      /* "pyorama/graphics/graphics_manager.pyx":1725
  *             fbo = view_ptr.frame_buffer
  *             if fbo != 0:
  *                 fbo_ptr = self.frame_buffer_get_ptr(fbo)             # <<<<<<<<<<<<<<
  *                 glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
  * 
  */
-      __pyx_t_14 = __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_frame_buffer_get_ptr(__pyx_v_self, __pyx_v_fbo); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1724, __pyx_L1_error)
+      __pyx_t_14 = __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_frame_buffer_get_ptr(__pyx_v_self, __pyx_v_fbo); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1725, __pyx_L1_error)
       __pyx_v_fbo_ptr = __pyx_t_14;
 
-      /* "pyorama/graphics/graphics_manager.pyx":1725
+      /* "pyorama/graphics/graphics_manager.pyx":1726
  *             if fbo != 0:
  *                 fbo_ptr = self.frame_buffer_get_ptr(fbo)
  *                 glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29677,9 +29678,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             color = &view_ptr.clear_color
  */
       glBindFramebuffer(GL_FRAMEBUFFER, __pyx_v_fbo_ptr->gl_id);
-      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1725, __pyx_L1_error)
+      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1726, __pyx_L1_error)
 
-      /* "pyorama/graphics/graphics_manager.pyx":1723
+      /* "pyorama/graphics/graphics_manager.pyx":1724
  * 
  *             fbo = view_ptr.frame_buffer
  *             if fbo != 0:             # <<<<<<<<<<<<<<
@@ -29688,7 +29689,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
     }
 
-    /* "pyorama/graphics/graphics_manager.pyx":1727
+    /* "pyorama/graphics/graphics_manager.pyx":1728
  *                 glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
  * 
  *             color = &view_ptr.clear_color             # <<<<<<<<<<<<<<
@@ -29697,7 +29698,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
     __pyx_v_color = (&__pyx_v_view_ptr->clear_color);
 
-    /* "pyorama/graphics/graphics_manager.pyx":1728
+    /* "pyorama/graphics/graphics_manager.pyx":1729
  * 
  *             color = &view_ptr.clear_color
  *             gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)             # <<<<<<<<<<<<<<
@@ -29706,7 +29707,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
     __pyx_v_gl_clear_flags = __pyx_f_7pyorama_8graphics_14graphics_utils_c_clear_flags_to_gl(__pyx_v_view_ptr->clear_flags);
 
-    /* "pyorama/graphics/graphics_manager.pyx":1729
+    /* "pyorama/graphics/graphics_manager.pyx":1730
  *             color = &view_ptr.clear_color
  *             gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
  *             glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29714,9 +29715,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
  */
     glViewport((__pyx_v_view_ptr->rect[0]), (__pyx_v_view_ptr->rect[1]), (__pyx_v_view_ptr->rect[2]), (__pyx_v_view_ptr->rect[3]));
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1729, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1730, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1730
+    /* "pyorama/graphics/graphics_manager.pyx":1731
  *             gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
  *             glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
  *             glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29724,9 +29725,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
  */
     glClearColor(__pyx_v_color->x, __pyx_v_color->y, __pyx_v_color->z, __pyx_v_color->w);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1730, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1731, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1731
+    /* "pyorama/graphics/graphics_manager.pyx":1732
  *             glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
  *             glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()
  *             glClearDepthf(view_ptr.clear_depth); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29734,9 +29735,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             glClear(gl_clear_flags); self.c_check_gl()
  */
     glClearDepthf(__pyx_v_view_ptr->clear_depth);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1731, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1732, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1732
+    /* "pyorama/graphics/graphics_manager.pyx":1733
  *             glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()
  *             glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
  *             glClearStencil(view_ptr.clear_stencil); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29744,9 +29745,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  * 
  */
     glClearStencil(__pyx_v_view_ptr->clear_stencil);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1732, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1733, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1733
+    /* "pyorama/graphics/graphics_manager.pyx":1734
  *             glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
  *             glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
  *             glClear(gl_clear_flags); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29754,9 +29755,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             for i in range(view_ptr.num_texture_units):
  */
     glClear(__pyx_v_gl_clear_flags);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1733, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1734, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1735
+    /* "pyorama/graphics/graphics_manager.pyx":1736
  *             glClear(gl_clear_flags); self.c_check_gl()
  * 
  *             for i in range(view_ptr.num_texture_units):             # <<<<<<<<<<<<<<
@@ -29768,7 +29769,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_i = __pyx_t_10;
 
-      /* "pyorama/graphics/graphics_manager.pyx":1736
+      /* "pyorama/graphics/graphics_manager.pyx":1737
  * 
  *             for i in range(view_ptr.num_texture_units):
  *                 texture_unit = view_ptr.texture_units[i]             # <<<<<<<<<<<<<<
@@ -29777,7 +29778,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
       __pyx_v_texture_unit = (__pyx_v_view_ptr->texture_units[__pyx_v_i]);
 
-      /* "pyorama/graphics/graphics_manager.pyx":1737
+      /* "pyorama/graphics/graphics_manager.pyx":1738
  *             for i in range(view_ptr.num_texture_units):
  *                 texture_unit = view_ptr.texture_units[i]
  *                 gl_texture_unit = c_texture_unit_to_gl(texture_unit)             # <<<<<<<<<<<<<<
@@ -29786,7 +29787,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
       __pyx_v_gl_texture_unit = __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_unit_to_gl(__pyx_v_texture_unit);
 
-      /* "pyorama/graphics/graphics_manager.pyx":1738
+      /* "pyorama/graphics/graphics_manager.pyx":1739
  *                 texture_unit = view_ptr.texture_units[i]
  *                 gl_texture_unit = c_texture_unit_to_gl(texture_unit)
  *                 texture = view_ptr.textures[<size_t>texture_unit]             # <<<<<<<<<<<<<<
@@ -29795,17 +29796,17 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
       __pyx_v_texture = (__pyx_v_view_ptr->textures[((size_t)__pyx_v_texture_unit)]);
 
-      /* "pyorama/graphics/graphics_manager.pyx":1739
+      /* "pyorama/graphics/graphics_manager.pyx":1740
  *                 gl_texture_unit = c_texture_unit_to_gl(texture_unit)
  *                 texture = view_ptr.textures[<size_t>texture_unit]
  *                 texture_ptr = self.texture_get_ptr(texture)             # <<<<<<<<<<<<<<
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()
  *                 glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
  */
-      __pyx_t_15 = __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_texture_get_ptr(__pyx_v_self, __pyx_v_texture); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1739, __pyx_L1_error)
+      __pyx_t_15 = __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_texture_get_ptr(__pyx_v_self, __pyx_v_texture); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1740, __pyx_L1_error)
       __pyx_v_texture_ptr = __pyx_t_15;
 
-      /* "pyorama/graphics/graphics_manager.pyx":1740
+      /* "pyorama/graphics/graphics_manager.pyx":1741
  *                 texture = view_ptr.textures[<size_t>texture_unit]
  *                 texture_ptr = self.texture_get_ptr(texture)
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29813,9 +29814,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  * 
  */
       glActiveTexture(__pyx_v_gl_texture_unit);
-      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1740, __pyx_L1_error)
+      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1741, __pyx_L1_error)
 
-      /* "pyorama/graphics/graphics_manager.pyx":1741
+      /* "pyorama/graphics/graphics_manager.pyx":1742
  *                 texture_ptr = self.texture_get_ptr(texture)
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()
  *                 glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29823,37 +29824,37 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
  */
       glBindTexture(GL_TEXTURE_2D, __pyx_v_texture_ptr->gl_id);
-      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1741, __pyx_L1_error)
+      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1742, __pyx_L1_error)
     }
 
-    /* "pyorama/graphics/graphics_manager.pyx":1743
+    /* "pyorama/graphics/graphics_manager.pyx":1744
  *                 glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
  * 
  *             self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)             # <<<<<<<<<<<<<<
  *             self._index_buffer_draw(ibo_ptr.handle)
  *             self._program_unbind_attributes(program_ptr.handle)
  */
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__program_bind_attributes(__pyx_v_self, __pyx_v_program_ptr->handle, __pyx_v_vbo_ptr->handle); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1743, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__program_bind_attributes(__pyx_v_self, __pyx_v_program_ptr->handle, __pyx_v_vbo_ptr->handle); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1744, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1744
+    /* "pyorama/graphics/graphics_manager.pyx":1745
  * 
  *             self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
  *             self._index_buffer_draw(ibo_ptr.handle)             # <<<<<<<<<<<<<<
  *             self._program_unbind_attributes(program_ptr.handle)
  *             for i in range(view_ptr.num_texture_units):
  */
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__index_buffer_draw(__pyx_v_self, __pyx_v_ibo_ptr->handle); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1744, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__index_buffer_draw(__pyx_v_self, __pyx_v_ibo_ptr->handle); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1745, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1745
+    /* "pyorama/graphics/graphics_manager.pyx":1746
  *             self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
  *             self._index_buffer_draw(ibo_ptr.handle)
  *             self._program_unbind_attributes(program_ptr.handle)             # <<<<<<<<<<<<<<
  *             for i in range(view_ptr.num_texture_units):
  *                 texture_unit = view_ptr.texture_units[i]
  */
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__program_unbind_attributes(__pyx_v_self, __pyx_v_program_ptr->handle); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1745, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__program_unbind_attributes(__pyx_v_self, __pyx_v_program_ptr->handle); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1746, __pyx_L1_error)
 
-    /* "pyorama/graphics/graphics_manager.pyx":1746
+    /* "pyorama/graphics/graphics_manager.pyx":1747
  *             self._index_buffer_draw(ibo_ptr.handle)
  *             self._program_unbind_attributes(program_ptr.handle)
  *             for i in range(view_ptr.num_texture_units):             # <<<<<<<<<<<<<<
@@ -29865,7 +29866,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_i = __pyx_t_10;
 
-      /* "pyorama/graphics/graphics_manager.pyx":1747
+      /* "pyorama/graphics/graphics_manager.pyx":1748
  *             self._program_unbind_attributes(program_ptr.handle)
  *             for i in range(view_ptr.num_texture_units):
  *                 texture_unit = view_ptr.texture_units[i]             # <<<<<<<<<<<<<<
@@ -29874,7 +29875,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
       __pyx_v_texture_unit = (__pyx_v_view_ptr->texture_units[__pyx_v_i]);
 
-      /* "pyorama/graphics/graphics_manager.pyx":1748
+      /* "pyorama/graphics/graphics_manager.pyx":1749
  *             for i in range(view_ptr.num_texture_units):
  *                 texture_unit = view_ptr.texture_units[i]
  *                 gl_texture_unit = c_texture_unit_to_gl(texture_unit)             # <<<<<<<<<<<<<<
@@ -29883,7 +29884,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
       __pyx_v_gl_texture_unit = __pyx_f_7pyorama_8graphics_14graphics_utils_c_texture_unit_to_gl(__pyx_v_texture_unit);
 
-      /* "pyorama/graphics/graphics_manager.pyx":1749
+      /* "pyorama/graphics/graphics_manager.pyx":1750
  *                 texture_unit = view_ptr.texture_units[i]
  *                 gl_texture_unit = c_texture_unit_to_gl(texture_unit)
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29891,9 +29892,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *             if fbo != 0:
  */
       glActiveTexture(__pyx_v_gl_texture_unit);
-      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1749, __pyx_L1_error)
+      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1750, __pyx_L1_error)
 
-      /* "pyorama/graphics/graphics_manager.pyx":1750
+      /* "pyorama/graphics/graphics_manager.pyx":1751
  *                 gl_texture_unit = c_texture_unit_to_gl(texture_unit)
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()
  *                 glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29901,10 +29902,10 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
  */
       glBindTexture(GL_TEXTURE_2D, 0);
-      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1750, __pyx_L1_error)
+      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1751, __pyx_L1_error)
     }
 
-    /* "pyorama/graphics/graphics_manager.pyx":1751
+    /* "pyorama/graphics/graphics_manager.pyx":1752
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()
  *                 glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
  *             if fbo != 0:             # <<<<<<<<<<<<<<
@@ -29914,7 +29915,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
     __pyx_t_13 = ((__pyx_v_fbo != 0) != 0);
     if (__pyx_t_13) {
 
-      /* "pyorama/graphics/graphics_manager.pyx":1752
+      /* "pyorama/graphics/graphics_manager.pyx":1753
  *                 glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
  *             if fbo != 0:
  *                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29922,9 +29923,9 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  * 
  */
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1752, __pyx_L1_error)
+      __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1753, __pyx_L1_error)
 
-      /* "pyorama/graphics/graphics_manager.pyx":1751
+      /* "pyorama/graphics/graphics_manager.pyx":1752
  *                 glActiveTexture(gl_texture_unit); self.c_check_gl()
  *                 glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
  *             if fbo != 0:             # <<<<<<<<<<<<<<
@@ -29933,7 +29934,7 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  */
     }
 
-    /* "pyorama/graphics/graphics_manager.pyx":1753
+    /* "pyorama/graphics/graphics_manager.pyx":1754
  *             if fbo != 0:
  *                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
  *             glUseProgram(0); self.c_check_gl()             # <<<<<<<<<<<<<<
@@ -29941,10 +29942,10 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
  *         for i in range(self.windows.items.num_items):
  */
     glUseProgram(0);
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1753, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_c_check_gl(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1754, __pyx_L1_error)
   }
 
-  /* "pyorama/graphics/graphics_manager.pyx":1755
+  /* "pyorama/graphics/graphics_manager.pyx":1756
  *             glUseProgram(0); self.c_check_gl()
  * 
  *         for i in range(self.windows.items.num_items):             # <<<<<<<<<<<<<<
@@ -29956,32 +29957,32 @@ static void __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_upda
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "pyorama/graphics/graphics_manager.pyx":1756
+    /* "pyorama/graphics/graphics_manager.pyx":1757
  * 
  *         for i in range(self.windows.items.num_items):
  *             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)             # <<<<<<<<<<<<<<
  *             self.window_render(window_ptr.handle)
  * 
  */
-    __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_4core_11item_vector_ItemVector *)__pyx_v_self->windows->items->__pyx_vtab)->c_get_ptr(__pyx_v_self->windows->items, __pyx_v_i); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1756, __pyx_L1_error)
+    __pyx_t_4 = ((struct __pyx_vtabstruct_7pyorama_4core_11item_vector_ItemVector *)__pyx_v_self->windows->items->__pyx_vtab)->c_get_ptr(__pyx_v_self->windows->items, __pyx_v_i); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1757, __pyx_L1_error)
     __pyx_v_window_ptr = ((__pyx_t_7pyorama_8graphics_16graphics_structs_WindowC *)__pyx_t_4);
 
-    /* "pyorama/graphics/graphics_manager.pyx":1757
+    /* "pyorama/graphics/graphics_manager.pyx":1758
  *         for i in range(self.windows.items.num_items):
  *             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
  *             self.window_render(window_ptr.handle)             # <<<<<<<<<<<<<<
  * 
  *         self._swap_root_window()
  */
-    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_window_render(__pyx_v_self, __pyx_v_window_ptr->handle, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1757, __pyx_L1_error)
+    __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager_window_render(__pyx_v_self, __pyx_v_window_ptr->handle, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1758, __pyx_L1_error)
   }
 
-  /* "pyorama/graphics/graphics_manager.pyx":1759
+  /* "pyorama/graphics/graphics_manager.pyx":1760
  *             self.window_render(window_ptr.handle)
  * 
  *         self._swap_root_window()             # <<<<<<<<<<<<<<
  */
-  __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__swap_root_window(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1759, __pyx_L1_error)
+  __pyx_f_7pyorama_8graphics_16graphics_manager_15GraphicsManager__swap_root_window(__pyx_v_self); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1760, __pyx_L1_error)
 
   /* "pyorama/graphics/graphics_manager.pyx":1677
  *         SDL_GL_SwapWindow(self.root_window)

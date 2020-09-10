@@ -2,24 +2,7 @@ from setuptools import setup, Extension, find_packages
 from Cython.Build import cythonize
 import numpy as np
 import os
-import shutil
 import platform
-
-"""
-/usr/bin/ld: cannot find -lGLESv2 (libgles2-mesa-dev)
-/usr/bin/ld: cannot find -lSDL2 (libsdl2-dev)
-/usr/bin/ld: cannot find -lSDL2_image (libsdl2-image-dev)
-/usr/bin/ld: cannot find -lSDL2_mixer (libsdl2-mixer-dev)
-/usr/bin/ld: cannot find -lopenal (libopenal-dev)
-/usr/bin/ld: cannot find -logg (libogg-dev)
-/usr/bin/ld: cannot find -lvorbis (libvorbis-dev)
-/usr/bin/ld: cannot find -lvorbisfile (libvorbis-dev)
-/usr/bin/ld: cannot find -lvorbisenc (libvorbis-dev)
-/usr/bin/ld: cannot find -lopus (libopus-dev)
-/usr/bin/ld: cannot find -lFLAC (libflac-dev)
-/usr/bin/ld: cannot find -lchipmunk (chipmunk-dev)
-/usr/bin/ld: cannot find -lassimp (libassimp-dev)
-"""
 
 libraries = {
     "Linux": [

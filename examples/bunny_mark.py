@@ -34,7 +34,7 @@ class Game(App):
         #setup piece sprites
         self.sprites = []
         #self.num_sprites = 2 ** 16 - 1
-        self.num_sprites = 50000
+        self.num_sprites = 10000
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):
