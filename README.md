@@ -2,21 +2,30 @@
 A performant game engine written in cython
 
 This library has the following dependencies:
-* SDL2
-* OpenGL (including GLEW, excluding GLUT)
-* OpenAL
-* Assimp
-* Chipmunk
-* Ogg/Vorbis
-* xxhash (not actually used at this point)
+* Graphics: 
+    * SDL2 (with SDL2_image and SDL2_mixer)
+    * OpenGLES2
+    * Assimp
+* Audio:
+    * OpenAL
+    * Ogg/Vorbis
+    * Opus
+    * FLAC
+* Physics:
+    * Chipmunk
 
-## Installation instructions (for Ubuntu):
-The above dependencies need to be installed. The following commands should be able to accomplish this:
-> sudo apt-get install libsdl2-dev mesa-utils glew-utils libglew-dev libopenal-dev libassimp4 libassimp-dev chipmunk-dev libogg-dev libvorbis-dev
+## Installation instructions (Linux only):
+The above C library dependencies are included in the repository as .so (shared library) files.
+These were built in CentOS 7, so they should be compatible with manylinux2014.
+Working on getting Windows and OSX builds (which will be needed for convenient wheels).
 
-Then download the repository (git clone).
-Then compile the repository with the following command:
-> python3 setup.py build_ext -i
+Install manually as follows:
+> git clone https://github.com/AnishN/pyorama.git
+> cd ./pyorama
+> python3 setup.py build_ext -i -q -f
 
-Once this process is complete, you can run the example file using the following:
-> python3 main.py
+Install the library as a development library using pip:
+> python3 -m pip install -e . --user
+
+Once this process is complete, you can run files in the example folder as follows:
+> python3 ./examples/sprite_test.py
