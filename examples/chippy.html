@@ -286,6 +286,75 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
+.cython .hll { background-color: #ffffcc }
+.cython  { background: #f8f8f8; }
+.cython .c { color: #408080; font-style: italic } /* Comment */
+.cython .err { border: 1px solid #FF0000 } /* Error */
+.cython .k { color: #008000; font-weight: bold } /* Keyword */
+.cython .o { color: #666666 } /* Operator */
+.cython .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.cython .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.cython .cp { color: #BC7A00 } /* Comment.Preproc */
+.cython .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.cython .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.cython .cs { color: #408080; font-style: italic } /* Comment.Special */
+.cython .gd { color: #A00000 } /* Generic.Deleted */
+.cython .ge { font-style: italic } /* Generic.Emph */
+.cython .gr { color: #FF0000 } /* Generic.Error */
+.cython .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.cython .gi { color: #00A000 } /* Generic.Inserted */
+.cython .go { color: #888888 } /* Generic.Output */
+.cython .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.cython .gs { font-weight: bold } /* Generic.Strong */
+.cython .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.cython .gt { color: #0044DD } /* Generic.Traceback */
+.cython .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.cython .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.cython .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.cython .kp { color: #008000 } /* Keyword.Pseudo */
+.cython .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.cython .kt { color: #B00040 } /* Keyword.Type */
+.cython .m { color: #666666 } /* Literal.Number */
+.cython .s { color: #BA2121 } /* Literal.String */
+.cython .na { color: #7D9029 } /* Name.Attribute */
+.cython .nb { color: #008000 } /* Name.Builtin */
+.cython .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.cython .no { color: #880000 } /* Name.Constant */
+.cython .nd { color: #AA22FF } /* Name.Decorator */
+.cython .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.cython .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.cython .nf { color: #0000FF } /* Name.Function */
+.cython .nl { color: #A0A000 } /* Name.Label */
+.cython .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.cython .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.cython .nv { color: #19177C } /* Name.Variable */
+.cython .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.cython .w { color: #bbbbbb } /* Text.Whitespace */
+.cython .mb { color: #666666 } /* Literal.Number.Bin */
+.cython .mf { color: #666666 } /* Literal.Number.Float */
+.cython .mh { color: #666666 } /* Literal.Number.Hex */
+.cython .mi { color: #666666 } /* Literal.Number.Integer */
+.cython .mo { color: #666666 } /* Literal.Number.Oct */
+.cython .sa { color: #BA2121 } /* Literal.String.Affix */
+.cython .sb { color: #BA2121 } /* Literal.String.Backtick */
+.cython .sc { color: #BA2121 } /* Literal.String.Char */
+.cython .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.cython .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.cython .s2 { color: #BA2121 } /* Literal.String.Double */
+.cython .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.cython .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.cython .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.cython .sx { color: #008000 } /* Literal.String.Other */
+.cython .sr { color: #BB6688 } /* Literal.String.Regex */
+.cython .s1 { color: #BA2121 } /* Literal.String.Single */
+.cython .ss { color: #19177C } /* Literal.String.Symbol */
+.cython .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.cython .fm { color: #0000FF } /* Name.Function.Magic */
+.cython .vc { color: #19177C } /* Name.Variable.Class */
+.cython .vg { color: #19177C } /* Name.Variable.Global */
+.cython .vi { color: #19177C } /* Name.Variable.Instance */
+.cython .vm { color: #19177C } /* Name.Variable.Magic */
+.cython .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 </head>
 <body class="cython">
@@ -295,46 +364,46 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="chippy.c">chippy.c</a></p>
-<div class="cython"><pre class="cython line score-0">&#xA0;<span class="">01</span>: from pyorama.libs.chipmunk cimport *</pre>
-<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">02</span>: import time</pre>
+<div class="cython"><pre class="cython line score-0">&#xA0;<span class="">01</span>: <span class="k">from</span> <span class="nn">pyorama.libs.chipmunk</span> <span class="k">cimport</span> <span class="o">*</span></pre>
+<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">02</span>: <span class="k">import</span> <span class="nn">time</span></pre>
 <pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_Import</span>(__pyx_n_s_time, 0, 0);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_time, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 2, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">03</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">04</span>: cdef:</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">05</span>:     cpVect gravity = cpv(0, -10)</pre>
+<pre class="cython line score-0">&#xA0;<span class="">04</span>: <span class="k">cdef</span><span class="p">:</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">05</span>:     <span class="n">cpVect</span> <span class="n">gravity</span> <span class="o">=</span> <span class="n">cpv</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">10</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_gravity = cpv(0.0, -10.0);
-</pre><pre class="cython line score-0">&#xA0;<span class="">06</span>:     cpSpace space</pre>
-<pre class="cython line score-0">&#xA0;<span class="">07</span>:     cpSegmentShape ground</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">08</span>:     cpFloat ground_friction = 1.0</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">06</span>:     <span class="n">cpSpace</span> <span class="n">space</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">07</span>:     <span class="n">cpSegmentShape</span> <span class="n">ground</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">08</span>:     <span class="n">cpFloat</span> <span class="n">ground_friction</span> <span class="o">=</span> <span class="mf">1.0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_ground_friction = 1.0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">09</span>:     cpBody ball_body</pre>
-<pre class="cython line score-0">&#xA0;<span class="">10</span>:     cpCircleShape ball_shape</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">11</span>:     cpVect pos = cpv(0, 15)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">09</span>:     <span class="n">cpBody</span> <span class="n">ball_body</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">10</span>:     <span class="n">cpCircleShape</span> <span class="n">ball_shape</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">11</span>:     <span class="n">cpVect</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">cpv</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">15</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_pos = cpv(0.0, 15.0);
-</pre><pre class="cython line score-0">&#xA0;<span class="">12</span>:     cpVect vel</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">13</span>:     cpFloat radius = 5</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">12</span>:     <span class="n">cpVect</span> <span class="n">vel</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">13</span>:     <span class="n">cpFloat</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">5</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_radius = 5.0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">14</span>:     cpFloat mass = 1</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">14</span>:     <span class="n">cpFloat</span> <span class="n">mass</span> <span class="o">=</span> <span class="mf">1</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_mass = 1.0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">15</span>:     cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">15</span>:     <span class="n">cpFloat</span> <span class="n">moment</span> <span class="o">=</span> <span class="n">cpMomentForCircle</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">cpvzero</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_moment = cpMomentForCircle(__pyx_v_8examples_6chippy_mass, 0.0, __pyx_v_8examples_6chippy_radius, cpvzero);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">16</span>:     cpFloat ball_friction = 0.7</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">16</span>:     <span class="n">cpFloat</span> <span class="n">ball_friction</span> <span class="o">=</span> <span class="mf">0.7</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_ball_friction = 0.7;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">17</span>:     cpFloat time_step = 1.0/60.0</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">17</span>:     <span class="n">cpFloat</span> <span class="n">time_step</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">60.0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_time_step = (1.0 / 60.0);
-</pre><pre class="cython line score-0">&#xA0;<span class="">18</span>:     cpFloat i</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">19</span>:     cpFloat total_time = 0.0</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">18</span>:     <span class="n">cpFloat</span> <span class="n">i</span></pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">19</span>:     <span class="n">cpFloat</span> <span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.0</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_8examples_6chippy_total_time = 0.0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">20</span>:     str base_out = "t: {0}, pos_x: {1}, pos_y: {2}, vel_x: {3}, vel_y: {4}"</pre>
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">20</span>:     <span class="nb">str</span> <span class="n">base_out</span> <span class="o">=</span> <span class="s">&quot;t: {0}, pos_x: {1}, pos_y: {2}, vel_x: {3}, vel_y: {4}&quot;</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_INCREF</span>(__pyx_kp_u_t_0_pos_x_1_pos_y_2_vel_x_3_vel);
   <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_v_8examples_6chippy_base_out);
   <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_8examples_6chippy_base_out, __pyx_kp_u_t_0_pos_x_1_pos_y_2_vel_x_3_vel);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_kp_u_t_0_pos_x_1_pos_y_2_vel_x_3_vel);
-</pre><pre class="cython line score-0">&#xA0;<span class="">21</span>:     str out</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">21</span>:     <span class="nb">str</span> <span class="n">out</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">22</span>: </pre>
-<pre class="cython line score-18" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">23</span>: print(sizeof(cpFloat), sizeof(float), sizeof(double))</pre>
+<pre class="cython line score-18" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">23</span>: <span class="k">print</span><span class="p">(</span><span class="n">sizeof</span><span class="p">(</span><span class="n">cpFloat</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="p">))</span></pre>
 <pre class='cython code score-18 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_FromSize_t</span>((sizeof(cpFloat)));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyInt_FromSize_t</span>((sizeof(float)));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
@@ -356,40 +425,40 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">24</span>: cpSpaceInit(&amp;space)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">24</span>: <span class="n">cpSpaceInit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpSpaceInit((&amp;__pyx_v_8examples_6chippy_space)));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">25</span>: cpSpaceSetGravity(&amp;space, gravity)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">25</span>: <span class="n">cpSpaceSetGravity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">,</span> <span class="n">gravity</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpSpaceSetGravity((&amp;__pyx_v_8examples_6chippy_space), __pyx_v_8examples_6chippy_gravity);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">26</span>: cpSegmentShapeInit(&amp;ground, cpSpaceGetStaticBody(&amp;space), cpv(-20, -5), cpv(20, -5), 0)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">26</span>: <span class="n">cpSegmentShapeInit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ground</span><span class="p">,</span> <span class="n">cpSpaceGetStaticBody</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">),</span> <span class="n">cpv</span><span class="p">(</span><span class="o">-</span><span class="mf">20</span><span class="p">,</span> <span class="o">-</span><span class="mf">5</span><span class="p">),</span> <span class="n">cpv</span><span class="p">(</span><span class="mf">20</span><span class="p">,</span> <span class="o">-</span><span class="mf">5</span><span class="p">),</span> <span class="mf">0</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpSegmentShapeInit((&amp;__pyx_v_8examples_6chippy_ground), cpSpaceGetStaticBody((&amp;__pyx_v_8examples_6chippy_space)), cpv(-20.0, -5.0), cpv(20.0, -5.0), 0.0));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">27</span>: cpShapeSetFriction(&amp;ground.shape, ground_friction)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">27</span>: <span class="n">cpShapeSetFriction</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ground</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ground_friction</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpShapeSetFriction((&amp;__pyx_v_8examples_6chippy_ground.shape), __pyx_v_8examples_6chippy_ground_friction);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">28</span>: cpSpaceAddShape(&amp;space, &amp;ground.shape)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">28</span>: <span class="n">cpSpaceAddShape</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ground</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpSpaceAddShape((&amp;__pyx_v_8examples_6chippy_space), (&amp;__pyx_v_8examples_6chippy_ground.shape)));
 </pre><pre class="cython line score-0">&#xA0;<span class="">29</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">30</span>: cpBodyInit(&amp;ball_body, mass, moment)</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">30</span>: <span class="n">cpBodyInit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_body</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">moment</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpBodyInit((&amp;__pyx_v_8examples_6chippy_ball_body), __pyx_v_8examples_6chippy_mass, __pyx_v_8examples_6chippy_moment));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">31</span>: cpSpaceAddBody(&amp;space, &amp;ball_body)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">31</span>: <span class="n">cpSpaceAddBody</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ball_body</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpSpaceAddBody((&amp;__pyx_v_8examples_6chippy_space), (&amp;__pyx_v_8examples_6chippy_ball_body)));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">32</span>: cpBodySetPosition(&amp;ball_body, pos)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">32</span>: <span class="n">cpBodySetPosition</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_body</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpBodySetPosition((&amp;__pyx_v_8examples_6chippy_ball_body), __pyx_v_8examples_6chippy_pos);
 </pre><pre class="cython line score-0">&#xA0;<span class="">33</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">34</span>: cpCircleShapeInit(&amp;ball_shape, &amp;ball_body, radius, cpvzero)</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">34</span>: <span class="n">cpCircleShapeInit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_shape</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ball_body</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">cpvzero</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpCircleShapeInit((&amp;__pyx_v_8examples_6chippy_ball_shape), (&amp;__pyx_v_8examples_6chippy_ball_body), __pyx_v_8examples_6chippy_radius, cpvzero));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">35</span>: cpShapeSetFriction(&amp;ball_shape.shape, ball_friction)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">35</span>: <span class="n">cpShapeSetFriction</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ball_friction</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpShapeSetFriction((&amp;__pyx_v_8examples_6chippy_ball_shape.shape), __pyx_v_8examples_6chippy_ball_friction);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">36</span>: cpSpaceAddShape(&amp;space, &amp;ball_shape.shape)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">36</span>: <span class="n">cpSpaceAddShape</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ball_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  (void)(cpSpaceAddShape((&amp;__pyx_v_8examples_6chippy_space), (&amp;__pyx_v_8examples_6chippy_ball_shape.shape)));
 </pre><pre class="cython line score-0">&#xA0;<span class="">37</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">38</span>: while True:</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">38</span>: <span class="k">while</span> <span class="bp">True</span><span class="p">:</span></pre>
 <pre class='cython code score-0 '>  while (1) {
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">39</span>:     cpSpaceStep(&amp;space, time_step)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">39</span>:     <span class="n">cpSpaceStep</span><span class="p">(</span><span class="o">&amp;</span><span class="n">space</span><span class="p">,</span> <span class="n">time_step</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    cpSpaceStep((&amp;__pyx_v_8examples_6chippy_space), __pyx_v_8examples_6chippy_time_step);
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">40</span>:     pos = cpBodyGetPosition(&amp;ball_body)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">40</span>:     <span class="n">pos</span> <span class="o">=</span> <span class="n">cpBodyGetPosition</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_body</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    __pyx_v_8examples_6chippy_pos = cpBodyGetPosition((&amp;__pyx_v_8examples_6chippy_ball_body));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">41</span>:     vel = cpBodyGetVelocity(&amp;ball_body)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">41</span>:     <span class="n">vel</span> <span class="o">=</span> <span class="n">cpBodyGetVelocity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_body</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>    __pyx_v_8examples_6chippy_vel = cpBodyGetVelocity((&amp;__pyx_v_8examples_6chippy_ball_body));
-</pre><pre class="cython line score-13" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">42</span>:     out = base_out.format(</pre>
+</pre><pre class="cython line score-13" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">42</span>:     <span class="n">out</span> <span class="o">=</span> <span class="n">base_out</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></pre>
 <pre class='cython code score-13 '>    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_v_8examples_6chippy_base_out, __pyx_n_s_format);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
 /* … */
@@ -398,7 +467,7 @@ body.cython { font-family: courier; font-size: 12; }
     <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_8examples_6chippy_out, ((PyObject*)__pyx_t_3));
     <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_3);
     __pyx_t_3 = 0;
-</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">43</span>:         round(total_time, 3),</pre>
+</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">43</span>:         <span class="nb">round</span><span class="p">(</span><span class="n">total_time</span><span class="p">,</span> <span class="mf">3</span><span class="p">),</span></pre>
 <pre class='cython code score-16 '>    __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_8examples_6chippy_total_time);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
     __pyx_t_1 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)</span>
@@ -412,7 +481,7 @@ body.cython { font-family: courier; font-size: 12; }
     __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_builtin_round, __pyx_t_1, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">44</span>:         round(pos.x, 3),</pre>
+</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">44</span>:         <span class="nb">round</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mf">3</span><span class="p">),</span></pre>
 <pre class='cython code score-16 '>    __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_8examples_6chippy_pos.x);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
     __pyx_t_5 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
@@ -426,7 +495,7 @@ body.cython { font-family: courier; font-size: 12; }
     __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_builtin_round, __pyx_t_5, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
-</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">45</span>:         round(pos.y, 3),</pre>
+</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">45</span>:         <span class="nb">round</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mf">3</span><span class="p">),</span></pre>
 <pre class='cython code score-16 '>    __pyx_t_5 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_8examples_6chippy_pos.y);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
     __pyx_t_6 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 45, __pyx_L1_error)</span>
@@ -440,7 +509,7 @@ body.cython { font-family: courier; font-size: 12; }
     __pyx_t_5 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_builtin_round, __pyx_t_6, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_6); __pyx_t_6 = 0;
-</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">46</span>:         round(vel.x, 3),</pre>
+</pre><pre class="cython line score-16" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">46</span>:         <span class="nb">round</span><span class="p">(</span><span class="n">vel</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mf">3</span><span class="p">),</span></pre>
 <pre class='cython code score-16 '>    __pyx_t_6 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_8examples_6chippy_vel.x);<span class='error_goto'> if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_6);
     __pyx_t_7 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
@@ -454,7 +523,7 @@ body.cython { font-family: courier; font-size: 12; }
     __pyx_t_6 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_builtin_round, __pyx_t_7, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 46, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_6);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_7); __pyx_t_7 = 0;
-</pre><pre class="cython line score-64" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">47</span>:         round(vel.y, 3),</pre>
+</pre><pre class="cython line score-64" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">47</span>:         <span class="nb">round</span><span class="p">(</span><span class="n">vel</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mf">3</span><span class="p">),</span></pre>
 <pre class='cython code score-64 '>    __pyx_t_7 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_8examples_6chippy_vel.y);<span class='error_goto'> if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 47, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_7);
     __pyx_t_8 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L1_error)</span>
@@ -532,14 +601,14 @@ body.cython { font-family: courier; font-size: 12; }
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_10); __pyx_t_10 = 0;
     }
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">48</span>:     )</pre>
-<pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">49</span>:     print(out)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">48</span>:     <span class="p">)</span></pre>
+<pre class="cython line score-3" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">49</span>:     <span class="k">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></pre>
 <pre class='cython code score-3 '>    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_builtin_print, __pyx_v_8examples_6chippy_out);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">50</span>:     total_time += time_step</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">50</span>:     <span class="n">total_time</span> <span class="o">+=</span> <span class="n">time_step</span></pre>
 <pre class='cython code score-0 '>    __pyx_v_8examples_6chippy_total_time = (__pyx_v_8examples_6chippy_total_time + __pyx_v_8examples_6chippy_time_step);
-</pre><pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">51</span>:     time.sleep(time_step)</pre>
+</pre><pre class="cython line score-26" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">51</span>:     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">time_step</span><span class="p">)</span></pre>
 <pre class='cython code score-26 '>    <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_4, __pyx_n_s_time);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
     __pyx_t_10 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_4, __pyx_n_s_sleep);<span class='error_goto'> if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 51, __pyx_L1_error)</span>
@@ -566,10 +635,10 @@ body.cython { font-family: courier; font-size: 12; }
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   }
 </pre><pre class="cython line score-0">&#xA0;<span class="">52</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">53</span>: cpShapeDestroy(&amp;ball_shape.shape)</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">53</span>: <span class="n">cpShapeDestroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpShapeDestroy((&amp;__pyx_v_8examples_6chippy_ball_shape.shape));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">54</span>: cpBodyDestroy(&amp;ball_body)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">54</span>: <span class="n">cpBodyDestroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ball_body</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpBodyDestroy((&amp;__pyx_v_8examples_6chippy_ball_body));
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">55</span>: cpShapeDestroy(&amp;ground.shape)</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">55</span>: <span class="n">cpShapeDestroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ground</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></pre>
 <pre class='cython code score-0 '>  cpShapeDestroy((&amp;__pyx_v_8examples_6chippy_ground.shape));
 </pre></div></body></html>

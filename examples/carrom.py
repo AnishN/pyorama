@@ -34,7 +34,7 @@ class Game(App):
         self.height = 600
         self.title = b"Carrom"
         self.window = self.graphics.window_create(self.width, self.height, self.title)
-
+    
     def setup_uniforms(self):
         self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
         self.graphics.uniform_set_data(self.u_texture, TEXTURE_UNIT_0)
