@@ -10,15 +10,7 @@ for lib_path in lib_paths:
 from pyorama.core.app cimport *
 from pyorama.libs.freetype cimport *
 
-class Game(App):
-    
-    def init(self):
-        super().init()
-        cdef:
-            FT_Library library
-        
-        error = FT_Init_FreeType(&library)
-        print(error)
-
-    def quit(self):
-        super().quit()
+cdef:
+    FT_Library library
+error = FT_Init_FreeType(&library)
+print(error)
