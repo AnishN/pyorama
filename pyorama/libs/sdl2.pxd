@@ -9,11 +9,11 @@ cdef extern from "SDL2/SDL.h" nogil:
     uint64_t SDL_GetPerformanceCounter()
     uint64_t SDL_GetPerformanceFrequency()
     void SDL_Delay(uint32_t ms)
-    const char* SDL_GetError()
+    const char *SDL_GetError()
 
-    bint SDL_SetHint(const char* name, const char* value)
-    char* SDL_HINT_NO_SIGNAL_HANDLERS
-    char* SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS
+    bint SDL_SetHint(const char *name, const char *value)
+    char *SDL_HINT_NO_SIGNAL_HANDLERS
+    char *SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS
 
     enum: SDL_RENDERER_PRESENTVSYNC
     
@@ -48,40 +48,48 @@ cdef extern from "SDL2/SDL.h" nogil:
         pass
     ctypedef struct SDL_Renderer:
         pass
-    ctypedef void* SDL_GLContext
-    SDL_Window* SDL_CreateWindow(char* title, int x, int y, int w, int h, uint32_t flags)
-    void SDL_HideWindow(SDL_Window* window)
-    void SDL_ShowWindow(SDL_Window* window)
-    void SDL_MaximizeWindow(SDL_Window* window)
-    void SDL_MinimizeWindow(SDL_Window* window)
-    void SDL_RestoreWindow(SDL_Window* window)
-    void SDL_RaiseWindow(SDL_Window* window)
 
-    void SDL_SetWindowGrab(SDL_Window* window, bint grabbed)
-    SDL_Window* SDL_GetGrabbedWindow()
-    bint SDL_GetWindowGrab(SDL_Window* window)
+    ctypedef struct SDL_Rect:
+        int x, y, w, h
 
-    void SDL_SetWindowPosition(SDL_Window* window, int x, int y)
-    void SDL_GetWindowPosition(SDL_Window* window, int* x, int* y)
-    void SDL_SetWindowSize(SDL_Window* window, int w, int h)
-    void SDL_GetWindowSize(SDL_Window* window, int* w, int* h)
-    void SDL_SetWindowTitle(SDL_Window* window, const char* title)
-    const char* SDL_GetWindowTitle(SDL_Window* window)
-    
-    SDL_Renderer* SDL_CreateRenderer(SDL_Window* window, int index, uint32_t flags)
-    int SDL_SetRenderDrawColor(SDL_Renderer* renderer, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-    int SDL_RenderClear(SDL_Renderer* renderer)
-    void SDL_RenderPresent(SDL_Renderer* renderer)
-    SDL_GLContext SDL_GL_CreateContext(SDL_Window* window)
-    uint32_t SDL_GetWindowFlags(SDL_Window* window)
-    uint32_t SDL_GetWindowID(SDL_Window* window)
-    SDL_Window* SDL_GetWindowFromID(uint32_t id)
-    void SDL_SetWindowResizable(SDL_Window* window, bint resizable)
-    void SDL_SetWindowFullscreen(SDL_Window* window, uint32_t flags)
-    void SDL_SetWindowBordered(SDL_Window* window, bint bordered)
-    void SDL_GL_SwapWindow(SDL_Window* window)
+    ctypedef void *SDL_GLContext
+    SDL_Window *SDL_CreateWindow(char *title, int x, int y, int w, int h, uint32_t flags)
+    void SDL_HideWindow(SDL_Window *window)
+    void SDL_ShowWindow(SDL_Window *window)
+    void SDL_MaximizeWindow(SDL_Window *window)
+    void SDL_MinimizeWindow(SDL_Window *window)
+    void SDL_RestoreWindow(SDL_Window *window)
+    void SDL_RaiseWindow(SDL_Window *window)
+
+    void SDL_SetWindowGrab(SDL_Window *window, bint grabbed)
+    SDL_Window *SDL_GetGrabbedWindow()
+    bint SDL_GetWindowGrab(SDL_Window *window)
+
+    void SDL_SetWindowPosition(SDL_Window *window, int x, int y)
+    void SDL_GetWindowPosition(SDL_Window *window, int *x, int *y)
+    void SDL_SetWindowSize(SDL_Window *window, int w, int h)
+    void SDL_GetWindowSize(SDL_Window *window, int *w, int *h)
+    void SDL_SetWindowTitle(SDL_Window *window, const char *title)
+    const char *SDL_GetWindowTitle(SDL_Window *window)
+
+    int SDL_GetNumVideoDisplays()
+    int SDL_GetDisplayBounds(int displayIndex, SDL_Rect *rect)
+    int SDL_GetDisplayDPI(int displayIndex, float *ddpi, float *hdpi, float *vdpi)
+
+    SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, uint32_t flags)
+    int SDL_SetRenderDrawColor(SDL_Renderer *renderer, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+    int SDL_RenderClear(SDL_Renderer *renderer)
+    void SDL_RenderPresent(SDL_Renderer *renderer)
+    SDL_GLContext SDL_GL_CreateContext(SDL_Window *window)
+    uint32_t SDL_GetWindowFlags(SDL_Window *window)
+    uint32_t SDL_GetWindowID(SDL_Window *window)
+    SDL_Window *SDL_GetWindowFromID(uint32_t id)
+    void SDL_SetWindowResizable(SDL_Window *window, bint resizable)
+    void SDL_SetWindowFullscreen(SDL_Window *window, uint32_t flags)
+    void SDL_SetWindowBordered(SDL_Window *window, bint bordered)
+    void SDL_GL_SwapWindow(SDL_Window *window)
     int SDL_GL_SetSwapInterval(int interval)
-    int SDL_GL_MakeCurrent(SDL_Window* window, SDL_GLContext context)
+    int SDL_GL_MakeCurrent(SDL_Window *window, SDL_GLContext context)
     SDL_GLContext SDL_GL_GetCurrentContext()
     
     ctypedef enum SDL_GLattr:
@@ -119,9 +127,9 @@ cdef extern from "SDL2/SDL.h" nogil:
         SDL_GL_CONTEXT_PROFILE_ES
     
     int SDL_GL_SetAttribute(SDL_GLattr attr, int value)
-    int SDL_GL_GetAttribute(SDL_GLattr attr, int* value)
-    void SDL_DestroyWindow(SDL_Window* window)
-    void SDL_DestroyRenderer(SDL_Renderer* renderer)
+    int SDL_GL_GetAttribute(SDL_GLattr attr, int *value)
+    void SDL_DestroyWindow(SDL_Window *window)
+    void SDL_DestroyRenderer(SDL_Renderer *renderer)
     void SDL_GL_DeleteContext(SDL_GLContext context)
     
     
@@ -865,17 +873,17 @@ cdef extern from "SDL2/SDL.h" nogil:
     ctypedef struct SDL_Joystick:#anonymous
         pass
     
-    SDL_Joystick* SDL_JoystickOpen(int device_index)
-    void SDL_JoystickClose(SDL_Joystick* joystick)
-    const char* SDL_JoystickName(SDL_Joystick* joystick)
-    const char* SDL_JoystickNameForIndex(int device_index)
-    uint32_t SDL_JoystickInstanceID(SDL_Joystick* joystick)
-    int SDL_JoystickNumAxes(SDL_Joystick* joystick)
-    int16_t SDL_JoystickGetAxis(SDL_Joystick* joystick, int axis)
-    int SDL_JoystickNumButtons(SDL_Joystick* joystick)
-    uint8_t SDL_JoystickGetButton(SDL_Joystick* joystick, int button)
-    int SDL_JoystickNumBalls(SDL_Joystick* joystick)
-    int SDL_JoystickGetBall(SDL_Joystick* joystick, int ball, int* dx, int* dy)
+    SDL_Joystick *SDL_JoystickOpen(int device_index)
+    void SDL_JoystickClose(SDL_Joystick *joystick)
+    const char *SDL_JoystickName(SDL_Joystick *joystick)
+    const char *SDL_JoystickNameForIndex(int device_index)
+    uint32_t SDL_JoystickInstanceID(SDL_Joystick *joystick)
+    int SDL_JoystickNumAxes(SDL_Joystick *joystick)
+    int16_t SDL_JoystickGetAxis(SDL_Joystick *joystick, int axis)
+    int SDL_JoystickNumButtons(SDL_Joystick *joystick)
+    uint8_t SDL_JoystickGetButton(SDL_Joystick *joystick, int button)
+    int SDL_JoystickNumBalls(SDL_Joystick *joystick)
+    int SDL_JoystickGetBall(SDL_Joystick *joystick, int ball, int *dx, int *dy)
 
     ctypedef struct SDL_ControllerAxisEvent:
         uint32_t type
@@ -999,9 +1007,9 @@ cdef extern from "SDL2/SDL.h" nogil:
         SDL_DollarGestureEvent dgesture
         SDL_DropEvent drop
         uint8_t padding[56]
-    int SDL_PollEvent(SDL_Event* event)
+    int SDL_PollEvent(SDL_Event *event)
     uint32_t SDL_RegisterEvents(int numevents)
-    int SDL_PushEvent(SDL_Event* event)
+    int SDL_PushEvent(SDL_Event *event)
     
     #Miscellaneous
     ctypedef struct SDL_Surface:
@@ -1009,10 +1017,10 @@ cdef extern from "SDL2/SDL.h" nogil:
         #SDL_PixelFormat *format
         int w, h
         #int pitch
-        void* pixels
-        #void* userdata
+        void *pixels
+        #void *userdata
         #int locked
-        #void* lock_data
+        #void *lock_data
         #SDL_Rect clip_rect
         #struct SDL_BlitMap *map
         #int refcount
@@ -1109,10 +1117,11 @@ cdef extern from "SDL2/SDL_image.h" nogil:
         IMG_INIT_JPG
         IMG_INIT_PNG
         IMG_INIT_TIF
+        IMG_INIT_WEBP
 
     void IMG_Quit()
-    SDL_Surface* IMG_Load(char * file_)
-    char* IMG_GetError()
+    SDL_Surface *IMG_Load(char  *file_)
+    char *IMG_GetError()
     
 cdef extern from "SDL2/SDL_mixer.h" nogil:
     cdef enum:
@@ -1139,5 +1148,5 @@ cdef extern from "SDL2/SDL_mixer.h" nogil:
     void Mix_Quit()
     int Mix_OpenAudio(int frequency, int format, int channels, int chunksize)
     void Mix_CloseAudio()
-    Mix_Chunk * Mix_LoadWAV(char *file)
+    Mix_Chunk  *Mix_LoadWAV(char *file)
     int Mix_PlayChannel(int channel, Mix_Chunk *chunk, int loops)

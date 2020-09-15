@@ -6,7 +6,7 @@ cdef class GraphicsManager:
         self.root_context = SDL_GL_CreateContext(self.root_window)
         if self.root_context == NULL:
             raise ValueError("GraphicsManager: failed to create OpenGL context")
-        IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
+        IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
         
         self.c_check_gl_extensions()
         self.c_create_slot_maps()
