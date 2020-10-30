@@ -137,7 +137,7 @@ cdef class Game(App):
             double fps
             bytes title
         self.current_time = event_data["timestamp"]
-
+        
         """
         start = time.time()
         for i in range(self.num_sprites):
