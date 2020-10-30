@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import time
 from pyorama.core.app import *
 from pyorama.event.event_enums import *
 from pyorama.event.event_manager import *
@@ -19,6 +20,7 @@ class Game(App):
         self.setup_window()
         self.setup_uniforms()
         self.setup_shaders()
+        self.times = []
         
         #setup sprites
         image_path = b"./resources/textures/bunny.png"
@@ -34,7 +36,7 @@ class Game(App):
         #setup piece sprites
         self.sprites = []
         #self.num_sprites = 2 ** 16 - 1
-        self.num_sprites = 10000
+        self.num_sprites = 50000
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):
@@ -58,6 +60,8 @@ class Game(App):
         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
 
     def quit(self):
+        t = np.array(self.times)
+        print(np.mean(t), np.std(t))
         super().quit()
     
     def setup_window(self):
@@ -117,6 +121,13 @@ class Game(App):
         self.current_time = event_data["timestamp"]
         position = Vec2()
         shift = Vec2()
+        
+        start = time.time()
+        for i in range(self.num_sprites):
+            sprite = self.sprites[i]
+        end = time.time()
+        self.times.append(end - start)
+
         for i in range(self.num_sprites):
             Vec2.random(shift)
             Vec2.scale_add(shift, shift, 2.0, -1.0)

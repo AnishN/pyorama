@@ -3,6 +3,7 @@ from pyorama.event.event_enums cimport *
 from pyorama.event.event_manager cimport *
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.graphics_structs cimport *
+from pyorama.graphics.sprite cimport *
 from pyorama.math3d.common cimport *
 from pyorama.math3d.vec2 cimport Vec2
 from pyorama.math3d.vec3 cimport Vec3
@@ -16,7 +17,7 @@ cdef class Game(App):
         int bunny_width
         int bunny_height
         size_t num_sprites
-        Handle[::1] sprites
+        list sprites
         Handle sprite_batch
         Handle window
         Handle image, texture

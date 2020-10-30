@@ -19,19 +19,21 @@ cdef class Game(App):
         self.bunny_width = self.graphics.image_get_width(self.image)
         self.bunny_height = self.graphics.image_get_height(self.image)
         self.num_sprites = 50000
-        self.sprites = np.array([0] * self.num_sprites, dtype=np.uint64)
+        self.sprites = []
         
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):
             Vec2.random(position)
             Vec2.mul(position, position, window_size)
-            sprite = self.graphics.sprite_create(self.bunny_width, self.bunny_height)
-            self.graphics.sprite_set_position(sprite, position)
-            self.graphics.sprite_set_anchor(sprite, Vec2(0.5, 0.5))
-            self.sprites[i] = sprite
+            sprite = Sprite(self.graphics, self.bunny_width, self.bunny_height)
+            sprite.set_position(position)
+            sprite.set_anchor(Vec2(0.5, 0.5))
+            self.sprites.append(sprite)
         self.sprite_batch = self.graphics.sprite_batch_create()
-        self.graphics.sprite_batch_set_sprites(self.sprite_batch, self.sprites)
+        sprite_handles = [s.handle for s in self.sprites]
+        sprites = np.array(sprite_handles, dtype=np.uint64)
+        self.graphics.sprite_batch_set_sprites(self.sprite_batch, sprites)
         self.vbo = self.graphics.sprite_batch_get_vertex_buffer(self.sprite_batch)
         self.ibo = self.graphics.sprite_batch_get_index_buffer(self.sprite_batch)
         
@@ -100,31 +102,66 @@ cdef class Game(App):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
             self.quit()
 
+    """
     def on_enter_frame(self, event_data, *args, **kwargs):
         cdef:
             Handle sprite
-            Handle sprite_sum = 0
             SpriteC *sprite_ptr
-            Vec2C position
+            Vec2 position
+            Vec2C shift
+            size_t i
+            double fps
+            bytes title
+        self.current_time = event_data["timestamp"]
+        for i in range(self.num_sprites):
+            sprite = (<Sprite>self.sprites[i]).handle
+            sprite_ptr = self.graphics.sprite_get_ptr(sprite)
+            Vec2.c_random(&shift)
+            Vec2.c_scale_add(&shift, &shift, 2, -1.0)
+            Vec2.c_add(&sprite_ptr.position, &sprite_ptr.position, &shift)
+        self.time_delta = self.current_time - self.previous_time
+        fps = min(round(1000.0 / self.ms_per_update), round(1.0 / self.time_delta))
+        title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
+        self.graphics.window_set_title(self.window, title)
+        self.previous_time = self.current_time
+    """
+
+    def on_enter_frame(self, event_data, *args, **kwargs):
+        cdef:
+            Sprite sprite
+            Handle sprite_t = 0
+            Handle sprite_h
+            Vec2 position
             Vec2C shift
             size_t i
             double fps
             bytes title
         self.current_time = event_data["timestamp"]
 
+        """
         start = time.time()
         for i in range(self.num_sprites):
-            sprite = self.sprites[i]
-            sprite_sum += sprite
+            sprite = <Sprite>self.sprites[i]
         end = time.time()
         self.times.append(end - start)
-        print(end - start, sprite_sum)
+        print(end - start)
+        """
+
+        start = time.time()
+        for i in range(self.num_sprites):
+            sprite_h = (<Sprite>self.sprites[i]).handle
+            sprite_t += sprite_h
+        end = time.time()
+        self.times.append(end - start)
+        print(end - start, sprite_t)
 
         for i in range(self.num_sprites):
-            sprite_ptr = self.graphics.sprite_get_ptr(self.sprites[i])
+            sprite = <Sprite>self.sprites[i]
             Vec2.c_random(&shift)
             Vec2.c_scale_add(&shift, &shift, 2, -1.0)
-            Vec2.c_add(&sprite_ptr.position, &sprite_ptr.position, &shift)
+            position = sprite.get_position()
+            Vec2.c_add(&position.data, &position.data, &shift)
+            sprite.set_position(position)
         self.time_delta = self.current_time - self.previous_time
         fps = min(round(1000.0 / self.ms_per_update), round(1.0 / self.time_delta))
         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")

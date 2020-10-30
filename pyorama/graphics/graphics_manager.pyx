@@ -1,3 +1,4 @@
+from cython.parallel import parallel, prange
 
 cdef class GraphicsManager:
 
@@ -70,6 +71,8 @@ cdef class GraphicsManager:
         self.mesh_batches = ItemSlotMap(sizeof(MeshBatchC), GRAPHICS_ITEM_TYPE_MESH_BATCH)
         self.sprites = ItemSlotMap(sizeof(SpriteC), GRAPHICS_ITEM_TYPE_SPRITE)
         self.sprite_batches = ItemSlotMap(sizeof(SpriteBatchC), GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
+        self.bitmap_fonts = ItemSlotMap(sizeof(BitmapFontC), GRAPHICS_ITEM_TYPE_BITMAP_FONT)
+        self.texts = ItemSlotMap(sizeof(TextC), GRAPHICS_ITEM_TYPE_TEXT)
 
     cdef void c_delete_slot_maps(self) except *:
         self.windows = None
@@ -88,6 +91,8 @@ cdef class GraphicsManager:
         self.mesh_batches = None
         self.sprites = None
         self.sprite_batches = None
+        self.bitmap_fonts = None
+        self.texts = None
 
     cdef void c_create_predefined_uniform_formats(self) except *:
         self.u_fmt_rect = self.uniform_format_create(b"u_rect", UNIFORM_TYPE_VEC4)
@@ -1424,7 +1429,7 @@ cdef class GraphicsManager:
             float *tex_coords_ptr
 
         if tex_coords.shape[0] != 12:
-            raise ValueError("Sprite: tex coords array is invalid length")    
+            raise ValueError("Sprite: tex coords array is invalid length")
         sprite_ptr = self.sprite_get_ptr(sprite)
         tex_coords_ptr = &tex_coords[0]
         memcpy(sprite_ptr.tex_coords, tex_coords_ptr, sizeof(float) * 12)
@@ -1621,7 +1626,7 @@ cdef class GraphicsManager:
         cdef SpriteBatchC *batch_ptr
         batch_ptr = self.sprite_batch_get_ptr(batch)
         return batch_ptr.index_buffer
-
+    
     cdef void _sprite_batch_update(self, Handle batch) except *:
         cdef:
             SpriteBatchC *batch_ptr
@@ -1668,6 +1673,229 @@ cdef class GraphicsManager:
                 memcpy(ibo_index, &index, sizeof(uint32_t))
         self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
         self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
+    
+    cdef BitmapFontC *bitmap_font_get_ptr(self, Handle font) except *:
+        return <BitmapFontC *>self.bitmap_fonts.c_get_ptr(font)
+
+    cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
+        cdef:
+            Handle font
+            BitmapFontC *font_ptr
+            size_t num_pages
+            size_t i
+        font = self.bitmap_fonts.c_create()
+        font_ptr = self.bitmap_font_get_ptr(font)
+        self._bitmap_font_parse_file(font, file_path)
+        num_pages = font_ptr.common.num_pages
+        for i in range(num_pages):
+            font_ptr.pages[i].texture = self.texture_create()
+        return font
+
+    cpdef void bitmap_font_delete(self, Handle font) except *:
+        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        free(font_ptr.pages)
+        free(font_ptr.chars)
+        free(font_ptr.kernings)
+        self.bitmap_fonts.c_delete(font)
+
+    cdef void _bitmap_font_parse_file(self, Handle font, bytes file_path) except *:
+        cdef:
+            BitmapFontC *font_ptr
+            object in_file
+            list lines
+            bytes line
+            list line_items
+            bytes first
+            bytes rest
+            dict pairs
+            size_t i_c = 0
+            size_t i_k = 0
+        
+        font_ptr = self.bitmap_font_get_ptr(font)
+        in_file = open(file_path, "rb")
+        lines = in_file.readlines()
+        for line in lines:
+            line_items = line.split()
+            first = line_items[0]
+            rest = b" ".join(line_items[1:] + [b" "])
+            pairs = self._bitmap_font_parse_pairs(rest)
+            if first == b"info":
+                self._bitmap_font_parse_info(font, pairs)
+            elif first == b"common":
+                self._bitmap_font_parse_common(font, pairs)
+            elif first == b"page":
+                self._bitmap_font_parse_page(font, pairs)
+            elif first == b"chars":
+                font_ptr.num_chars = int(pairs[b"count"])
+            elif first == b"char":
+                self._bitmap_font_parse_char(font, i_c, pairs)
+                i_c += 1
+            elif first == b"kernings":
+                font_ptr.num_kernings = int(pairs[b"count"])
+            elif first == b"kerning":
+                self._bitmap_font_parse_kerning(font, i_k, pairs)
+                i_k += 1
+            else:
+                raise ValueError("BitmapFont: invalid line tokens in .fnt file")
+
+    cdef dict _bitmap_font_parse_pairs(self, bytes line):
+        cdef:
+            size_t i
+            size_t start = 0
+            size_t end = 0
+            char c
+            char *line_ptr = &(<char *>line)[0]
+            size_t line_len = len(line)
+            bint in_quotes = False
+            bytes key
+            bytes value
+            dict out = {}
+
+        for i in range(line_len - 1):
+            c = line_ptr[i]
+            if c == b" " and not in_quotes:
+                end = i
+                key, value = line[start:end].replace(b"\"", b"").split(b"=")
+                out[key] = value
+                start = end + 1
+            elif c == b"\"":
+                in_quotes = not in_quotes
+        return out
+
+    cdef void _bitmap_font_parse_info(self, Handle font, dict pairs) except *:
+        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        str_len = len(pairs[b"face"])
+        if str_len > 255:
+            raise ValueError("BitmapFont: face names > 255 characters are not supported")
+        memcpy(font_ptr.info.face, <char *>pairs[b"face"], str_len)
+        font_ptr.info.size = int(pairs[b"size"])
+        font_ptr.info.bold = int(pairs[b"bold"])
+        font_ptr.info.italic = int(pairs[b"italic"])
+        str_len = len(pairs[b"charset"])
+        if str_len > 255:
+            raise ValueError("BitmapFont: charset names > 255 characters are not supported")
+        memcpy(font_ptr.info.charset, <char *>pairs[b"charset"], str_len)
+        font_ptr.info.unicode = int(pairs[b"unicode"])
+        font_ptr.info.stretch_h = int(pairs[b"stretchH"])
+        font_ptr.info.smooth = int(pairs[b"smooth"])
+        font_ptr.info.aa = int(pairs[b"aa"])
+        font_ptr.info.padding = [int(v) for v in pairs[b"padding"].split(b",")]
+        font_ptr.info.spacing = [int(v) for v in pairs[b"spacing"].split(b",")]
+        font_ptr.info.outline = int(pairs[b"outline"])
+
+    cdef void _bitmap_font_parse_common(self, Handle font, dict pairs) except *:
+        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        font_ptr.common.line_height = int(pairs[b"lineHeight"])
+        font_ptr.common.base = int(pairs[b"base"])
+        font_ptr.common.scale_w = int(pairs[b"scaleW"])
+        font_ptr.common.scale_h = int(pairs[b"scaleH"])
+        font_ptr.common.num_pages = int(pairs[b"pages"])
+        font_ptr.common.packed = int(pairs[b"packed"])
+        font_ptr.common.alpha = int(pairs[b"alphaChnl"])
+        font_ptr.common.red = int(pairs[b"redChnl"])
+        font_ptr.common.green = int(pairs[b"greenChnl"])
+        font_ptr.common.blue = int(pairs[b"blueChnl"])
+
+    cdef void _bitmap_font_parse_page(self, Handle font, dict pairs) except *:
+        cdef:
+            BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+            size_t page_num
+            size_t str_len
+        
+        if font_ptr.pages == NULL:
+            font_ptr.pages = <BitmapFontPageC *>calloc(font_ptr.common.num_pages, sizeof(BitmapFontPageC))
+            if font_ptr.pages == NULL:
+                raise MemoryError("BitmapFont: cannot allocate pages")
+        page_num = int(pairs[b"id"])
+        font_ptr.pages[page_num].id = page_num
+        str_len = len(pairs[b"file"])
+        if str_len > 255:
+            raise ValueError("BitmapFont: page file names > 255 characters are not supported")
+        memcpy(font_ptr.pages[page_num].file_name, <char *>pairs[b"file"], str_len)
+
+    cdef void _bitmap_font_parse_char(self, Handle font, size_t i, dict pairs) except *:
+        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        if font_ptr.chars == NULL:
+            font_ptr.chars = <BitmapFontCharC *>calloc(font_ptr.num_chars, sizeof(BitmapFontCharC))
+            if font_ptr.chars == NULL:
+                raise MemoryError("BitmapFont: cannot allocate chars")
+        if i >= font_ptr.num_chars:
+            raise ValueError("BitmapFont: invalid char index")
+        font_ptr.chars[i].id = int(pairs[b"id"])
+        font_ptr.chars[i].x = int(pairs[b"x"])
+        font_ptr.chars[i].y = int(pairs[b"y"])
+        font_ptr.chars[i].width = int(pairs[b"width"])
+        font_ptr.chars[i].height = int(pairs[b"height"])
+        font_ptr.chars[i].offset_x = int(pairs[b"xoffset"])
+        font_ptr.chars[i].offset_y = int(pairs[b"yoffset"])
+        font_ptr.chars[i].advance_x = int(pairs[b"xadvance"])
+        font_ptr.chars[i].page = int(pairs[b"page"])
+        font_ptr.chars[i].channel = int(pairs[b"chnl"])
+
+    cdef void _bitmap_font_parse_kerning(self, Handle font, size_t i, dict pairs) except *:
+        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        if font_ptr.kernings == NULL:
+            font_ptr.kernings = <BitmapFontKerningC *>calloc(font_ptr.num_kernings, sizeof(BitmapFontKerningC))
+            if font_ptr.kernings == NULL:
+                raise MemoryError("BitmapFont: cannot allocate kernings")
+        if i >= font_ptr.num_kernings:
+            raise ValueError("BitmapFont: invalid kerning index")
+        font_ptr.kernings[i].first = int(pairs[b"first"])
+        font_ptr.kernings[i].second = int(pairs[b"second"])
+        font_ptr.kernings[i].amount = int(pairs[b"amount"])
+
+    cpdef Handle bitmap_font_get_page_texture(self, Handle font, size_t page_num) except *:
+        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        if page_num >= font_ptr.common.num_pages:
+            raise ValueError("BitmapFont: invalid page number")
+        return font_ptr.pages[page_num].texture
+
+    cdef TextC *text_get_ptr(self, Handle text) except *:
+        return <TextC *>self.texts.c_get_ptr(text)
+
+    cpdef Handle text_create(self, Handle font, bytes data, Vec2 position, Vec4 color) except *:
+        cdef:
+            Handle text
+            TextC *text_ptr
+        text = self.texts.c_create()
+        text_ptr = self.text_get_ptr(text)
+        text_ptr.font = font
+        text_ptr.data_length = len(data)
+        text_ptr.data = <char *>calloc(text_ptr.data_length, sizeof(char))
+        if text_ptr.data == NULL:
+            raise MemoryError("Text: cannot allocate character data")
+        memcpy(text_ptr.data, <char *>data, text_ptr.data_length * sizeof(char))
+        text_ptr.position = position.data
+        text_ptr.color = color.data
+        self._text_update(text)
+        return text
+
+    cpdef void text_delete(self, Handle text) except *:
+        cdef TextC *text_ptr = self.text_get_ptr(text)
+        free(text_ptr.data)
+        self.texts.c_delete(text)
+
+    cdef void _text_update(self, Handle text) except *:
+        cdef:
+            TextC *text_ptr
+            BitmapFontC *font_ptr
+            size_t i, j
+            char *c
+            BitmapFontCharC *char_ptr
+            Vec2C cursor
+        pass
+        """
+        text_ptr = self.text_get_ptr(text)
+        font_ptr = self.bitmap_font_get_ptr(text_ptr.font)
+        cursor = text_ptr.position
+        for i in range(text_ptr.data_length):
+            c = &text_ptr.data[i]
+            for j in range(font_ptr.num_chars):
+                char_ptr = &font_ptr.chars[j]
+                if <char>char_ptr.id == c[0]:
+                    print(i, chr(c[0]), char_ptr[0])
+                    cursor.x += char_ptr.advance
+        """
     
     cdef void _swap_root_window(self) except *:
         SDL_GL_MakeCurrent(self.root_window, self.root_context)
@@ -1752,7 +1980,7 @@ cdef class GraphicsManager:
             if fbo != 0:
                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
             glUseProgram(0); self.c_check_gl()
-            
+        
         for i in range(self.windows.items.num_items):
             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
             self.window_render(window_ptr.handle)

@@ -25,19 +25,25 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native", "-no-pie"]
 include_dirs = [np.get_include(), "./pyorama/libs/include"]
 library_dirs = ["./pyorama/libs/shared"]
+macros = [
+    ("CYTHON_TRACE", "1"),
+]
+
 annotate = True
 quiet = False
 directives = {
     "binding": True,
     "boundscheck": False,
-    "wraparound": False,
-    "initializedcheck": False,
     "cdivision": True,
-    "nonecheck": False,
+    "initializedcheck": False,
     "language_level": "3",
+    "linetrace": True,
+    "nonecheck": False,
+    "profile": True,
+    "wraparound": False,
 }
 
 if __name__ == "__main__":
@@ -64,6 +70,7 @@ if __name__ == "__main__":
                     include_dirs=include_dirs,
                     library_dirs=library_dirs,
                     runtime_library_dirs=library_dirs,
+                    define_macros=macros,
                 )
                 extensions.append(ext)
     

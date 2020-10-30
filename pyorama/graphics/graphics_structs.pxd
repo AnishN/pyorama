@@ -168,3 +168,65 @@ ctypedef struct ViewC:
     TextureUnit[16] texture_units
     size_t num_texture_units
     Handle frame_buffer
+
+ctypedef struct BitmapFontInfoC:
+    char[256] face
+    int size
+    bint bold
+    bint italic
+    char[256] charset
+    bint unicode
+    int stretch_h
+    bint smooth
+    int aa
+    int[4] padding
+    int[2] spacing
+    int outline
+
+ctypedef struct BitmapFontCommonC:
+    int line_height
+    int base
+    int scale_w, scale_h
+    int num_pages
+    bint packed
+    BitmapFontCommonChannel alpha
+    BitmapFontCommonChannel red
+    BitmapFontCommonChannel green
+    BitmapFontCommonChannel blue
+
+ctypedef struct BitmapFontPageC:
+    int id
+    char[256] file_name
+    Handle texture
+
+ctypedef struct BitmapFontCharC:
+    int id
+    int x, y
+    int width, height
+    int offset_x, offset_y
+    int advance_x
+    int page
+    BitmapFontCharChannel channel
+
+ctypedef struct BitmapFontKerningC:
+    int first
+    int second
+    int amount
+
+ctypedef struct BitmapFontC:
+    Handle handle
+    BitmapFontInfoC info
+    BitmapFontCommonC common
+    BitmapFontPageC *pages
+    size_t num_chars
+    BitmapFontCharC *chars
+    size_t num_kernings
+    BitmapFontKerningC *kernings
+
+ctypedef struct TextC:
+    Handle handle
+    Handle font
+    char *data
+    size_t data_length
+    Vec2C position
+    Vec4C color
