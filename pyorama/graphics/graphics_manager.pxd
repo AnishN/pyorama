@@ -10,6 +10,11 @@ from pyorama.graphics.graphics_enums cimport *
 from pyorama.graphics.graphics_structs cimport *
 from pyorama.graphics.graphics_utils cimport *
 
+from pyorama.graphics.index_buffer cimport *
+from pyorama.graphics.vertex_buffer cimport *
+from pyorama.graphics.vertex_format cimport *
+from pyorama.graphics.window cimport *
+
 @cython.final
 cdef class GraphicsManager:
     cdef:
@@ -35,7 +40,8 @@ cdef class GraphicsManager:
         ItemSlotMap texts
 
         Handle u_quad
-        Handle quad_vbo, quad_ibo
+        VertexBuffer quad_vbo
+        IndexBuffer quad_ibo
         Handle quad_vs, quad_fs, quad_program
 
         readonly Handle u_fmt_rect
@@ -51,9 +57,9 @@ cdef class GraphicsManager:
         readonly Handle u_fmt_texture_6
         readonly Handle u_fmt_texture_7
 
-        readonly Handle v_fmt_quad
-        readonly Handle v_fmt_mesh
-        readonly Handle v_fmt_sprite
+        readonly VertexFormat v_fmt_quad
+        readonly VertexFormat v_fmt_mesh
+        readonly VertexFormat v_fmt_sprite
         readonly IndexFormat i_fmt_quad
         readonly IndexFormat i_fmt_mesh
         readonly IndexFormat i_fmt_sprite
@@ -70,33 +76,9 @@ cdef class GraphicsManager:
     cdef void c_delete_quad(self) except *
 
     cdef WindowC *window_get_ptr(self, Handle window) except *
-    cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *
-    cpdef void window_delete(self, Handle window) except *
-    cpdef void window_set_texture(self, Handle window, Handle texture) except *
-    cpdef void window_clear(self, Handle window) except *
-    cpdef void window_render(self, Handle window) except *
-    cpdef void window_set_title(self, Handle window, bytes title) except *
-
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *
-    cpdef Handle vertex_format_create(self, list comps) except *
-    cpdef void vertex_format_delete(self, Handle format) except *
-    
     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *
-    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage=*) except *
-    cpdef void vertex_buffer_delete(self, Handle buffer) except *
-    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *
-    cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
-    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *
-    cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
-    
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *
-    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage=*) except *
-    cpdef void index_buffer_delete(self, Handle buffer) except *
-    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *
-    cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *
-    cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *
-    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *
-    cdef void _index_buffer_draw(self, Handle buffer) except *
 
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
     cpdef Handle uniform_format_create(self, bytes name, UniformType type, size_t count=*) except *

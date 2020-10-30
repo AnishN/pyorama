@@ -122,15 +122,20 @@ cdef class GraphicsManager:
         self.uniform_format_delete(self.u_fmt_texture_7) 
 
     cdef void c_create_predefined_vertex_index_formats(self) except *:
-        self.v_fmt_quad = self.vertex_format_create([
+        self.v_fmt_quad = VertexFormat(self)
+        self.v_fmt_quad.create([
             (b"a_quad", VERTEX_COMP_TYPE_F32, 4, False),
         ])
-        self.v_fmt_mesh = self.vertex_format_create([
+
+        self.v_fmt_mesh = VertexFormat(self)
+        self.v_fmt_mesh.create([
             (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
             (b"a_tex_coord_0", VERTEX_COMP_TYPE_F32, 2, False),
             (b"a_normal", VERTEX_COMP_TYPE_F32, 3, False),
         ])
-        self.v_fmt_sprite = self.vertex_format_create([
+
+        self.v_fmt_sprite = VertexFormat(self)
+        self.v_fmt_sprite.create([
             (b"a_vertex_tex_coord", VERTEX_COMP_TYPE_F32, 4, False),#base vertex (vec2), tex coord (vec2)
             (b"a_pos_z_rot", VERTEX_COMP_TYPE_F32, 4, False),#position (vec2), z_index (float), rotation (float)
             (b"a_size_scale", VERTEX_COMP_TYPE_F32, 4, False),#width (float), height (float), scale (vec2)
@@ -142,10 +147,12 @@ cdef class GraphicsManager:
         self.i_fmt_sprite = INDEX_FORMAT_U32
 
     cdef void c_delete_predefined_vertex_index_formats(self) except *:
-        self.vertex_format_delete(self.v_fmt_quad)
-        self.vertex_format_delete(self.v_fmt_mesh)
+        self.v_fmt_quad.delete(); self.v_fmt_quad = None
+        self.v_fmt_mesh.delete(); self.v_fmt_mesh = None
+        self.v_fmt_sprite.delete(); self.v_fmt_sprite = None
         self.i_fmt_quad = INDEX_FORMAT_U32
         self.i_fmt_mesh = INDEX_FORMAT_U32
+        self.i_fmt_sprite = INDEX_FORMAT_U32
 
     cdef void c_create_quad(self) except *:
         cdef:
@@ -162,10 +169,12 @@ cdef class GraphicsManager:
         quad_vbo_mv = <uint8_t[:64]>(<uint8_t *>&quad_vbo_data)
         quad_ibo_data =  [0, 2, 1, 1, 2, 3]
         quad_ibo_mv = <uint8_t[:24]>(<uint8_t *>&quad_ibo_data)
-        self.quad_vbo = self.vertex_buffer_create(self.v_fmt_quad)
-        self.vertex_buffer_set_data(self.quad_vbo, quad_vbo_mv)
-        self.quad_ibo = self.index_buffer_create(self.i_fmt_quad)
-        self.index_buffer_set_data(self.quad_ibo, quad_ibo_mv)
+        self.quad_vbo = VertexBuffer(self)
+        self.quad_vbo.create(self.v_fmt_quad)
+        self.quad_vbo.set_data(quad_vbo_mv)
+        self.quad_ibo = IndexBuffer(self)
+        self.quad_ibo.create(self.i_fmt_quad)
+        self.quad_ibo.set_data(quad_ibo_mv)
         self.quad_vs = self.shader_create_from_file(SHADER_TYPE_VERTEX, b"./resources/shaders/quad.vert")
         self.quad_fs = self.shader_create_from_file(SHADER_TYPE_FRAGMENT, b"./resources/shaders/quad.frag")
         self.quad_program = self.program_create(self.quad_vs, self.quad_fs)
@@ -173,7 +182,7 @@ cdef class GraphicsManager:
         self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
 
     cdef void c_delete_quad(self) except *:
-        self.vertex_buffer_delete(self.quad_vbo)
+        self.quad_vbo.delete(); self.quad_vbo = None
         self.index_buffer_delete(self.quad_ibo)
         self.shader_delete(self.quad_vs)
         self.shader_delete(self.quad_fs)
@@ -183,309 +192,14 @@ cdef class GraphicsManager:
     cdef WindowC *window_get_ptr(self, Handle window) except *:
         return <WindowC *>self.windows.c_get_ptr(window)
 
-    cpdef Handle window_create(self, uint16_t width, uint16_t height, bytes title) except *:
-        cdef:
-            Handle window
-            WindowC *window_ptr
-            size_t title_length
-            #SDL_Renderer *renderer
-
-        window = self.windows.c_create()
-        window_ptr = self.window_get_ptr(window)
-        window_ptr.sdl_ptr = SDL_CreateWindow(
-            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-            width, height, SDL_WINDOW_OPENGL,
-        )
-        window_ptr.width = width
-        window_ptr.height = height
-        self.window_set_title(window, title)
-        self.window_clear(window)
-        return window
-
-    cpdef void window_delete(self, Handle window) except *:
-        cdef:
-            WindowC *window_ptr
-        window_ptr = self.window_get_ptr(window)
-        SDL_DestroyWindow(window_ptr.sdl_ptr)
-        self.windows.c_delete(window)
-
-    cpdef void window_set_texture(self, Handle window, Handle texture) except *:
-        cdef:
-            WindowC *window_ptr
-        window_ptr = self.window_get_ptr(window)
-        window_ptr.texture = texture
-
-    cpdef void window_clear(self, Handle window) except *:
-        cdef:
-            WindowC *window_ptr
-        window_ptr = self.window_get_ptr(window)
-        SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-        glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
-        glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
-        glClearDepthf(1.0); self.c_check_gl()
-        glClearStencil(0); self.c_check_gl()
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
-        SDL_GL_SetSwapInterval(0)
-        SDL_GL_SwapWindow(window_ptr.sdl_ptr)
-        SDL_GL_MakeCurrent(self.root_window, self.root_context)
-
-    cpdef void window_render(self, Handle window) except *:
-        cdef:
-            WindowC *window_ptr
-            TextureC *texture_ptr
-            ProgramC *program_ptr
-        window_ptr = self.window_get_ptr(window)
-        SDL_GL_MakeCurrent(window_ptr.sdl_ptr, self.root_context)
-        glViewport(0, 0, window_ptr.width, window_ptr.height); self.c_check_gl()
-        glClearColor(0.0, 0.0, 0.0, 0.0); self.c_check_gl()
-        glClearDepthf(1.0); self.c_check_gl()
-        glClearStencil(0); self.c_check_gl()
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.c_check_gl()
-        if self.textures.c_is_handle_valid(window_ptr.texture):
-            glActiveTexture(GL_TEXTURE0); self.c_check_gl()
-            texture_ptr = self.texture_get_ptr(window_ptr.texture)
-            program_ptr = self.program_get_ptr(self.quad_program)
-            glUseProgram(program_ptr.gl_id); self.c_check_gl()
-            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
-            self._program_bind_uniform(self.quad_program, self.u_quad)
-            self._program_bind_attributes(self.quad_program, self.quad_vbo)
-            self._index_buffer_draw(self.quad_ibo)
-            self._program_unbind_attributes(self.quad_program)
-            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
-            SDL_GL_SetSwapInterval(0)
-            SDL_GL_SwapWindow(window_ptr.sdl_ptr)
-            glUseProgram(0); self.c_check_gl()
-        SDL_GL_MakeCurrent(self.root_window, self.root_context)
-
-    cpdef void window_set_title(self, Handle window, bytes title) except *:
-        cdef:
-            WindowC *window_ptr
-            size_t title_length
-        window_ptr = self.window_get_ptr(window)
-        title_length = len(title)
-        if title_length >= 256:
-            raise ValueError("Window: title cannot exceed 255 characters")
-        memcpy(window_ptr.title, <char *>title, title_length)
-        window_ptr.title_length = title_length
-        window_ptr.title[title_length] = b"\0"
-        SDL_SetWindowTitle(window_ptr.sdl_ptr, window_ptr.title)
-
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *:
         return <VertexFormatC *>self.vertex_formats.c_get_ptr(format)
-
-    cpdef Handle vertex_format_create(self, list comps) except *:
-        cdef:
-            Handle format
-            VertexFormatC *format_ptr
-            size_t num_comps
-            size_t i
-            tuple comp_tuple
-            bytes name
-            size_t name_length
-            VertexCompC *comp
-            size_t offset
-            size_t comp_type_size
-        num_comps = len(comps)
-        if num_comps > 16:
-            raise ValueError("VertexFormat: maximum number of vertex comps exceeded")
-        format = self.vertex_formats.c_create()
-        format_ptr = self.vertex_format_get_ptr(format)
-        offset = 0
-        for i in range(num_comps):
-            comp_tuple = <tuple>comps[i]
-            comp = &format_ptr.comps[i]
-            name = <bytes>comp_tuple[0]
-            name_length = len(name)
-            if name_length >= 256:
-                raise ValueError("VertexFormat: comp name cannot exceed 255 characters")
-            memcpy(comp.name, <char *>name, sizeof(char) * name_length)
-            comp.name_length = name_length
-            comp.type = <VertexCompType>comp_tuple[1]
-            comp.count = <size_t>comp_tuple[2]
-            comp.normalized = <bint>comp_tuple[3]
-            comp.offset = offset
-            if comp.type == VERTEX_COMP_TYPE_F32: comp_type_size = 4
-            elif comp.type == VERTEX_COMP_TYPE_I8: comp_type_size = 1
-            elif comp.type == VERTEX_COMP_TYPE_U8: comp_type_size = 1
-            elif comp.type == VERTEX_COMP_TYPE_I16: comp_type_size = 2
-            elif comp.type == VERTEX_COMP_TYPE_U16: comp_type_size = 2
-            offset += comp.count * comp_type_size
-        format_ptr.count = num_comps
-        format_ptr.stride = offset
-        return format
-
-    cpdef void vertex_format_delete(self, Handle format) except *:
-        cdef VertexFormatC *format_ptr
-        format_ptr = self.vertex_format_get_ptr(format)
-        self.vertex_formats.c_delete(format)
-
+    
     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *:
         return <VertexBufferC *>self.vertex_buffers.c_get_ptr(buffer)
 
-    cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage=BUFFER_USAGE_STATIC) except *:
-        cdef:
-            Handle buffer
-            VertexBufferC *buffer_ptr
-        buffer = self.vertex_buffers.c_create()
-        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        glGenBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
-        if buffer_ptr.gl_id == 0:
-            raise ValueError("VertexBuffer: failed to generate buffer id")
-        buffer_ptr.format = format
-        buffer_ptr.usage = usage
-        buffer_ptr.size = 0
-        return buffer
-
-    cpdef void vertex_buffer_delete(self, Handle buffer) except *:
-        cdef:
-            VertexBufferC *buffer_ptr
-            uint32_t gl_usage
-        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-        glBufferData(GL_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.c_check_gl()
-        glBindBuffer(GL_ARRAY_BUFFER, 0); self.c_check_gl()
-        glDeleteBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
-        self.vertex_buffers.c_delete(buffer)
-
-    cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *:
-        cdef:
-            VertexBufferC *buffer_ptr
-            size_t data_size
-            uint8_t *data_ptr
-            uint32_t gl_usage
-        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        data_size = data.shape[0]
-        data_ptr = &data[0]
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        if buffer_ptr.size == data_size:#use sub data instead
-            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
-        else:
-            gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-            glBufferData(GL_ARRAY_BUFFER, data_size, data_ptr, gl_usage); self.c_check_gl()
-            buffer_ptr.size = data_size
-        glBindBuffer(GL_ARRAY_BUFFER, 0); self.c_check_gl()
-    
-    cpdef void vertex_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
-        cdef:
-            MeshC *mesh_ptr
-            uint8_t[::1] data
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        data = <uint8_t[:mesh_ptr.vertex_data_size]>mesh_ptr.vertex_data
-        self.vertex_buffer_set_data(buffer, data)
-
-    cpdef void vertex_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *:
-        cdef:
-            VertexBufferC *buffer_ptr
-            size_t data_size
-            uint8_t *data_ptr
-        buffer_ptr = self.vertex_buffer_get_ptr(buffer)
-        data_size = data.shape[0]
-        data_ptr = &data[0]
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        if offset + data_size > buffer_ptr.size:
-            raise ValueError("VertexBuffer: attempting to write out of bounds")
-        else:
-            glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
-        glBindBuffer(GL_ARRAY_BUFFER, 0); self.c_check_gl()
-    
-    cpdef void vertex_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
-        cdef:
-            MeshC *mesh_ptr
-            uint8_t[::1] data
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        data = <uint8_t[:mesh_ptr.vertex_data_size]>mesh_ptr.vertex_data
-        self.vertex_buffer_set_sub_data(buffer, data, offset)
-
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *:
         return <IndexBufferC *>self.index_buffers.c_get_ptr(buffer)
-
-    cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage=BUFFER_USAGE_STATIC) except *:
-        cdef:
-            Handle buffer
-            IndexBufferC *buffer_ptr
-        buffer = self.index_buffers.c_create()
-        buffer_ptr = self.index_buffer_get_ptr(buffer)
-        glGenBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
-        if buffer_ptr.gl_id == 0:
-            raise ValueError("IndexBuffer: failed to generate buffer id")
-        buffer_ptr.format = format
-        buffer_ptr.usage = usage
-        buffer_ptr.size = 0
-        return buffer
-
-    cpdef void index_buffer_delete(self, Handle buffer) except *:
-        cdef:
-            IndexBufferC *buffer_ptr
-            uint32_t gl_usage
-        buffer_ptr = self.index_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.c_check_gl()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
-        glDeleteBuffers(1, &buffer_ptr.gl_id); self.c_check_gl()
-        self.index_buffers.c_delete(buffer)
-    
-    cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *:
-        cdef:
-            IndexBufferC *buffer_ptr
-            size_t data_size
-            uint8_t *data_ptr
-            uint32_t gl_usage
-        buffer_ptr = self.index_buffer_get_ptr(buffer)
-        data_size = data.shape[0]
-        data_ptr = &data[0]
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        if buffer_ptr.size == data_size:#use sub data instead
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
-        else:
-            gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage); self.c_check_gl()
-            buffer_ptr.size = data_size
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
-    
-    cpdef void index_buffer_set_data_from_mesh(self, Handle buffer, Handle mesh) except *:
-        cdef:
-            MeshC *mesh_ptr
-            uint8_t[::1] data
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
-        self.index_buffer_set_data(buffer, data)
-
-    cpdef void index_buffer_set_sub_data(self, Handle buffer, uint8_t[::1] data, size_t offset) except *:
-        cdef:
-            IndexBufferC *buffer_ptr
-            size_t data_size
-            uint8_t *data_ptr
-        buffer_ptr = self.index_buffer_get_ptr(buffer)
-        data_size = data.shape[0]
-        data_ptr = &data[0]
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        if offset + data_size > buffer_ptr.size:
-            raise ValueError("IndexBuffer: attempting to write out of bounds")
-        else:
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.c_check_gl()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
-
-    cpdef void index_buffer_set_sub_data_from_mesh(self, Handle buffer, Handle mesh, size_t offset) except *:
-        cdef:
-            MeshC *mesh_ptr
-            uint8_t[::1] data
-        mesh_ptr = self.mesh_get_ptr(mesh)
-        data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
-        self.index_buffer_set_sub_data(buffer, data, offset)
-
-    cdef void _index_buffer_draw(self, Handle buffer) except *:
-        cdef:
-            IndexBufferC *buffer_ptr
-            size_t format_size
-            uint32_t format_gl
-        buffer_ptr = self.index_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.c_check_gl()
-        format_size = c_index_format_get_size(buffer_ptr.format)    
-        format_gl = c_index_format_to_gl(buffer_ptr.format)
-        glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL); self.c_check_gl()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.c_check_gl()
     
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *:
         return <UniformFormatC *>self.uniform_formats.c_get_ptr(format)
@@ -1305,13 +1019,17 @@ cdef class GraphicsManager:
 
     cpdef Handle mesh_batch_create(self) except *:
         cdef:
+            VertexBuffer vbo = VertexBuffer(self)
+            IndexBuffer ibo = IndexBuffer(self)
             Handle batch
             MeshBatchC *batch_ptr
 
         batch = self.mesh_batches.c_create()
         batch_ptr = self.mesh_batch_get_ptr(batch)
-        batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_mesh)
-        batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_mesh)
+        vbo.create(self.v_fmt_mesh)
+        batch_ptr.vertex_buffer = vbo.handle
+        ibo.create(self.i_fmt_mesh)
+        batch_ptr.index_buffer = ibo.handle
         return batch
 
     cpdef void mesh_batch_delete(self, Handle batch) except *:
@@ -1415,6 +1133,8 @@ cdef class GraphicsManager:
     cpdef void sprite_batch_set_sprites(self, Handle batch, Handle[::1] sprites) except *:
         cdef:
             SpriteBatchC *batch_ptr
+            VertexBuffer vbo = VertexBuffer(self)
+            IndexBuffer ibo = IndexBuffer(self)
             size_t num_sprites = sprites.shape[0]
             
         batch_ptr = self.sprite_batch_get_ptr(batch)
@@ -1427,8 +1147,9 @@ cdef class GraphicsManager:
 
             #recreate vertex buffer
             free(batch_ptr.vertex_data_ptr)
-            batch_ptr.vertex_buffer = self.vertex_buffer_create(self.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
-            v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
+            vbo.create(self.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            batch_ptr.vertex_buffer = vbo.handle
+            v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite.handle)
             vbo_size = v_fmt_ptr.stride * 6 * num_sprites
             batch_ptr.vertex_data_ptr = <uint8_t *>calloc(1, vbo_size)
             if batch_ptr.vertex_data_ptr == NULL:
@@ -1436,7 +1157,8 @@ cdef class GraphicsManager:
 
             #recreate index buffer
             free(batch_ptr.index_data_ptr)
-            batch_ptr.index_buffer = self.index_buffer_create(self.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            ibo.create(self.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            batch_ptr.index_buffer = ibo.handle
             ibo_size = sizeof(uint32_t) * 6 * num_sprites
             batch_ptr.index_data_ptr = <uint8_t *>calloc(1, ibo_size)
             if batch_ptr.index_data_ptr == NULL:
@@ -1461,6 +1183,8 @@ cdef class GraphicsManager:
             SpriteC *sprite_ptr
             size_t i, j, index
             Vec4C[6] vertex_tex_coord
+            VertexBuffer v_buffer = VertexBuffer(self)
+            IndexBuffer i_buffer = IndexBuffer(self)
             VertexFormatC *v_fmt_ptr
             uint8_t *vbo
             uint8_t *ibo
@@ -1476,7 +1200,7 @@ cdef class GraphicsManager:
             Vec4C(1.0, 0.0, 1.0, 0.0),
             Vec4C(1.0, 1.0, 1.0, 1.0),
         ]
-        v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite)
+        v_fmt_ptr = self.vertex_format_get_ptr(self.v_fmt_sprite.handle)
         batch_ptr = self.sprite_batch_get_ptr(batch)
         vbo_size = v_fmt_ptr.stride * 6 * batch_ptr.num_sprites
         ibo_size = sizeof(uint32_t) * 6 * batch_ptr.num_sprites
@@ -1499,8 +1223,10 @@ cdef class GraphicsManager:
                 memcpy(vbo_index + (4 * sizeof(Vec4C)), &sprite_ptr.anchor, sizeof(Vec2C))
                 ibo_index = ibo + (index * sizeof(uint32_t))
                 memcpy(ibo_index, &index, sizeof(uint32_t))
-        self.vertex_buffer_set_data(batch_ptr.vertex_buffer, <uint8_t[:vbo_size]>vbo)
-        self.index_buffer_set_data(batch_ptr.index_buffer, <uint8_t[:ibo_size]>ibo)
+        v_buffer.handle = batch_ptr.vertex_buffer
+        v_buffer.set_data(<uint8_t[:vbo_size]>vbo)
+        i_buffer.handle = batch_ptr.index_buffer
+        i_buffer.set_data(<uint8_t[:ibo_size]>ibo)
     
     cdef BitmapFontC *bitmap_font_get_ptr(self, Handle font) except *:
         return <BitmapFontC *>self.bitmap_fonts.c_get_ptr(font)
@@ -1742,6 +1468,7 @@ cdef class GraphicsManager:
             FrameBufferC *fbo_ptr
             ProgramC *program_ptr
             VertexBufferC *vbo_ptr
+            IndexBuffer ibo = IndexBuffer(self)
             IndexBufferC *ibo_ptr
             TextureC *texture_ptr
             UniformC *uniform_ptr
@@ -1798,7 +1525,8 @@ cdef class GraphicsManager:
                 glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
 
             self._program_bind_attributes(program_ptr.handle, vbo_ptr.handle)
-            self._index_buffer_draw(ibo_ptr.handle)
+            ibo.handle = ibo_ptr.handle
+            ibo._draw()
             self._program_unbind_attributes(program_ptr.handle)
             for i in range(view_ptr.num_texture_units):
                 texture_unit = view_ptr.texture_units[i]
@@ -1811,6 +1539,9 @@ cdef class GraphicsManager:
         
         for i in range(self.windows.items.num_items):
             window_ptr = <WindowC *>self.windows.items.c_get_ptr(i)
-            self.window_render(window_ptr.handle)
+            window = Window(self)
+            window.handle = window_ptr.handle
+            window.render()
+            #self.window_render(window_ptr.handle)
         
         self._swap_root_window()

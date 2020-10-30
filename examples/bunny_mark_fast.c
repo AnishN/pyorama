@@ -957,6 +957,10 @@ static const char *__pyx_f[] = {
   "pyorama/math3d/vec3.pxd",
   "pyorama/math3d/mat2.pxd",
   "pyorama/math3d/vec4.pxd",
+  "pyorama/graphics/index_buffer.pxd",
+  "pyorama/graphics/vertex_format.pxd",
+  "pyorama/graphics/vertex_buffer.pxd",
+  "pyorama/graphics/window.pxd",
   "pyorama/graphics/graphics_manager.pxd",
   "pyorama/physics/physics_manager.pxd",
 };
@@ -1098,6 +1102,10 @@ struct __pyx_obj_7pyorama_6math3d_4mat3_Mat3;
 struct __pyx_obj_7pyorama_6math3d_4vec3_Vec3;
 struct __pyx_obj_7pyorama_6math3d_4mat2_Mat2;
 struct __pyx_obj_7pyorama_6math3d_4vec4_Vec4;
+struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer;
+struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat;
+struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer;
+struct __pyx_obj_7pyorama_8graphics_6window_Window;
 struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager;
 struct __pyx_obj_7pyorama_7physics_15physics_manager_PhysicsManager;
 struct __pyx_obj_7pyorama_4core_3app_App;
@@ -2598,8 +2606,32 @@ struct __pyx_t_7pyorama_8graphics_16graphics_structs_TextC {
   __pyx_t_7pyorama_6math3d_6common_Vec2C position;
   __pyx_t_7pyorama_6math3d_6common_Vec4C color;
 };
-struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_vertex_buffer_create;
-struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_index_buffer_create;
+struct __pyx_opt_args_7pyorama_8graphics_12index_buffer_11IndexBuffer_create;
+
+/* "pyorama/graphics/index_buffer.pxd":9
+ * 
+ *     cdef IndexBufferC *get_ptr(self) except *
+ *     cpdef void create(self, IndexFormat format, BufferUsage usage=*) except *             # <<<<<<<<<<<<<<
+ *     cpdef void delete(self) except *
+ *     cpdef void set_data(self, uint8_t[::1] data) except *
+ */
+struct __pyx_opt_args_7pyorama_8graphics_12index_buffer_11IndexBuffer_create {
+  int __pyx_n;
+  enum __pyx_t_7pyorama_8graphics_14graphics_enums_BufferUsage usage;
+};
+struct __pyx_opt_args_7pyorama_8graphics_13vertex_buffer_12VertexBuffer_create;
+
+/* "pyorama/graphics/vertex_buffer.pxd":10
+ * 
+ *     cdef VertexBufferC *get_ptr(self) except *
+ *     cpdef void create(self, VertexFormat format, BufferUsage usage=*) except *             # <<<<<<<<<<<<<<
+ *     cpdef void delete(self) except *
+ *     cpdef void set_data(self, uint8_t[::1] data) except *
+ */
+struct __pyx_opt_args_7pyorama_8graphics_13vertex_buffer_12VertexBuffer_create {
+  int __pyx_n;
+  enum __pyx_t_7pyorama_8graphics_14graphics_enums_BufferUsage usage;
+};
 struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_uniform_format_create;
 struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_uniform_set_data;
 struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_image_create;
@@ -2608,31 +2640,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_im
 struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_texture_create;
 struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_texture_set_parameters;
 
-/* "pyorama/graphics/graphics_manager.pxd":85
- * 
- *     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *
- *     cpdef Handle vertex_buffer_create(self, Handle format, BufferUsage usage=*) except *             # <<<<<<<<<<<<<<
- *     cpdef void vertex_buffer_delete(self, Handle buffer) except *
- *     cpdef void vertex_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *
- */
-struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_vertex_buffer_create {
-  int __pyx_n;
-  enum __pyx_t_7pyorama_8graphics_14graphics_enums_BufferUsage usage;
-};
-
-/* "pyorama/graphics/graphics_manager.pxd":93
- * 
- *     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *
- *     cpdef Handle index_buffer_create(self, IndexFormat format, BufferUsage usage=*) except *             # <<<<<<<<<<<<<<
- *     cpdef void index_buffer_delete(self, Handle buffer) except *
- *     cpdef void index_buffer_set_data(self, Handle buffer, uint8_t[::1] data) except *
- */
-struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_index_buffer_create {
-  int __pyx_n;
-  enum __pyx_t_7pyorama_8graphics_14graphics_enums_BufferUsage usage;
-};
-
-/* "pyorama/graphics/graphics_manager.pxd":102
+/* "pyorama/graphics/graphics_manager.pxd":84
  * 
  *     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
  *     cpdef Handle uniform_format_create(self, bytes name, UniformType type, size_t count=*) except *             # <<<<<<<<<<<<<<
@@ -2644,7 +2652,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_un
   size_t count;
 };
 
-/* "pyorama/graphics/graphics_manager.pxd":108
+/* "pyorama/graphics/graphics_manager.pxd":90
  *     cpdef Handle uniform_create(self, Handle format) except *
  *     cpdef void uniform_delete(self, Handle uniform) except *
  *     cpdef void uniform_set_data(self, Handle uniform, object data, size_t index=*) except *             # <<<<<<<<<<<<<<
@@ -2656,7 +2664,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_un
   size_t index;
 };
 
-/* "pyorama/graphics/graphics_manager.pxd":126
+/* "pyorama/graphics/graphics_manager.pxd":108
  * 
  *     cdef ImageC *image_get_ptr(self, Handle image) except *
  *     cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[::1] data=*, size_t bytes_per_channel=*, size_t num_channels=*) except *             # <<<<<<<<<<<<<<
@@ -2670,7 +2678,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_im
   size_t num_channels;
 };
 
-/* "pyorama/graphics/graphics_manager.pxd":127
+/* "pyorama/graphics/graphics_manager.pxd":109
  *     cdef ImageC *image_get_ptr(self, Handle image) except *
  *     cpdef Handle image_create(self, uint16_t width, uint16_t height, uint8_t[::1] data=*, size_t bytes_per_channel=*, size_t num_channels=*) except *
  *     cpdef Handle image_create_from_file(self, bytes file_path, bint flip_x=*, bint flip_y=*) except *             # <<<<<<<<<<<<<<
@@ -2683,7 +2691,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_im
   int flip_y;
 };
 
-/* "pyorama/graphics/graphics_manager.pxd":129
+/* "pyorama/graphics/graphics_manager.pxd":111
  *     cpdef Handle image_create_from_file(self, bytes file_path, bint flip_x=*, bint flip_y=*) except *
  *     cpdef void image_delete(self, Handle image) except *
  *     cpdef void image_set_data(self, Handle image, uint8_t[::1] data=*) except *             # <<<<<<<<<<<<<<
@@ -2695,7 +2703,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_im
   __Pyx_memviewslice data;
 };
 
-/* "pyorama/graphics/graphics_manager.pxd":135
+/* "pyorama/graphics/graphics_manager.pxd":117
  * 
  *     cdef TextureC *texture_get_ptr(self, Handle texture) except *
  *     cpdef Handle texture_create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *             # <<<<<<<<<<<<<<
@@ -2712,7 +2720,7 @@ struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_te
   int cubemap;
 };
 
-/* "pyorama/graphics/graphics_manager.pxd":137
+/* "pyorama/graphics/graphics_manager.pxd":119
  *     cpdef Handle texture_create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *
  *     cpdef void texture_delete(self, Handle texture) except *
  *     cpdef void texture_set_parameters(self, Handle texture, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *             # <<<<<<<<<<<<<<
@@ -2961,7 +2969,67 @@ struct __pyx_obj_7pyorama_6math3d_4vec4_Vec4 {
 };
 
 
-/* "pyorama/graphics/graphics_manager.pxd":14
+/* "pyorama/graphics/index_buffer.pxd":3
+ * from pyorama.graphics.graphics_manager cimport *
+ * 
+ * cdef class IndexBuffer:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_7pyorama_8graphics_12index_buffer_IndexBuffer *__pyx_vtab;
+  __pyx_t_7pyorama_4core_6handle_Handle handle;
+  struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *graphics;
+};
+
+
+/* "pyorama/graphics/vertex_format.pxd":3
+ * from pyorama.graphics.graphics_manager cimport *
+ * 
+ * cdef class VertexFormat:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_format_VertexFormat *__pyx_vtab;
+  __pyx_t_7pyorama_4core_6handle_Handle handle;
+  struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *graphics;
+};
+
+
+/* "pyorama/graphics/vertex_buffer.pxd":4
+ * from pyorama.graphics.vertex_format cimport *
+ * 
+ * cdef class VertexBuffer:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_buffer_VertexBuffer *__pyx_vtab;
+  __pyx_t_7pyorama_4core_6handle_Handle handle;
+  struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *graphics;
+};
+
+
+/* "pyorama/graphics/window.pxd":4
+ * from pyorama.libs.sdl2 cimport *
+ * 
+ * cdef class Window:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+struct __pyx_obj_7pyorama_8graphics_6window_Window {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_7pyorama_8graphics_6window_Window *__pyx_vtab;
+  __pyx_t_7pyorama_4core_6handle_Handle handle;
+  struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *graphics;
+};
+
+
+/* "pyorama/graphics/graphics_manager.pxd":19
  * 
  * @cython.final
  * cdef class GraphicsManager:             # <<<<<<<<<<<<<<
@@ -2992,8 +3060,8 @@ struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager {
   struct __pyx_obj_7pyorama_4core_13item_slot_map_ItemSlotMap *bitmap_fonts;
   struct __pyx_obj_7pyorama_4core_13item_slot_map_ItemSlotMap *texts;
   __pyx_t_7pyorama_4core_6handle_Handle u_quad;
-  __pyx_t_7pyorama_4core_6handle_Handle quad_vbo;
-  __pyx_t_7pyorama_4core_6handle_Handle quad_ibo;
+  struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *quad_vbo;
+  struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *quad_ibo;
   __pyx_t_7pyorama_4core_6handle_Handle quad_vs;
   __pyx_t_7pyorama_4core_6handle_Handle quad_fs;
   __pyx_t_7pyorama_4core_6handle_Handle quad_program;
@@ -3009,9 +3077,9 @@ struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager {
   __pyx_t_7pyorama_4core_6handle_Handle u_fmt_texture_5;
   __pyx_t_7pyorama_4core_6handle_Handle u_fmt_texture_6;
   __pyx_t_7pyorama_4core_6handle_Handle u_fmt_texture_7;
-  __pyx_t_7pyorama_4core_6handle_Handle v_fmt_quad;
-  __pyx_t_7pyorama_4core_6handle_Handle v_fmt_mesh;
-  __pyx_t_7pyorama_4core_6handle_Handle v_fmt_sprite;
+  struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *v_fmt_quad;
+  struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *v_fmt_mesh;
+  struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *v_fmt_sprite;
   enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat i_fmt_quad;
   enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat i_fmt_mesh;
   enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat i_fmt_sprite;
@@ -3540,7 +3608,84 @@ struct __pyx_vtabstruct_7pyorama_6math3d_4vec4_Vec4 {
 static struct __pyx_vtabstruct_7pyorama_6math3d_4vec4_Vec4 *__pyx_vtabptr_7pyorama_6math3d_4vec4_Vec4;
 
 
-/* "pyorama/graphics/graphics_manager.pxd":14
+/* "pyorama/graphics/index_buffer.pxd":3
+ * from pyorama.graphics.graphics_manager cimport *
+ * 
+ * cdef class IndexBuffer:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+
+struct __pyx_vtabstruct_7pyorama_8graphics_12index_buffer_IndexBuffer {
+  __pyx_t_7pyorama_8graphics_16graphics_structs_IndexBufferC *(*get_ptr)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *);
+  void (*create)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *, enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat, int __pyx_skip_dispatch, struct __pyx_opt_args_7pyorama_8graphics_12index_buffer_11IndexBuffer_create *__pyx_optional_args);
+  void (*delete)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *, int __pyx_skip_dispatch);
+  void (*set_data)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  void (*set_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
+  void (*set_sub_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *, __pyx_t_7pyorama_4core_6handle_Handle, size_t, int __pyx_skip_dispatch);
+  void (*set_sub_data)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *, __Pyx_memviewslice, size_t, int __pyx_skip_dispatch);
+  void (*_draw)(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer *);
+};
+static struct __pyx_vtabstruct_7pyorama_8graphics_12index_buffer_IndexBuffer *__pyx_vtabptr_7pyorama_8graphics_12index_buffer_IndexBuffer;
+
+
+/* "pyorama/graphics/vertex_format.pxd":3
+ * from pyorama.graphics.graphics_manager cimport *
+ * 
+ * cdef class VertexFormat:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+
+struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_format_VertexFormat {
+  __pyx_t_7pyorama_8graphics_16graphics_structs_VertexFormatC *(*get_ptr)(struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *);
+  void (*create)(struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *, PyObject *, int __pyx_skip_dispatch);
+  void (*delete)(struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_format_VertexFormat *__pyx_vtabptr_7pyorama_8graphics_13vertex_format_VertexFormat;
+
+
+/* "pyorama/graphics/vertex_buffer.pxd":4
+ * from pyorama.graphics.vertex_format cimport *
+ * 
+ * cdef class VertexBuffer:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+
+struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_buffer_VertexBuffer {
+  __pyx_t_7pyorama_8graphics_16graphics_structs_VertexBufferC *(*get_ptr)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *);
+  void (*create)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *, struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat *, int __pyx_skip_dispatch, struct __pyx_opt_args_7pyorama_8graphics_13vertex_buffer_12VertexBuffer_create *__pyx_optional_args);
+  void (*delete)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *, int __pyx_skip_dispatch);
+  void (*set_data)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  void (*set_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
+  void (*set_sub_data)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *, __Pyx_memviewslice, size_t, int __pyx_skip_dispatch);
+  void (*set_sub_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer *, __pyx_t_7pyorama_4core_6handle_Handle, size_t, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_buffer_VertexBuffer *__pyx_vtabptr_7pyorama_8graphics_13vertex_buffer_VertexBuffer;
+
+
+/* "pyorama/graphics/window.pxd":4
+ * from pyorama.libs.sdl2 cimport *
+ * 
+ * cdef class Window:             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         readonly Handle handle
+ */
+
+struct __pyx_vtabstruct_7pyorama_8graphics_6window_Window {
+  __pyx_t_7pyorama_8graphics_16graphics_structs_WindowC *(*get_ptr)(struct __pyx_obj_7pyorama_8graphics_6window_Window *);
+  void (*create)(struct __pyx_obj_7pyorama_8graphics_6window_Window *, uint16_t, uint16_t, PyObject *, int __pyx_skip_dispatch);
+  void (*delete)(struct __pyx_obj_7pyorama_8graphics_6window_Window *, int __pyx_skip_dispatch);
+  void (*set_texture)(struct __pyx_obj_7pyorama_8graphics_6window_Window *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
+  void (*clear)(struct __pyx_obj_7pyorama_8graphics_6window_Window *, int __pyx_skip_dispatch);
+  void (*render)(struct __pyx_obj_7pyorama_8graphics_6window_Window *, int __pyx_skip_dispatch);
+  void (*set_title)(struct __pyx_obj_7pyorama_8graphics_6window_Window *, PyObject *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_7pyorama_8graphics_6window_Window *__pyx_vtabptr_7pyorama_8graphics_6window_Window;
+
+
+/* "pyorama/graphics/graphics_manager.pxd":19
  * 
  * @cython.final
  * cdef class GraphicsManager:             # <<<<<<<<<<<<<<
@@ -3560,30 +3705,9 @@ struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager {
   void (*c_create_quad)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *);
   void (*c_delete_quad)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *);
   __pyx_t_7pyorama_8graphics_16graphics_structs_WindowC *(*window_get_ptr)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle);
-  __pyx_t_7pyorama_4core_6handle_Handle (*window_create)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, uint16_t, uint16_t, PyObject *, int __pyx_skip_dispatch);
-  void (*window_delete)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*window_set_texture)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*window_clear)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*window_render)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*window_set_title)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, PyObject *, int __pyx_skip_dispatch);
   __pyx_t_7pyorama_8graphics_16graphics_structs_VertexFormatC *(*vertex_format_get_ptr)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle);
-  __pyx_t_7pyorama_4core_6handle_Handle (*vertex_format_create)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, PyObject *, int __pyx_skip_dispatch);
-  void (*vertex_format_delete)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
   __pyx_t_7pyorama_8graphics_16graphics_structs_VertexBufferC *(*vertex_buffer_get_ptr)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle);
-  __pyx_t_7pyorama_4core_6handle_Handle (*vertex_buffer_create)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch, struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_vertex_buffer_create *__pyx_optional_args);
-  void (*vertex_buffer_delete)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*vertex_buffer_set_data)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  void (*vertex_buffer_set_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*vertex_buffer_set_sub_data)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __Pyx_memviewslice, size_t, int __pyx_skip_dispatch);
-  void (*vertex_buffer_set_sub_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __pyx_t_7pyorama_4core_6handle_Handle, size_t, int __pyx_skip_dispatch);
   __pyx_t_7pyorama_8graphics_16graphics_structs_IndexBufferC *(*index_buffer_get_ptr)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle);
-  __pyx_t_7pyorama_4core_6handle_Handle (*index_buffer_create)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, enum __pyx_t_7pyorama_8graphics_14graphics_enums_IndexFormat, int __pyx_skip_dispatch, struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_index_buffer_create *__pyx_optional_args);
-  void (*index_buffer_delete)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*index_buffer_set_data)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  void (*index_buffer_set_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
-  void (*index_buffer_set_sub_data_from_mesh)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __pyx_t_7pyorama_4core_6handle_Handle, size_t, int __pyx_skip_dispatch);
-  void (*index_buffer_set_sub_data)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, __Pyx_memviewslice, size_t, int __pyx_skip_dispatch);
-  void (*_index_buffer_draw)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle);
   __pyx_t_7pyorama_8graphics_16graphics_structs_UniformFormatC *(*uniform_format_get_ptr)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle);
   __pyx_t_7pyorama_4core_6handle_Handle (*uniform_format_create)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, PyObject *, enum __pyx_t_7pyorama_8graphics_14graphics_enums_UniformType, int __pyx_skip_dispatch, struct __pyx_opt_args_7pyorama_8graphics_16graphics_manager_15GraphicsManager_uniform_format_create *__pyx_optional_args);
   void (*uniform_format_delete)(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager *, __pyx_t_7pyorama_4core_6handle_Handle, int __pyx_skip_dispatch);
@@ -4844,6 +4968,18 @@ static PyTypeObject *__pyx_ptype_7pyorama_6math3d_4vec4_Vec4 = 0;
 
 /* Module declarations from 'pyorama.graphics.graphics_utils' */
 
+/* Module declarations from 'pyorama.graphics.index_buffer' */
+static PyTypeObject *__pyx_ptype_7pyorama_8graphics_12index_buffer_IndexBuffer = 0;
+
+/* Module declarations from 'pyorama.graphics.vertex_format' */
+static PyTypeObject *__pyx_ptype_7pyorama_8graphics_13vertex_format_VertexFormat = 0;
+
+/* Module declarations from 'pyorama.graphics.vertex_buffer' */
+static PyTypeObject *__pyx_ptype_7pyorama_8graphics_13vertex_buffer_VertexBuffer = 0;
+
+/* Module declarations from 'pyorama.graphics.window' */
+static PyTypeObject *__pyx_ptype_7pyorama_8graphics_6window_Window = 0;
+
 /* Module declarations from 'pyorama.graphics.graphics_manager' */
 static PyTypeObject *__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager = 0;
 
@@ -5033,6 +5169,7 @@ static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_setup_shaders[] = "setup_shaders";
 static const char __pyx_k_sprite_create[] = "sprite_create";
+static const char __pyx_k_window_create[] = "window_create";
 static const char __pyx_k_Game_on_window[] = "Game.on_window";
 static const char __pyx_k_on_enter_frame[] = "on_enter_frame";
 static const char __pyx_k_setup_uniforms[] = "setup_uniforms";
@@ -5045,6 +5182,7 @@ static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_window_listener[] = "window_listener";
 static const char __pyx_k_Game_update_view[] = "Game.update_view";
+static const char __pyx_k_window_set_title[] = "window_set_title";
 static const char __pyx_k_Game_setup_window[] = "Game.setup_window";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_pyx_unpickle_Game[] = "__pyx_unpickle_Game";
@@ -5052,6 +5190,7 @@ static const char __pyx_k_sprite_set_anchor[] = "sprite_set_anchor";
 static const char __pyx_k_Game_setup_shaders[] = "Game.setup_shaders";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
+static const char __pyx_k_window_set_texture[] = "window_set_texture";
 static const char __pyx_k_Game_on_enter_frame[] = "Game.on_enter_frame";
 static const char __pyx_k_Game_setup_uniforms[] = "Game.setup_uniforms";
 static const char __pyx_k_sprite_set_position[] = "sprite_set_position";
@@ -5249,7 +5388,10 @@ static PyObject *__pyx_n_s_update_view;
 static PyObject *__pyx_n_s_use_setstate;
 static PyObject *__pyx_kp_u_utf_8;
 static PyObject *__pyx_n_s_vs_path;
+static PyObject *__pyx_n_s_window_create;
 static PyObject *__pyx_n_s_window_listener;
+static PyObject *__pyx_n_s_window_set_texture;
+static PyObject *__pyx_n_s_window_set_title;
 static PyObject *__pyx_n_s_window_size;
 static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_init(struct __pyx_obj_8examples_15bunny_mark_fast_Game *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_2quit(struct __pyx_obj_8examples_15bunny_mark_fast_Game *__pyx_v_self); /* proto */
@@ -6398,7 +6540,14 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_4setup_window(struct
   PyObject *__pyx_r = NULL;
   __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
-  __pyx_t_7pyorama_4core_6handle_Handle __pyx_t_1;
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  __pyx_t_7pyorama_4core_6handle_Handle __pyx_t_8;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6434,8 +6583,67 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_4setup_window(struct
  *     def setup_uniforms(self):
  */
   __Pyx_TraceLine(53,0,__PYX_ERR(0, 53, __pyx_L1_error))
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self->__pyx_base.graphics->__pyx_vtab)->window_create(__pyx_v_self->__pyx_base.graphics, __pyx_v_self->width, __pyx_v_self->height, __pyx_n_b_BunnyMark, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)
-  __pyx_v_self->window = __pyx_t_1;
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->__pyx_base.graphics), __pyx_n_s_window_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->width); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->height); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = NULL;
+  __pyx_t_6 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_t_3, __pyx_t_4, __pyx_n_b_BunnyMark};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_t_3, __pyx_t_4, __pyx_n_b_BunnyMark};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    if (__pyx_t_5) {
+      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
+    __Pyx_INCREF(__pyx_n_b_BunnyMark);
+    __Pyx_GIVEREF(__pyx_n_b_BunnyMark);
+    PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, __pyx_n_b_BunnyMark);
+    __pyx_t_3 = 0;
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_8 = __Pyx_PyInt_As_uint64_t(__pyx_t_1); if (unlikely((__pyx_t_8 == ((uint64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->window = __pyx_t_8;
 
   /* "examples/bunny_mark_fast.pyx":50
  *         super().quit()
@@ -6449,6 +6657,12 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_4setup_window(struct
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("examples.bunny_mark_fast.Game.setup_window", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -6961,6 +7175,10 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6997,7 +7215,62 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
  *         self.graphics.frame_buffer_attach_textures(self.fbo, {
  */
   __Pyx_TraceLine(79,0,__PYX_ERR(0, 79, __pyx_L1_error))
-  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self->__pyx_base.graphics->__pyx_vtab)->window_set_texture(__pyx_v_self->__pyx_base.graphics, __pyx_v_self->window, __pyx_v_out_color, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->__pyx_base.graphics), __pyx_n_s_window_set_texture); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyInt_From_uint64_t(__pyx_v_self->window); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = __Pyx_PyInt_From_uint64_t(__pyx_v_out_color); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = NULL;
+  __pyx_t_7 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+      __pyx_t_7 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_3)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_4, __pyx_t_5};
+    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_4, __pyx_t_5};
+    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    if (__pyx_t_6) {
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_5);
+    __pyx_t_4 = 0;
+    __pyx_t_5 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "examples/bunny_mark_fast.pyx":80
  *         self.graphics.texture_clear(out_color, self.width, self.height)
@@ -7022,11 +7295,11 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyInt_From_enum____pyx_t_7pyorama_8graphics_14graphics_enums_FrameBufferAttachment(__pyx_e_7pyorama_8graphics_14graphics_enums_FRAME_BUFFER_ATTACHMENT_COLOR_0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_uint64_t(__pyx_v_out_color); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_t_3, __pyx_t_4) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyInt_From_uint64_t(__pyx_v_out_color); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_t_3, __pyx_t_8) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
   /* "examples/bunny_mark_fast.pyx":81
  *         self.graphics.window_set_texture(self.window, out_color)
@@ -7058,23 +7331,23 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
  *     def update_view(self):
  */
   __Pyx_TraceLine(86,0,__PYX_ERR(0, 86, __pyx_L1_error))
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_update_view); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_update_view); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
+  __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "examples/bunny_mark_fast.pyx":76
@@ -7092,6 +7365,9 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_10setup_view(struct 
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("examples.bunny_mark_fast.Game.setup_view", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -7535,6 +7811,7 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_16on_enter_frame(str
   PyObject *__pyx_t_12 = NULL;
   int __pyx_t_13;
   PyObject *__pyx_t_14 = NULL;
+  int __pyx_t_15;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -7866,7 +8143,58 @@ static PyObject *__pyx_pf_8examples_15bunny_mark_fast_4Game_16on_enter_frame(str
  * 
  */
   __Pyx_TraceLine(131,0,__PYX_ERR(0, 131, __pyx_L1_error))
-  ((struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager *)__pyx_v_self->__pyx_base.graphics->__pyx_vtab)->window_set_title(__pyx_v_self->__pyx_base.graphics, __pyx_v_self->window, __pyx_v_title, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->__pyx_base.graphics), __pyx_n_s_window_set_title); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = __Pyx_PyInt_From_uint64_t(__pyx_v_self->window); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_12 = NULL;
+  __pyx_t_15 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_12)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_12);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+      __pyx_t_15 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_1)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_12, __pyx_t_4, __pyx_v_title};
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_15, 2+__pyx_t_15); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_12, __pyx_t_4, __pyx_v_title};
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_15, 2+__pyx_t_15); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_14 = PyTuple_New(2+__pyx_t_15); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
+    if (__pyx_t_12) {
+      __Pyx_GIVEREF(__pyx_t_12); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12); __pyx_t_12 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_14, 0+__pyx_t_15, __pyx_t_4);
+    __Pyx_INCREF(__pyx_v_title);
+    __Pyx_GIVEREF(__pyx_v_title);
+    PyTuple_SET_ITEM(__pyx_t_14, 1+__pyx_t_15, __pyx_v_title);
+    __pyx_t_4 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_14, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "examples/bunny_mark_fast.pyx":132
  *         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
@@ -24264,7 +24592,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_use_setstate, __pyx_k_use_setstate, sizeof(__pyx_k_use_setstate), 0, 0, 1, 1},
   {&__pyx_kp_u_utf_8, __pyx_k_utf_8, sizeof(__pyx_k_utf_8), 0, 1, 0, 0},
   {&__pyx_n_s_vs_path, __pyx_k_vs_path, sizeof(__pyx_k_vs_path), 0, 0, 1, 1},
+  {&__pyx_n_s_window_create, __pyx_k_window_create, sizeof(__pyx_k_window_create), 0, 0, 1, 1},
   {&__pyx_n_s_window_listener, __pyx_k_window_listener, sizeof(__pyx_k_window_listener), 0, 0, 1, 1},
+  {&__pyx_n_s_window_set_texture, __pyx_k_window_set_texture, sizeof(__pyx_k_window_set_texture), 0, 0, 1, 1},
+  {&__pyx_n_s_window_set_title, __pyx_k_window_set_title, sizeof(__pyx_k_window_set_title), 0, 0, 1, 1},
   {&__pyx_n_s_window_size, __pyx_k_window_size, sizeof(__pyx_k_window_size), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
@@ -24918,17 +25249,41 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_7pyorama_6math3d_4vec4_Vec4) __PYX_ERR(12, 6, __pyx_L1_error)
   __pyx_vtabptr_7pyorama_6math3d_4vec4_Vec4 = (struct __pyx_vtabstruct_7pyorama_6math3d_4vec4_Vec4*)__Pyx_GetVtable(__pyx_ptype_7pyorama_6math3d_4vec4_Vec4->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_6math3d_4vec4_Vec4)) __PYX_ERR(12, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("pyorama.graphics.graphics_manager"); if (unlikely(!__pyx_t_1)) __PYX_ERR(13, 14, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("pyorama.graphics.index_buffer"); if (unlikely(!__pyx_t_1)) __PYX_ERR(13, 3, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_7pyorama_8graphics_12index_buffer_IndexBuffer = __Pyx_ImportType(__pyx_t_1, "pyorama.graphics.index_buffer", "IndexBuffer", sizeof(struct __pyx_obj_7pyorama_8graphics_12index_buffer_IndexBuffer), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_7pyorama_8graphics_12index_buffer_IndexBuffer) __PYX_ERR(13, 3, __pyx_L1_error)
+  __pyx_vtabptr_7pyorama_8graphics_12index_buffer_IndexBuffer = (struct __pyx_vtabstruct_7pyorama_8graphics_12index_buffer_IndexBuffer*)__Pyx_GetVtable(__pyx_ptype_7pyorama_8graphics_12index_buffer_IndexBuffer->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_8graphics_12index_buffer_IndexBuffer)) __PYX_ERR(13, 3, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("pyorama.graphics.vertex_format"); if (unlikely(!__pyx_t_1)) __PYX_ERR(14, 3, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_7pyorama_8graphics_13vertex_format_VertexFormat = __Pyx_ImportType(__pyx_t_1, "pyorama.graphics.vertex_format", "VertexFormat", sizeof(struct __pyx_obj_7pyorama_8graphics_13vertex_format_VertexFormat), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_7pyorama_8graphics_13vertex_format_VertexFormat) __PYX_ERR(14, 3, __pyx_L1_error)
+  __pyx_vtabptr_7pyorama_8graphics_13vertex_format_VertexFormat = (struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_format_VertexFormat*)__Pyx_GetVtable(__pyx_ptype_7pyorama_8graphics_13vertex_format_VertexFormat->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_8graphics_13vertex_format_VertexFormat)) __PYX_ERR(14, 3, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("pyorama.graphics.vertex_buffer"); if (unlikely(!__pyx_t_1)) __PYX_ERR(15, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_7pyorama_8graphics_13vertex_buffer_VertexBuffer = __Pyx_ImportType(__pyx_t_1, "pyorama.graphics.vertex_buffer", "VertexBuffer", sizeof(struct __pyx_obj_7pyorama_8graphics_13vertex_buffer_VertexBuffer), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_7pyorama_8graphics_13vertex_buffer_VertexBuffer) __PYX_ERR(15, 4, __pyx_L1_error)
+  __pyx_vtabptr_7pyorama_8graphics_13vertex_buffer_VertexBuffer = (struct __pyx_vtabstruct_7pyorama_8graphics_13vertex_buffer_VertexBuffer*)__Pyx_GetVtable(__pyx_ptype_7pyorama_8graphics_13vertex_buffer_VertexBuffer->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_8graphics_13vertex_buffer_VertexBuffer)) __PYX_ERR(15, 4, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("pyorama.graphics.window"); if (unlikely(!__pyx_t_1)) __PYX_ERR(16, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_7pyorama_8graphics_6window_Window = __Pyx_ImportType(__pyx_t_1, "pyorama.graphics.window", "Window", sizeof(struct __pyx_obj_7pyorama_8graphics_6window_Window), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_7pyorama_8graphics_6window_Window) __PYX_ERR(16, 4, __pyx_L1_error)
+  __pyx_vtabptr_7pyorama_8graphics_6window_Window = (struct __pyx_vtabstruct_7pyorama_8graphics_6window_Window*)__Pyx_GetVtable(__pyx_ptype_7pyorama_8graphics_6window_Window->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_8graphics_6window_Window)) __PYX_ERR(16, 4, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("pyorama.graphics.graphics_manager"); if (unlikely(!__pyx_t_1)) __PYX_ERR(17, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager = __Pyx_ImportType(__pyx_t_1, "pyorama.graphics.graphics_manager", "GraphicsManager", sizeof(struct __pyx_obj_7pyorama_8graphics_16graphics_manager_GraphicsManager), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager) __PYX_ERR(13, 14, __pyx_L1_error)
-  __pyx_vtabptr_7pyorama_8graphics_16graphics_manager_GraphicsManager = (struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager*)__Pyx_GetVtable(__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_8graphics_16graphics_manager_GraphicsManager)) __PYX_ERR(13, 14, __pyx_L1_error)
+   if (!__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager) __PYX_ERR(17, 19, __pyx_L1_error)
+  __pyx_vtabptr_7pyorama_8graphics_16graphics_manager_GraphicsManager = (struct __pyx_vtabstruct_7pyorama_8graphics_16graphics_manager_GraphicsManager*)__Pyx_GetVtable(__pyx_ptype_7pyorama_8graphics_16graphics_manager_GraphicsManager->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_8graphics_16graphics_manager_GraphicsManager)) __PYX_ERR(17, 19, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("pyorama.physics.physics_manager"); if (unlikely(!__pyx_t_1)) __PYX_ERR(14, 12, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("pyorama.physics.physics_manager"); if (unlikely(!__pyx_t_1)) __PYX_ERR(18, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager = __Pyx_ImportType(__pyx_t_1, "pyorama.physics.physics_manager", "PhysicsManager", sizeof(struct __pyx_obj_7pyorama_7physics_15physics_manager_PhysicsManager), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager) __PYX_ERR(14, 12, __pyx_L1_error)
-  __pyx_vtabptr_7pyorama_7physics_15physics_manager_PhysicsManager = (struct __pyx_vtabstruct_7pyorama_7physics_15physics_manager_PhysicsManager*)__Pyx_GetVtable(__pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_7physics_15physics_manager_PhysicsManager)) __PYX_ERR(14, 12, __pyx_L1_error)
+   if (!__pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager) __PYX_ERR(18, 12, __pyx_L1_error)
+  __pyx_vtabptr_7pyorama_7physics_15physics_manager_PhysicsManager = (struct __pyx_vtabstruct_7pyorama_7physics_15physics_manager_PhysicsManager*)__Pyx_GetVtable(__pyx_ptype_7pyorama_7physics_15physics_manager_PhysicsManager->tp_dict); if (unlikely(!__pyx_vtabptr_7pyorama_7physics_15physics_manager_PhysicsManager)) __PYX_ERR(18, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

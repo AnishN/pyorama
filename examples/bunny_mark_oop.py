@@ -1,6 +1,5 @@
 import math
 import numpy as np
-import time
 
 from pyorama.core.app import *
 from pyorama.event.event_enums import *
@@ -8,6 +7,7 @@ from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import *
 from pyorama.graphics.sprite import *
+from pyorama.graphics.window import *
 
 from pyorama.physics.physics_enums import *
 from pyorama.physics.physics_manager import *
@@ -24,7 +24,6 @@ class Game(App):
         self.setup_window()
         self.setup_uniforms()
         self.setup_shaders()
-        self.times = []
         
         #setup sprites
         image_path = b"./resources/textures/bunny.png"
@@ -70,14 +69,13 @@ class Game(App):
         enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
 
     def quit(self):
-        t = np.array(self.times)
-        print(np.mean(t), np.std(t))
         super().quit()
     
     def setup_window(self):
         self.width = 800
         self.height = 600
-        self.window = self.graphics.window_create(self.width, self.height, b"BunnyMark")
+        self.window = Window(self.graphics)
+        self.window.create(self.width, self.height, b"BunnyMark")
 
     def setup_uniforms(self):
         self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
@@ -103,7 +101,7 @@ class Game(App):
     def setup_view(self):
         self.out_color = self.graphics.texture_create()
         self.graphics.texture_clear(self.out_color, self.width, self.height)
-        self.graphics.window_set_texture(self.window, self.out_color)
+        self.window.set_texture(self.out_color)
         self.fbo = self.graphics.frame_buffer_create()
         self.graphics.frame_buffer_attach_textures(self.fbo, {
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
@@ -133,25 +131,17 @@ class Game(App):
         position = Vec2()
         shift = Vec2()
 
-        start = time.time()
-        for i in range(self.num_sprites):
-            sprite = self.sprites[i]
-        end = time.time()
-        self.times.append(end - start)
-
         for i in range(self.num_sprites):
             Vec2.random(shift)
             Vec2.scale_add(shift, shift, 2.0, -1.0)
             sprite = self.sprites[i]
             position = sprite.get_position()
-            #position = self.graphics.sprite_get_position()
             Vec2.add(position, position, shift)
             sprite.set_position(position)
-            #self.graphics.sprite_set_position(self.sprites[i], position)
         self.time_delta = self.current_time - self.previous_time
         fps = min(round(1000.0 / self.ms_per_update), round(1.0 / self.time_delta))
         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
-        self.graphics.window_set_title(self.window, title)
+        self.window.set_title(title)
         self.previous_time = self.current_time
     
 if __name__ == "__main__":
