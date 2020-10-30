@@ -11,6 +11,8 @@ from pyorama.graphics.graphics_structs cimport *
 from pyorama.graphics.graphics_utils cimport *
 
 from pyorama.graphics.index_buffer cimport *
+from pyorama.graphics.uniform cimport *
+from pyorama.graphics.uniform_format cimport *
 from pyorama.graphics.vertex_buffer cimport *
 from pyorama.graphics.vertex_format cimport *
 from pyorama.graphics.window cimport *
@@ -39,23 +41,23 @@ cdef class GraphicsManager:
         ItemSlotMap bitmap_fonts
         ItemSlotMap texts
 
-        Handle u_quad
+        Uniform u_quad
         VertexBuffer quad_vbo
         IndexBuffer quad_ibo
         Handle quad_vs, quad_fs, quad_program
 
-        readonly Handle u_fmt_rect
-        readonly Handle u_fmt_quad
-        readonly Handle u_fmt_proj
-        readonly Handle u_fmt_view
-        readonly Handle u_fmt_texture_0
-        readonly Handle u_fmt_texture_1
-        readonly Handle u_fmt_texture_2
-        readonly Handle u_fmt_texture_3
-        readonly Handle u_fmt_texture_4
-        readonly Handle u_fmt_texture_5
-        readonly Handle u_fmt_texture_6
-        readonly Handle u_fmt_texture_7
+        readonly UniformFormat u_fmt_rect
+        readonly UniformFormat u_fmt_quad
+        readonly UniformFormat u_fmt_proj
+        readonly UniformFormat u_fmt_view
+        readonly UniformFormat u_fmt_texture_0
+        readonly UniformFormat u_fmt_texture_1
+        readonly UniformFormat u_fmt_texture_2
+        readonly UniformFormat u_fmt_texture_3
+        readonly UniformFormat u_fmt_texture_4
+        readonly UniformFormat u_fmt_texture_5
+        readonly UniformFormat u_fmt_texture_6
+        readonly UniformFormat u_fmt_texture_7
 
         readonly VertexFormat v_fmt_quad
         readonly VertexFormat v_fmt_mesh
@@ -63,7 +65,7 @@ cdef class GraphicsManager:
         readonly IndexFormat i_fmt_quad
         readonly IndexFormat i_fmt_mesh
         readonly IndexFormat i_fmt_sprite
-
+    
     cdef void c_check_gl(self) except *
     cdef void c_check_gl_extensions(self) except *
     cdef void c_create_slot_maps(self) except *
@@ -79,15 +81,8 @@ cdef class GraphicsManager:
     cdef VertexFormatC *vertex_format_get_ptr(self, Handle format) except *
     cdef VertexBufferC *vertex_buffer_get_ptr(self, Handle buffer) except *
     cdef IndexBufferC *index_buffer_get_ptr(self, Handle buffer) except *
-
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *
-    cpdef Handle uniform_format_create(self, bytes name, UniformType type, size_t count=*) except *
-    cpdef void uniform_format_delete(self, Handle format) except *
-
     cdef UniformC *uniform_get_ptr(self, Handle uniform) except *
-    cpdef Handle uniform_create(self, Handle format) except *
-    cpdef void uniform_delete(self, Handle uniform) except *
-    cpdef void uniform_set_data(self, Handle uniform, object data, size_t index=*) except *
 
     cdef ShaderC *shader_get_ptr(self, Handle shader) except *
     cpdef Handle shader_create(self, ShaderType type, bytes source) except *

@@ -72,7 +72,7 @@ cdef class Window:
             program_ptr = self.graphics.program_get_ptr(self.graphics.quad_program)
             glUseProgram(program_ptr.gl_id); self.graphics.c_check_gl()
             glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.graphics.c_check_gl()
-            self.graphics._program_bind_uniform(self.graphics.quad_program, self.graphics.u_quad)
+            self.graphics._program_bind_uniform(self.graphics.quad_program, self.graphics.u_quad.handle)
             self.graphics._program_bind_attributes(self.graphics.quad_program, self.graphics.quad_vbo.handle)
             self.graphics.quad_ibo._draw()
             self.graphics._program_unbind_attributes(self.graphics.quad_program)

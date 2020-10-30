@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import os
 
 from pyorama.core.app import *
 from pyorama.event.event_enums import *
@@ -7,6 +8,7 @@ from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import *
 from pyorama.graphics.sprite import *
+from pyorama.graphics.uniform import *
 from pyorama.graphics.window import *
 
 from pyorama.physics.physics_enums import *
@@ -20,10 +22,13 @@ from pyorama.math3d.mat4 import Mat4
 class Game(App):
     
     def init(self):
+        print("lol")
         super().init(ms_per_update=1000.0/60.0)
+        print("lol 2")
         self.setup_window()
         self.setup_uniforms()
         self.setup_shaders()
+        print("feck")
         
         #setup sprites
         image_path = b"./resources/textures/bunny.png"
@@ -78,18 +83,35 @@ class Game(App):
         self.window.create(self.width, self.height, b"BunnyMark")
 
     def setup_uniforms(self):
-        self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
-        self.graphics.uniform_set_data(self.u_texture, TEXTURE_UNIT_0)
-        self.u_proj = self.graphics.uniform_create(self.graphics.u_fmt_proj)
+        self.u_texture = Uniform(self.graphics)
+        self.u_texture.create(self.graphics.u_fmt_texture_0)
+        self.u_texture.set_data(TEXTURE_UNIT_0)
+
         self.proj_mat = Mat4()
         Mat4.ortho(self.proj_mat, 0, self.width, 0, self.height, -1, 1)
-        self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
+        self.u_proj = Uniform(self.graphics)
+        self.u_proj.create(self.graphics.u_fmt_proj)
+        self.u_proj.set_data(self.proj_mat)
+
         self.view_mat = Mat4()
-        self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
-        self.graphics.uniform_set_data(self.u_view, self.view_mat)
-        self.u_rect = self.graphics.uniform_create(self.graphics.u_fmt_rect)
-        self.graphics.uniform_set_data(self.u_rect, Vec4(0, 0, self.width, self.height))
-        self.uniforms = np.array([self.u_texture, self.u_proj, self.u_view, self.u_rect], dtype=np.uint64)
+        self.u_view = Uniform(self.graphics)
+        self.u_view.create(self.graphics.u_fmt_view)
+        self.u_view.set_data(self.view_mat)
+
+        u_rect_data = Vec4(0, 0, self.width, self.height)
+        self.u_rect = Uniform(self.graphics)
+        self.u_rect.create(self.graphics.u_fmt_rect)
+        self.u_rect.set_data(u_rect_data)
+
+        self.uniforms = np.array(
+            [
+                self.u_texture.handle, 
+                self.u_proj.handle, 
+                self.u_view.handle, 
+                self.u_rect.handle,
+            ], 
+            dtype=np.uint64,
+        )
     
     def setup_shaders(self):
         vs_path = b"./resources/shaders/sprite.vert"

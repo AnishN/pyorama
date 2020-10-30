@@ -94,32 +94,33 @@ cdef class GraphicsManager:
         self.bitmap_fonts = None
         self.texts = None
 
-    cdef void c_create_predefined_uniform_formats(self) except *:
-        self.u_fmt_rect = self.uniform_format_create(b"u_rect", UNIFORM_TYPE_VEC4)
-        self.u_fmt_quad = self.uniform_format_create(b"u_quad", UNIFORM_TYPE_INT)
-        self.u_fmt_view = self.uniform_format_create(b"u_view", UNIFORM_TYPE_MAT4)
-        self.u_fmt_proj = self.uniform_format_create(b"u_proj", UNIFORM_TYPE_MAT4)
-        self.u_fmt_texture_0 = self.uniform_format_create(b"u_texture_0", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_1 = self.uniform_format_create(b"u_texture_1", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_2 = self.uniform_format_create(b"u_texture_2", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_3 = self.uniform_format_create(b"u_texture_3", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_4 = self.uniform_format_create(b"u_texture_4", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_5 = self.uniform_format_create(b"u_texture_5", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_6 = self.uniform_format_create(b"u_texture_6", UNIFORM_TYPE_INT)
-        self.u_fmt_texture_7 = self.uniform_format_create(b"u_texture_7", UNIFORM_TYPE_INT)
+    cdef void c_create_predefined_uniform_formats(self) except *: 
+        self.u_fmt_rect = UniformFormat(self); self.u_fmt_rect.create(b"u_rect", UNIFORM_TYPE_VEC4)
+        self.u_fmt_quad = UniformFormat(self); self.u_fmt_quad.create(b"u_quad", UNIFORM_TYPE_INT)
+        self.u_fmt_view = UniformFormat(self); self.u_fmt_view.create(b"u_view", UNIFORM_TYPE_MAT4)
+        self.u_fmt_proj = UniformFormat(self); self.u_fmt_proj.create(b"u_proj", UNIFORM_TYPE_MAT4)
+        self.u_fmt_texture_0 = UniformFormat(self); self.u_fmt_texture_0.create(b"u_texture_0", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_1 = UniformFormat(self); self.u_fmt_texture_1.create(b"u_texture_1", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_2 = UniformFormat(self); self.u_fmt_texture_2.create(b"u_texture_2", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_3 = UniformFormat(self); self.u_fmt_texture_3.create(b"u_texture_3", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_4 = UniformFormat(self); self.u_fmt_texture_4.create(b"u_texture_4", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_5 = UniformFormat(self); self.u_fmt_texture_5.create(b"u_texture_5", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_6 = UniformFormat(self); self.u_fmt_texture_6.create(b"u_texture_6", UNIFORM_TYPE_INT)
+        self.u_fmt_texture_7 = UniformFormat(self); self.u_fmt_texture_7.create(b"u_texture_7", UNIFORM_TYPE_INT)
 
     cdef void c_delete_predefined_uniform_formats(self) except *:
-        self.uniform_format_delete(self.u_fmt_quad)
-        self.uniform_format_delete(self.u_fmt_view) 
-        self.uniform_format_delete(self.u_fmt_proj) 
-        self.uniform_format_delete(self.u_fmt_texture_0) 
-        self.uniform_format_delete(self.u_fmt_texture_1) 
-        self.uniform_format_delete(self.u_fmt_texture_2) 
-        self.uniform_format_delete(self.u_fmt_texture_3) 
-        self.uniform_format_delete(self.u_fmt_texture_4) 
-        self.uniform_format_delete(self.u_fmt_texture_5) 
-        self.uniform_format_delete(self.u_fmt_texture_6) 
-        self.uniform_format_delete(self.u_fmt_texture_7) 
+        self.u_fmt_rect.delete(); self.u_fmt_rect = None
+        self.u_fmt_quad.delete(); self.u_fmt_quad = None
+        self.u_fmt_view.delete(); self.u_fmt_view = None
+        self.u_fmt_proj.delete(); self.u_fmt_proj = None
+        self.u_fmt_texture_0.delete(); self.u_fmt_texture_0 = None
+        self.u_fmt_texture_1.delete(); self.u_fmt_texture_1 = None
+        self.u_fmt_texture_2.delete(); self.u_fmt_texture_2 = None
+        self.u_fmt_texture_3.delete(); self.u_fmt_texture_3 = None
+        self.u_fmt_texture_4.delete(); self.u_fmt_texture_4 = None
+        self.u_fmt_texture_5.delete(); self.u_fmt_texture_5 = None
+        self.u_fmt_texture_6.delete(); self.u_fmt_texture_6 = None
+        self.u_fmt_texture_7.delete(); self.u_fmt_texture_7 = None
 
     cdef void c_create_predefined_vertex_index_formats(self) except *:
         self.v_fmt_quad = VertexFormat(self)
@@ -178,8 +179,9 @@ cdef class GraphicsManager:
         self.quad_vs = self.shader_create_from_file(SHADER_TYPE_VERTEX, b"./resources/shaders/quad.vert")
         self.quad_fs = self.shader_create_from_file(SHADER_TYPE_FRAGMENT, b"./resources/shaders/quad.frag")
         self.quad_program = self.program_create(self.quad_vs, self.quad_fs)
-        self.u_quad = self.uniform_create(self.u_fmt_quad)
-        self.uniform_set_data(self.u_quad, TEXTURE_UNIT_0)
+        self.u_quad = Uniform(self)
+        self.u_quad.create(self.u_fmt_quad)
+        self.u_quad.set_data(TEXTURE_UNIT_0)
 
     cdef void c_delete_quad(self) except *:
         self.quad_vbo.delete(); self.quad_vbo = None
@@ -187,7 +189,7 @@ cdef class GraphicsManager:
         self.shader_delete(self.quad_vs)
         self.shader_delete(self.quad_fs)
         self.program_delete(self.quad_program)
-        self.uniform_delete(self.u_quad)
+        self.u_quad.delete(); self.u_quad = None
 
     cdef WindowC *window_get_ptr(self, Handle window) except *:
         return <WindowC *>self.windows.c_get_ptr(window)
@@ -204,92 +206,8 @@ cdef class GraphicsManager:
     cdef UniformFormatC *uniform_format_get_ptr(self, Handle format) except *:
         return <UniformFormatC *>self.uniform_formats.c_get_ptr(format)
 
-    cpdef Handle uniform_format_create(self, bytes name, UniformType type, size_t count=1) except *:
-        cdef:
-            size_t name_length
-            Handle format
-            UniformFormatC *format_ptr
-        name_length = len(name)
-        if name_length >= 256:
-            raise ValueError("UniformFormat: name cannot exceed 255 characters")
-        if count == 0:
-            raise ValueError("UniformFormat: count must be non-zero value")
-        format = self.uniform_formats.c_create()
-        format_ptr = self.uniform_format_get_ptr(format)
-        memcpy(format_ptr.name, <char *>name, sizeof(char) * name_length)
-        format_ptr.name_length = name_length
-        format_ptr.type = type
-        format_ptr.count = count
-        format_ptr.size = count * c_uniform_type_get_size(type)
-        return format
-
-    cpdef void uniform_format_delete(self, Handle format) except *:
-        self.uniform_formats.c_delete(format)
-
     cdef UniformC *uniform_get_ptr(self, Handle uniform) except *:
         return <UniformC *>self.uniforms.c_get_ptr(uniform)
-
-    cpdef Handle uniform_create(self, Handle format) except *:
-        cdef:
-            Handle uniform
-            UniformC *uniform_ptr
-            UniformFormatC *format_ptr
-            size_t type_size
-            size_t data_size
-            uint8_t *data_ptr
-        uniform = self.uniforms.c_create()
-        uniform_ptr = self.uniform_get_ptr(uniform)
-        uniform_ptr.format = format
-        format_ptr = self.uniform_format_get_ptr(format)
-        type_size = c_uniform_type_get_size(format_ptr.type)
-        data_size = format_ptr.count * type_size
-        data_ptr = <uint8_t *>calloc(1, data_size)
-        if data_ptr == NULL:
-            raise MemoryError("Uniform: cannot allocate memory for data")
-        uniform_ptr.data = data_ptr
-        return uniform
-
-    cpdef void uniform_delete(self, Handle uniform) except *:
-        self.uniforms.c_delete(uniform)
-
-    cpdef void uniform_set_data(self, Handle uniform, object data, size_t index=0) except *:
-        cdef:
-            UniformC *uniform_ptr
-            UniformFormatC *format_ptr
-            UniformType type
-            size_t type_size
-            int32_t int_data
-            float float_data
-            uint8_t *src_ptr
-            uint8_t *dst_ptr
-        uniform_ptr = self.uniform_get_ptr(uniform)
-        format_ptr = self.uniform_format_get_ptr(uniform_ptr.format)
-        if index >= format_ptr.count:
-            raise ValueError("Uniform: attempting to set data outside of count boundaries")
-        type = format_ptr.type
-        type_size = c_uniform_type_get_size(type)
-        if type == UNIFORM_TYPE_INT:
-            int_data = <int32_t?>data
-            src_ptr = <uint8_t *>&int_data
-        elif type == UNIFORM_TYPE_FLOAT:
-            float_data = <float?>data
-            src_ptr = <uint8_t *>&float_data
-        elif type == UNIFORM_TYPE_VEC2:
-            src_ptr = <uint8_t *>&(<Vec2?>data).data
-        elif type == UNIFORM_TYPE_VEC3:
-            src_ptr = <uint8_t *>&(<Vec3?>data).data
-        elif type == UNIFORM_TYPE_VEC4:
-            src_ptr = <uint8_t *>&(<Vec4?>data).data
-        elif type == UNIFORM_TYPE_MAT2:
-            src_ptr = <uint8_t *>&(<Mat2?>data).data
-        elif type == UNIFORM_TYPE_MAT3:
-            src_ptr = <uint8_t *>&(<Mat3?>data).data
-        elif type == UNIFORM_TYPE_MAT4:
-            src_ptr = <uint8_t *>&(<Mat4?>data).data
-        else:
-            raise ValueError("Uniform: data is of an invalid type")
-        dst_ptr = uniform_ptr.data + (index * type_size)
-        memcpy(dst_ptr, src_ptr, type_size)
 
     cdef ShaderC *shader_get_ptr(self, Handle shader) except *:
         return <ShaderC *>self.shaders.c_get_ptr(shader)
