@@ -2,7 +2,7 @@ from pyorama.graphics.graphics_manager cimport *
 
 cdef class IndexBuffer:
     cdef:
-        readonly Handle handle
+        public Handle handle#TODO: switch back to readonly
         readonly GraphicsManager graphics
 
     cdef IndexBufferC *get_ptr(self) except *

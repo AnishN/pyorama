@@ -34,11 +34,11 @@ cdef class Window:
         self.graphics.windows.c_delete(self.handle)
         self.handle = 0
 
-    cpdef void set_texture(self, Handle texture) except *:
+    cpdef void set_texture(self, Texture texture) except *:
         cdef:
             WindowC *window_ptr
         window_ptr = self.get_ptr()
-        window_ptr.texture = texture
+        window_ptr.texture = texture.handle
 
     cpdef void clear(self) except *:
         cdef:
@@ -69,13 +69,13 @@ cdef class Window:
         if self.graphics.textures.c_is_handle_valid(window_ptr.texture):
             glActiveTexture(GL_TEXTURE0); self.graphics.c_check_gl()
             texture_ptr = self.graphics.texture_get_ptr(window_ptr.texture)
-            program_ptr = self.graphics.program_get_ptr(self.graphics.quad_program)
+            program_ptr = self.graphics.program_get_ptr(self.graphics.quad_program.handle)
             glUseProgram(program_ptr.gl_id); self.graphics.c_check_gl()
             glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.graphics.c_check_gl()
-            self.graphics._program_bind_uniform(self.graphics.quad_program, self.graphics.u_quad.handle)
-            self.graphics._program_bind_attributes(self.graphics.quad_program, self.graphics.quad_vbo.handle)
+            self.graphics.quad_program._bind_uniform(self.graphics.u_quad.handle)
+            self.graphics.quad_program._bind_attributes(self.graphics.quad_vbo.handle)
             self.graphics.quad_ibo._draw()
-            self.graphics._program_unbind_attributes(self.graphics.quad_program)
+            self.graphics.quad_program._unbind_attributes()
             glBindTexture(GL_TEXTURE_2D, 0); self.graphics.c_check_gl()
             SDL_GL_SetSwapInterval(0)
             SDL_GL_SwapWindow(window_ptr.sdl_ptr)

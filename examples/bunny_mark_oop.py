@@ -7,13 +7,20 @@ from pyorama.event.event_enums import *
 from pyorama.event.event_manager import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import *
+from pyorama.graphics.frame_buffer import *
+from pyorama.graphics.image import *
+from pyorama.graphics.index_buffer import *
+from pyorama.graphics.program import *
+from pyorama.graphics.shader import *
 from pyorama.graphics.sprite import *
+from pyorama.graphics.sprite_batch import *
+from pyorama.graphics.texture import *
 from pyorama.graphics.uniform import *
+from pyorama.graphics.vertex_buffer import *
+from pyorama.graphics.view import *
 from pyorama.graphics.window import *
-
 from pyorama.physics.physics_enums import *
 from pyorama.physics.physics_manager import *
-
 from pyorama.math3d.vec2 import Vec2
 from pyorama.math3d.vec3 import Vec3
 from pyorama.math3d.vec4 import Vec4
@@ -22,19 +29,18 @@ from pyorama.math3d.mat4 import Mat4
 class Game(App):
     
     def init(self):
-        print("lol")
         super().init(ms_per_update=1000.0/60.0)
-        print("lol 2")
         self.setup_window()
         self.setup_uniforms()
         self.setup_shaders()
-        print("feck")
         
         #setup sprites
         image_path = b"./resources/textures/bunny.png"
-        self.image = self.graphics.image_create_from_file(image_path)
-        self.texture = self.graphics.texture_create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
-        self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
+        self.image = Image(self.graphics)
+        self.image.create_from_file(image_path)
+        self.texture = Texture(self.graphics)
+        self.texture.create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
+        self.texture.set_data_2d_from_image(self.image)
 
         self.width = 800
         self.height = 600
@@ -43,28 +49,23 @@ class Game(App):
 
         #setup piece sprites
         self.sprites = []
-        #self.num_sprites = 2 ** 16 - 1
         self.num_sprites = 50000
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):
             Vec2.random(position)
             Vec2.mul(position, position, window_size)
-            #sprite = self.graphics.sprite_create(self.bunny_width, self.bunny_height)
-            #self.graphics.sprite_set_position(sprite, position)
-            #self.graphics.sprite_set_anchor(sprite, Vec2(0.5, 0.5))
             sprite = Sprite(self.graphics)
             sprite.create(self.bunny_width, self.bunny_height)
             sprite.set_position(position)
             sprite.set_anchor(Vec2(0.5, 0.5))
             self.sprites.append(sprite)
-        self.sprite_batch = self.graphics.sprite_batch_create()
-        sprite_handles = [s.handle for s in self.sprites]
-        sprites = np.array(sprite_handles, dtype=np.uint64)
-        self.graphics.sprite_batch_set_sprites(self.sprite_batch, sprites)
+        self.sprite_batch = SpriteBatch(self.graphics)
+        self.sprite_batch.create()
+        self.sprite_batch.set_sprites(self.sprites)
         
-        self.vbo = self.graphics.sprite_batch_get_vertex_buffer(self.sprite_batch)
-        self.ibo = self.graphics.sprite_batch_get_index_buffer(self.sprite_batch)
+        self.vbo = self.sprite_batch.get_vertex_buffer()
+        self.ibo = self.sprite_batch.get_index_buffer()
         
         self.setup_view()
         self.previous_time = 0.0
@@ -103,46 +104,44 @@ class Game(App):
         self.u_rect.create(self.graphics.u_fmt_rect)
         self.u_rect.set_data(u_rect_data)
 
-        self.uniforms = np.array(
-            [
-                self.u_texture.handle, 
-                self.u_proj.handle, 
-                self.u_view.handle, 
-                self.u_rect.handle,
-            ], 
-            dtype=np.uint64,
-        )
+        self.uniforms = [self.u_texture, self.u_proj, self.u_view, self.u_rect]
     
     def setup_shaders(self):
         vs_path = b"./resources/shaders/sprite.vert"
-        self.vs = self.graphics.shader_create_from_file(SHADER_TYPE_VERTEX, vs_path)
+        self.vs = Shader(self.graphics)
+        self.vs.create_from_file(SHADER_TYPE_VERTEX, vs_path)
+
         fs_path = b"./resources/shaders/sprite.frag"
-        self.fs = self.graphics.shader_create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
-        self.program = self.graphics.program_create(self.vs, self.fs)
+        self.fs = Shader(self.graphics)
+        self.fs.create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
+        self.program = Program(self.graphics)
+        self.program.create(self.vs, self.fs)
 
     def setup_view(self):
-        self.out_color = self.graphics.texture_create()
-        self.graphics.texture_clear(self.out_color, self.width, self.height)
+        self.out_color = Texture(self.graphics)
+        self.out_color.create()
+        self.out_color.clear(self.width, self.height)
         self.window.set_texture(self.out_color)
-        self.fbo = self.graphics.frame_buffer_create()
-        self.graphics.frame_buffer_attach_textures(self.fbo, {
+        self.fbo = FrameBuffer(self.graphics)
+        self.fbo.create()
+        self.fbo.attach_textures({
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
         })
         
-        self.view = self.graphics.view_create()
+        self.view = View(self.graphics)
+        self.view.create()
         self.update_view()
     
     def update_view(self):
-        self.graphics.view_set_rect(self.view, 0, 0, self.width, self.height)
-        self.graphics.view_set_program(self.view, self.program)
-        self.graphics.view_set_uniforms(self.view, self.uniforms)
-        self.graphics.view_set_vertex_buffer(self.view, self.vbo)
-        self.graphics.view_set_index_buffer(self.view, self.ibo)
-        self.graphics.view_set_textures(self.view, {
+        self.view.set_rect(0, 0, self.width, self.height)
+        self.view.set_program(self.program)
+        self.view.set_uniforms(self.uniforms)
+        self.view.set_vertex_buffer(self.vbo)
+        self.view.set_index_buffer(self.ibo)
+        self.view.set_textures({
             TEXTURE_UNIT_0: self.texture,
         })
-        self.graphics.view_set_frame_buffer(self.view, self.fbo)
-        #view.set_frame_buffer(self.fbo)
+        self.view.set_frame_buffer(self.fbo)
 
     def on_window(self, event_data, *args, **kwargs):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:

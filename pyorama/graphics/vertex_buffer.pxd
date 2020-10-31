@@ -3,7 +3,7 @@ from pyorama.graphics.vertex_format cimport *
 
 cdef class VertexBuffer:
     cdef:
-        readonly Handle handle
+        public Handle handle#TODO: switch back to readonly
         readonly GraphicsManager graphics
 
     cdef VertexBufferC *get_ptr(self) except *
