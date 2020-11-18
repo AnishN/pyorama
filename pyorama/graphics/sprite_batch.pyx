@@ -1,5 +1,7 @@
+from libc.stdlib cimport qsort
+
 cdef class SpriteBatch:
-    def __init__(self, GraphicsManager graphics):
+    def __cinit__(self, GraphicsManager graphics):
         self.graphics = graphics
 
     def __dealloc__(self):
@@ -28,7 +30,7 @@ cdef class SpriteBatch:
             IndexBuffer ibo = IndexBuffer(self.graphics)
             size_t i
             size_t num_sprites = len(sprites)
-            
+
         batch_ptr = self.get_ptr()
         if num_sprites != batch_ptr.num_sprites:
             #recreate sprite handles buffer
@@ -105,6 +107,8 @@ cdef class SpriteBatch:
         ibo_size = sizeof(uint32_t) * 6 * batch_ptr.num_sprites
         vbo = batch_ptr.vertex_data_ptr
         ibo = batch_ptr.index_data_ptr
+
+        qsort(batch_ptr.sprites, batch_ptr.num_sprites, sizeof(Handle), _sprite_batch_sort)
         for i in range(batch_ptr.num_sprites):
             sprite_ptr = self.graphics.sprite_get_ptr(batch_ptr.sprites[i])
             for j in range(6):
@@ -126,3 +130,6 @@ cdef class SpriteBatch:
         v_buffer.set_data(<uint8_t[:vbo_size]>vbo)
         i_buffer.handle = batch_ptr.index_buffer
         i_buffer.set_data(<uint8_t[:ibo_size]>ibo)
+
+cdef int _sprite_batch_sort(const void *a, const void *b) nogil:
+    return (<Handle *>a)[0] > (<Handle *>b)[0]

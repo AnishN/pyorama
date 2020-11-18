@@ -1,5 +1,5 @@
 cdef class Mat2:
-    def __init__(self):
+    def __cinit__(self):
         Mat2.c_identity(&self.data)
     
     def __dealloc__(self):

@@ -273,7 +273,7 @@ cdef class GraphicsManager:
             WindowC *window_ptr
             SpriteBatchC *sprite_batch_ptr
             size_t i
-
+        
         #update sprite batches
         for i in range(self.sprite_batches.items.num_items):
             sprite_batch_ptr = <SpriteBatchC *>self.sprite_batches.items.c_get_ptr(i)

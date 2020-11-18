@@ -15,3 +15,5 @@ cdef class SpriteBatch:
     cpdef VertexBuffer get_vertex_buffer(self)
     cpdef IndexBuffer get_index_buffer(self)
     cdef void _update(self) except *
+
+cdef int _sprite_batch_sort(const void *a, const void *b) nogil

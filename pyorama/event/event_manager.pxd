@@ -22,8 +22,6 @@ cdef class EventManager:
     
     cdef ListenerKeyC *key_get_ptr(self, Handle listener) except *
     cdef ListenerC *listener_get_ptr(self, Handle listener) except *
-    cpdef Handle listener_create(self, uint16_t event_type, object callback, list args=*, dict kwargs=*) except *
-    cpdef void listener_delete(self, Handle listener) except *
 
     cdef dict parse_joystick_axis_event(self, SDL_JoyAxisEvent event)
     cdef dict parse_joystick_ball_event(self, SDL_JoyBallEvent event)

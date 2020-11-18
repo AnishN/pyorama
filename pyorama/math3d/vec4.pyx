@@ -1,6 +1,6 @@
 cdef class Vec4:
     
-    def __init__(self, float x=0.0, float y=0.0, float z=0.0, float w=0.0):
+    def __cinit__(self, float x=0.0, float y=0.0, float z=0.0, float w=0.0):
         Vec4.c_set_data(&self.data, x, y, z, w)
     
     def __dealloc__(self):

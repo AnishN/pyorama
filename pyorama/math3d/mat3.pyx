@@ -1,6 +1,6 @@
 cdef class Mat3:
     
-    def __init__(self):
+    def __cinit__(self):
         Mat3.c_identity(&self.data)
     
     def __dealloc__(self):

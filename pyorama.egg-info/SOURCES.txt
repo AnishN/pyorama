@@ -22,7 +22,7 @@ README.md
 ./pyorama/physics/physics_enums.c
 ./pyorama/physics/physics_manager.c
 ./pyorama/physics/physics_utils.c
-examples/__init__.py
+examples/__cinit__.py
 examples/bunny_mark.py
 examples/bunny_mark_fast.py
 examples/carrom.py

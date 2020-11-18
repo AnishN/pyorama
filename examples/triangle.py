@@ -2,7 +2,18 @@ import math
 import numpy as np
 from pyorama.core.app import *
 from pyorama.event.event_enums import *
+from pyorama.event.listener import *
 from pyorama.graphics.graphics_enums import *
+from pyorama.graphics.frame_buffer import *
+from pyorama.graphics.index_buffer import *
+from pyorama.graphics.program import *
+from pyorama.graphics.shader import *
+from pyorama.graphics.texture import *
+from pyorama.graphics.uniform import *
+from pyorama.graphics.vertex_buffer import *
+from pyorama.graphics.vertex_format import *
+from pyorama.graphics.view import *
+from pyorama.graphics.window import *
 from pyorama.math3d.vec2 import Vec2
 from pyorama.math3d.vec3 import Vec3
 from pyorama.math3d.vec4 import Vec4
@@ -26,24 +37,32 @@ class Game(App):
         self.width = 800
         self.height = 600
         self.title = b"Sprite Test"
-        self.window = self.graphics.window_create(self.width, self.height, self.title)
+        self.window = Window(self.graphics)
+        self.window.create(self.width, self.height, self.title)
 
     def setup_uniforms(self):
-        self.u_proj = self.graphics.uniform_create(self.graphics.u_fmt_proj)
         self.proj_mat = Mat4()
+        self.u_proj = Uniform(self.graphics)
+        self.u_proj.create(self.graphics.u_fmt_proj)
         Mat4.ortho(self.proj_mat, -1, 1, -1, 1, -1, 1)
-        self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
+        self.u_proj.set_data(self.proj_mat)
+
         self.view_mat = Mat4()
-        self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
-        self.graphics.uniform_set_data(self.u_view, self.view_mat)
-        self.uniforms = np.array([self.u_proj, self.u_view], dtype=np.uint64)
+        self.u_view = Uniform(self.graphics)
+        self.u_view.create(self.graphics.u_fmt_view)
+        self.u_view.set_data(self.view_mat)
+
+        self.uniforms = [self.u_proj, self.u_view]
 
     def setup_shaders(self):
         vs_path = b"./resources/shaders/triangle.vert"
+        self.vs = Shader(self.graphics)
+        self.vs.create_from_file(SHADER_TYPE_VERTEX, vs_path)
         fs_path = b"./resources/shaders/triangle.frag"
-        self.vs = self.graphics.shader_create_from_file(SHADER_TYPE_VERTEX, vs_path)
-        self.fs = self.graphics.shader_create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
-        self.program = self.graphics.program_create(self.vs, self.fs)
+        self.fs = Shader(self.graphics)
+        self.fs.create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
+        self.program = Program(self.graphics)
+        self.program.create(self.vs, self.fs)
 
     def setup_triangle(self):
         self.vertex_data = np.array(
@@ -55,40 +74,48 @@ class Game(App):
             dtype=np.float32,
         )
         self.vertex_data = self.vertex_data.view(np.uint8)
-        self.v_fmt = self.graphics.vertex_format_create(
+        self.v_fmt = VertexFormat(self.graphics)
+        self.v_fmt.create(
             [
                 (b"a_position", VERTEX_COMP_TYPE_F32, 3, False),
             ],
         )
-        self.vbo = self.graphics.vertex_buffer_create(self.v_fmt)
-        self.graphics.vertex_buffer_set_data(self.vbo, self.vertex_data)
+        self.vbo = VertexBuffer(self.graphics)
+        self.vbo.create(self.v_fmt)
+        self.vbo.set_data(self.vertex_data)
+
         self.index_data = np.array([0, 1, 2], dtype=np.uint32)
         self.index_data = self.index_data.view(np.uint8)
         self.i_fmt = INDEX_FORMAT_U32
-        self.ibo = self.graphics.index_buffer_create(self.i_fmt)
-        self.graphics.index_buffer_set_data(self.ibo, self.index_data)
+        self.ibo = IndexBuffer(self.graphics)
+        self.ibo.create(self.i_fmt)
+        self.ibo.set_data(self.index_data)
 
     def setup_view(self):
-        self.out_color = self.graphics.texture_create()
-        self.graphics.texture_clear(self.out_color, 800, 600)
-        self.graphics.window_set_texture(self.window, self.out_color)
-        self.fbo = self.graphics.frame_buffer_create()
-        self.graphics.frame_buffer_attach_textures(self.fbo, {
+        self.out_color = Texture(self.graphics)
+        self.out_color.create()
+        self.out_color.clear(800, 600)
+        self.window.set_texture(self.out_color)
+        self.fbo = FrameBuffer(self.graphics)
+        self.fbo.create()
+        self.fbo.attach_textures({
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
         })
-        self.view = self.graphics.view_create()
-        self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)
-        self.graphics.view_set_clear_color(self.view, Vec4(0.0, 0.0, 0.0, 1.0))
-        self.graphics.view_set_clear_depth(self.view, 1.0)
-        self.graphics.view_set_rect(self.view, 0, 0, self.width, self.height)
-        self.graphics.view_set_program(self.view, self.program)
-        self.graphics.view_set_uniforms(self.view, self.uniforms)
-        self.graphics.view_set_vertex_buffer(self.view, self.vbo)
-        self.graphics.view_set_index_buffer(self.view, self.ibo)
-        self.graphics.view_set_frame_buffer(self.view, self.fbo)
+        self.view = View(self.graphics)
+        self.view.create()
+        self.view.set_clear_flags(VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)
+        self.view.set_clear_color(Vec4(0.0, 0.0, 0.0, 1.0))
+        self.view.set_clear_depth(1.0)
+        self.view.set_rect(0, 0, self.width, self.height)
+        self.view.set_program(self.program)
+        self.view.set_uniforms(self.uniforms)
+        self.view.set_vertex_buffer(self.vbo)
+        self.view.set_index_buffer(self.ibo)
+        self.view.set_frame_buffer(self.fbo)
     
     def setup_listeners(self):
-        window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
+        window_listener = Listener(self.event)
+        window_listener.create(EVENT_TYPE_WINDOW, self.on_window)
     
     def on_window(self, event_data, *args, **kwargs):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:

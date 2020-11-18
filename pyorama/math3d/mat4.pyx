@@ -1,6 +1,6 @@
 cdef class Mat4:
     
-    def __init__(self):
+    def __cinit__(self):
         Mat4.c_identity(&self.data)
     
     def __dealloc__(self):

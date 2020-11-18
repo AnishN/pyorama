@@ -1,6 +1,6 @@
 cdef class Sprite:
     
-    def __init__(self, GraphicsManager graphics):
+    def __cinit__(self, GraphicsManager graphics):
         self.graphics = graphics
 
     def __dealloc__(self):
