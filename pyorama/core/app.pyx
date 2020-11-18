@@ -46,6 +46,7 @@ cdef class App:
     def run(self):
         self.init()
         
+        """
         #basic fixed timestep with accumulator
         while True:
             self.current_time = self.c_get_current_time()
@@ -60,6 +61,7 @@ cdef class App:
                 self.graphics.update()
                 self.accumulated_time -= self.ms_per_update/1000
             self.previous_time = self.current_time
+        """
 
         """
         #"fuzzy accumulator" logic instead
@@ -79,20 +81,18 @@ cdef class App:
             self.previous_time = self.current_time
         """
 
-        """
         #naive sleep option
         while True:
             self.current_time = self.c_get_current_time()
             self.delta = self.current_time - self.previous_time
+            self.timestamp += self.delta
             PyErr_CheckSignals()
             self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
             self.event.update(self.timestamp)
             self.physics.update(self.ms_per_update/1000)
             self.graphics.update()#differs from fix your timestep (avoids interpolation), will decide in more intensive demos
-            print(time.time())
             time.sleep(max(0.0, self.ms_per_update/1000 - self.delta))
             self.previous_time = self.current_time
-        """
                 
     cdef double c_get_current_time(self) nogil:
         cdef:

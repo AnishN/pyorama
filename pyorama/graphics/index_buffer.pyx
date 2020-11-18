@@ -52,11 +52,11 @@ cdef class IndexBuffer:
             buffer_ptr.size = data_size
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.graphics.c_check_gl()
     
-    cpdef void set_data_from_mesh(self, Handle mesh) except *:
+    cpdef void set_data_from_mesh(self, Mesh mesh) except *:
         cdef:
             MeshC *mesh_ptr
             uint8_t[::1] data
-        mesh_ptr = self.graphics.mesh_get_ptr(mesh)
+        mesh_ptr = mesh.get_ptr()
         data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
         self.set_data(data)
 
@@ -75,11 +75,11 @@ cdef class IndexBuffer:
             glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.graphics.c_check_gl()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.graphics.c_check_gl()
 
-    cpdef void set_sub_data_from_mesh(self, Handle mesh, size_t offset) except *:
+    cpdef void set_sub_data_from_mesh(self, Mesh mesh, size_t offset) except *:
         cdef:
             MeshC *mesh_ptr
             uint8_t[::1] data
-        mesh_ptr = self.graphics.mesh_get_ptr(mesh)
+        mesh_ptr = mesh.get_ptr()
         data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
         self.set_sub_data(data, offset)
 

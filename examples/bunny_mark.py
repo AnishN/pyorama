@@ -159,9 +159,9 @@ class Game(App):
             position = sprite.get_position()
             Vec2.add(position, position, shift)
             sprite.set_position(position)
-            #sprite.set_alpha(0.5)
         self.time_delta = self.current_time - self.previous_time
-        fps = min(round(1000.0 / self.ms_per_update), round(1.0 / self.time_delta))
+        fps = 1.0 / max(self.ms_per_update / 1000.0, self.time_delta)
+        fps = round(fps, 1)
         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
         self.window.set_title(title)
         self.previous_time = self.current_time

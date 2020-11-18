@@ -3,8 +3,22 @@ import numpy as np
 from pyorama.core.app import *
 from pyorama.event.event_enums import *
 from pyorama.event.event_manager import *
+from pyorama.event.listener import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import *
+from pyorama.graphics.frame_buffer import *
+from pyorama.graphics.image import *
+from pyorama.graphics.index_buffer import *
+from pyorama.graphics.mesh import *
+from pyorama.graphics.program import *
+from pyorama.graphics.shader import *
+from pyorama.graphics.sprite import *
+from pyorama.graphics.sprite_batch import *
+from pyorama.graphics.texture import *
+from pyorama.graphics.uniform import *
+from pyorama.graphics.vertex_buffer import *
+from pyorama.graphics.view import *
+from pyorama.graphics.window import *
 from pyorama.math3d.vec3 import Vec3
 from pyorama.math3d.vec4 import Vec4
 from pyorama.math3d.mat4 import Mat4
@@ -13,95 +27,123 @@ class Game(App):
     
     def init(self):
         super().init()
-        #setup uniforms
-        self.u_texture = self.graphics.uniform_create(self.graphics.u_fmt_texture_0)
-        self.graphics.uniform_set_data(self.u_texture, TEXTURE_UNIT_0)
-        self.u_proj = self.graphics.uniform_create(self.graphics.u_fmt_proj)
+        self.setup_window()
+        self.setup_uniforms()
+        self.setup_mesh()
+        self.setup_shader()
+        self.setup_texture()
+        self.setup_view()
+        self.setup_listeners()
+
+        
+    
+    def setup_window(self):
+        #setup window/fbo/view
+        self.width = 800
+        self.height = 600
+        self.title = b"Hello World!"
+        self.window = Window(self.graphics)
+        self.window.create(self.width, self.height, self.title)
+
+    def setup_uniforms(self):
+        self.u_texture = Uniform(self.graphics)
+        self.u_texture.create(self.graphics.u_fmt_texture_0)
+        self.u_texture.set_data(TEXTURE_UNIT_0)
+
         self.proj_mat = Mat4()
-        #Mat4.ortho(self.proj_mat, -5, 5, -5, 5, -5, 5)
-        #Mat4.perspective(self.proj_mat, math.radians(90), 800/600.0, 0.001, 1000)
         Mat4.perspective(self.proj_mat, math.radians(90), 1.0, 0.001, 1000)
-        self.graphics.uniform_set_data(self.u_proj, self.proj_mat)
+        self.u_proj = Uniform(self.graphics)
+        self.u_proj.create(self.graphics.u_fmt_proj)
+        self.u_proj.set_data(self.proj_mat)
+
         self.view_mat = Mat4()
         self.view_velocity = Vec3(0.0, 0.0, 0.2)
         Mat4.from_translation(self.view_mat, Vec3(0, 0, -100))
-        self.u_view = self.graphics.uniform_create(self.graphics.u_fmt_view)
-        self.graphics.uniform_set_data(self.u_view, self.view_mat)
-        self.uniforms = np.array([self.u_texture, self.u_proj, self.u_view], dtype=np.uint64)
-        
+        self.u_view = Uniform(self.graphics)
+        self.u_view.create(self.graphics.u_fmt_view)
+        self.u_view.set_data(self.view_mat)
+
+        self.uniforms = [self.u_texture, self.u_proj, self.u_view]
+
+    def setup_mesh(self):
         #setup mesh
         #mesh_path = b"./resources/meshes/teapot.obj"
         #mesh_path = b"./resources/meshes/cube/cube.obj"
         #mesh_path = b"./resources/meshes/cube/cube.dae"
         mesh_path = b"./resources/meshes/dog/dog.obj"
-        self.mesh = self.graphics.mesh_create_from_file(mesh_path)
-        self.vbo = self.graphics.vertex_buffer_create(self.graphics.v_fmt_mesh)
-        self.ibo = self.graphics.index_buffer_create(self.graphics.i_fmt_mesh)
-        self.graphics.vertex_buffer_set_data_from_mesh(self.vbo, self.mesh)
-        self.graphics.index_buffer_set_data_from_mesh(self.ibo, self.mesh)
-        
-        #setup shader program
+        self.mesh = Mesh(self.graphics)
+        self.mesh.create_from_file(mesh_path)
+        self.vbo = VertexBuffer(self.graphics)
+        self.vbo.create(self.graphics.v_fmt_mesh)
+        self.vbo.set_data_from_mesh(self.mesh)
+        self.ibo = IndexBuffer(self.graphics)
+        self.ibo.create(self.graphics.i_fmt_mesh)
+        self.ibo.set_data_from_mesh(self.mesh)
+
+    def setup_shader(self):
         vs_path = b"./resources/shaders/basic.vert"
-        self.vs = self.graphics.shader_create_from_file(SHADER_TYPE_VERTEX, vs_path)
+        self.vs = Shader(self.graphics)
+        self.vs.create_from_file(SHADER_TYPE_VERTEX, vs_path)
         fs_path = b"./resources/shaders/basic.frag"
-        self.fs = self.graphics.shader_create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
-        self.program = self.graphics.program_create(self.vs, self.fs)
-        
-        #setup texture
-        #image_path = b"./resources/textures/image_0.png"
+        self.fs = Shader(self.graphics)
+        self.fs.create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
+        self.program = Program(self.graphics)
+        self.program.create(self.vs, self.fs)
+
+    def setup_texture(self):
         image_path = b"./resources/meshes/dog/dog.jpg"
-        self.image = self.graphics.image_create_from_file(image_path)
-        self.texture = self.graphics.texture_create()
-        self.graphics.texture_set_data_2d_from_image(self.texture, self.image)
-        
-        #setup window/fbo/view
-        self.window = self.graphics.window_create(800, 600, b"Hello World!")
-        self.out_color = self.graphics.texture_create()
-        self.out_depth = self.graphics.texture_create(format=TEXTURE_FORMAT_DEPTH_32U, filter=TEXTURE_FILTER_NEAREST, mipmaps=False)
-        self.graphics.texture_clear(self.out_color, 800, 600)
-        self.graphics.texture_clear(self.out_depth, 800, 600)
-        self.graphics.window_set_texture(self.window, self.out_color)
-        #self.graphics.window_set_texture(self.window, self.out_depth)
-        self.fbo = self.graphics.frame_buffer_create()
-        self.graphics.frame_buffer_attach_textures(self.fbo, {
+        self.image = Image(self.graphics)
+        self.image.create_from_file(image_path)
+        self.texture = Texture(self.graphics)
+        self.texture.create()
+        self.texture.set_data_2d_from_image(self.image)
+
+    def setup_view(self):
+        self.out_color = Texture(self.graphics)
+        self.out_color.create()
+        self.out_color.clear(self.width, self.height)
+        self.window.set_texture(self.out_color)
+
+        self.out_depth = Texture(self.graphics)
+        self.out_depth.create(format=TEXTURE_FORMAT_DEPTH_32U, filter=TEXTURE_FILTER_NEAREST, mipmaps=False)
+        self.out_depth.clear(self.width, self.height)
+
+        self.fbo = FrameBuffer(self.graphics)
+        self.fbo.create()
+        self.fbo.attach_textures({
             FRAME_BUFFER_ATTACHMENT_COLOR_0: self.out_color,
             FRAME_BUFFER_ATTACHMENT_DEPTH: self.out_depth,
         })
-        self.view = self.graphics.view_create()
-        
-        mouse_down_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_DOWN, self.on_mouse_down)
-        mouse_up_listener = self.event.listener_create(EVENT_TYPE_MOUSE_BUTTON_UP, self.on_mouse_up)
-        enter_frame_listener = self.event.listener_create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
-        window_listener = self.event.listener_create(EVENT_TYPE_WINDOW, self.on_window)
-    
+        self.view = View(self.graphics)
+        self.view.create()
+
+    def setup_listeners(self):
+        enter_frame_listener = Listener(self.event)
+        enter_frame_listener.create(EVENT_TYPE_ENTER_FRAME, self.on_enter_frame)
+        window_listener = Listener(self.event)
+        window_listener.create(EVENT_TYPE_WINDOW, self.on_window)
+
     def quit(self):
         super().quit()
     
     def update_view(self):
-        self.graphics.view_set_clear_flags(self.view, VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)
-        self.graphics.view_set_clear_color(self.view, Vec4(0.0, 0.0, 0.0, 1.0))
-        self.graphics.view_set_clear_depth(self.view, 1.0)
-        self.graphics.view_set_rect(self.view, 0, 0, 800, 600)
-        self.graphics.view_set_program(self.view, self.program)
-        self.graphics.view_set_uniforms(self.view, self.uniforms)
-        self.graphics.view_set_vertex_buffer(self.view, self.vbo)
-        self.graphics.view_set_index_buffer(self.view, self.ibo)
-        self.graphics.view_set_textures(self.view, {
+        self.view.set_clear_flags(VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL)
+        self.view.set_clear_color(Vec4(0.0, 0.0, 0.0, 1.0))
+        self.view.set_clear_depth(1.0)
+        self.view.set_rect(0, 0, 800, 600)
+        self.view.set_program(self.program)
+        self.view.set_uniforms(self.uniforms)
+        self.view.set_vertex_buffer(self.vbo)
+        self.view.set_index_buffer(self.ibo)
+        self.view.set_textures({
             TEXTURE_UNIT_0: self.texture,
         })
-        self.graphics.view_set_frame_buffer(self.view, self.fbo)
+        self.view.set_frame_buffer(self.fbo)
 
     def on_enter_frame(self, event_data, *args, **kwargs):
         Mat4.translate(self.view_mat, self.view_mat, self.view_velocity)
-        self.graphics.uniform_set_data(self.u_view, self.view_mat)
-        self.graphics.view_set_uniforms(self.view, self.uniforms)
+        self.u_view.set_data(self.view_mat)
         self.update_view()
-    
-    def on_mouse_down(self, event_data, *args, **kwargs):
-        print("MOUSE DOWN")
-
-    def on_mouse_up(self, event_data, *args, **kwargs):
-        print("MOUSE UP")
 
     def on_window(self, event_data, *args, **kwargs):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
