@@ -1,33 +1,10 @@
 import math
 import numpy as np
-from pyorama.core.app import *
-from pyorama.event.event_enums import *
-from pyorama.event.event_manager import *
-from pyorama.event.listener import *
-
-from pyorama.graphics.graphics_enums import *
-from pyorama.graphics.graphics_manager import *
-from pyorama.graphics.frame_buffer import *
-from pyorama.graphics.image import *
-from pyorama.graphics.program import *
-from pyorama.graphics.shader import *
-from pyorama.graphics.sprite import *
-from pyorama.graphics.sprite_batch import *
-from pyorama.graphics.texture import *
-from pyorama.graphics.uniform import *
-from pyorama.graphics.view import *
-from pyorama.graphics.window import *
-
-from pyorama.physics.physics_enums import *
-from pyorama.physics.physics_manager import *
-from pyorama.physics.body import *
-from pyorama.physics.shape import *
-from pyorama.physics.space import *
-
-from pyorama.math3d.vec2 import Vec2
-from pyorama.math3d.vec3 import Vec3
-from pyorama.math3d.vec4 import Vec4
-from pyorama.math3d.mat4 import Mat4
+from pyorama.core import *
+from pyorama.event import *
+from pyorama.graphics import *
+from pyorama.physics import *
+from pyorama.math3d import *
 
 class Game(App):
     
@@ -279,7 +256,7 @@ class Game(App):
     def on_window(self, event_data, *args, **kwargs):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
             self.quit()
-
+    
     def on_enter_frame(self, event_data, *args, **kwargs):
         for sprite, body in zip(self.coin_sprites, self.bodies):
             position = body.get_position()

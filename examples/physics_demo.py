@@ -1,10 +1,6 @@
 import time
-from pyorama.physics.physics_manager import *
-from pyorama.physics.physics_enums import *
-from pyorama.physics.body import *
-from pyorama.physics.shape import *
-from pyorama.physics.space import *
-from pyorama.math3d.vec2 import *
+from pyorama.physics import *
+from pyorama.math3d import *
 
 time_step = 1.0/60.0
 total_time = 0.0
