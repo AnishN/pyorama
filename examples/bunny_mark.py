@@ -1,7 +1,5 @@
 import math
-import numpy as np
 import os
-
 from pyorama.core import *
 from pyorama.event import *
 from pyorama.graphics import *
@@ -11,7 +9,7 @@ from pyorama.math3d import *
 class Game(App):
     
     def init(self):
-        super().init(ms_per_update=1000.0/60.0)
+        super().init()
         self.setup_window()
         self.setup_uniforms()
         self.setup_shaders()
@@ -48,9 +46,6 @@ class Game(App):
         self.ibo = self.sprite_batch.get_index_buffer()
         
         self.setup_view()
-        self.previous_time = 0.0
-        self.current_time = 0.0
-        self.time_delta = 0.0
         window_listener = Listener(self.event)
         window_listener.create(EVENT_TYPE_WINDOW, self.on_window)
         enter_frame_listener = Listener(self.event)
@@ -124,13 +119,12 @@ class Game(App):
             TEXTURE_UNIT_0: self.texture,
         })
         self.view.set_frame_buffer(self.fbo)
-
+    
     def on_window(self, event_data, *args, **kwargs):
         if event_data["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
             self.quit()
 
     def on_enter_frame(self, event_data, *args, **kwargs):
-        self.current_time = event_data["timestamp"]
         position = Vec2()
         shift = Vec2()
         for i in range(self.num_sprites):
@@ -140,12 +134,9 @@ class Game(App):
             position = sprite.get_position()
             Vec2.add(position, position, shift)
             sprite.set_position(position)
-        self.time_delta = self.current_time - self.previous_time
-        fps = 1.0 / max(self.ms_per_update / 1000.0, self.time_delta)
-        fps = round(fps, 1)
+        fps = round(self.get_fps(), 1)
         title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
         self.window.set_title(title)
-        self.previous_time = self.current_time
     
 if __name__ == "__main__":
     game = Game()

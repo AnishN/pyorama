@@ -5,10 +5,12 @@ import time
 
 cdef class App:
 
-    def init(self, double ms_per_update=1000.0/60.0):#, bint use_vsync=True, bint use_sleep=False):
-        self.ms_per_update = ms_per_update
-        #self.use_vsync = use_vsync
-        #self.use_sleep = use_sleep
+    def init(self, int target_fps=60, int num_frame_times=100, bint use_vsync=True, bint use_sleep=False):
+        self.target_fps = target_fps
+        self.num_frame_times = num_frame_times
+        self.use_vsync = use_vsync
+        self.use_sleep = use_sleep
+        self.frame_times = [1.0 / self.target_fps] * self.num_frame_times
 
         #hack to get around setting LD_LIBRARYPATH = ./pyorama/libs/shared prior to running apps
         lib_base_path = "./pyorama/libs/shared/*.so"
@@ -33,67 +35,70 @@ cdef class App:
         self.event = EventManager()
         self.physics = PhysicsManager()
 
-        self.accumulated_time = 0.0
-        self.delta = 0.0
         self.frequency = SDL_GetPerformanceFrequency()
         self.start_time = self.c_get_current_time()
-        self.current_time = self.start_time
-        self.previous_time = self.current_time
 
     def quit(self):
         os._exit(-1)
 
     def run(self):
+        self.current_time = self.start_time
+        self.previous_time = self.current_time
         self.init()
+        if self.use_sleep:
+            self.run_sleep()
+        else:
+            self.run_fixed_timestep()
+    
+    def run_sleep(self):
+        cdef:
+            double start_time
+            double end_time
+            double delta_time
+            double sleep_time
         
-        """
-        #basic fixed timestep with accumulator
         while True:
-            self.current_time = self.c_get_current_time()
-            self.delta = self.current_time - self.previous_time
-            self.accumulated_time += self.delta
-            while self.accumulated_time > self.ms_per_update/1000:
-                self.timestamp = self.c_get_current_time() - self.start_time
-                PyErr_CheckSignals()
-                self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
-                self.event.update(self.timestamp)
-                self.physics.update(self.ms_per_update/1000)
-                self.graphics.update()
-                self.accumulated_time -= self.ms_per_update/1000
-            self.previous_time = self.current_time
-        """
+            start_time = self.c_get_current_time()
+            self.step()
+            self.c_swap_root_window()
+            end_time = self.c_get_current_time()
+            delta_time = end_time - start_time
+            sleep_time = max(0.0, (1.0 / self.target_fps) - delta_time)
+            time.sleep(sleep_time)
+    
+    def run_fixed_timestep(self):
+        cdef:
+            double current_time = self.c_get_current_time()
+            double previous_time = current_time
+            double delta_time
+            double accumulated_time
+        
+        while True:
+            current_time = self.c_get_current_time()
+            delta_time = current_time - previous_time
+            accumulated_time += delta_time
+            while accumulated_time > 1.0 / self.target_fps:
+                self.step()
+                accumulated_time -= 1.0 / self.target_fps
+            previous_time = current_time
+            self.c_swap_root_window()
 
-        """
-        #"fuzzy accumulator" logic instead
-        #https://medium.com/@tglaiel/how-to-make-your-game-run-at-60fps-24c61210fe75
-        while True:
-            self.current_time = self.c_get_current_time()
-            self.delta = self.current_time - self.previous_time
-            self.accumulated_time += self.delta
-            while self.accumulated_time > (1.0 / ((1.0 / self.ms_per_update) + 1.0))/1000:
-                self.timestamp = self.c_get_current_time() - self.start_time
-                PyErr_CheckSignals()
-                self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
-                self.event.update(self.timestamp)
-                self.physics.update(self.ms_per_update/1000)
-                self.graphics.update()
-                self.accumulated_time -= max(0.0, (1.0 / ((1.0 / self.ms_per_update) - 1.0))/1000)
-            self.previous_time = self.current_time
-        """
+    def step(self):
+        cdef:
+            size_t frame_index
+            double frame_time
+        self.current_time = self.c_get_current_time() - self.start_time
+        frame_index = self.frame_count % self.num_frame_times
+        frame_time = self.current_time - self.previous_time
+        PyErr_CheckSignals()
+        self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
+        self.event.update(self.current_time)
+        self.physics.update(1.0/self.target_fps)
+        self.graphics.update()
+        self.frame_times[frame_index] = frame_time
+        self.frame_count += 1
+        self.previous_time = self.current_time
 
-        #naive sleep option
-        while True:
-            self.current_time = self.c_get_current_time()
-            self.delta = self.current_time - self.previous_time
-            self.timestamp += self.delta
-            PyErr_CheckSignals()
-            self.event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
-            self.event.update(self.timestamp)
-            self.physics.update(self.ms_per_update/1000)
-            self.graphics.update()#differs from fix your timestep (avoids interpolation), will decide in more intensive demos
-            time.sleep(max(0.0, self.ms_per_update/1000 - self.delta))
-            self.previous_time = self.current_time
-                
     cdef double c_get_current_time(self) nogil:
         cdef:
             double counter
@@ -101,3 +106,14 @@ cdef class App:
         counter = SDL_GetPerformanceCounter()
         current_time = counter / self.frequency
         return current_time
+
+    cpdef double get_frame_time(self) except *:
+        return sum(self.frame_times) / self.num_frame_times
+
+    cpdef double get_fps(self) except *:
+        return 1.0 / self.get_frame_time()
+
+    cdef void c_swap_root_window(self) except *:
+        SDL_GL_MakeCurrent(self.graphics.root_window, self.graphics.root_context)
+        SDL_GL_SetSwapInterval(self.use_vsync)
+        SDL_GL_SwapWindow(self.graphics.root_window)

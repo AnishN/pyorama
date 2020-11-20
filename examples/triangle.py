@@ -1,4 +1,3 @@
-import math
 import numpy as np
 from pyorama.core import *
 from pyorama.event import *
