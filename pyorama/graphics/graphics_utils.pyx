@@ -166,6 +166,13 @@ cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) no
             top += 1
             bottom -= 1
 
+cdef void c_image_data_premultiply_alpha(uint16_t width, uint16_t height, uint8_t *data) nogil:
+    cdef size_t i
+    for i in range(0, width * height * 4, 4):
+        data[i] = <uint16_t>data[i] * data[i + 3] / 255
+        data[i + 1] = <uint16_t>data[i + 1] * data[i + 3] / 255
+        data[i + 2] = <uint16_t>data[i + 2] * data[i + 3] / 255
+
 cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil:
     cdef uint32_t gl_flags = 0
     if flags & VIEW_CLEAR_COLOR:

@@ -17,6 +17,7 @@ cdef AttributeType c_attribute_type_from_gl(uint32_t gl_type) except *
 cdef UniformType c_uniform_type_from_gl(uint32_t gl_type) except *
 cdef void c_image_data_flip_x(uint16_t width, uint16_t height, uint8_t *data) nogil
 cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) nogil
+cdef void c_image_data_premultiply_alpha(uint16_t width, uint16_t height, uint8_t *data) nogil
 cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil
 cdef uint32_t c_texture_unit_to_gl(TextureUnit unit)
 cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) nogil

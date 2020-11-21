@@ -27,7 +27,7 @@ cdef class Image:
             raise MemoryError("Image: cannot allocate memory for data")
         self.set_data(data)
     
-    cpdef void create_from_file(self, bytes file_path, bint flip_x=False, bint flip_y=False) except *:
+    cpdef void create_from_file(self, bytes file_path, bint flip_x=False, bint flip_y=False, bint premultiply_alpha=True) except *:
         cdef:
             SDL_Surface *surface
             SDL_Surface *converted_surface
@@ -55,10 +55,12 @@ cdef class Image:
             c_image_data_flip_x(width, height, data_ptr)
         if not flip_y:#NOT actually flips the data to match OpenGL coordinate system
             c_image_data_flip_y(width, height, data_ptr)
+        if premultiply_alpha:
+            c_image_data_premultiply_alpha(width, height, data_ptr)
         self.create(width, height, data)
         SDL_FreeSurface(surface)
         SDL_FreeSurface(converted_surface)
-
+    
     cpdef void delete(self) except *:
         cdef:
             ImageC *image_ptr

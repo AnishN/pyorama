@@ -11,7 +11,7 @@ class Game(App):
         self.setup_shaders()
         
         #setup sprites
-        image_path = b"./resources/textures/bunny.png"
+        image_path = b"./resources/textures/sprite.png"
         self.image = Image(self.graphics)
         self.image.create_from_file(image_path)
         self.texture = Texture(self.graphics)
@@ -23,7 +23,7 @@ class Game(App):
 
         #setup piece sprites
         self.sprites = []
-        self.num_sprites = 100000
+        self.num_sprites = 1000
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):
@@ -33,6 +33,7 @@ class Game(App):
             sprite.create(self.bunny_width, self.bunny_height)
             sprite.set_position(position)
             sprite.set_anchor(Vec2(0.5, 0.5))
+            sprite.set_alpha(0.1)
             self.sprites.append(sprite)
         self.sprite_batch = SpriteBatch(self.graphics)
         self.sprite_batch.create()

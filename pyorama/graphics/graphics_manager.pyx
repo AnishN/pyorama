@@ -301,7 +301,7 @@ cdef class GraphicsManager:
             #glEnable(GL_CULL_FACE); self.c_check_gl()
             glEnable(GL_DEPTH_TEST); self.c_check_gl()
             glDepthFunc(GL_LESS); self.c_check_gl()
-            glDepthMask(True); self.c_check_gl()
+            glDepthMask(False); self.c_check_gl()
             
             fbo = view_ptr.frame_buffer
             if fbo != 0:
@@ -342,6 +342,3 @@ cdef class GraphicsManager:
             window = Window(self)
             window.handle = window_ptr.handle
             window.render()
-            #self.window_render(window_ptr.handle)
-        
-        self.c_swap_root_window()
