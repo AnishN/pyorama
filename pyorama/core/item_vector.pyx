@@ -49,6 +49,9 @@ cdef class ItemVector:
         self.c_get(self.num_items - 1, item)
         self.num_items -= 1
 
+    cdef void *c_get_ptr_unsafe(self, size_t index) nogil:
+        return self.items + (self.item_size * index)
+
     cdef void *c_get_ptr(self, size_t index) except *:
         if 0 <= index < self.max_items: 
             return self.items + (self.item_size * index)

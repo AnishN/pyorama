@@ -1,5 +1,3 @@
-from libc.stdlib cimport qsort
-
 cdef class SpriteBatch:
     def __cinit__(self, GraphicsManager graphics):
         self.graphics = graphics
@@ -108,7 +106,6 @@ cdef class SpriteBatch:
         vbo = batch_ptr.vertex_data_ptr
         ibo = batch_ptr.index_data_ptr
 
-        qsort(batch_ptr.sprites, batch_ptr.num_sprites, sizeof(Handle), _sprite_batch_sort)
         for i in range(batch_ptr.num_sprites):
             sprite_ptr = self.graphics.sprite_get_ptr(batch_ptr.sprites[i])
             for j in range(6):
@@ -130,6 +127,3 @@ cdef class SpriteBatch:
         v_buffer.set_data(<uint8_t[:vbo_size]>vbo)
         i_buffer.handle = batch_ptr.index_buffer
         i_buffer.set_data(<uint8_t[:ibo_size]>ibo)
-
-cdef int _sprite_batch_sort(const void *a, const void *b) nogil:
-    return (<Handle *>a)[0] > (<Handle *>b)[0]

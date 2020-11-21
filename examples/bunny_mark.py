@@ -1,10 +1,6 @@
 import math
 import os
-from pyorama.core import *
-from pyorama.event import *
-from pyorama.graphics import *
-from pyorama.physics import *
-from pyorama.math3d import *
+from pyorama import *
 
 class Game(App):
     
@@ -27,7 +23,7 @@ class Game(App):
 
         #setup piece sprites
         self.sprites = []
-        self.num_sprites = 10000
+        self.num_sprites = 100000
         position = Vec2()
         window_size = Vec2(self.width, self.height)
         for i in range(self.num_sprites):

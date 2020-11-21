@@ -8,6 +8,7 @@ cdef class ItemArray:
         size_t max_items
         size_t item_size
 
+    cdef void *c_get_ptr_unsafe(self, size_t index) nogil
     cdef void *c_get_ptr(self, size_t index) except *
     cdef void c_get(self, size_t index, void *item) except *
     cdef void c_set(self, size_t index, void *item) except *

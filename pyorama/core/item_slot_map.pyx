@@ -93,6 +93,15 @@ cdef class ItemSlotMap:
         self.items.c_pop_empty()
         self.erase.c_pop_empty()
 
+    cdef void *c_get_ptr_unsafe(self, Handle handle) nogil:
+        cdef:
+            Handle *inner_id
+            void *item_ptr
+
+        inner_id = <Handle *>self.indices.c_get_ptr_unsafe(c_handle_get_index(&handle))
+        item_ptr = self.items.c_get_ptr_unsafe(c_handle_get_index(inner_id))
+        return item_ptr
+
     cdef void *c_get_ptr(self, Handle handle) except *:
         cdef:
             Handle inner_id
