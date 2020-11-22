@@ -24,57 +24,27 @@ class Game(App):
         self.window.create(self.width, self.height, b"Tile Map Test")
 
     def setup_uniforms(self):
-        """
-        self.uniforms = {
+        self.tile_map_size = Vec2(self.num_map_rows, self.num_map_columns)
+        self.tile_size = Vec2(self.tile_width, self.tile_height)
+        self.atlas_size = Vec2(self.num_atlas_rows, self.num_atlas_columns)
+        self.proj_mat = Mat4(); Mat4.ortho(self.proj_mat, 0, self.width, 0, self.height, -1, 1)
+        self.view_mat = Mat4()
+        self.rect = Vec4(0, 0, self.width, self.height)
+        uniforms = {
             self.graphics.u_fmt_texture_0: TEXTURE_UNIT_0,
             self.graphics.u_fmt_tile_map_size: self.tile_map_size,
             self.graphics.u_fmt_tile_size: self.tile_size,
             self.graphics.u_fmt_atlas_size: self.atlas_size,
             self.graphics.u_fmt_proj: self.proj_mat,
             self.graphics.u_fmt_view: self.view_mat,
-            self.graphics.u_fmt_rect: self.u_rect_data,
+            self.graphics.u_fmt_rect: self.rect,
         }
-        """
-        
-        self.u_texture = Uniform(self.graphics)
-        self.u_texture.create(self.graphics.u_fmt_texture_0)
-        self.u_texture.set_data(TEXTURE_UNIT_0)
-
-        self.tile_map_size = Vec2(self.num_map_rows, self.num_map_columns)
-        self.u_tile_map_size = Uniform(self.graphics)
-        self.u_tile_map_size.create(self.graphics.u_fmt_tile_map_size)
-        self.u_tile_map_size.set_data(self.tile_map_size)
-
-        self.tile_size = Vec2(self.tile_width, self.tile_height)
-        self.u_tile_size = Uniform(self.graphics)
-        self.u_tile_size.create(self.graphics.u_fmt_tile_size)
-        self.u_tile_size.set_data(self.tile_size)
-
-        self.atlas_size = Vec2(self.num_atlas_rows, self.num_atlas_columns)
-        self.u_atlas_size = Uniform(self.graphics)
-        self.u_atlas_size.create(self.graphics.u_fmt_atlas_size)
-        self.u_atlas_size.set_data(self.atlas_size)
-
-        self.proj_mat = Mat4()
-        Mat4.ortho(self.proj_mat, 0, self.width, 0, self.height, -1, 1)
-        self.u_proj = Uniform(self.graphics)
-        self.u_proj.create(self.graphics.u_fmt_proj)
-        self.u_proj.set_data(self.proj_mat)
-
-        self.view_mat = Mat4()
-        self.u_view = Uniform(self.graphics)
-        self.u_view.create(self.graphics.u_fmt_view)
-        self.u_view.set_data(self.view_mat)
-
-        u_rect_data = Vec4(0, 0, self.width, self.height)
-        self.u_rect = Uniform(self.graphics)
-        self.u_rect.create(self.graphics.u_fmt_rect)
-        self.u_rect.set_data(u_rect_data)
-
-        self.uniforms = [
-            self.u_tile_map_size, self.u_tile_size, self.u_atlas_size, 
-            self.u_proj, self.u_view, self.u_rect, self.u_texture,
-        ]
+        self.uniforms = []
+        for u_fmt, u_data in uniforms.items():
+            uniform = Uniform(self.graphics)
+            uniform.create(u_fmt)
+            uniform.set_data(u_data)
+            self.uniforms.append(uniform)
     
     def setup_shaders(self):
         vs_path = b"./resources/shaders/tile.vert"
