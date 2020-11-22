@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import os
 from pyorama import *
 
@@ -6,10 +7,10 @@ class Game(App):
     
     def init(self):
         super().init()
+        self.setup_tiles()
         self.setup_window()
         self.setup_uniforms()
         self.setup_shaders()
-        self.setup_sprites()
         self.setup_view()
         self.setup_listeners()
 
@@ -20,12 +21,39 @@ class Game(App):
         self.width = 800
         self.height = 600
         self.window = Window(self.graphics)
-        self.window.create(self.width, self.height, b"BunnyMark")
+        self.window.create(self.width, self.height, b"Tile Map Test")
 
     def setup_uniforms(self):
+        """
+        self.uniforms = {
+            self.graphics.u_fmt_texture_0: TEXTURE_UNIT_0,
+            self.graphics.u_fmt_tile_map_size: self.tile_map_size,
+            self.graphics.u_fmt_tile_size: self.tile_size,
+            self.graphics.u_fmt_atlas_size: self.atlas_size,
+            self.graphics.u_fmt_proj: self.proj_mat,
+            self.graphics.u_fmt_view: self.view_mat,
+            self.graphics.u_fmt_rect: self.u_rect_data,
+        }
+        """
+        
         self.u_texture = Uniform(self.graphics)
         self.u_texture.create(self.graphics.u_fmt_texture_0)
         self.u_texture.set_data(TEXTURE_UNIT_0)
+
+        self.tile_map_size = Vec2(self.num_map_rows, self.num_map_columns)
+        self.u_tile_map_size = Uniform(self.graphics)
+        self.u_tile_map_size.create(self.graphics.u_fmt_tile_map_size)
+        self.u_tile_map_size.set_data(self.tile_map_size)
+
+        self.tile_size = Vec2(self.tile_width, self.tile_height)
+        self.u_tile_size = Uniform(self.graphics)
+        self.u_tile_size.create(self.graphics.u_fmt_tile_size)
+        self.u_tile_size.set_data(self.tile_size)
+
+        self.atlas_size = Vec2(self.num_atlas_rows, self.num_atlas_columns)
+        self.u_atlas_size = Uniform(self.graphics)
+        self.u_atlas_size.create(self.graphics.u_fmt_atlas_size)
+        self.u_atlas_size.set_data(self.atlas_size)
 
         self.proj_mat = Mat4()
         Mat4.ortho(self.proj_mat, 0, self.width, 0, self.height, -1, 1)
@@ -43,50 +71,51 @@ class Game(App):
         self.u_rect.create(self.graphics.u_fmt_rect)
         self.u_rect.set_data(u_rect_data)
 
-        self.uniforms = [self.u_texture, self.u_proj, self.u_view, self.u_rect]
+        self.uniforms = [
+            self.u_tile_map_size, self.u_tile_size, self.u_atlas_size, 
+            self.u_proj, self.u_view, self.u_rect, self.u_texture,
+        ]
     
     def setup_shaders(self):
-        vs_path = b"./resources/shaders/sprite.vert"
+        vs_path = b"./resources/shaders/tile.vert"
         self.vs = Shader(self.graphics)
         self.vs.create_from_file(SHADER_TYPE_VERTEX, vs_path)
 
-        fs_path = b"./resources/shaders/sprite.frag"
+        fs_path = b"./resources/shaders/tile.frag"
         self.fs = Shader(self.graphics)
         self.fs.create_from_file(SHADER_TYPE_FRAGMENT, fs_path)
         self.program = Program(self.graphics)
         self.program.create(self.vs, self.fs)
 
-    def setup_sprites(self):
-        image_path = b"./resources/textures/bunny.png"
+    def setup_tiles(self):
+        #Public domain tile-set taken from here: https://adamatomic.itch.io/cavernas
         self.image = Image(self.graphics)
-        self.image.create_from_file(image_path)
+        self.image.create_from_file(b"./resources/textures/cavesofgallet_tiles.png")
         self.texture = Texture(self.graphics)
-        self.texture.create(mipmaps=True, filter=TEXTURE_FILTER_LINEAR)
+        self.texture.create()
         self.texture.set_data_2d_from_image(self.image)
-
-        self.bunny_width = self.image.get_width()
-        self.bunny_height = self.image.get_height()
-
-        #setup piece sprites
-        self.sprites = []
-        self.num_sprites = 1000
-        position = Vec2()
-        window_size = Vec2(self.width, self.height)
-        for i in range(self.num_sprites):
-            Vec2.random(position)
-            Vec2.mul(position, position, window_size)
-            sprite = Sprite(self.graphics)
-            sprite.create(self.bunny_width, self.bunny_height)
-            sprite.set_position(position)
-            sprite.set_anchor(Vec2(0.5, 0.5))
-            sprite.set_alpha(0.3)
-            self.sprites.append(sprite)
-        self.sprite_batch = SpriteBatch(self.graphics)
-        self.sprite_batch.create()
-        self.sprite_batch.set_sprites(self.sprites)
         
-        self.vbo = self.sprite_batch.get_vertex_buffer()
-        self.ibo = self.sprite_batch.get_index_buffer()
+        self.tile_width = 16
+        self.tile_height = 16
+        self.num_atlas_rows = int(self.image.get_height() / self.tile_height)
+        self.num_atlas_columns = int(self.image.get_width() / self.tile_width)
+        self.atlas = TextureGridAtlas(self.graphics)
+        self.atlas.create(self.texture, self.num_atlas_rows, self.num_atlas_columns)
+
+        self.num_map_rows = 20
+        self.num_map_columns = 32
+        self.tile_map = TileMap(self.graphics)
+        self.tile_map.create(self.atlas, self.tile_width, self.tile_height, self.num_map_rows, self.num_map_columns)
+        self.tile_indices = np.random.randint(
+            low=0,
+            high=self.num_atlas_rows * self.num_atlas_columns,
+            size=self.num_map_rows * self.num_map_columns, 
+            dtype=np.uint32,
+        )
+
+        self.tile_map.set_indices(self.tile_indices)
+        self.vbo = self.tile_map.get_vertex_buffer()
+        self.ibo = self.tile_map.get_index_buffer()
 
     def setup_view(self):
         self.out_color = Texture(self.graphics)
@@ -125,18 +154,7 @@ class Game(App):
             self.quit()
 
     def on_enter_frame(self, event_data, *args, **kwargs):
-        position = Vec2()
-        shift = Vec2()
-        for i in range(self.num_sprites):
-            Vec2.random(shift)
-            Vec2.scale_add(shift, shift, 2.0, -1.0)
-            sprite = self.sprites[i]
-            position = sprite.get_position()
-            Vec2.add(position, position, shift)
-            sprite.set_position(position)
-        fps = round(self.get_fps(), 1)
-        title = ("BunnyMark (FPS: {0})".format(fps)).encode("utf-8")
-        self.window.set_title(title)
+        pass
     
 if __name__ == "__main__":
     game = Game()

@@ -14,6 +14,8 @@ from pyorama.graphics.sprite_batch import *
 from pyorama.graphics.sprite import *
 from pyorama.graphics.text import *
 from pyorama.graphics.texture import *
+from pyorama.graphics.texture_grid_atlas import *
+from pyorama.graphics.tile_map import *
 from pyorama.graphics.uniform_format import *
 from pyorama.graphics.uniform import *
 from pyorama.graphics.vertex_buffer import *

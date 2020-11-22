@@ -5,7 +5,7 @@ import time
 
 cdef class App:
 
-    def init(self, int target_fps=60, int num_frame_times=100, bint use_vsync=True, bint use_sleep=False):
+    def init(self, int target_fps=60, int num_frame_times=20, bint use_vsync=True, bint use_sleep=False):
         self.target_fps = target_fps
         self.num_frame_times = num_frame_times
         self.use_vsync = use_vsync

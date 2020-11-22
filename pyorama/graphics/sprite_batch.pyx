@@ -99,7 +99,7 @@ cdef class SpriteBatch:
             Vec4C(1.0, 0.0, 1.0, 0.0),
             Vec4C(1.0, 1.0, 1.0, 1.0),
         ]
-        v_fmt_ptr = self.graphics.vertex_format_get_ptr(self.graphics.v_fmt_sprite.handle)
+        v_fmt_ptr = self.graphics.v_fmt_sprite.get_ptr()
         batch_ptr = self.get_ptr()
         vbo_size = v_fmt_ptr.stride * 6 * batch_ptr.num_sprites
         ibo_size = sizeof(uint32_t) * 6 * batch_ptr.num_sprites

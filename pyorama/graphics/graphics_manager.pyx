@@ -73,7 +73,9 @@ cdef class GraphicsManager:
         self.sprite_batches = ItemSlotMap(sizeof(SpriteBatchC), GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
         self.bitmap_fonts = ItemSlotMap(sizeof(BitmapFontC), GRAPHICS_ITEM_TYPE_BITMAP_FONT)
         self.texts = ItemSlotMap(sizeof(TextC), GRAPHICS_ITEM_TYPE_TEXT)
-
+        self.texture_grid_atlases = ItemSlotMap(sizeof(TextureGridAtlasC), GRAPHICS_ITEM_TYPE_TEXTURE_GRID_ATLAS)
+        self.tile_maps = ItemSlotMap(sizeof(TileMapC), GRAPHICS_ITEM_TYPE_TILE_MAP)
+    
     cdef void c_delete_slot_maps(self) except *:
         self.windows = None
         self.vertex_formats = None
@@ -93,12 +95,17 @@ cdef class GraphicsManager:
         self.sprite_batches = None
         self.bitmap_fonts = None
         self.texts = None
+        self.texture_grid_atlases = None
+        self.tile_maps = None
 
     cdef void c_create_predefined_uniform_formats(self) except *: 
         self.u_fmt_rect = UniformFormat(self); self.u_fmt_rect.create(b"u_rect", UNIFORM_TYPE_VEC4)
         self.u_fmt_quad = UniformFormat(self); self.u_fmt_quad.create(b"u_quad", UNIFORM_TYPE_INT)
         self.u_fmt_view = UniformFormat(self); self.u_fmt_view.create(b"u_view", UNIFORM_TYPE_MAT4)
         self.u_fmt_proj = UniformFormat(self); self.u_fmt_proj.create(b"u_proj", UNIFORM_TYPE_MAT4)
+        self.u_fmt_tile_map_size = UniformFormat(self); self.u_fmt_tile_map_size.create(b"u_tile_map_size", UNIFORM_TYPE_VEC2)
+        self.u_fmt_tile_size = UniformFormat(self); self.u_fmt_tile_size.create(b"u_tile_size", UNIFORM_TYPE_VEC2)
+        self.u_fmt_atlas_size = UniformFormat(self); self.u_fmt_atlas_size.create(b"u_atlas_size", UNIFORM_TYPE_VEC2)
         self.u_fmt_texture_0 = UniformFormat(self); self.u_fmt_texture_0.create(b"u_texture_0", UNIFORM_TYPE_INT)
         self.u_fmt_texture_1 = UniformFormat(self); self.u_fmt_texture_1.create(b"u_texture_1", UNIFORM_TYPE_INT)
         self.u_fmt_texture_2 = UniformFormat(self); self.u_fmt_texture_2.create(b"u_texture_2", UNIFORM_TYPE_INT)
@@ -113,6 +120,9 @@ cdef class GraphicsManager:
         self.u_fmt_quad.delete(); self.u_fmt_quad = None
         self.u_fmt_view.delete(); self.u_fmt_view = None
         self.u_fmt_proj.delete(); self.u_fmt_proj = None
+        self.u_fmt_tile_map_size.delete(); self.u_fmt_tile_map_size = None
+        self.u_fmt_tile_size.delete(); self.u_fmt_tile_size = None
+        self.u_fmt_atlas_size.delete(); self.u_fmt_atlas_size = None
         self.u_fmt_texture_0.delete(); self.u_fmt_texture_0 = None
         self.u_fmt_texture_1.delete(); self.u_fmt_texture_1 = None
         self.u_fmt_texture_2.delete(); self.u_fmt_texture_2 = None
@@ -143,17 +153,26 @@ cdef class GraphicsManager:
             (b"a_tint_alpha", VERTEX_COMP_TYPE_F32, 4, False),#tint (vec3), alpha (float)
             (b"a_anchor", VERTEX_COMP_TYPE_F32, 2, False),#anchor (vec2)
         ])
+
+        self.v_fmt_tile = VertexFormat(self)
+        self.v_fmt_tile.create([
+            (b"a_vertex_index_type", VERTEX_COMP_TYPE_F32, 4, False),#base vertex (vec2), tile_index (float), tile_type (float)
+        ])
+        
         self.i_fmt_quad = INDEX_FORMAT_U32
         self.i_fmt_mesh = INDEX_FORMAT_U32
         self.i_fmt_sprite = INDEX_FORMAT_U32
+        self.i_fmt_tile = INDEX_FORMAT_U32
 
     cdef void c_delete_predefined_vertex_index_formats(self) except *:
         self.v_fmt_quad.delete(); self.v_fmt_quad = None
         self.v_fmt_mesh.delete(); self.v_fmt_mesh = None
         self.v_fmt_sprite.delete(); self.v_fmt_sprite = None
+        self.v_fmt_tile.delete(); self.v_fmt_tile = None
         self.i_fmt_quad = INDEX_FORMAT_U32
         self.i_fmt_mesh = INDEX_FORMAT_U32
         self.i_fmt_sprite = INDEX_FORMAT_U32
+        self.i_fmt_tile = INDEX_FORMAT_U32
 
     cdef void c_create_quad(self) except *:
         cdef:
@@ -246,6 +265,12 @@ cdef class GraphicsManager:
 
     cdef TextC *text_get_ptr(self, Handle text) except *:
         return <TextC *>self.texts.c_get_ptr(text)
+
+    cdef TextureGridAtlasC *texture_grid_atlas_get_ptr(self, Handle atlas) except *:
+        return <TextureGridAtlasC *>self.texture_grid_atlases.c_get_ptr(atlas)
+    
+    cdef TileMapC *tile_map_get_ptr(self, Handle tile_map) except *:
+        return <TileMapC *>self.tile_maps.c_get_ptr(tile_map)
     
     cdef void c_swap_root_window(self) except *:
         SDL_GL_MakeCurrent(self.root_window, self.root_context)
@@ -263,6 +288,7 @@ cdef class GraphicsManager:
             Handle fbo
             FrameBufferC *fbo_ptr
             SpriteBatch sprite_batch = SpriteBatch(self)
+            TileMap tile_map = TileMap(self)
             Program program = Program(self)
             ProgramC *program_ptr
             VertexBufferC *vbo_ptr
@@ -272,6 +298,7 @@ cdef class GraphicsManager:
             UniformC *uniform_ptr
             WindowC *window_ptr
             SpriteBatchC *sprite_batch_ptr
+            TileMapC *tile_map_ptr
             size_t i
         
         #update sprite batches
@@ -279,6 +306,12 @@ cdef class GraphicsManager:
             sprite_batch_ptr = <SpriteBatchC *>self.sprite_batches.items.c_get_ptr(i)
             sprite_batch.handle = sprite_batch_ptr.handle
             sprite_batch._update()
+
+        #update tile maps
+        for i in range(self.tile_maps.items.num_items):
+            tile_map_ptr = <TileMapC *>self.tile_maps.items.c_get_ptr(i)
+            tile_map.handle = tile_map_ptr.handle
+            tile_map._update()
 
         #update mesh batches
         pass

@@ -14,6 +14,7 @@ from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *
 from pyorama.graphics.sprite_batch cimport *
+from pyorama.graphics.tile_map cimport *
 from pyorama.graphics.uniform cimport *
 from pyorama.graphics.uniform_format cimport *
 from pyorama.graphics.vertex_buffer cimport *
@@ -43,6 +44,8 @@ cdef class GraphicsManager:
         ItemSlotMap sprite_batches
         ItemSlotMap bitmap_fonts
         ItemSlotMap texts
+        ItemSlotMap texture_grid_atlases
+        ItemSlotMap tile_maps
 
         Uniform u_quad
         VertexBuffer quad_vbo
@@ -55,6 +58,9 @@ cdef class GraphicsManager:
         readonly UniformFormat u_fmt_quad
         readonly UniformFormat u_fmt_proj
         readonly UniformFormat u_fmt_view
+        readonly UniformFormat u_fmt_tile_map_size
+        readonly UniformFormat u_fmt_tile_size
+        readonly UniformFormat u_fmt_atlas_size
         readonly UniformFormat u_fmt_texture_0
         readonly UniformFormat u_fmt_texture_1
         readonly UniformFormat u_fmt_texture_2
@@ -67,9 +73,11 @@ cdef class GraphicsManager:
         readonly VertexFormat v_fmt_quad
         readonly VertexFormat v_fmt_mesh
         readonly VertexFormat v_fmt_sprite
+        readonly VertexFormat v_fmt_tile
         readonly IndexFormat i_fmt_quad
         readonly IndexFormat i_fmt_mesh
         readonly IndexFormat i_fmt_sprite
+        readonly IndexFormat i_fmt_tile
     
     cdef void c_check_gl(self) except *
     cdef void c_check_gl_extensions(self) except *
@@ -100,6 +108,8 @@ cdef class GraphicsManager:
     cdef SpriteBatchC *sprite_batch_get_ptr(self, Handle batch) except *
     cdef BitmapFontC *bitmap_font_get_ptr(self, Handle font) except *
     cdef TextC *text_get_ptr(self, Handle text) except *
+    cdef TextureGridAtlasC *texture_grid_atlas_get_ptr(self, Handle atlas) except *
+    cdef TileMapC *tile_map_get_ptr(self, Handle tile_map) except *
 
     cdef void c_swap_root_window(self) except *
     cpdef void update(self) except *

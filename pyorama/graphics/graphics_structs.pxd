@@ -230,3 +230,22 @@ ctypedef struct TextC:
     size_t data_length
     Vec2C position
     Vec4C color
+
+ctypedef struct TextureGridAtlasC:
+    Handle handle
+    Handle texture
+    size_t num_rows
+    size_t num_columns
+
+ctypedef struct TileMapC:
+    Handle handle
+    Handle atlas
+    size_t tile_width
+    size_t tile_height
+    size_t num_rows
+    size_t num_columns
+    uint32_t *indices
+    Handle vertex_buffer
+    uint8_t *vertex_data_ptr
+    Handle index_buffer
+    uint8_t *index_data_ptr
