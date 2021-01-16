@@ -1,12 +1,28 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_VERTEX_FORMAT
+ctypedef VertexFormatC ItemTypeC
+
 cdef class VertexFormat:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef VertexFormatC *get_ptr(self) except *:
-        return self.graphics.vertex_format_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return VertexFormat.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, list comps) except *:
         cdef:
@@ -22,7 +38,7 @@ cdef class VertexFormat:
         num_comps = len(comps)
         if num_comps > 16:
             raise ValueError("VertexFormat: maximum number of vertex comps exceeded")
-        self.handle = self.graphics.vertex_formats.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         format_ptr = self.get_ptr()
         offset = 0
         for i in range(num_comps):
@@ -48,7 +64,7 @@ cdef class VertexFormat:
         format_ptr.stride = offset
 
     cpdef void delete(self) except *:
-        self.graphics.vertex_formats.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
 

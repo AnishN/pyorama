@@ -1,13 +1,28 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_SPRITE
+ctypedef SpriteC ItemTypeC
+
 cdef class Sprite:
-    
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef SpriteC *get_ptr(self) except *:
-        return self.graphics.sprite_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Sprite.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, float width, float height) except *:
         cdef:
@@ -18,7 +33,7 @@ cdef class Sprite:
             0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 
             0.0, 1.0, 1.0, 0.0, 1.0, 1.0,
         ]
-        self.handle = self.graphics.sprites.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         sprite_ptr = self.get_ptr()
         sprite_ptr.width = width
         sprite_ptr.height = height
@@ -32,7 +47,7 @@ cdef class Sprite:
         sprite_ptr.alpha = 1.0
 
     cpdef void delete(self) except *:
-        self.graphics.sprites.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef void set_tex_coords(self, float[::1] tex_coords) except *:

@@ -2,9 +2,13 @@ from pyorama.graphics.graphics_manager cimport *
 
 cdef class Sprite:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
-    
+        
+    @staticmethod
+    cdef SpriteC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef SpriteC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef SpriteC *get_ptr(self) except *
     cpdef void create(self, float width, float height) except *
     cpdef void delete(self) except *

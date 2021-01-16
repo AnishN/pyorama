@@ -1,12 +1,28 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_SHADER
+ctypedef ShaderC ItemTypeC
+
 cdef class Shader:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef ShaderC *get_ptr(self) except *:
-        return self.graphics.shader_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Shader.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, ShaderType type, bytes source) except *:
         cdef:
@@ -19,21 +35,21 @@ cdef class Shader:
             int log_length
             uint32_t gl_type
 
-        self.handle = self.graphics.shaders.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         shader_ptr = self.get_ptr()
         gl_type = c_shader_type_to_gl(type)
-        gl_id = glCreateShader(gl_type); self.graphics.c_check_gl()
+        gl_id = glCreateShader(gl_type); self.manager.c_check_gl()
         source_ptr = source
         source_length = len(source)
-        glShaderSource(gl_id, 1, &source_ptr, <GLint*>&source_length); self.graphics.c_check_gl()
-        glCompileShader(gl_id); self.graphics.c_check_gl()
-        glGetShaderiv(gl_id, GL_COMPILE_STATUS, <GLint*>&compile_status); self.graphics.c_check_gl()
-        glGetShaderiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length); self.graphics.c_check_gl()
+        glShaderSource(gl_id, 1, &source_ptr, <GLint*>&source_length); self.manager.c_check_gl()
+        glCompileShader(gl_id); self.manager.c_check_gl()
+        glGetShaderiv(gl_id, GL_COMPILE_STATUS, <GLint*>&compile_status); self.manager.c_check_gl()
+        glGetShaderiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length); self.manager.c_check_gl()
         if not compile_status:
             log = <char*>malloc(log_length * sizeof(char))
             if log == NULL:
                 raise MemoryError("Shader: could not allocate memory for compile error")
-            glGetShaderInfoLog(gl_id, log_length, NULL, log); self.graphics.c_check_gl()
+            glGetShaderInfoLog(gl_id, log_length, NULL, log); self.manager.c_check_gl()
             raise ValueError("Shader: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
         shader_ptr.gl_id = gl_id
         shader_ptr.type = type
@@ -51,6 +67,6 @@ cdef class Shader:
         cdef:
             ShaderC *shader_ptr
         shader_ptr = self.get_ptr()
-        glDeleteShader(shader_ptr.gl_id); self.graphics.c_check_gl()
-        self.graphics.shaders.c_delete(self.handle)
+        glDeleteShader(shader_ptr.gl_id); self.manager.c_check_gl()
+        self.manager.delete(self.handle)
         self.handle = 0

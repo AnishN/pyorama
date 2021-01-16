@@ -3,9 +3,13 @@ from pyorama.graphics.texture cimport *
 
 cdef class TextureGridAtlas:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
-
+        
+    @staticmethod
+    cdef TextureGridAtlasC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef TextureGridAtlasC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef TextureGridAtlasC *get_ptr(self) except *
     cpdef void create(self, Texture texture, size_t num_rows, size_t num_columns) except *
     cpdef void delete(self) except *

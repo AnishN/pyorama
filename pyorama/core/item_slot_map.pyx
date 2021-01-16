@@ -29,30 +29,25 @@ cdef class ItemSlotMap:
             Handle *item_ptr#to write Handle into first member of item struct
         
         if self.c_is_free_list_empty():
-            c_handle_set(&inner_id, self.items.num_items, 1, self.item_type, 0)
+            handle_set(&inner_id, self.items.num_items, 1, self.item_type, 0)
             outer_id = inner_id
-            c_handle_set_index(&outer_id, self.indices.num_items)
+            handle_set_index(&outer_id, self.indices.num_items)
             self.indices.c_push(&inner_id)
         else:
             outer_index = self.free_list_front
             self.indices.c_get(outer_index, &inner_id)
-            self.free_list_front = c_handle_get_index(&inner_id)
+            self.free_list_front = handle_get_index(&inner_id)
             if self.c_is_free_list_empty():
                 self.free_list_back = self.free_list_front
-            c_handle_set_free(&inner_id, 0)
-            c_handle_set_index(&inner_id, self.items.num_items)
+            handle_set_free(&inner_id, 0)
+            handle_set_index(&inner_id, self.items.num_items)
             outer_id = inner_id
-            c_handle_set_index(&outer_id, outer_index)
+            handle_set_index(&outer_id, outer_index)
             self.indices.c_set(outer_index, &inner_id)
-
         self.items.c_push_empty()
-
-        #start of handle item writing changes
         item_ptr = <Handle *>self.items.c_get_ptr(self.items.num_items - 1)
         item_ptr[0] = outer_id
-        #end of handle item writing changes
-
-        outer_index = c_handle_get_index(&outer_id)
+        outer_index = handle_get_index(&outer_id)
         self.erase.c_push(&outer_index)
         return outer_id
 
@@ -66,28 +61,28 @@ cdef class ItemSlotMap:
         
         if not self.c_is_handle_valid(handle):
             raise INVALID_HANDLE_ERROR
-        self.indices.c_get(c_handle_get_index(&handle), &inner_id)
-        inner_index = c_handle_get_index(&inner_id)
-        c_handle_set_free(&inner_id, True)
-        c_handle_set_version(&inner_id, c_handle_get_version(&inner_id) + 1)
-        c_handle_set_index(&inner_id, <uint32_t>0xFFFFFFFF)
-        self.indices.c_set(c_handle_get_index(&handle), &inner_id)
+        self.indices.c_get(handle_get_index(&handle), &inner_id)
+        inner_index = handle_get_index(&inner_id)
+        handle_set_free(&inner_id, True)
+        handle_set_version(&inner_id, handle_get_version(&inner_id) + 1)
+        handle_set_index(&inner_id, <uint32_t>0xFFFFFFFF)
+        self.indices.c_set(handle_get_index(&handle), &inner_id)
 
         if self.c_is_free_list_empty():
-            self.free_list_front = c_handle_get_index(&handle)
+            self.free_list_front = handle_get_index(&handle)
             self.free_list_back = self.free_list_front
         else:
             self.indices.c_get(self.free_list_back, &free_id)
-            c_handle_set_index(&free_id, c_handle_get_index(&handle))
+            handle_set_index(&free_id, handle_get_index(&handle))
             self.indices.c_set(self.free_list_back, &free_id)
-            self.free_list_back = c_handle_get_index(&handle)
+            self.free_list_back = handle_get_index(&handle)
 
         if inner_index != self.items.num_items - 1:
             self.items.c_swap(inner_index, self.items.num_items - 1)
             self.erase.c_swap(inner_index, self.erase.num_items - 1)
             self.erase.c_get(inner_index, &outer_index)
             self.indices.c_get(outer_index, &outer_id)
-            c_handle_set_index(&outer_id, inner_index)
+            handle_set_index(&outer_id, inner_index)
             self.indices.c_set(outer_index, &outer_id)
 
         self.items.c_pop_empty()
@@ -98,8 +93,8 @@ cdef class ItemSlotMap:
             Handle *inner_id
             void *item_ptr
 
-        inner_id = <Handle *>self.indices.c_get_ptr_unsafe(c_handle_get_index(&handle))
-        item_ptr = self.items.c_get_ptr_unsafe(c_handle_get_index(inner_id))
+        inner_id = <Handle *>self.indices.c_get_ptr_unsafe(handle_get_index(&handle))
+        item_ptr = self.items.c_get_ptr_unsafe(handle_get_index(inner_id))
         return item_ptr
 
     cdef void *c_get_ptr(self, Handle handle) except *:
@@ -110,8 +105,8 @@ cdef class ItemSlotMap:
         if not self.c_is_handle_valid(handle):
             raise INVALID_HANDLE_ERROR
         else:
-            self.indices.c_get(c_handle_get_index(&handle), &inner_id)
-            item_ptr = self.items.c_get_ptr(c_handle_get_index(&inner_id))
+            self.indices.c_get(handle_get_index(&handle), &inner_id)
+            item_ptr = self.items.c_get_ptr(handle_get_index(&inner_id))
             return item_ptr
 
     cdef bint c_is_free_list_empty(self) except *:
@@ -122,13 +117,13 @@ cdef class ItemSlotMap:
             uint32_t outer_index
             Handle inner_id
 
-        outer_index = c_handle_get_index(&handle)
+        outer_index = handle_get_index(&handle)
         if outer_index >= self.indices.num_items:
             return False
-        elif c_handle_get_type(&handle) != self.item_type:
+        elif handle_get_type(&handle) != self.item_type:
             return False
         self.indices.c_get(outer_index, &inner_id)
-        if c_handle_get_index(&inner_id) < self.items.num_items:
-            if c_handle_get_version(&handle) == c_handle_get_version(&inner_id):
+        if handle_get_index(&inner_id) < self.items.num_items:
+            if handle_get_version(&handle) == handle_get_version(&inner_id):
                 return True
         return False

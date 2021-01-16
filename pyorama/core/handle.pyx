@@ -1,12 +1,12 @@
-cdef uint64_t NUM_INDEX_BITS = 32
-cdef uint64_t NUM_VERSION_BITS = 23
-cdef uint64_t NUM_TYPE_BITS = 8
-cdef uint64_t NUM_FREE_BITS = 1
+DEF NUM_INDEX_BITS = 32
+DEF NUM_VERSION_BITS = 23
+DEF NUM_TYPE_BITS = 8
+DEF NUM_FREE_BITS = 1
 
-cdef uint64_t INDEX_BIT = 0
-cdef uint64_t VERSION_BIT = NUM_INDEX_BITS
-cdef uint64_t TYPE_BIT = NUM_INDEX_BITS + NUM_VERSION_BITS
-cdef uint64_t FREE_BIT = NUM_INDEX_BITS + NUM_VERSION_BITS + NUM_TYPE_BITS
+DEF INDEX_BIT = 0
+DEF VERSION_BIT = NUM_INDEX_BITS
+DEF TYPE_BIT = NUM_INDEX_BITS + NUM_VERSION_BITS
+DEF FREE_BIT = NUM_INDEX_BITS + NUM_VERSION_BITS + NUM_TYPE_BITS
 
 cdef uint64_t INDEX_MASK = mask_range(INDEX_BIT, NUM_INDEX_BITS)
 cdef uint64_t VERSION_MASK = mask_range(VERSION_BIT, NUM_VERSION_BITS)
@@ -26,32 +26,32 @@ cdef uint64_t mask_range(uint64_t n, uint64_t r) nogil:
     mask = a ^ b
     return mask
 
-cdef uint32_t c_handle_get_index(Handle *handle) nogil:
+cdef uint32_t handle_get_index(Handle *handle) nogil:
     return <uint32_t>((handle[0] & INDEX_MASK) >> INDEX_BIT)
     
-cdef uint32_t c_handle_get_version(Handle *handle) nogil:
+cdef uint32_t handle_get_version(Handle *handle) nogil:
     return <uint32_t>((handle[0] & VERSION_MASK) >> VERSION_BIT)
 
-cdef uint8_t c_handle_get_type(Handle *handle) nogil:
+cdef uint8_t handle_get_type(Handle *handle) nogil:
     return <uint8_t>((handle[0] & TYPE_MASK) >> TYPE_BIT)
 
-cdef bint c_handle_get_free(Handle *handle) nogil:
+cdef bint handle_get_free(Handle *handle) nogil:
     return <bint>((handle[0] & FREE_MASK) >> FREE_BIT)
 
-cdef void c_handle_set(Handle *handle, uint32_t index, uint32_t version, uint8_t type, bint free) nogil:
-    c_handle_set_index(handle, index)
-    c_handle_set_version(handle, version)
-    c_handle_set_type(handle, type)
-    c_handle_set_free(handle, free)
+cdef void handle_set(Handle *handle, uint32_t index, uint32_t version, uint8_t type, bint free) nogil:
+    handle_set_index(handle, index)
+    handle_set_version(handle, version)
+    handle_set_type(handle, type)
+    handle_set_free(handle, free)
 
-cdef void c_handle_set_index(Handle *handle, uint32_t index) nogil:    
+cdef void handle_set_index(Handle *handle, uint32_t index) nogil:    
     handle[0] = (handle[0] & (~INDEX_MASK)) | (<uint64_t>index << INDEX_BIT & INDEX_MASK)
     
-cdef void c_handle_set_version(Handle *handle, uint32_t version) nogil:
+cdef void handle_set_version(Handle *handle, uint32_t version) nogil:
     handle[0] = (handle[0] & (~VERSION_MASK)) | (<uint64_t>version << VERSION_BIT & VERSION_MASK)
     
-cdef void c_handle_set_type(Handle *handle, uint8_t type) nogil:
+cdef void handle_set_type(Handle *handle, uint8_t type) nogil:
     handle[0] = (handle[0] & (~TYPE_MASK)) | ((<uint64_t>type) << TYPE_BIT & TYPE_MASK)
     
-cdef void c_handle_set_free(Handle *handle, bint free) nogil:
+cdef void handle_set_free(Handle *handle, bint free) nogil:
     handle[0] = (handle[0] & (~FREE_MASK)) | (<uint64_t>free << FREE_BIT & FREE_MASK)

@@ -1,3 +1,4 @@
+from cpython.object cimport *
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.sprite cimport *
@@ -5,9 +6,13 @@ from pyorama.graphics.vertex_buffer cimport *
 
 cdef class SpriteBatch:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
-
+        
+    @staticmethod
+    cdef SpriteBatchC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef SpriteBatchC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef SpriteBatchC *get_ptr(self) except *
     cpdef void create(self) except *
     cpdef void delete(self) except *

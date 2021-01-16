@@ -4,9 +4,13 @@ from pyorama.libs.sdl2 cimport *
 
 cdef class Window:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
-
+        
+    @staticmethod
+    cdef WindowC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef WindowC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef WindowC *get_ptr(self) except *
     cpdef void create(self, uint16_t width, uint16_t height, bytes title) except *
     cpdef void delete(self) except *

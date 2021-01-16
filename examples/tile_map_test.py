@@ -7,8 +7,8 @@ class Game(App):
     
     def init(self):
         super().init()
-        self.setup_tiles()
         self.setup_window()
+        self.setup_tiles()
         self.setup_uniforms()
         self.setup_shaders()
         self.setup_view()
@@ -72,8 +72,8 @@ class Game(App):
         self.atlas = TextureGridAtlas(self.graphics)
         self.atlas.create(self.texture, self.num_atlas_rows, self.num_atlas_columns)
 
-        self.num_map_rows = 20
-        self.num_map_columns = 32
+        self.num_map_rows = round(self.height / self.tile_height)
+        self.num_map_columns = round(self.width / self.tile_width)
         self.tile_map = TileMap(self.graphics)
         self.tile_map.create(self.atlas, self.tile_width, self.tile_height, self.num_map_rows, self.num_map_columns)
         self.tile_indices = np.random.randint(
@@ -82,7 +82,7 @@ class Game(App):
             size=self.num_map_rows * self.num_map_columns, 
             dtype=np.uint32,
         )
-
+        
         self.tile_map.set_indices(self.tile_indices)
         self.vbo = self.tile_map.get_vertex_buffer()
         self.ibo = self.tile_map.get_index_buffer()

@@ -1,12 +1,28 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_TEXTURE_GRID_ATLAS
+ctypedef TextureGridAtlasC ItemTypeC
+
 cdef class TextureGridAtlas:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef TextureGridAtlasC *get_ptr(self) except *:
-        return self.graphics.texture_grid_atlas_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return TextureGridAtlas.get_ptr_by_handle(self.manager, self.handle)
     
     cpdef void create(self, Texture texture, size_t num_rows, size_t num_columns) except *:
         cdef:
@@ -15,14 +31,14 @@ cdef class TextureGridAtlas:
             raise ValueError("TextureGridAtlas: num_rows cannot be zero")
         elif num_columns == 0:
             raise ValueError("TextureGridAtlas: num_columns cannot be zero")
-        self.handle = self.graphics.texture_grid_atlases.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         atlas_ptr = self.get_ptr()
         atlas_ptr.texture = texture.handle
         atlas_ptr.num_rows = num_rows
         atlas_ptr.num_columns = num_columns
 
     cpdef void delete(self) except *:
-        self.graphics.texture_grid_atlases.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef size_t get_num_rows(self) except *:

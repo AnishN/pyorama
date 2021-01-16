@@ -1,20 +1,36 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_INDEX_BUFFER
+ctypedef IndexBufferC ItemTypeC
+
 cdef class IndexBuffer:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef IndexBufferC *get_ptr(self) except *:
-        return self.graphics.index_buffer_get_ptr(self.handle)    
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return IndexBuffer.get_ptr_by_handle(self.manager, self.handle) 
     
     cpdef void create(self, IndexFormat format, BufferUsage usage=BUFFER_USAGE_STATIC) except *:
         cdef:
             Handle buffer
             IndexBufferC *buffer_ptr
-        self.handle = self.graphics.index_buffers.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         buffer_ptr = self.get_ptr()
-        glGenBuffers(1, &buffer_ptr.gl_id); self.graphics.c_check_gl()
+        glGenBuffers(1, &buffer_ptr.gl_id); self.manager.c_check_gl()
         if buffer_ptr.gl_id == 0:
             raise ValueError("IndexBuffer: failed to generate buffer id")
         buffer_ptr.format = format
@@ -26,12 +42,12 @@ cdef class IndexBuffer:
             IndexBufferC *buffer_ptr
             uint32_t gl_usage
         buffer_ptr = self.get_ptr()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.graphics.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
         gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.graphics.c_check_gl()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.graphics.c_check_gl()
-        glDeleteBuffers(1, &buffer_ptr.gl_id); self.graphics.c_check_gl()
-        self.graphics.index_buffers.c_delete(self.handle)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.manager.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.manager.c_check_gl()
+        glDeleteBuffers(1, &buffer_ptr.gl_id); self.manager.c_check_gl()
+        self.manager.delete(self.handle)
         self.handle = 0
     
     cpdef void set_data(self, uint8_t[::1] data) except *:
@@ -43,14 +59,14 @@ cdef class IndexBuffer:
         buffer_ptr = self.get_ptr()
         data_size = data.shape[0]
         data_ptr = &data[0]
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.graphics.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
         if buffer_ptr.size == data_size:#use sub data instead
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.graphics.c_check_gl()
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.manager.c_check_gl()
         else:
             gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage); self.graphics.c_check_gl()
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_size, data_ptr, gl_usage); self.manager.c_check_gl()
             buffer_ptr.size = data_size
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.graphics.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.manager.c_check_gl()
     
     cpdef void set_data_from_mesh(self, Mesh mesh) except *:
         cdef:
@@ -68,12 +84,12 @@ cdef class IndexBuffer:
         buffer_ptr = self.get_ptr()
         data_size = data.shape[0]
         data_ptr = &data[0]
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.graphics.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
         if offset + data_size > buffer_ptr.size:
             raise ValueError("IndexBuffer: attempting to write out of bounds")
         else:
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.graphics.c_check_gl()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.graphics.c_check_gl()
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data_size, data_ptr); self.manager.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.manager.c_check_gl()
 
     cpdef void set_sub_data_from_mesh(self, Mesh mesh, size_t offset) except *:
         cdef:
@@ -89,8 +105,8 @@ cdef class IndexBuffer:
             size_t format_size
             uint32_t format_gl
         buffer_ptr = self.get_ptr()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.graphics.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
         format_size = c_index_format_get_size(buffer_ptr.format)    
         format_gl = c_index_format_to_gl(buffer_ptr.format)
-        glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL); self.graphics.c_check_gl()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.graphics.c_check_gl()
+        glDrawElements(GL_TRIANGLES, buffer_ptr.size / format_size, format_gl, NULL); self.manager.c_check_gl()
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); self.manager.c_check_gl()

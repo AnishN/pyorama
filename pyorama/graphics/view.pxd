@@ -6,9 +6,13 @@ from pyorama.graphics.vertex_buffer cimport *
 
 cdef class View:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
 
+    @staticmethod
+    cdef ViewC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef ViewC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef ViewC *get_ptr(self) except *
     cpdef void create(self) except *
     cpdef void delete(self) except *

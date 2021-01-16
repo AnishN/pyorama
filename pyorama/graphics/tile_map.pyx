@@ -1,21 +1,37 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_TILE_MAP
+ctypedef TileMapC ItemTypeC
+
 cdef class TileMap:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef TileMapC *get_ptr(self) except *:
-        return self.graphics.tile_map_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return TileMap.get_ptr_by_handle(self.manager, self.handle)
     
     cpdef void create(self, TextureGridAtlas atlas, size_t tile_width, size_t tile_height, size_t num_rows, size_t num_columns) except *:
         cdef:
             TileMapC *map_ptr
-            VertexBuffer vbo = VertexBuffer(self.graphics)
-            IndexBuffer ibo = IndexBuffer(self.graphics)
+            VertexBuffer vbo = VertexBuffer(self.manager)
+            IndexBuffer ibo = IndexBuffer(self.manager)
             size_t num_tiles
 
-        self.handle = self.graphics.tile_maps.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         map_ptr = self.get_ptr()
         map_ptr.atlas = atlas.handle
         map_ptr.tile_width = tile_width
@@ -26,15 +42,15 @@ cdef class TileMap:
         map_ptr.indices = <uint32_t *>calloc(num_tiles, sizeof(uint32_t))
         if map_ptr.indices == NULL:
             raise MemoryError("TileMap: cannot allocate indices")
-        v_fmt_ptr = self.graphics.vertex_format_get_ptr(self.graphics.v_fmt_sprite.handle)
-        vbo.create(self.graphics.v_fmt_tile, usage=BUFFER_USAGE_DYNAMIC)
+        v_fmt_ptr = VertexFormat.get_ptr_by_handle(self.manager, self.manager.v_fmt_sprite.handle)
+        vbo.create(self.manager.v_fmt_tile, usage=BUFFER_USAGE_DYNAMIC)
         vbo_size = v_fmt_ptr.stride * 6 * num_tiles
         map_ptr.vertex_buffer = vbo.handle
         map_ptr.vertex_data_ptr = <uint8_t *>calloc(1, vbo_size)
         if map_ptr.vertex_data_ptr == NULL:
             raise MemoryError("TileMap: cannot allocate vertex data")
         
-        ibo.create(self.graphics.i_fmt_tile, usage=BUFFER_USAGE_DYNAMIC)
+        ibo.create(self.manager.i_fmt_tile, usage=BUFFER_USAGE_DYNAMIC)
         ibo_size = sizeof(uint32_t) * 6 * num_tiles
         map_ptr.index_buffer = ibo.handle
         map_ptr.index_data_ptr = <uint8_t *>calloc(1, ibo_size)
@@ -48,7 +64,7 @@ cdef class TileMap:
         free(map_ptr.indices)
         free(map_ptr.vertex_data_ptr)
         free(map_ptr.index_data_ptr)
-        self.graphics.tile_maps.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef void set_indices(self, uint32_t[:] indices) except *:
@@ -62,7 +78,7 @@ cdef class TileMap:
     cpdef VertexBuffer get_vertex_buffer(self):
         cdef:
             TileMapC *map_ptr
-            VertexBuffer out = VertexBuffer(self.graphics)
+            VertexBuffer out = VertexBuffer(self.manager)
         map_ptr = self.get_ptr()
         out.handle = map_ptr.vertex_buffer
         return out
@@ -70,7 +86,7 @@ cdef class TileMap:
     cpdef IndexBuffer get_index_buffer(self):
         cdef:
             TileMapC *batch_ptr
-            IndexBuffer out = IndexBuffer(self.graphics)
+            IndexBuffer out = IndexBuffer(self.manager)
         map_ptr = self.get_ptr()
         out.handle = map_ptr.index_buffer
         return out
@@ -81,8 +97,8 @@ cdef class TileMap:
             size_t i, j, index
             size_t num_tiles
             Vec2C[6] quad_vertices
-            VertexBuffer v_buffer = VertexBuffer(self.graphics)
-            IndexBuffer i_buffer = IndexBuffer(self.graphics)
+            VertexBuffer v_buffer = VertexBuffer(self.manager)
+            IndexBuffer i_buffer = IndexBuffer(self.manager)
             VertexFormatC *v_fmt_ptr
             uint8_t *vbo
             uint8_t *ibo
@@ -102,7 +118,7 @@ cdef class TileMap:
             Vec2C(1.0, 1.0),
         ]
         map_ptr = self.get_ptr()
-        v_fmt_ptr = self.graphics.v_fmt_tile.get_ptr()
+        v_fmt_ptr = self.manager.v_fmt_tile.get_ptr()
         num_tiles = map_ptr.num_rows * map_ptr.num_columns
         vbo_size = v_fmt_ptr.stride * 6 * num_tiles
         ibo_size = sizeof(uint32_t) * 6 * num_tiles

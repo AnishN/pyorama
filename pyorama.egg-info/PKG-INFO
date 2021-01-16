@@ -1,4 +1,4 @@
-Metadata-Version: 1.1
+Metadata-Version: 1.2
 Name: pyorama
 Version: 0.0.2
 Summary: A performant game engine written in cython.

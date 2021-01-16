@@ -3,9 +3,15 @@ from pyorama.graphics.mesh cimport *
 
 cdef class IndexBuffer:
     cdef:
-        public Handle handle#TODO: switch back to readonly
-        readonly GraphicsManager graphics
-
+        readonly GraphicsManager manager
+        readonly Handle handle
+    
+    @staticmethod
+    cdef IndexBufferC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef IndexBufferC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
+    cdef IndexBufferC *get_ptr(self) except *
+    
     cdef IndexBufferC *get_ptr(self) except *
     cpdef void create(self, IndexFormat format, BufferUsage usage=*) except *
     cpdef void delete(self) except *

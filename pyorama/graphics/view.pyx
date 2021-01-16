@@ -1,17 +1,33 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_VIEW
+ctypedef ViewC ItemTypeC
+
 cdef class View:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef ViewC *get_ptr(self) except *:
-        return self.graphics.view_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return View.get_ptr_by_handle(self.manager, self.handle)
     
     cpdef void create(self) except *:
         cdef:
             ViewC *view_ptr
-        self.handle = self.graphics.views.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         view_ptr = self.get_ptr()
         view_ptr.clear_flags = VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL
         view_ptr.clear_color = Vec4C(0.0, 0.0, 0.0, 1.0)
@@ -20,7 +36,7 @@ cdef class View:
         view_ptr.rect = (0, 0, 1, 1)
 
     cpdef void delete(self) except *:
-        self.graphics.views.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
         
     cpdef void set_clear_flags(self, uint32_t clear_flags) except *:

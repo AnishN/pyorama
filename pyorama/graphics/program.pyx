@@ -1,19 +1,35 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_PROGRAM
+ctypedef ProgramC ItemTypeC
+
 cdef class Program:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef ProgramC *get_ptr(self) except *:
-        return self.graphics.program_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Program.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, Shader vertex, Shader fragment) except *:
         cdef:
             ProgramC *program_ptr
-        self.handle = self.graphics.programs.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         program_ptr = self.get_ptr()
-        program_ptr.gl_id = glCreateProgram(); self.graphics.c_check_gl()
+        program_ptr.gl_id = glCreateProgram(); self.manager.c_check_gl()
         program_ptr.vertex = vertex.handle
         program_ptr.fragment = fragment.handle
         self._compile()
@@ -24,8 +40,8 @@ cdef class Program:
         cdef:
             ProgramC *program_ptr
         program_ptr = self.get_ptr()
-        glDeleteProgram(program_ptr.gl_id); self.graphics.c_check_gl()
-        self.graphics.programs.c_delete(self.handle)
+        glDeleteProgram(program_ptr.gl_id); self.manager.c_check_gl()
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cdef void _compile(self) except *:
@@ -38,17 +54,17 @@ cdef class Program:
             char *log
             int log_length
         program_ptr = self.get_ptr()
-        vertex_ptr = self.graphics.shader_get_ptr(program_ptr.vertex)
-        fragment_ptr = self.graphics.shader_get_ptr(program_ptr.fragment)
+        vertex_ptr = Shader.get_ptr_by_handle(self.manager, program_ptr.vertex)
+        fragment_ptr = Shader.get_ptr_by_handle(self.manager, program_ptr.fragment)
         gl_id = program_ptr.gl_id
-        glAttachShader(gl_id, vertex_ptr.gl_id); self.graphics.c_check_gl()
-        glAttachShader(gl_id, fragment_ptr.gl_id); self.graphics.c_check_gl()
-        glLinkProgram(gl_id); self.graphics.c_check_gl()
-        glGetProgramiv(gl_id, GL_LINK_STATUS, <GLint*>&link_status); self.graphics.c_check_gl()
-        glGetProgramiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length); self.graphics.c_check_gl()
+        glAttachShader(gl_id, vertex_ptr.gl_id); self.manager.c_check_gl()
+        glAttachShader(gl_id, fragment_ptr.gl_id); self.manager.c_check_gl()
+        glLinkProgram(gl_id); self.manager.c_check_gl()
+        glGetProgramiv(gl_id, GL_LINK_STATUS, <GLint*>&link_status); self.manager.c_check_gl()
+        glGetProgramiv(gl_id, GL_INFO_LOG_LENGTH, <GLint*>&log_length); self.manager.c_check_gl()
         if not link_status:
             log = <char*>malloc(log_length * sizeof(char))
-            glGetProgramInfoLog(gl_id, log_length, NULL, log); self.graphics.c_check_gl()
+            glGetProgramInfoLog(gl_id, log_length, NULL, log); self.manager.c_check_gl()
             raise ValueError("Program: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
 
     cdef void _setup_attributes(self) except *:
@@ -64,19 +80,19 @@ cdef class Program:
             ProgramAttributeC *attribute
         program_ptr = self.get_ptr()
         gl_id = program_ptr.gl_id
-        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &name_max_length); self.graphics.c_check_gl()
+        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &name_max_length); self.manager.c_check_gl()
         if name_max_length >= 256:
             raise ValueError("Program: attribute names cannot exceed 255 characters")
-        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTES, &count); self.graphics.c_check_gl()
+        glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTES, &count); self.manager.c_check_gl()
         if count > PROGRAM_MAX_ATTRIBUTES:
             raise ValueError("Program: cannot exceed {0} attributes".format(PROGRAM_MAX_ATTRIBUTES))
         for i in range(count):
             attribute = &program_ptr.attributes[i]
-            glGetActiveAttrib(gl_id, i, 255, &name_length, &size, &type, attribute.name); self.graphics.c_check_gl()
+            glGetActiveAttrib(gl_id, i, 255, &name_length, &size, &type, attribute.name); self.manager.c_check_gl()
             attribute.name_length = name_length
             attribute.size = size
             attribute.type = c_attribute_type_from_gl(type)
-            attribute.location = glGetAttribLocation(gl_id, attribute.name); self.graphics.c_check_gl()
+            attribute.location = glGetAttribLocation(gl_id, attribute.name); self.manager.c_check_gl()
         program_ptr.num_attributes = count
 
     cdef void _setup_uniforms(self) except *:
@@ -92,15 +108,15 @@ cdef class Program:
             ProgramUniformC *uniform
         program_ptr = self.get_ptr()
         gl_id = program_ptr.gl_id
-        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &name_max_length); self.graphics.c_check_gl()
+        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &name_max_length); self.manager.c_check_gl()
         if name_max_length >= 256:
             raise ValueError("Program: uniform names cannot exceed 255 characters")
-        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORMS, &count); self.graphics.c_check_gl()
+        glGetProgramiv(gl_id, GL_ACTIVE_UNIFORMS, &count); self.manager.c_check_gl()
         if count > PROGRAM_MAX_UNIFORMS:
             raise ValueError("Program: cannot exceed {0} uniforms".format(PROGRAM_MAX_UNIFORMS))
         for i in range(count):
             uniform = &program_ptr.uniforms[i]
-            glGetActiveUniform(gl_id, i, 255, &name_length, &size, &type, uniform.name); self.graphics.c_check_gl()
+            glGetActiveUniform(gl_id, i, 255, &name_length, &size, &type, uniform.name); self.manager.c_check_gl()
             uniform.name_length = name_length
             uniform.size = size
             uniform.type = c_uniform_type_from_gl(type)
@@ -120,9 +136,9 @@ cdef class Program:
             size_t comp_offset
             size_t location
         program_ptr = self.get_ptr()
-        buffer_ptr = self.graphics.vertex_buffer_get_ptr(buffer)
-        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.graphics.c_check_gl()
-        format_ptr = self.graphics.vertex_format_get_ptr(buffer_ptr.format)
+        buffer_ptr = VertexBuffer.get_ptr_by_handle(self.manager, buffer)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
+        format_ptr = VertexFormat.get_ptr_by_handle(self.manager, buffer_ptr.format)
         for i in range(format_ptr.count):
             comp_ptr = &format_ptr.comps[i]
             for j in range(program_ptr.num_attributes):
@@ -139,8 +155,8 @@ cdef class Program:
                         comp_ptr.normalized, 
                         format_ptr.stride,
                         <void *>comp_offset,
-                    ); self.graphics.c_check_gl()
-                    glEnableVertexAttribArray(location); self.graphics.c_check_gl()
+                    ); self.manager.c_check_gl()
+                    glEnableVertexAttribArray(location); self.manager.c_check_gl()
                     break
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
@@ -152,7 +168,7 @@ cdef class Program:
         program_ptr = self.get_ptr()
         for i in range(program_ptr.num_attributes):
             attribute = &program_ptr.attributes[i]
-            glDisableVertexAttribArray(attribute.location); self.graphics.c_check_gl()
+            glDisableVertexAttribArray(attribute.location); self.manager.c_check_gl()
 
     cdef void _bind_uniform(self, Handle uniform) except *:
         cdef:
@@ -166,8 +182,8 @@ cdef class Program:
             int32_t int_data
             float float_data
         program_ptr = self.get_ptr()
-        uniform_ptr = self.graphics.uniform_get_ptr(uniform)
-        format_ptr = self.graphics.uniform_format_get_ptr(uniform_ptr.format)
+        uniform_ptr = Uniform.get_ptr_by_handle(self.manager, uniform)
+        format_ptr = UniformFormat.get_ptr_by_handle(self.manager, uniform_ptr.format)
         for i in range(program_ptr.num_uniforms):
             uniform_info = &program_ptr.uniforms[i]
             if strcmp(format_ptr.name, uniform_info.name) == 0:#TODO: validate uniform against program's uniform info
@@ -175,19 +191,19 @@ cdef class Program:
                 type = uniform_info.type
                 if type == UNIFORM_TYPE_INT:
                     int_data = (<int32_t *>(uniform_ptr.data))[0]
-                    glUniform1i(location, <GLint>int_data); self.graphics.c_check_gl()
+                    glUniform1i(location, <GLint>int_data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_FLOAT:
                     float_data = (<float *>uniform_ptr.data)[0]
-                    glUniform1f(location, float_data); self.graphics.c_check_gl()
+                    glUniform1f(location, float_data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_VEC2:
-                    glUniform2fv(location, 1, <float *>uniform_ptr.data); self.graphics.c_check_gl()
+                    glUniform2fv(location, 1, <float *>uniform_ptr.data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_VEC3:
-                    glUniform3fv(location, 1, <float *>uniform_ptr.data); self.graphics.c_check_gl()
+                    glUniform3fv(location, 1, <float *>uniform_ptr.data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_VEC4:
-                    glUniform4fv(location, 1, <float *>uniform_ptr.data); self.graphics.c_check_gl()
+                    glUniform4fv(location, 1, <float *>uniform_ptr.data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_MAT2:
-                    glUniformMatrix2fv(location, 1, False, <float *>uniform_ptr.data); self.graphics.c_check_gl()
+                    glUniformMatrix2fv(location, 1, False, <float *>uniform_ptr.data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_MAT3:
-                    glUniformMatrix3fv(location, 1, False, <float *>uniform_ptr.data); self.graphics.c_check_gl()
+                    glUniformMatrix3fv(location, 1, False, <float *>uniform_ptr.data); self.manager.c_check_gl()
                 elif type == UNIFORM_TYPE_MAT4:
-                    glUniformMatrix4fv(location, 1, False, <float *>uniform_ptr.data); self.graphics.c_check_gl()
+                    glUniformMatrix4fv(location, 1, False, <float *>uniform_ptr.data); self.manager.c_check_gl()

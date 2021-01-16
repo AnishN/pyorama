@@ -6,8 +6,14 @@ from pyorama.graphics.vertex_buffer cimport *
 
 cdef class Mesh:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
+
+    @staticmethod
+    cdef MeshC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef MeshC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
+    cdef MeshC *get_ptr(self) except *
 
     cdef MeshC *get_ptr(self) except *
     cpdef void create(self, uint8_t[::1] vertex_data, uint8_t[::1] index_data) except *

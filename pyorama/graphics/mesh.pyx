@@ -1,19 +1,35 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_MESH
+ctypedef MeshC ItemTypeC
+
 cdef class Mesh:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef MeshC *get_ptr(self) except *:
-        return self.graphics.mesh_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Mesh.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, uint8_t[::1] vertex_data, uint8_t[::1] index_data) except *:
         cdef:
             MeshC *mesh_ptr
             size_t vertex_data_size
             size_t index_data_size
-        self.handle = self.graphics.meshes.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         mesh_ptr = self.get_ptr()
         vertex_data_size = vertex_data.shape[0]
         index_data_size = index_data.shape[0]
@@ -67,7 +83,7 @@ cdef class Mesh:
             raise ValueError("Mesh: no meshes present in file")
         if ai_scene.mNumMeshes > 1:
             raise ValueError("Mesh: multiple mesh import not supported")
-        self.handle = self.graphics.meshes.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         mesh_ptr = self.get_ptr()
         ai_mesh = ai_scene.mMeshes[0]
 
@@ -117,5 +133,5 @@ cdef class Mesh:
         mesh_ptr = self.get_ptr()
         free(mesh_ptr.vertex_data)
         free(mesh_ptr.index_data)
-        self.graphics.meshes.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0

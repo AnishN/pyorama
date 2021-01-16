@@ -1,12 +1,28 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_UNIFORM
+ctypedef UniformC ItemTypeC
+
 cdef class Uniform:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef UniformC *get_ptr(self) except *:
-        return self.graphics.uniform_get_ptr(self.handle)    
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Uniform.get_ptr_by_handle(self.manager, self.handle)
     
     cpdef void create(self, UniformFormat format) except *:
         cdef:
@@ -14,7 +30,7 @@ cdef class Uniform:
             size_t type_size
             size_t data_size
             uint8_t *data_ptr
-        self.handle = self.graphics.uniforms.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         uniform_ptr = self.get_ptr()
         uniform_ptr.format = format.handle
         format_ptr = format.get_ptr()
@@ -26,13 +42,13 @@ cdef class Uniform:
         uniform_ptr.data = data_ptr
 
     cpdef void delete(self) except *:
-        self.graphics.uniforms.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef void set_data(self, object data, size_t index=0) except *:
         cdef:
             UniformC *uniform_ptr
-            UniformFormat format = UniformFormat(self.graphics)
+            UniformFormat format = UniformFormat(self.manager)
             UniformType type
             size_t type_size
             int32_t int_data

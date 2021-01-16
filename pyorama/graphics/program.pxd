@@ -3,8 +3,14 @@ from pyorama.graphics.shader cimport *
 
 cdef class Program:
     cdef:
+        readonly GraphicsManager manager
         readonly Handle handle
-        readonly GraphicsManager graphics
+        
+    @staticmethod
+    cdef ProgramC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
+    @staticmethod
+    cdef ProgramC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
+    cdef ProgramC *get_ptr(self) except *
 
     cdef ProgramC *get_ptr(self) except *
     cpdef void create(self, Shader vertex, Shader fragment) except *

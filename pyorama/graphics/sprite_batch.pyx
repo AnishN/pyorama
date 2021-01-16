@@ -1,15 +1,31 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_SPRITE_BATCH
+ctypedef SpriteBatchC ItemTypeC
+
 cdef class SpriteBatch:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef SpriteBatchC *get_ptr(self) except *:
-        return self.graphics.sprite_batch_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return SpriteBatch.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self) except *:
-        self.handle = self.graphics.sprite_batches.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
 
     cpdef void delete(self) except *:
         cdef:
@@ -18,14 +34,14 @@ cdef class SpriteBatch:
         free(batch_ptr.sprites)
         free(batch_ptr.vertex_data_ptr)
         free(batch_ptr.index_data_ptr)
-        self.graphics.sprite_batches.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef void set_sprites(self, list sprites) except *:
         cdef:
             SpriteBatchC *batch_ptr
-            VertexBuffer vbo = VertexBuffer(self.graphics)
-            IndexBuffer ibo = IndexBuffer(self.graphics)
+            VertexBuffer vbo = VertexBuffer(self.manager)
+            IndexBuffer ibo = IndexBuffer(self.manager)
             size_t i
             size_t num_sprites = len(sprites)
 
@@ -39,9 +55,9 @@ cdef class SpriteBatch:
 
             #recreate vertex buffer
             free(batch_ptr.vertex_data_ptr)
-            vbo.create(self.graphics.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            vbo.create(self.manager.v_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
             batch_ptr.vertex_buffer = vbo.handle
-            v_fmt_ptr = self.graphics.vertex_format_get_ptr(self.graphics.v_fmt_sprite.handle)
+            v_fmt_ptr = VertexFormat.get_ptr_by_handle(self.manager, self.manager.v_fmt_sprite.handle)
             vbo_size = v_fmt_ptr.stride * 6 * num_sprites
             batch_ptr.vertex_data_ptr = <uint8_t *>calloc(1, vbo_size)
             if batch_ptr.vertex_data_ptr == NULL:
@@ -49,7 +65,7 @@ cdef class SpriteBatch:
 
             #recreate index buffer
             free(batch_ptr.index_data_ptr)
-            ibo.create(self.graphics.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
+            ibo.create(self.manager.i_fmt_sprite, usage=BUFFER_USAGE_DYNAMIC)
             batch_ptr.index_buffer = ibo.handle
             ibo_size = sizeof(uint32_t) * 6 * num_sprites
             batch_ptr.index_data_ptr = <uint8_t *>calloc(1, ibo_size)
@@ -63,7 +79,7 @@ cdef class SpriteBatch:
     cpdef VertexBuffer get_vertex_buffer(self):
         cdef:
             SpriteBatchC *batch_ptr
-            VertexBuffer out = VertexBuffer(self.graphics)
+            VertexBuffer out = VertexBuffer(self.manager)
         batch_ptr = self.get_ptr()
         out.handle = batch_ptr.vertex_buffer
         return out
@@ -71,7 +87,7 @@ cdef class SpriteBatch:
     cpdef IndexBuffer get_index_buffer(self):
         cdef:
             SpriteBatchC *batch_ptr
-            IndexBuffer out = IndexBuffer(self.graphics)
+            IndexBuffer out = IndexBuffer(self.manager)
         batch_ptr = self.get_ptr()
         out.handle = batch_ptr.index_buffer
         return out
@@ -82,8 +98,8 @@ cdef class SpriteBatch:
             SpriteC *sprite_ptr
             size_t i, j, index
             Vec4C[6] vertex_tex_coord
-            VertexBuffer v_buffer = VertexBuffer(self.graphics)
-            IndexBuffer i_buffer = IndexBuffer(self.graphics)
+            VertexBuffer v_buffer = VertexBuffer(self.manager)
+            IndexBuffer i_buffer = IndexBuffer(self.manager)
             VertexFormatC *v_fmt_ptr
             uint8_t *vbo
             uint8_t *ibo
@@ -99,7 +115,7 @@ cdef class SpriteBatch:
             Vec4C(1.0, 0.0, 1.0, 0.0),
             Vec4C(1.0, 1.0, 1.0, 1.0),
         ]
-        v_fmt_ptr = self.graphics.v_fmt_sprite.get_ptr()
+        v_fmt_ptr = self.manager.v_fmt_sprite.get_ptr()
         batch_ptr = self.get_ptr()
         vbo_size = v_fmt_ptr.stride * 6 * batch_ptr.num_sprites
         ibo_size = sizeof(uint32_t) * 6 * batch_ptr.num_sprites
@@ -107,7 +123,7 @@ cdef class SpriteBatch:
         ibo = batch_ptr.index_data_ptr
 
         for i in range(batch_ptr.num_sprites):
-            sprite_ptr = self.graphics.sprite_get_ptr(batch_ptr.sprites[i])
+            sprite_ptr = Sprite.get_ptr_by_index(self.manager, i)
             for j in range(6):
                 index = 6 * i + j
                 vbo_index = vbo + (index * v_fmt_ptr.stride)

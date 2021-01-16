@@ -1,31 +1,47 @@
+cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_TEXTURE
+ctypedef TextureC ItemTypeC
+
 cdef class Texture:
-    def __cinit__(self, GraphicsManager graphics):
-        self.graphics = graphics
+    def __cinit__(self, GraphicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.graphics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef TextureC *get_ptr(self) except *:
-        return self.graphics.texture_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Texture.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, TextureFormat format=TEXTURE_FORMAT_RGBA_8U, bint mipmaps=True, 
             TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, 
             TextureWrap wrap_t=TEXTURE_WRAP_REPEAT, bint cubemap=False) except *:
         cdef:
             TextureC *texture_ptr
-        self.handle = self.graphics.textures.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         texture_ptr = self.get_ptr()
         texture_ptr.format = format
         texture_ptr.cubemap = cubemap
-        glGenTextures(1, &texture_ptr.gl_id); self.graphics.c_check_gl()
+        glGenTextures(1, &texture_ptr.gl_id); self.manager.c_check_gl()
         self.set_parameters(mipmaps, filter, wrap_s, wrap_t)
     
     cpdef void delete(self) except *:
         cdef:
             TextureC *texture_ptr
         texture_ptr = self.get_ptr()
-        glDeleteTextures(1, &texture_ptr.gl_id); self.graphics.c_check_gl()
-        self.graphics.textures.c_delete(self.handle)
+        glDeleteTextures(1, &texture_ptr.gl_id); self.manager.c_check_gl()
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef void set_parameters(self, bint mipmaps=True, TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, TextureWrap wrap_t=TEXTURE_WRAP_REPEAT) except *:
@@ -38,12 +54,12 @@ cdef class Texture:
         texture_ptr.wrap_s = wrap_s
         texture_ptr.wrap_t = wrap_t
         target = GL_TEXTURE_CUBE_MAP if texture_ptr.cubemap else GL_TEXTURE_2D
-        glBindTexture(target, texture_ptr.gl_id); self.graphics.c_check_gl()
-        glTexParameteri(target, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s)); self.graphics.c_check_gl()	
-        glTexParameteri(target, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t)); self.graphics.c_check_gl()
-        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps)); self.graphics.c_check_gl()
-        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, False)); self.graphics.c_check_gl()#mipmap does not matter for mag filter!
-        glBindTexture(target, 0); self.graphics.c_check_gl()
+        glBindTexture(target, texture_ptr.gl_id); self.manager.c_check_gl()
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, c_texture_wrap_to_gl(wrap_s)); self.manager.c_check_gl()	
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, c_texture_wrap_to_gl(wrap_t)); self.manager.c_check_gl()
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, c_texture_filter_to_gl(filter, mipmaps)); self.manager.c_check_gl()
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, c_texture_filter_to_gl(filter, False)); self.manager.c_check_gl()#mipmap does not matter for mag filter!
+        glBindTexture(target, 0); self.manager.c_check_gl()
     
     cpdef void set_data_2d_from_image(self, Image image) except *:
         cdef:
@@ -59,11 +75,11 @@ cdef class Texture:
         gl_format = c_texture_format_to_format_gl(texture_ptr.format)
         gl_type = c_texture_format_to_type_gl(texture_ptr.format)
         image_ptr = image.get_ptr()
-        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.graphics.c_check_gl()
-        glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.graphics.c_check_gl()
+        glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.manager.c_check_gl()
+        glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.manager.c_check_gl()
         if texture_ptr.mipmaps:
-            glGenerateMipmap(GL_TEXTURE_2D); self.graphics.c_check_gl()
-        glBindTexture(GL_TEXTURE_2D, 0); self.graphics.c_check_gl()
+            glGenerateMipmap(GL_TEXTURE_2D); self.manager.c_check_gl()
+        glBindTexture(GL_TEXTURE_2D, 0); self.manager.c_check_gl()
 
     cpdef void set_data_cubemap_from_images(self, 
             Image pos_x, Image neg_x, Image pos_y,
@@ -89,11 +105,11 @@ cdef class Texture:
         gl_type = c_texture_format_to_type_gl(texture_ptr.format)
         glBindTexture(GL_TEXTURE_CUBE_MAP, texture_ptr.gl_id)
         for i in range(6):
-            image_ptr = self.graphics.image_get_ptr(images[i])
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.graphics.c_check_gl()
+            image_ptr = Image.get_ptr_by_handle(self.manager, images[i])
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.manager.c_check_gl()
         if texture_ptr.mipmaps:
-            glGenerateMipmap(GL_TEXTURE_CUBE_MAP); self.graphics.c_check_gl()
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0); self.graphics.c_check_gl()
+            glGenerateMipmap(GL_TEXTURE_CUBE_MAP); self.manager.c_check_gl()
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0); self.manager.c_check_gl()
 
     cpdef void clear(self, uint16_t width, uint16_t height) except *:
         cdef:
@@ -108,12 +124,12 @@ cdef class Texture:
         gl_format = c_texture_format_to_format_gl(texture_ptr.format)
         gl_type = c_texture_format_to_type_gl(texture_ptr.format)
         target = GL_TEXTURE_CUBE_MAP if texture_ptr.cubemap else GL_TEXTURE_2D
-        glBindTexture(target, texture_ptr.gl_id); self.graphics.c_check_gl()
+        glBindTexture(target, texture_ptr.gl_id); self.manager.c_check_gl()
         if texture_ptr.cubemap:
             for i in range(6):
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, width, height, 0, gl_format, gl_type, NULL); self.graphics.c_check_gl()
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, width, height, 0, gl_format, gl_type, NULL); self.manager.c_check_gl()
         else:
-            glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, width, height, 0, gl_format, gl_type, NULL); self.graphics.c_check_gl()
+            glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, width, height, 0, gl_format, gl_type, NULL); self.manager.c_check_gl()
         if texture_ptr.mipmaps:
-            glGenerateMipmap(target); self.graphics.c_check_gl()
-        glBindTexture(target, 0); self.graphics.c_check_gl()
+            glGenerateMipmap(target); self.manager.c_check_gl()
+        glBindTexture(target, 0); self.manager.c_check_gl()
