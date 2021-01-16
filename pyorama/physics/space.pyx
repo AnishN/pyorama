@@ -1,17 +1,33 @@
+cdef uint8_t ITEM_TYPE = PHYSICS_ITEM_TYPE_SPACE
+ctypedef SpaceC ItemTypeC
+
 cdef class Space:
-    def __cinit__(self, PhysicsManager physics):
-        self.physics = physics
+    def __cinit__(self, PhysicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.physics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef SpaceC *get_ptr(self) except *:
-        return self.physics.space_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(PhysicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Space.get_ptr_by_handle(self.manager, self.handle)
     
     cpdef void create(self) except *:
         cdef:
             SpaceC *space_ptr
-        self.handle = self.physics.spaces.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         space_ptr = self.get_ptr()
         space_ptr.cp = cpSpaceNew()
         if space_ptr.cp == NULL:
@@ -22,7 +38,7 @@ cdef class Space:
         cdef SpaceC *space_ptr
         space_ptr = self.get_ptr()
         cpSpaceFree(space_ptr.cp)
-        self.spaces.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef Vec2 get_gravity(self):

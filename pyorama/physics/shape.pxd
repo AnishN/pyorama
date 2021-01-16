@@ -3,9 +3,14 @@ from pyorama.physics.body cimport *
 
 cdef class Shape:
     cdef:
+        readonly PhysicsManager manager
         readonly Handle handle
-        readonly PhysicsManager physics
-
+    
+    @staticmethod
+    cdef ShapeC *get_ptr_by_index(PhysicsManager manager, size_t index) except *
+    @staticmethod
+    cdef ShapeC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
+    cdef ShapeC *get_ptr(self) except *
     @staticmethod
     cdef float c_moment_for_circle(float mass, float inner_radius, float outer_radius, Vec2 offset) except *
     @staticmethod
@@ -24,8 +29,7 @@ cdef class Shape:
     cdef float c_moment_for_box(float mass, float width, float height) except *
     @staticmethod
     cdef float c_moment_for_box_2(float mass, float left, float bottom, float right, float top) except *
-    
-    cdef ShapeC *get_ptr(self) except *
+
     cpdef void create_circle(self, Body body, float radius, Vec2 offset) except *
     cpdef void create_segment(self, Body body, Vec2 a, Vec2 b, float radius) except *
     #cpdef void create_poly_line(self) except *

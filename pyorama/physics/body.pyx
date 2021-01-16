@@ -1,16 +1,32 @@
+cdef uint8_t ITEM_TYPE = PHYSICS_ITEM_TYPE_BODY
+ctypedef BodyC ItemTypeC
+
 cdef class Body:
-    def __cinit__(self, PhysicsManager physics):
-        self.physics = physics
+    def __cinit__(self, PhysicsManager manager):
+        self.handle = 0
+        self.manager = manager
 
     def __dealloc__(self):
-        self.physics = None
+        self.handle = 0
+        self.manager = None
     
-    cdef BodyC *get_ptr(self) except *:
-        return self.physics.body_get_ptr(self.handle)
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_index(PhysicsManager manager, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
+        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    @staticmethod
+    cdef ItemTypeC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.get_ptr(handle)
+
+    cdef ItemTypeC *get_ptr(self) except *:
+        return Body.get_ptr_by_handle(self.manager, self.handle)
 
     cpdef void create(self, float mass=0.0, float moment=0.0, BodyType type=BODY_TYPE_DYNAMIC) except *:
         cdef BodyC *body_ptr
-        self.handle = self.physics.bodies.c_create()
+        self.handle = self.manager.create(ITEM_TYPE)
         body_ptr = self.get_ptr()
         body_ptr.cp = cpBodyNew(mass, moment)
         if body_ptr.cp == NULL:
@@ -22,14 +38,14 @@ cdef class Body:
         cdef BodyC *body_ptr
         body_ptr = self.get_ptr()
         cpBodyFree(body_ptr.cp)
-        self.physics.bodies.c_delete(self.handle)
+        self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef Space get_space(self):
         cdef:
             BodyC *body_ptr
             cpSpace *space_cp
-            Space space = Space(self.physics)
+            Space space = Space(self.manager)
         body_ptr = self.get_ptr()
         space_cp = cpBodyGetSpace(body_ptr.cp)
         space.handle = <Handle>cpSpaceGetUserData(space_cp)

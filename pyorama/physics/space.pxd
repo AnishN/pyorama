@@ -4,13 +4,16 @@ from pyorama.physics.shape cimport *
 
 cdef class Space:
     cdef:
+        readonly PhysicsManager manager
         readonly Handle handle
-        readonly PhysicsManager physics
-
+    
+    @staticmethod
+    cdef SpaceC *get_ptr_by_index(PhysicsManager manager, size_t index) except *
+    @staticmethod
+    cdef SpaceC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
     cdef SpaceC *get_ptr(self) except *
     cpdef void create(self) except *
     cpdef void delete(self) except *
-    
     cpdef Vec2 get_gravity(self)
     cpdef void set_gravity(self, Vec2 gravity) except *
     cpdef float get_damping(self) except *

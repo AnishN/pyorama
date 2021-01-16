@@ -8,9 +8,13 @@ from pyorama.physics.space cimport *
 
 cdef class Body:
     cdef:
+        readonly PhysicsManager manager
         readonly Handle handle
-        readonly PhysicsManager physics
-
+    
+    @staticmethod
+    cdef BodyC *get_ptr_by_index(PhysicsManager manager, size_t index) except *
+    @staticmethod
+    cdef BodyC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
     cdef BodyC *get_ptr(self) except *
     cpdef void create(self, float mass=*, float moment=*, BodyType type=*) except *
     cpdef void delete(self) except *
