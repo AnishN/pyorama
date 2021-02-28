@@ -157,6 +157,16 @@ ctypedef struct ViewC:
     float clear_depth
     uint32_t clear_stencil
     uint16_t[4] rect
+    bint[4] color_mask
+    bint depth_mask
+    bint stencil_mask
+    bint depth
+    DepthFunc depth_func
+    bint blend
+    BlendFunc src_rgb
+    BlendFunc dst_rgb
+    BlendFunc src_alpha
+    BlendFunc dst_alpha
     Mat4C view_mat
     Mat4C proj_mat
     Handle program
@@ -168,6 +178,21 @@ ctypedef struct ViewC:
     TextureUnit[16] texture_units
     size_t num_texture_units
     Handle frame_buffer
+
+ctypedef struct RenderPassC:
+    Handle handle
+    Handle view
+
+ctypedef struct EffectPassC:
+    Handle handle
+    Handle[16] uniforms
+    Handle[16] in_textures
+    Handle[16] out_textures
+
+ctypedef struct EffectComposerC:
+    Handle handle
+    Handle render_pass
+    Handle[32] effect_passes
 
 ctypedef struct BitmapFontInfoC:
     char[256] face

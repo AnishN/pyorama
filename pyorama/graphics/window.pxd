@@ -12,6 +12,11 @@ cdef class Window:
     @staticmethod
     cdef WindowC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef WindowC *get_ptr(self) except *
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self, uint16_t width, uint16_t height, bytes title) except *
     cpdef void delete(self) except *
     cpdef void set_texture(self, Texture texture) except *

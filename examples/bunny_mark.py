@@ -79,6 +79,7 @@ class Game(App):
             sprite.create(self.bunny_width, self.bunny_height)
             sprite.set_position(position)
             sprite.set_anchor(Vec2(0.5, 0.5))
+            #sprite.anchor = Vec2(0.5, 0.5)
             #sprite.set_alpha(0.3)
             self.sprites.append(sprite)
         self.sprite_batch = SpriteBatch(self.graphics)
@@ -112,6 +113,13 @@ class Game(App):
     def update_view(self):
         self.view.set_rect(0, 0, self.width, self.height)
         self.view.set_program(self.program)
+        self.view.set_blend_func(
+            src_rgb=BLEND_FUNC_SRC_ALPHA,
+            dst_rgb=BLEND_FUNC_ONE_MINUS_SRC_ALPHA,
+            src_alpha=BLEND_FUNC_ONE,
+            dst_alpha=BLEND_FUNC_ONE_MINUS_SRC_ALPHA,
+        )
+
         self.view.set_uniforms(self.uniforms)
         self.view.set_vertex_buffer(self.vbo)
         self.view.set_index_buffer(self.ibo)
@@ -141,3 +149,32 @@ class Game(App):
 if __name__ == "__main__":
     game = Game()
     game.run()
+
+"""
+WHAT SHOULD THE API LOOK LIKE?
+
+sprite_pass = SpritePass(self.graphics)
+sprite_pass.create(sprites, camera)
+    - position texture
+    - albedo texture
+    - normal texture
+    - specular texture
+    - texture_4
+    - texture_5
+    - texture_6
+    - texture_7
+
+tint_pass = TintEffectPass(self.graphics)
+tint_pass.create(
+    tint=Vec4(1.0, 0.0, 0.0, 1.0),
+    input_textures=[],
+    output_textures=[],
+)
+effect_passes = [
+    tint_pass,
+]
+
+composer = EffectComposer(self.graphics)
+composer.set_render_pass(sprite_pass)
+composer.set_effect_passes(effect_passes)#with a given order
+"""

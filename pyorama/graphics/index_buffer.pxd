@@ -12,7 +12,10 @@ cdef class IndexBuffer:
     cdef IndexBufferC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef IndexBufferC *get_ptr(self) except *
     
-    cdef IndexBufferC *get_ptr(self) except *
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self, IndexFormat format, BufferUsage usage=*) except *
     cpdef void delete(self) except *
     cpdef void set_data(self, uint8_t[::1] data) except *

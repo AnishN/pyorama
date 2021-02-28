@@ -1,5 +1,6 @@
-cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_VIEW
 ctypedef ViewC ItemTypeC
+cdef uint8_t ITEM_TYPE = handle_create_item_type()
+cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
 cdef class View:
     def __cinit__(self, GraphicsManager manager):
@@ -24,6 +25,22 @@ cdef class View:
     cdef ItemTypeC *get_ptr(self) except *:
         return View.get_ptr_by_handle(self.manager, self.handle)
     
+    @staticmethod
+    cdef uint8_t c_get_type() nogil:
+        return ITEM_TYPE
+
+    @staticmethod
+    def get_type():
+        return ITEM_TYPE
+
+    @staticmethod
+    cdef size_t c_get_size() nogil:
+        return ITEM_SIZE
+
+    @staticmethod
+    def get_size():
+        return ITEM_SIZE
+    
     cpdef void create(self) except *:
         cdef:
             ViewC *view_ptr
@@ -34,11 +51,45 @@ cdef class View:
         view_ptr.clear_depth = 1.0
         view_ptr.clear_stencil = 0
         view_ptr.rect = (0, 0, 1, 1)
+        view_ptr.depth = True
+        view_ptr.depth_func = DEPTH_FUNC_LESSER_EQUAL
+        view_ptr.blend = True
+        view_ptr.src_rgb = BLEND_FUNC_ONE
+        view_ptr.dst_rgb = BLEND_FUNC_ZERO
+        view_ptr.src_alpha = BLEND_FUNC_ONE
+        view_ptr.dst_alpha = BLEND_FUNC_ZERO
 
     cpdef void delete(self) except *:
         self.manager.delete(self.handle)
         self.handle = 0
-        
+    
+    cpdef void set_depth(self, bint depth) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.depth = depth
+
+    cpdef void set_depth_func(self, DepthFunc depth_func) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.depth_func = depth_func
+
+    cpdef void set_blend(self, bint blend) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.blend = blend
+
+    cpdef void set_blend_func(self, BlendFunc src_rgb, BlendFunc dst_rgb, BlendFunc src_alpha, BlendFunc dst_alpha) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.src_rgb = src_rgb
+        view_ptr.dst_rgb = dst_rgb
+        view_ptr.src_alpha = src_alpha
+        view_ptr.dst_alpha = dst_alpha
+
     cpdef void set_clear_flags(self, uint32_t clear_flags) except *:
         cdef:
             ViewC *view_ptr
@@ -62,6 +113,29 @@ cdef class View:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
         view_ptr.clear_stencil = stencil
+
+    cpdef void set_color_mask(self, bint r, bint g, bint b, bint a) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.color_mask = [r, g, b, a]
+
+    cpdef void set_depth_mask(self, bint depth) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.depth_mask = depth
+
+    cpdef void set_stencil_mask(self, bint stencil) except *:
+        cdef:
+            ViewC *view_ptr
+        view_ptr = self.get_ptr()
+        view_ptr.stencil_mask = stencil
+    
+    cpdef void set_masks(self, bint r, bint g, bint b, bint a, bint depth, bint stencil) except *:
+        self.set_color_mask(r, g, b, a)
+        self.set_depth_mask(depth)
+        self.set_stencil_mask(stencil)
 
     cpdef void set_rect(self, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
         cdef:

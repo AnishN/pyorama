@@ -24,3 +24,5 @@ cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) 
 cdef uint32_t c_texture_format_to_internal_format_gl(TextureFormat format) nogil
 cdef uint32_t c_texture_format_to_format_gl(TextureFormat format) nogil
 cdef uint32_t c_texture_format_to_type_gl(TextureFormat format) nogil
+cdef uint32_t c_blend_func_to_gl(BlendFunc func) nogil
+cdef uint32_t c_depth_func_to_gl(DepthFunc func) nogil

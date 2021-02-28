@@ -1,4 +1,6 @@
 from pyorama.graphics.bitmap_font import *
+from pyorama.graphics.effect_composer import *
+from pyorama.graphics.effect_pass import *
 from pyorama.graphics.frame_buffer import *
 from pyorama.graphics.graphics_enums import *
 from pyorama.graphics.graphics_manager import *
@@ -9,6 +11,7 @@ from pyorama.graphics.index_buffer import *
 from pyorama.graphics.mesh_batch import *
 from pyorama.graphics.mesh import *
 from pyorama.graphics.program import *
+from pyorama.graphics.render_pass import *
 from pyorama.graphics.shader import *
 from pyorama.graphics.sprite_batch import *
 from pyorama.graphics.sprite import *

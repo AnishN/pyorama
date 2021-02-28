@@ -12,7 +12,10 @@ cdef class Program:
     cdef ProgramC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef ProgramC *get_ptr(self) except *
 
-    cdef ProgramC *get_ptr(self) except *
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self, Shader vertex, Shader fragment) except *
     cpdef void delete(self) except *
     cdef void _compile(self) except *

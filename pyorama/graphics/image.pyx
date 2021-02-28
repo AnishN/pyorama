@@ -1,5 +1,6 @@
-cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_IMAGE
 ctypedef ImageC ItemTypeC
+cdef uint8_t ITEM_TYPE = handle_create_item_type()
+cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
 cdef class Image:
     def __cinit__(self, GraphicsManager manager):
@@ -23,6 +24,22 @@ cdef class Image:
 
     cdef ItemTypeC *get_ptr(self) except *:
         return Image.get_ptr_by_handle(self.manager, self.handle)
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil:
+        return ITEM_TYPE
+
+    @staticmethod
+    def get_type():
+        return ITEM_TYPE
+
+    @staticmethod
+    cdef size_t c_get_size() nogil:
+        return ITEM_SIZE
+
+    @staticmethod
+    def get_size():
+        return ITEM_SIZE
 
     cpdef void create(self, uint16_t width, uint16_t height, uint8_t[::1] data=None, size_t bytes_per_channel=1, size_t num_channels=4) except *:
         cdef:

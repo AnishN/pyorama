@@ -10,5 +10,10 @@ cdef class UniformFormat:
     @staticmethod
     cdef UniformFormatC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef UniformFormatC *get_ptr(self) except *
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self, bytes name, UniformType type, size_t count=*) except *
     cpdef void delete(self) except *

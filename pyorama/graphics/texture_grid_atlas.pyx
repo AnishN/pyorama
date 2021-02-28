@@ -1,5 +1,6 @@
-cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_TEXTURE_GRID_ATLAS
 ctypedef TextureGridAtlasC ItemTypeC
+cdef uint8_t ITEM_TYPE = handle_create_item_type()
+cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
 cdef class TextureGridAtlas:
     def __cinit__(self, GraphicsManager manager):
@@ -24,6 +25,22 @@ cdef class TextureGridAtlas:
     cdef ItemTypeC *get_ptr(self) except *:
         return TextureGridAtlas.get_ptr_by_handle(self.manager, self.handle)
     
+    @staticmethod
+    cdef uint8_t c_get_type() nogil:
+        return ITEM_TYPE
+
+    @staticmethod
+    def get_type():
+        return ITEM_TYPE
+
+    @staticmethod
+    cdef size_t c_get_size() nogil:
+        return ITEM_SIZE
+
+    @staticmethod
+    def get_size():
+        return ITEM_SIZE
+
     cpdef void create(self, Texture texture, size_t num_rows, size_t num_columns) except *:
         cdef:
             TextureGridAtlasC *atlas_ptr

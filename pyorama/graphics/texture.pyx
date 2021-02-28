@@ -1,5 +1,6 @@
-cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_TEXTURE
 ctypedef TextureC ItemTypeC
+cdef uint8_t ITEM_TYPE = handle_create_item_type()
+cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
 cdef class Texture:
     def __cinit__(self, GraphicsManager manager):
@@ -23,6 +24,22 @@ cdef class Texture:
 
     cdef ItemTypeC *get_ptr(self) except *:
         return Texture.get_ptr_by_handle(self.manager, self.handle)
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil:
+        return ITEM_TYPE
+
+    @staticmethod
+    def get_type():
+        return ITEM_TYPE
+
+    @staticmethod
+    cdef size_t c_get_size() nogil:
+        return ITEM_SIZE
+
+    @staticmethod
+    def get_size():
+        return ITEM_SIZE
 
     cpdef void create(self, TextureFormat format=TEXTURE_FORMAT_RGBA_8U, bint mipmaps=True, 
             TextureFilter filter=TEXTURE_FILTER_LINEAR, TextureWrap wrap_s=TEXTURE_WRAP_REPEAT, 

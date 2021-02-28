@@ -1,5 +1,6 @@
-cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_UNIFORM
 ctypedef UniformC ItemTypeC
+cdef uint8_t ITEM_TYPE = handle_create_item_type()
+cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
 cdef class Uniform:
     def __cinit__(self, GraphicsManager manager):
@@ -24,6 +25,22 @@ cdef class Uniform:
     cdef ItemTypeC *get_ptr(self) except *:
         return Uniform.get_ptr_by_handle(self.manager, self.handle)
     
+    @staticmethod
+    cdef uint8_t c_get_type() nogil:
+        return ITEM_TYPE
+
+    @staticmethod
+    def get_type():
+        return ITEM_TYPE
+
+    @staticmethod
+    cdef size_t c_get_size() nogil:
+        return ITEM_SIZE
+
+    @staticmethod
+    def get_size():
+        return ITEM_SIZE
+
     cpdef void create(self, UniformFormat format) except *:
         cdef:
             UniformC *uniform_ptr

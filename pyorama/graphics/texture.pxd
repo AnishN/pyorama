@@ -13,6 +13,11 @@ cdef class Texture:
     @staticmethod
     cdef TextureC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef TextureC *get_ptr(self) except *
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self, TextureFormat format=*, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*, bint cubemap=*) except *
     cpdef void delete(self) except *
     cpdef void set_parameters(self, bint mipmaps=*, TextureFilter filter=*, TextureWrap wrap_s=*, TextureWrap wrap_t=*) except *

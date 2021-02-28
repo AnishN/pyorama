@@ -3,36 +3,13 @@ from cython.parallel import parallel, prange
 cdef class GraphicsManager:
 
     def __cinit__(self):
-        cdef:
-            dict item_types_info
         self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN)
         self.root_context = SDL_GL_CreateContext(self.root_window)
         if self.root_context == NULL:
             raise ValueError("GraphicsManager: failed to create OpenGL context")
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
-        item_types_info = {
-            GRAPHICS_ITEM_TYPE_WINDOW: sizeof(WindowC),
-            GRAPHICS_ITEM_TYPE_VERTEX_FORMAT: sizeof(VertexFormatC),
-            GRAPHICS_ITEM_TYPE_VERTEX_BUFFER: sizeof(VertexBufferC),
-            GRAPHICS_ITEM_TYPE_INDEX_BUFFER: sizeof(IndexBufferC),
-            GRAPHICS_ITEM_TYPE_UNIFORM_FORMAT: sizeof(UniformFormatC),
-            GRAPHICS_ITEM_TYPE_UNIFORM: sizeof(UniformC),
-            GRAPHICS_ITEM_TYPE_SHADER: sizeof(ShaderC),
-            GRAPHICS_ITEM_TYPE_PROGRAM: sizeof(ProgramC),
-            GRAPHICS_ITEM_TYPE_IMAGE: sizeof(ImageC),
-            GRAPHICS_ITEM_TYPE_TEXTURE: sizeof(TextureC),
-            GRAPHICS_ITEM_TYPE_FRAME_BUFFER: sizeof(FrameBufferC),
-            GRAPHICS_ITEM_TYPE_VIEW: sizeof(ViewC),
-            GRAPHICS_ITEM_TYPE_MESH: sizeof(MeshC),
-            GRAPHICS_ITEM_TYPE_MESH_BATCH: sizeof(MeshBatchC),
-            GRAPHICS_ITEM_TYPE_SPRITE: sizeof(SpriteC),
-            GRAPHICS_ITEM_TYPE_SPRITE_BATCH: sizeof(SpriteBatchC),
-            GRAPHICS_ITEM_TYPE_BITMAP_FONT: sizeof(BitmapFontC),
-            GRAPHICS_ITEM_TYPE_TEXT: sizeof(TextC),
-            GRAPHICS_ITEM_TYPE_TEXTURE_GRID_ATLAS: sizeof(TextureGridAtlasC),
-            GRAPHICS_ITEM_TYPE_TILE_MAP: sizeof(TileMapC),
-        }
-        self.register_item_types(item_types_info)
+
+        self.c_register_graphics_item_types()
         self.c_check_gl_extensions()
         self.c_create_predefined_uniform_formats()
         self.c_create_predefined_vertex_index_formats()
@@ -46,6 +23,26 @@ cdef class GraphicsManager:
         #no equivalent like glewQuit()
         SDL_GL_DeleteContext(self.root_context)
         SDL_DestroyWindow(self.root_window)
+
+    cdef uint8_t c_register_graphics_item_types(self) except *:
+        cdef:
+            dict item_types_info
+            list item_types
+        item_types_info = {}
+        item_types = [
+            Window, View,
+            VertexFormat, VertexBuffer, IndexBuffer,
+            UniformFormat, Uniform, Shader, Program,
+            Image, Texture, FrameBuffer,
+            #Mesh, MeshBatch, 
+            Sprite, SpriteBatch,
+            #BitmapFont, Text,
+            #TextureGrid, 
+            TileMap,
+        ]
+        for item_type in item_types:
+            item_types_info[item_type.get_type()] = item_type.get_size()
+        self.register_item_types(item_types_info)
 
     cdef void c_check_gl(self) except *:
         cdef:
@@ -195,19 +192,53 @@ cdef class GraphicsManager:
         SDL_GL_SetSwapInterval(0)
         SDL_GL_SwapWindow(self.root_window)
 
+    cdef void c_update_batches(self) except *:
+        cdef:
+            ItemSlotMap slot_map
+            size_t i
+            SpriteBatch sprite_batch = SpriteBatch(self)
+            TileMap tile_map = TileMap(self)
+
+        #update sprite batches
+        slot_map = self.get_slot_map(SpriteBatch.c_get_type())
+        for i in range(slot_map.items.num_items):
+            sprite_batch_ptr = SpriteBatch.get_ptr_by_index(self, i)
+            sprite_batch.handle = sprite_batch_ptr.handle
+            sprite_batch._update()
+
+        #update tile maps
+        slot_map = self.get_slot_map(TileMap.c_get_type())
+        for i in range(slot_map.items.num_items):
+            tile_map_ptr = TileMap.get_ptr_by_index(self, i)
+            tile_map.handle = tile_map_ptr.handle
+            tile_map._update()
+
+        #update mesh batches
+        pass
+
+    cdef void c_update_windows(self) except *:
+        cdef:
+            ItemSlotMap slot_map
+            size_t i
+            Window window
+            WindowC *window_ptr
+        slot_map = self.get_slot_map(Window.c_get_type())
+        for i in range(slot_map.items.num_items):
+            window_ptr = Window.get_ptr_by_index(self, i)
+            window = Window(self)
+            window.handle = window_ptr.handle
+            window.render()
+
     cpdef void update(self) except *:
         cdef:
             ItemSlotMap slot_map
             ViewC *view_ptr
-            Vec4C *color
             uint32_t gl_clear_flags
             Handle texture
             TextureUnit texture_unit
             uint32_t gl_texture_unit
             Handle fbo
             FrameBufferC *fbo_ptr
-            SpriteBatch sprite_batch = SpriteBatch(self)
-            TileMap tile_map = TileMap(self)
             Program program = Program(self)
             ProgramC *program_ptr
             VertexBufferC *vbo_ptr
@@ -219,25 +250,10 @@ cdef class GraphicsManager:
             SpriteBatchC *sprite_batch_ptr
             TileMapC *tile_map_ptr
             size_t i
-        
-        #update sprite batches
-        slot_map = self.get_slot_map(GRAPHICS_ITEM_TYPE_SPRITE_BATCH)
-        for i in range(slot_map.items.num_items):
-            sprite_batch_ptr = SpriteBatch.get_ptr_by_index(self, i)
-            sprite_batch.handle = sprite_batch_ptr.handle
-            sprite_batch._update()
 
-        #update tile maps
-        slot_map = self.get_slot_map(GRAPHICS_ITEM_TYPE_TILE_MAP)
-        for i in range(slot_map.items.num_items):
-            tile_map_ptr = TileMap.get_ptr_by_index(self, i)
-            tile_map.handle = tile_map_ptr.handle
-            tile_map._update()
+        self.c_update_batches()
 
-        #update mesh batches
-        pass
-
-        slot_map = self.get_slot_map(GRAPHICS_ITEM_TYPE_VIEW)
+        slot_map = self.get_slot_map(View.c_get_type())
         for i in range(slot_map.items.num_items):
             view_ptr = View.get_ptr_by_index(self, i)
             program_ptr = Program.get_ptr_by_handle(self, view_ptr.program)
@@ -249,24 +265,42 @@ cdef class GraphicsManager:
             for i in range(view_ptr.num_uniforms):
                 uniform_ptr = Uniform.get_ptr_by_index(self, i)
                 program._bind_uniform(uniform_ptr.handle)
+            
+            if view_ptr.blend:
+                glEnable(GL_BLEND); self.c_check_gl()
+                glBlendFuncSeparate(
+                    c_blend_func_to_gl(view_ptr.src_rgb),
+                    c_blend_func_to_gl(view_ptr.dst_rgb),
+                    c_blend_func_to_gl(view_ptr.src_alpha),
+                    c_blend_func_to_gl(view_ptr.dst_alpha),
+                ); self.c_check_gl()
+            else:
+                glDisable(GL_BLEND); self.c_check_gl()
 
-            glEnable(GL_BLEND); self.c_check_gl()
-            #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#unmultiplied alpha
-            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); self.c_check_gl()#pre-multiplied alpha
+            if view_ptr.depth:
+                glEnable(GL_DEPTH_TEST); self.c_check_gl()
+                glDepthFunc(
+                    c_depth_func_to_gl(view_ptr.depth_func),
+                ); self.c_check_gl()
+            else:
+                glDisable(GL_DEPTH_TEST); self.c_check_gl()
             #glEnable(GL_CULL_FACE); self.c_check_gl()
-            glEnable(GL_DEPTH_TEST); self.c_check_gl()
-            glDepthFunc(GL_LESS); self.c_check_gl()
-            glDepthMask(False); self.c_check_gl()
+            #glDepthFunc(GL_LESS); self.c_check_gl()
+            #glDepthMask(False); self.c_check_gl()
             
             fbo = view_ptr.frame_buffer
             if fbo != 0:
                 fbo_ptr = FrameBuffer.get_ptr_by_handle(self, fbo)
                 glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
-
-            color = &view_ptr.clear_color
+            
             gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
             glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
-            glClearColor(color.x, color.y, color.z, color.w); self.c_check_gl()
+            glClearColor(
+                view_ptr.clear_color.x,
+                view_ptr.clear_color.y,
+                view_ptr.clear_color.z,
+                view_ptr.clear_color.w,
+            ); self.c_check_gl()
             glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
             glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
             glClear(gl_clear_flags); self.c_check_gl()
@@ -292,9 +326,4 @@ cdef class GraphicsManager:
                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
             glUseProgram(0); self.c_check_gl()
         
-        slot_map = self.get_slot_map(GRAPHICS_ITEM_TYPE_WINDOW)
-        for i in range(slot_map.items.num_items):
-            window_ptr = Window.get_ptr_by_index(self, i)
-            window = Window(self)
-            window.handle = window_ptr.handle
-            window.render()
+        self.c_update_windows()

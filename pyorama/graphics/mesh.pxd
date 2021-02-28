@@ -14,8 +14,11 @@ cdef class Mesh:
     @staticmethod
     cdef MeshC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef MeshC *get_ptr(self) except *
-
-    cdef MeshC *get_ptr(self) except *
+    
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self, uint8_t[::1] vertex_data, uint8_t[::1] index_data) except *
     cpdef void create_from_file(self, bytes file_path) except *
     cpdef void delete(self) except *

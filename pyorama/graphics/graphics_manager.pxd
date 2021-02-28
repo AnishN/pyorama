@@ -61,6 +61,7 @@ cdef class GraphicsManager(ItemManager):
         readonly IndexFormat i_fmt_sprite
         readonly IndexFormat i_fmt_tile
     
+    cdef uint8_t c_register_graphics_item_types(self) except *
     cdef void c_check_gl(self) except *
     cdef void c_check_gl_extensions(self) except *
     cdef void c_create_predefined_uniform_formats(self) except *
@@ -70,4 +71,6 @@ cdef class GraphicsManager(ItemManager):
     cdef void c_create_quad(self) except *
     cdef void c_delete_quad(self) except *
     cdef void c_swap_root_window(self) except *
+    cdef void c_update_batches(self) except *
+    cdef void c_update_windows(self) except *
     cpdef void update(self) except *

@@ -2,6 +2,8 @@ from pyorama.libs.c cimport *
 
 ctypedef uint64_t Handle
 
+cdef uint8_t handle_create_item_type() nogil
+
 cdef uint32_t handle_get_index(Handle *handle) nogil
 cdef uint32_t handle_get_version(Handle *handle) nogil
 cdef uint8_t handle_get_type(Handle *handle) nogil

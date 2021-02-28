@@ -1,8 +1,8 @@
-ctypedef UniformFormatC ItemTypeC
+ctypedef EffectComposerC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
-cdef class UniformFormat:
+cdef class EffectComposer:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0
         self.manager = manager
@@ -23,7 +23,7 @@ cdef class UniformFormat:
         return <ItemTypeC *>manager.get_ptr(handle)
 
     cdef ItemTypeC *get_ptr(self) except *:
-        return UniformFormat.get_ptr_by_handle(self.manager, self.handle)
+        return EffectComposer.get_ptr_by_handle(self.manager, self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -41,23 +41,25 @@ cdef class UniformFormat:
     def get_size():
         return ITEM_SIZE
 
-    cpdef void create(self, bytes name, UniformType type, size_t count=1) except *:
-        cdef:
-            size_t name_length
-            UniformFormatC *format_ptr
-        name_length = len(name)
-        if name_length >= 256:
-            raise ValueError("UniformFormat: name cannot exceed 255 characters")
-        if count == 0:
-            raise ValueError("UniformFormat: count must be non-zero value")
+    cpdef void create(self) except *:
         self.handle = self.manager.create(ITEM_TYPE)
-        format_ptr = self.get_ptr()
-        memcpy(format_ptr.name, <char *>name, sizeof(char) * name_length)
-        format_ptr.name_length = name_length
-        format_ptr.type = type
-        format_ptr.count = count
-        format_ptr.size = count * c_uniform_type_get_size(type)
 
     cpdef void delete(self) except *:
         self.manager.delete(self.handle)
         self.handle = 0
+
+    def set_render_pass(self, Handle render_pass):
+        cdef:
+            EffectComposerC *composer_ptr
+        composer_ptr = self.get_ptr()
+        composer_ptr.render_pass = render_pass
+
+    def set_effect_passes(self, list effect_passes):
+        cdef:
+            EffectComposerC *composer_ptr
+            size_t i
+            size_t n = <size_t>len(effect_passes)
+        composer_ptr = self.get_ptr()
+        memset(&composer_ptr.effect_passes, 0, sizeof(composer_ptr.effect_passes))
+        for i in range(n):
+            composer_ptr.effect_passes[i] = <Handle>effect_passes[i]

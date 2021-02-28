@@ -14,6 +14,11 @@ cdef class SpriteBatch:
     @staticmethod
     cdef SpriteBatchC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
     cdef SpriteBatchC *get_ptr(self) except *
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil
+    @staticmethod
+    cdef size_t c_get_size() nogil
     cpdef void create(self) except *
     cpdef void delete(self) except *
     cpdef void set_sprites(self, list sprites) except *

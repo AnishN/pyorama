@@ -1,5 +1,6 @@
-cdef uint8_t ITEM_TYPE = GRAPHICS_ITEM_TYPE_WINDOW
 ctypedef WindowC ItemTypeC
+cdef uint8_t ITEM_TYPE = handle_create_item_type()
+cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
 cdef class Window:
     def __cinit__(self, GraphicsManager manager):
@@ -23,6 +24,22 @@ cdef class Window:
 
     cdef ItemTypeC *get_ptr(self) except *:
         return Window.get_ptr_by_handle(self.manager, self.handle)
+
+    @staticmethod
+    cdef uint8_t c_get_type() nogil:
+        return ITEM_TYPE
+
+    @staticmethod
+    def get_type():
+        return ITEM_TYPE
+
+    @staticmethod
+    cdef size_t c_get_size() nogil:
+        return ITEM_SIZE
+
+    @staticmethod
+    def get_size():
+        return ITEM_SIZE
 
     cpdef void create(self, uint16_t width, uint16_t height, bytes title) except *:
         cdef:
@@ -82,7 +99,7 @@ cdef class Window:
         glClearDepthf(1.0); self.manager.c_check_gl()
         glClearStencil(0); self.manager.c_check_gl()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); self.manager.c_check_gl()
-        if handle_get_type(&window_ptr.texture) == GRAPHICS_ITEM_TYPE_TEXTURE:
+        if handle_get_type(&window_ptr.texture) == Texture.c_get_type():
             glActiveTexture(GL_TEXTURE0); self.manager.c_check_gl()
             texture_ptr = Texture.get_ptr_by_handle(self.manager, window_ptr.texture)
             program_ptr = Program.get_ptr_by_handle(self.manager, self.manager.quad_program.handle)
