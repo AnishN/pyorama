@@ -1,4 +1,19 @@
 from pyorama.graphics.graphics_manager cimport *
+from pyorama.math3d cimport *
+
+ctypedef struct SpriteC:
+    Handle handle
+    float width
+    float height
+    Vec2C position
+    Vec2C anchor
+    float rotation
+    Vec2C scale
+    float z_index
+    float[12] tex_coords
+    bint visible
+    Vec3C tint
+    float alpha
 
 cdef class Sprite:
     cdef:

@@ -1,6 +1,14 @@
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.vertex_format cimport *
 from pyorama.graphics.mesh cimport *
+from pyorama.graphics.buffer_enums cimport *
+
+ctypedef struct VertexBufferC:
+    Handle handle
+    uint32_t gl_id
+    Handle format
+    BufferUsage usage
+    size_t size
 
 cdef class VertexBuffer:
     cdef:

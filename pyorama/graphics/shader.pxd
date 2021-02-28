@@ -1,5 +1,14 @@
 from pyorama.graphics.graphics_manager cimport *
 
+cpdef enum ShaderType:
+    SHADER_TYPE_VERTEX
+    SHADER_TYPE_FRAGMENT
+
+ctypedef struct ShaderC:
+    Handle handle
+    uint32_t gl_id
+    ShaderType type
+
 cdef class Shader:
     cdef:
         readonly GraphicsManager manager

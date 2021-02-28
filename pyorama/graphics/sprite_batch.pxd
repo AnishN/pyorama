@@ -4,6 +4,16 @@ from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.sprite cimport *
 from pyorama.graphics.vertex_buffer cimport *
 
+ctypedef struct SpriteBatchC:
+    Handle handle
+    size_t num_sprites
+    Handle *sprites
+    Handle vertex_buffer
+    uint8_t *vertex_data_ptr
+    Handle index_buffer
+    uint8_t *index_data_ptr
+    Handle texture
+
 cdef class SpriteBatch:
     cdef:
         readonly GraphicsManager manager

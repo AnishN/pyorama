@@ -1,6 +1,11 @@
 from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_manager cimport *
 
+ctypedef struct EffectComposerC:
+    Handle handle
+    Handle render_pass
+    Handle[32] effect_passes
+
 cdef class EffectComposer:
     cdef:
         readonly GraphicsManager manager

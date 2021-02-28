@@ -1,5 +1,36 @@
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.shader cimport *
+from pyorama.graphics.program_enums cimport *
+
+cpdef enum:
+    PROGRAM_MAX_ATTRIBUTES = 16
+    PROGRAM_MAX_UNIFORMS = 16
+
+#Part of ProgramC, not directly created!
+ctypedef struct ProgramAttributeC:
+    char[256] name
+    size_t name_length
+    size_t size#in multiples of the type's size
+    AttributeType type
+    size_t location
+
+#Part of ProgramC, not directly create!
+ctypedef struct ProgramUniformC:
+    char[256] name
+    size_t name_length
+    size_t size
+    UniformType type
+    size_t location
+
+ctypedef struct ProgramC:
+    Handle handle
+    uint32_t gl_id
+    Handle vertex
+    Handle fragment
+    ProgramAttributeC[16] attributes
+    size_t num_attributes
+    ProgramUniformC[16] uniforms
+    size_t num_uniforms
 
 cdef class Program:
     cdef:

@@ -1,5 +1,13 @@
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.mesh cimport *
+from pyorama.graphics.buffer_enums cimport *
+
+ctypedef struct IndexBufferC:
+    Handle handle
+    uint32_t gl_id
+    IndexFormat format
+    BufferUsage usage
+    size_t size
 
 cdef class IndexBuffer:
     cdef:

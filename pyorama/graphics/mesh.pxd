@@ -4,6 +4,12 @@ from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.vertex_buffer cimport *
 
+ctypedef struct MeshC:
+    uint8_t *vertex_data
+    size_t vertex_data_size
+    uint8_t *index_data
+    size_t index_data_size
+
 cdef class Mesh:
     cdef:
         readonly GraphicsManager manager

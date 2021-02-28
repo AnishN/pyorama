@@ -1,4 +1,20 @@
 from pyorama.graphics.graphics_manager cimport *
+from pyorama.graphics.buffer_enums cimport *
+
+ctypedef struct VertexCompC:
+    Handle handle
+    char[256] name
+    size_t name_length
+    VertexCompType type
+    size_t count
+    bint normalized
+    size_t offset
+
+ctypedef struct VertexFormatC:
+    Handle handle
+    VertexCompC[16] comps
+    size_t count
+    size_t stride
 
 cdef class VertexFormat:
     cdef:

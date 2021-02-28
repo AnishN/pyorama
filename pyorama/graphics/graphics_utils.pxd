@@ -1,8 +1,15 @@
-from pyorama.graphics.graphics_enums cimport *
+from pyorama.graphics.view cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.assimp cimport *
 from pyorama.libs.gles2 cimport *
 from pyorama.libs.sdl2 cimport *
+from pyorama.graphics.buffer_enums cimport *
+from pyorama.graphics.texture cimport *
+from pyorama.graphics.frame_buffer cimport *
+from pyorama.graphics.view cimport *
+from pyorama.graphics.shader cimport *
+from pyorama.graphics.program cimport *
+from pyorama.graphics.program_enums cimport *
 
 cdef uint32_t c_buffer_usage_to_gl(BufferUsage usage) nogil
 cdef size_t c_index_format_get_size(IndexFormat format) nogil

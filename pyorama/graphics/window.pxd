@@ -2,6 +2,15 @@ from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.texture cimport *
 from pyorama.libs.sdl2 cimport *
 
+ctypedef struct WindowC:
+    Handle handle
+    SDL_Window *sdl_ptr
+    uint16_t width
+    uint16_t height
+    char[256] title
+    size_t title_length
+    Handle texture
+
 cdef class Window:
     cdef:
         readonly GraphicsManager manager

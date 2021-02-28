@@ -1,5 +1,11 @@
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.uniform_format cimport *
+from pyorama.graphics.program_enums cimport *
+
+ctypedef struct UniformC:
+    Handle handle
+    Handle format
+    uint8_t *data
 
 cdef class Uniform:
     cdef:

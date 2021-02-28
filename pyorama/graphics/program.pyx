@@ -195,7 +195,7 @@ cdef class Program:
             size_t location
             size_t i
             ProgramUniformC *uniform_info
-            UniformType type
+            UniformType u_type
             int32_t int_data
             float float_data
         program_ptr = self.get_ptr()
@@ -205,22 +205,22 @@ cdef class Program:
             uniform_info = &program_ptr.uniforms[i]
             if strcmp(format_ptr.name, uniform_info.name) == 0:#TODO: validate uniform against program's uniform info
                 location = uniform_info.location
-                type = uniform_info.type
-                if type == UNIFORM_TYPE_INT:
+                u_type = uniform_info.type
+                if u_type == UNIFORM_TYPE_INT:
                     int_data = (<int32_t *>(uniform_ptr.data))[0]
                     glUniform1i(location, <GLint>int_data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_FLOAT:
+                elif u_type == UNIFORM_TYPE_FLOAT:
                     float_data = (<float *>uniform_ptr.data)[0]
                     glUniform1f(location, float_data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_VEC2:
+                elif u_type == UNIFORM_TYPE_VEC2:
                     glUniform2fv(location, 1, <float *>uniform_ptr.data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_VEC3:
+                elif u_type == UNIFORM_TYPE_VEC3:
                     glUniform3fv(location, 1, <float *>uniform_ptr.data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_VEC4:
+                elif u_type == UNIFORM_TYPE_VEC4:
                     glUniform4fv(location, 1, <float *>uniform_ptr.data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_MAT2:
+                elif u_type == UNIFORM_TYPE_MAT2:
                     glUniformMatrix2fv(location, 1, False, <float *>uniform_ptr.data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_MAT3:
+                elif u_type == UNIFORM_TYPE_MAT3:
                     glUniformMatrix3fv(location, 1, False, <float *>uniform_ptr.data); self.manager.c_check_gl()
-                elif type == UNIFORM_TYPE_MAT4:
+                elif u_type == UNIFORM_TYPE_MAT4:
                     glUniformMatrix4fv(location, 1, False, <float *>uniform_ptr.data); self.manager.c_check_gl()

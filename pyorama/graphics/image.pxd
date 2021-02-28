@@ -1,5 +1,14 @@
 from pyorama.graphics.graphics_manager cimport *
 
+ctypedef struct ImageC:
+    Handle handle
+    uint16_t width
+    uint16_t height
+    size_t bytes_per_channel#can be 1 (default), 2, 3, or 4
+    size_t num_channels#can be 1, 2, 3, or 4 (default)
+    size_t data_size
+    uint8_t *data
+
 cdef class Image:
     cdef:
         readonly GraphicsManager manager

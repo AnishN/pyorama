@@ -1,4 +1,13 @@
 from pyorama.graphics.graphics_manager cimport *
+from pyorama.graphics.program_enums cimport *
+
+ctypedef struct UniformFormatC:
+    Handle handle
+    char[256] name
+    size_t name_length
+    UniformType type
+    size_t count
+    size_t size
 
 cdef class UniformFormat:
     cdef:

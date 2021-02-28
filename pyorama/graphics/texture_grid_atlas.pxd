@@ -1,6 +1,12 @@
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.texture cimport *
 
+ctypedef struct TextureGridAtlasC:
+    Handle handle
+    Handle texture
+    size_t num_rows
+    size_t num_columns
+
 cdef class TextureGridAtlas:
     cdef:
         readonly GraphicsManager manager

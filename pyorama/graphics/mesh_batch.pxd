@@ -1,3 +1,13 @@
+from pyorama.core.handle cimport *
+
+ctypedef struct MeshBatchC:
+    Handle handle
+    uint16_t num_meshes
+    Handle[65536] meshes
+    Handle vertex_buffer
+    Handle index_buffer
+    Handle texture
+
 """
     cpdef Handle mesh_batch_create(self) except *
     cpdef void mesh_batch_delete(self, Handle batch) except *

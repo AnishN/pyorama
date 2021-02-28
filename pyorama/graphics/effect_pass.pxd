@@ -1,6 +1,12 @@
 from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_manager cimport *
 
+ctypedef struct EffectPassC:
+    Handle handle
+    Handle[16] uniforms
+    Handle[16] in_textures
+    Handle[16] out_textures
+
 cdef class EffectPass:
     cdef:
         readonly GraphicsManager manager

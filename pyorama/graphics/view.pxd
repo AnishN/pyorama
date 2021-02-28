@@ -3,6 +3,69 @@ from pyorama.graphics.frame_buffer cimport *
 from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.vertex_buffer cimport *
+from pyorama.graphics.texture cimport *
+from pyorama.graphics.texture_enums cimport *
+from pyorama.math3d cimport *
+
+cpdef enum ViewClear:
+    VIEW_CLEAR_COLOR = (1 << 0)
+    VIEW_CLEAR_DEPTH = (1 << 1)
+    VIEW_CLEAR_STENCIL = (1 << 2)
+
+ctypedef enum DepthFunc:
+    DEPTH_FUNC_NEVER
+    DEPTH_FUNC_LESSER
+    DEPTH_FUNC_EQUAL
+    DEPTH_FUNC_LESSER_EQUAL
+    DEPTH_FUNC_GREATER
+    DEPTH_FUNC_NOT_EQUAL
+    DEPTH_FUNC_GREATER_EQUAL
+    DEPTH_FUNC_ALWAYS
+
+cpdef enum BlendFunc:
+    BLEND_FUNC_ZERO
+    BLEND_FUNC_ONE
+    BLEND_FUNC_SRC_COLOR
+    BLEND_FUNC_ONE_MINUS_SRC_COLOR
+    BLEND_FUNC_DST_COLOR
+    BLEND_FUNC_ONE_MINUS_DST_COLOR
+    BLEND_FUNC_SRC_ALPHA
+    BLEND_FUNC_ONE_MINUS_SRC_ALPHA
+    BLEND_FUNC_DST_ALPHA
+    BLEND_FUNC_ONE_MINUS_DST_ALPHA
+    BLEND_FUNC_CONSTANT_COLOR
+    BLEND_FUNC_ONE_MINUS_CONSTANT_COLOR
+    BLEND_FUNC_CONSTANT_ALPHA
+    BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA
+
+ctypedef struct ViewC:
+    Handle handle
+    uint32_t clear_flags
+    Vec4C clear_color
+    float clear_depth
+    uint32_t clear_stencil
+    uint16_t[4] rect
+    bint[4] color_mask
+    bint depth_mask
+    bint stencil_mask
+    bint depth
+    DepthFunc depth_func
+    bint blend
+    BlendFunc src_rgb
+    BlendFunc dst_rgb
+    BlendFunc src_alpha
+    BlendFunc dst_alpha
+    Mat4C view_mat
+    Mat4C proj_mat
+    Handle program
+    Handle[16] uniforms
+    size_t num_uniforms
+    Handle vertex_buffer
+    Handle index_buffer
+    Handle[16] textures
+    TextureUnit[16] texture_units
+    size_t num_texture_units
+    Handle frame_buffer
 
 cdef class View:
     cdef:

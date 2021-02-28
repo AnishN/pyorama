@@ -1,5 +1,9 @@
 from pyorama.graphics.graphics_manager cimport *
 
+ctypedef struct RenderPassC:
+    Handle handle
+    Handle view
+
 cdef class RenderPass:
     cdef:
         readonly GraphicsManager manager

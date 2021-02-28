@@ -1,7 +1,36 @@
 from cpython.object cimport *
 from pyorama.core.item_slot_map cimport *
-from pyorama.graphics.graphics_enums cimport *
 from pyorama.graphics.graphics_manager cimport *
+
+cpdef enum FrameBufferAttachment:
+    FRAME_BUFFER_ATTACHMENT_COLOR_0
+    FRAME_BUFFER_ATTACHMENT_COLOR_1
+    FRAME_BUFFER_ATTACHMENT_COLOR_2
+    FRAME_BUFFER_ATTACHMENT_COLOR_3
+    FRAME_BUFFER_ATTACHMENT_COLOR_4
+    FRAME_BUFFER_ATTACHMENT_COLOR_5
+    FRAME_BUFFER_ATTACHMENT_COLOR_6
+    FRAME_BUFFER_ATTACHMENT_COLOR_7
+    FRAME_BUFFER_ATTACHMENT_COLOR_8
+    FRAME_BUFFER_ATTACHMENT_COLOR_9
+    FRAME_BUFFER_ATTACHMENT_COLOR_10
+    FRAME_BUFFER_ATTACHMENT_COLOR_11
+    FRAME_BUFFER_ATTACHMENT_COLOR_12
+    FRAME_BUFFER_ATTACHMENT_COLOR_13
+    FRAME_BUFFER_ATTACHMENT_COLOR_14
+    FRAME_BUFFER_ATTACHMENT_COLOR_15
+    FRAME_BUFFER_ATTACHMENT_DEPTH
+    FRAME_BUFFER_ATTACHMENT_STENCIL
+
+cpdef enum:
+    MAX_FRAME_BUFFER_ATTACHMENTS = 8
+
+ctypedef struct FrameBufferC:
+    Handle handle
+    uint32_t gl_id
+    Handle[8] textures
+    FrameBufferAttachment[8] attachments
+    size_t num_attachments
 
 cdef class FrameBuffer:
     cdef:

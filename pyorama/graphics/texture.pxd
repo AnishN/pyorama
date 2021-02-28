@@ -2,6 +2,17 @@ from cpython.object cimport *
 from pyorama.core.item_slot_map cimport *
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.image cimport *
+from pyorama.graphics.texture_enums cimport *
+
+ctypedef struct TextureC:
+    Handle handle
+    uint32_t gl_id
+    bint mipmaps
+    TextureFilter filter
+    TextureWrap wrap_s
+    TextureWrap wrap_t
+    TextureFormat format
+    bint cubemap
 
 cdef class Texture:
     cdef:
