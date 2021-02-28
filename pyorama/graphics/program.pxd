@@ -32,6 +32,9 @@ ctypedef struct ProgramC:
     ProgramUniformC[16] uniforms
     size_t num_uniforms
 
+cdef AttributeType c_attribute_type_from_gl(uint32_t gl_type) except *
+cdef UniformType c_uniform_type_from_gl(uint32_t gl_type) except *
+
 cdef class Program:
     cdef:
         readonly GraphicsManager manager

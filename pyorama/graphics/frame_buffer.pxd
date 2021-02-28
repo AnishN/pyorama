@@ -32,6 +32,8 @@ ctypedef struct FrameBufferC:
     FrameBufferAttachment[8] attachments
     size_t num_attachments
 
+cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) nogil
+
 cdef class FrameBuffer:
     cdef:
         readonly GraphicsManager manager

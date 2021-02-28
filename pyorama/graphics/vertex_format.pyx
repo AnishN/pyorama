@@ -2,6 +2,30 @@ ctypedef VertexFormatC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef uint32_t c_vertex_comp_type_to_gl(VertexCompType type) nogil:
+    if type == VERTEX_COMP_TYPE_F32:
+        return GL_FLOAT
+    elif type == VERTEX_COMP_TYPE_I8:
+        return GL_BYTE
+    elif type == VERTEX_COMP_TYPE_U8:
+        return GL_UNSIGNED_BYTE
+    elif type == VERTEX_COMP_TYPE_I16:
+        return GL_SHORT
+    elif type == VERTEX_COMP_TYPE_U16:
+        return GL_UNSIGNED_SHORT
+
+cdef size_t c_vertex_comp_type_get_size(VertexCompType type) nogil:
+    if type == VERTEX_COMP_TYPE_F32:
+        return sizeof(float)
+    elif type == VERTEX_COMP_TYPE_I8:
+        return sizeof(int8_t)
+    elif type == VERTEX_COMP_TYPE_U8:
+        return sizeof(uint8_t)
+    elif type == VERTEX_COMP_TYPE_I16:
+        return sizeof(int16_t)
+    elif type == VERTEX_COMP_TYPE_U16:
+        return sizeof(uint16_t)
+
 cdef class VertexFormat:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

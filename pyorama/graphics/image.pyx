@@ -2,6 +2,47 @@ ctypedef ImageC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef void c_image_data_flip_x(uint16_t width, uint16_t height, uint8_t *data) nogil:
+    cdef:
+        uint32_t *data_ptr
+        size_t y
+        size_t src, dst
+        uint16_t left, right
+    data_ptr = <uint32_t *>data
+    for y in range(height):
+        left = 0
+        right = width - 1
+        while left < right:
+            src = y * width + left
+            dst = y * width + right
+            data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]
+            left += 1
+            right -= 1
+
+cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) nogil:
+    cdef:
+        uint32_t *data_ptr
+        size_t x
+        size_t src, dst
+        uint16_t top, bottom
+    data_ptr = <uint32_t *>data
+    for x in range(width):
+        top = 0
+        bottom = height - 1
+        while top < bottom:
+            src = top * width + x
+            dst = bottom * width + x
+            data_ptr[src], data_ptr[dst] = data_ptr[dst], data_ptr[src]
+            top += 1
+            bottom -= 1
+
+cdef void c_image_data_premultiply_alpha(uint16_t width, uint16_t height, uint8_t *data) nogil:
+    cdef size_t i
+    for i in range(0, width * height * 4, 4):
+        data[i] = <uint16_t>data[i] * data[i + 3] / 255
+        data[i + 1] = <uint16_t>data[i + 1] * data[i + 3] / 255
+        data[i + 2] = <uint16_t>data[i + 2] * data[i + 3] / 255
+
 cdef class Image:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

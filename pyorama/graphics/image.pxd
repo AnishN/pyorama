@@ -9,6 +9,10 @@ ctypedef struct ImageC:
     size_t data_size
     uint8_t *data
 
+cdef void c_image_data_flip_x(uint16_t width, uint16_t height, uint8_t *data) nogil
+cdef void c_image_data_flip_y(uint16_t width, uint16_t height, uint8_t *data) nogil
+cdef void c_image_data_premultiply_alpha(uint16_t width, uint16_t height, uint8_t *data) nogil
+
 cdef class Image:
     cdef:
         readonly GraphicsManager manager

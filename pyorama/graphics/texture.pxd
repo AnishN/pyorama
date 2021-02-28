@@ -14,6 +14,13 @@ ctypedef struct TextureC:
     TextureFormat format
     bint cubemap
 
+cdef uint32_t c_texture_filter_to_gl(TextureFilter filter, bint mipmaps) nogil
+cdef uint32_t c_texture_wrap_to_gl(TextureWrap wrap) nogil
+cdef uint32_t c_texture_unit_to_gl(TextureUnit unit)
+cdef uint32_t c_texture_format_to_internal_format_gl(TextureFormat format) nogil
+cdef uint32_t c_texture_format_to_format_gl(TextureFormat format) nogil
+cdef uint32_t c_texture_format_to_type_gl(TextureFormat format) nogil
+
 cdef class Texture:
     cdef:
         readonly GraphicsManager manager

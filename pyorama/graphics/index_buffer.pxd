@@ -9,6 +9,9 @@ ctypedef struct IndexBufferC:
     BufferUsage usage
     size_t size
 
+cdef size_t c_index_format_get_size(IndexFormat format) nogil
+cdef uint32_t c_index_format_to_gl(IndexFormat format) nogil
+
 cdef class IndexBuffer:
     cdef:
         readonly GraphicsManager manager

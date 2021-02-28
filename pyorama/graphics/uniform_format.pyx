@@ -2,6 +2,24 @@ ctypedef UniformFormatC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef size_t c_uniform_type_get_size(UniformType type) nogil:
+    if type == UNIFORM_TYPE_INT:
+        return sizeof(int32_t)
+    elif type == UNIFORM_TYPE_FLOAT:
+        return sizeof(float)
+    elif type == UNIFORM_TYPE_VEC2:
+        return sizeof(Vec2C)
+    elif type == UNIFORM_TYPE_VEC3:
+        return sizeof(Vec3C)
+    elif type == UNIFORM_TYPE_VEC4:
+        return sizeof(Vec4C)
+    elif type == UNIFORM_TYPE_MAT2:
+        return sizeof(Mat2C)
+    elif type == UNIFORM_TYPE_MAT3:
+        return sizeof(Mat3C)
+    elif type == UNIFORM_TYPE_MAT4:
+        return sizeof(Mat4C)
+
 cdef class UniformFormat:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

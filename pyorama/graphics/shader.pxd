@@ -9,6 +9,8 @@ ctypedef struct ShaderC:
     uint32_t gl_id
     ShaderType type
 
+cdef uint32_t c_shader_type_to_gl(ShaderType type) nogil
+
 cdef class Shader:
     cdef:
         readonly GraphicsManager manager

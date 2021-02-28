@@ -2,6 +2,22 @@ ctypedef IndexBufferC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef size_t c_index_format_get_size(IndexFormat format) nogil:
+    if format == INDEX_FORMAT_U8: 
+        return sizeof(uint8_t)
+    elif format == INDEX_FORMAT_U16: 
+        return sizeof(uint16_t)
+    elif format == INDEX_FORMAT_U32: 
+        return sizeof(uint32_t)
+
+cdef uint32_t c_index_format_to_gl(IndexFormat format) nogil:
+    if format == INDEX_FORMAT_U8:
+        return GL_UNSIGNED_BYTE
+    elif format == INDEX_FORMAT_U16:
+        return GL_UNSIGNED_SHORT
+    elif format == INDEX_FORMAT_U32:
+        return GL_UNSIGNED_INT
+
 cdef class IndexBuffer:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

@@ -67,6 +67,10 @@ ctypedef struct ViewC:
     size_t num_texture_units
     Handle frame_buffer
 
+cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil
+cdef uint32_t c_blend_func_to_gl(BlendFunc func) nogil
+cdef uint32_t c_depth_func_to_gl(DepthFunc func) nogil
+
 cdef class View:
     cdef:
         readonly GraphicsManager manager

@@ -2,6 +2,46 @@ ctypedef ProgramC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef AttributeType c_attribute_type_from_gl(uint32_t gl_type) except *:
+    if gl_type == GL_INT:
+        return ATTRIBUTE_TYPE_INT
+    elif gl_type == GL_FLOAT:
+        return ATTRIBUTE_TYPE_FLOAT
+    elif gl_type == GL_FLOAT_VEC2:
+        return ATTRIBUTE_TYPE_VEC2
+    elif gl_type == GL_FLOAT_VEC3:
+        return ATTRIBUTE_TYPE_VEC3
+    elif gl_type == GL_FLOAT_VEC4:
+        return ATTRIBUTE_TYPE_VEC4
+    elif gl_type == GL_FLOAT_MAT2:
+        return ATTRIBUTE_TYPE_MAT2
+    elif gl_type == GL_FLOAT_MAT3:
+        return ATTRIBUTE_TYPE_MAT3
+    elif gl_type == GL_FLOAT_MAT4:
+        return ATTRIBUTE_TYPE_MAT4
+    else:
+        raise ValueError("Program: unsupported OpenGL attribute data type {0}".format(gl_type))
+
+cdef UniformType c_uniform_type_from_gl(uint32_t gl_type) except *:
+    if gl_type == GL_INT or gl_type == GL_SAMPLER_2D or gl_type == GL_SAMPLER_CUBE:
+        return UNIFORM_TYPE_INT
+    elif gl_type == GL_FLOAT:
+        return UNIFORM_TYPE_FLOAT
+    elif gl_type == GL_FLOAT_VEC2:
+        return UNIFORM_TYPE_VEC2
+    elif gl_type == GL_FLOAT_VEC3:
+        return UNIFORM_TYPE_VEC3
+    elif gl_type == GL_FLOAT_VEC4:
+        return UNIFORM_TYPE_VEC4
+    elif gl_type == GL_FLOAT_MAT2:
+        return UNIFORM_TYPE_MAT2
+    elif gl_type == GL_FLOAT_MAT3:
+        return UNIFORM_TYPE_MAT3
+    elif gl_type == GL_FLOAT_MAT4:
+        return UNIFORM_TYPE_MAT4
+    else:
+        raise ValueError("Program: unsupported OpenGL uniform data type {0}".format(gl_type))
+
 cdef class Program:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

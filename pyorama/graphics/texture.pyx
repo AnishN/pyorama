@@ -2,6 +2,96 @@ ctypedef TextureC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef uint32_t c_texture_filter_to_gl(TextureFilter filter, bint mipmaps) nogil:
+    if mipmaps:
+        if filter == TEXTURE_FILTER_NEAREST:
+            return GL_NEAREST_MIPMAP_NEAREST
+        elif filter == TEXTURE_FILTER_LINEAR:
+            return GL_LINEAR_MIPMAP_LINEAR
+    else:
+        if filter == TEXTURE_FILTER_NEAREST:
+            return GL_NEAREST
+        elif filter == TEXTURE_FILTER_LINEAR:
+            return GL_LINEAR
+
+cdef uint32_t c_texture_wrap_to_gl(TextureWrap wrap) nogil:
+    if wrap == TEXTURE_WRAP_REPEAT:
+        return GL_REPEAT
+    elif wrap == TEXTURE_WRAP_MIRRORED_REPEAT:
+        return GL_MIRRORED_REPEAT
+    elif wrap == TEXTURE_WRAP_CLAMP_TO_EDGE:
+        return GL_CLAMP_TO_EDGE
+
+cdef uint32_t c_texture_unit_to_gl(TextureUnit unit):
+    if unit == TEXTURE_UNIT_0:
+        return GL_TEXTURE0
+    elif unit == TEXTURE_UNIT_1:
+        return GL_TEXTURE1
+    elif unit == TEXTURE_UNIT_2:
+        return GL_TEXTURE2
+    elif unit == TEXTURE_UNIT_3:
+        return GL_TEXTURE3
+    elif unit == TEXTURE_UNIT_4:
+        return GL_TEXTURE4
+    elif unit == TEXTURE_UNIT_5:
+        return GL_TEXTURE5
+    elif unit == TEXTURE_UNIT_6:
+        return GL_TEXTURE6
+    elif unit == TEXTURE_UNIT_7:
+        return GL_TEXTURE7
+    elif unit == TEXTURE_UNIT_8:
+        return GL_TEXTURE8
+    elif unit == TEXTURE_UNIT_9:
+        return GL_TEXTURE9
+    elif unit == TEXTURE_UNIT_10:
+        return GL_TEXTURE10
+    elif unit == TEXTURE_UNIT_11:
+        return GL_TEXTURE11
+    elif unit == TEXTURE_UNIT_12:
+        return GL_TEXTURE12
+    elif unit == TEXTURE_UNIT_13:
+        return GL_TEXTURE13
+    elif unit == TEXTURE_UNIT_14:
+        return GL_TEXTURE14
+    elif unit == TEXTURE_UNIT_15:
+        return GL_TEXTURE15
+
+cdef uint32_t c_texture_format_to_internal_format_gl(TextureFormat format) nogil:
+    if format == TEXTURE_FORMAT_RGBA_8U:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_RGBA_32F:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_DEPTH_16U:
+        return GL_DEPTH_COMPONENT
+    elif format == TEXTURE_FORMAT_DEPTH_32U:
+        return GL_DEPTH_COMPONENT
+    #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:
+    #    return GL_DEPTH_STENCIL
+
+cdef uint32_t c_texture_format_to_format_gl(TextureFormat format) nogil:
+    if format == TEXTURE_FORMAT_RGBA_8U:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_RGBA_32F:
+        return GL_RGBA
+    elif format == TEXTURE_FORMAT_DEPTH_16U:
+        return GL_DEPTH_COMPONENT
+    elif format == TEXTURE_FORMAT_DEPTH_32U:
+        return GL_DEPTH_COMPONENT
+    #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:
+    #    return GL_DEPTH_STENCIL
+
+cdef uint32_t c_texture_format_to_type_gl(TextureFormat format) nogil:
+    if format == TEXTURE_FORMAT_RGBA_8U:
+        return GL_UNSIGNED_BYTE
+    elif format == TEXTURE_FORMAT_RGBA_32F:
+        return GL_FLOAT
+    elif format == TEXTURE_FORMAT_DEPTH_16U:
+        return GL_UNSIGNED_SHORT
+    elif format == TEXTURE_FORMAT_DEPTH_32U:
+        return GL_UNSIGNED_INT
+    #elif format == TEXTURE_FORMAT_DEPTH_STENCIL_24_8U:
+    #    return GL_UNSIGNED_INT_24_8
+
 cdef class Texture:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

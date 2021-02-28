@@ -2,6 +2,46 @@ ctypedef FrameBufferC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef uint32_t c_frame_buffer_attachment_to_gl(FrameBufferAttachment attachment) nogil:
+    if attachment == FRAME_BUFFER_ATTACHMENT_COLOR_0:
+        return GL_COLOR_ATTACHMENT0
+    elif attachment == FRAME_BUFFER_ATTACHMENT_DEPTH:
+        return GL_DEPTH_ATTACHMENT
+    elif attachment == FRAME_BUFFER_ATTACHMENT_STENCIL:
+        return GL_STENCIL_ATTACHMENT
+    """
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_1:
+        return GL_COLOR_ATTACHMENT1
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_2:
+        return GL_COLOR_ATTACHMENT2
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_3:
+        return GL_COLOR_ATTACHMENT3
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_4:
+        return GL_COLOR_ATTACHMENT4
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_5:
+        return GL_COLOR_ATTACHMENT5
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_6:
+        return GL_COLOR_ATTACHMENT6
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_7:
+        return GL_COLOR_ATTACHMENT7
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_8:
+        return GL_COLOR_ATTACHMENT8
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_9:
+        return GL_COLOR_ATTACHMENT9
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_10:
+        return GL_COLOR_ATTACHMENT10
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_11:
+        return GL_COLOR_ATTACHMENT11
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_12:
+        return GL_COLOR_ATTACHMENT12
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_13:
+        return GL_COLOR_ATTACHMENT13
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_14:
+        return GL_COLOR_ATTACHMENT14
+    elif attachment == FRAME_BUFFER_ATTACHMENT_COLOR_15:
+        return GL_COLOR_ATTACHMENT15
+    """
+
 cdef class FrameBuffer:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

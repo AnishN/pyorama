@@ -2,6 +2,64 @@ ctypedef ViewC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef uint32_t c_clear_flags_to_gl(uint32_t flags) nogil:
+    cdef uint32_t gl_flags = 0
+    if flags & VIEW_CLEAR_COLOR:
+        gl_flags |= GL_COLOR_BUFFER_BIT
+    if flags & VIEW_CLEAR_DEPTH:
+        gl_flags |= GL_DEPTH_BUFFER_BIT
+    if flags & VIEW_CLEAR_STENCIL:
+        gl_flags |= GL_STENCIL_BUFFER_BIT
+    return gl_flags
+
+cdef uint32_t c_blend_func_to_gl(BlendFunc func) nogil:
+    if func == BLEND_FUNC_ZERO:
+        return GL_ZERO 
+    elif func == BLEND_FUNC_ONE:
+        return GL_ONE
+    elif func == BLEND_FUNC_SRC_COLOR:
+        return GL_SRC_COLOR
+    elif func == BLEND_FUNC_ONE_MINUS_SRC_COLOR:
+        return GL_ONE_MINUS_SRC_COLOR
+    elif func == BLEND_FUNC_DST_COLOR:
+        return GL_DST_COLOR
+    elif func == BLEND_FUNC_ONE_MINUS_DST_COLOR:
+        return GL_ONE_MINUS_DST_COLOR
+    elif func == BLEND_FUNC_SRC_ALPHA:
+        return GL_SRC_ALPHA
+    elif func == BLEND_FUNC_ONE_MINUS_SRC_ALPHA:
+        return GL_ONE_MINUS_SRC_ALPHA
+    elif func == BLEND_FUNC_DST_ALPHA:
+        return GL_DST_ALPHA
+    elif func == BLEND_FUNC_ONE_MINUS_DST_ALPHA:
+        return GL_ONE_MINUS_DST_ALPHA
+    elif func == BLEND_FUNC_CONSTANT_COLOR:
+        return GL_CONSTANT_COLOR
+    elif func == BLEND_FUNC_ONE_MINUS_CONSTANT_COLOR:
+        return GL_ONE_MINUS_CONSTANT_COLOR
+    elif func == BLEND_FUNC_CONSTANT_ALPHA:
+        return GL_CONSTANT_ALPHA
+    elif func == BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA:
+        return GL_ONE_MINUS_CONSTANT_ALPHA
+
+cdef uint32_t c_depth_func_to_gl(DepthFunc func) nogil:
+    if func == DEPTH_FUNC_NEVER:
+        return GL_NEVER
+    elif func == DEPTH_FUNC_LESSER:
+        return GL_LESS
+    elif func == DEPTH_FUNC_EQUAL:
+        return GL_EQUAL
+    elif func == DEPTH_FUNC_LESSER_EQUAL:
+        return GL_LEQUAL
+    elif func == DEPTH_FUNC_GREATER:
+        return GL_GREATER
+    elif func == DEPTH_FUNC_NOT_EQUAL:
+        return GL_NOTEQUAL
+    elif func == DEPTH_FUNC_GREATER_EQUAL:
+        return GL_GEQUAL
+    elif func == DEPTH_FUNC_ALWAYS:
+        return GL_ALWAYS
+
 cdef class View:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

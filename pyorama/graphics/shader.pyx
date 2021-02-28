@@ -2,6 +2,12 @@ ctypedef ShaderC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
+cdef uint32_t c_shader_type_to_gl(ShaderType type) nogil:
+    if type == SHADER_TYPE_VERTEX:
+        return GL_VERTEX_SHADER
+    elif type == SHADER_TYPE_FRAGMENT:
+        return GL_FRAGMENT_SHADER
+
 cdef class Shader:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0

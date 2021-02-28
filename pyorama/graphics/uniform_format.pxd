@@ -9,6 +9,8 @@ ctypedef struct UniformFormatC:
     size_t count
     size_t size
 
+cdef size_t c_uniform_type_get_size(UniformType type) nogil
+
 cdef class UniformFormat:
     cdef:
         readonly GraphicsManager manager

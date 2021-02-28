@@ -4,7 +4,6 @@ from pyorama.graphics.effect_composer cimport *
 from pyorama.graphics.effect_pass cimport *
 from pyorama.graphics.frame_buffer cimport *
 from pyorama.graphics.graphics_manager cimport *
-from pyorama.graphics.graphics_utils cimport *
 from pyorama.graphics.image cimport *
 from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.mesh_batch cimport *

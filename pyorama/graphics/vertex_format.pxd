@@ -16,6 +16,9 @@ ctypedef struct VertexFormatC:
     size_t count
     size_t stride
 
+cdef uint32_t c_vertex_comp_type_to_gl(VertexCompType type) nogil
+cdef size_t c_vertex_comp_type_get_size(VertexCompType type) nogil
+
 cdef class VertexFormat:
     cdef:
         readonly GraphicsManager manager
