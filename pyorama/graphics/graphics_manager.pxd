@@ -8,17 +8,13 @@ from pyorama.libs.gles2 cimport *
 from pyorama.libs.sdl2 cimport *
 #from pyorama.math3d cimport *
 
-from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *
-from pyorama.graphics.sprite_batch cimport *
-from pyorama.graphics.tile_map cimport *
+from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.uniform cimport *
 from pyorama.graphics.uniform_format cimport *
-from pyorama.graphics.vertex_buffer cimport *
 from pyorama.graphics.vertex_format cimport *
-from pyorama.graphics.view cimport *
-from pyorama.graphics.window cimport *
+from pyorama.graphics.vertex_buffer cimport *
 
 @cython.final
 cdef class GraphicsManager(ItemManager):
@@ -70,4 +66,7 @@ cdef class GraphicsManager(ItemManager):
     cdef void c_swap_root_window(self) except *
     cdef void c_update_batches(self) except *
     cdef void c_update_windows(self) except *
+    cdef void c_bind_view_textures(self, Handle view) except *
+    cdef void c_unbind_view_textures(self, Handle view) except *
+    cdef void c_view_clear(self, Handle view) except *
     cpdef void update(self) except *

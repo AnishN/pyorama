@@ -14,6 +14,17 @@ class Game(App):
         self.composer = EffectComposer(self.graphics)
         self.render_pass = RenderPass(self.graphics)
         self.effect_pass = EffectPass(self.graphics)
+
+        self.camera = Camera(self.graphics)
+        """
+        self.camera.create(
+            position=Vec2(400, 300),
+            offset=Vec2(0, 0),
+            zoom=Vec2(1, 1),
+            rotation=0.0
+        )
+        self.scene = Scene(self.graphics)
+        """
     
     def quit(self):
         super().quit()

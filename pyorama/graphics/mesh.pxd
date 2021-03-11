@@ -1,3 +1,4 @@
+from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.frame_buffer cimport *
 from pyorama.graphics.index_buffer cimport *
@@ -5,6 +6,7 @@ from pyorama.graphics.program cimport *
 from pyorama.graphics.vertex_buffer cimport *
 
 ctypedef struct MeshC:
+    Handle handle
     uint8_t *vertex_data
     size_t vertex_data_size
     uint8_t *index_data

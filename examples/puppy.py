@@ -16,8 +16,6 @@ class Game(App):
         self.setup_texture()
         self.setup_view()
         self.setup_listeners()
-
-        
     
     def setup_window(self):
         #setup window/fbo/view

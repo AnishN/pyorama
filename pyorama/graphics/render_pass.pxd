@@ -1,8 +1,12 @@
 from pyorama.graphics.graphics_manager cimport *
+from pyorama.graphics.camera cimport *
+from pyorama.graphics.scene cimport *
 
 ctypedef struct RenderPassC:
     Handle handle
     Handle view
+    Handle scene
+    Handle camera
 
 cdef class RenderPass:
     cdef:
@@ -19,5 +23,5 @@ cdef class RenderPass:
     cdef uint8_t c_get_type() nogil
     @staticmethod
     cdef size_t c_get_size() nogil
-    cpdef void create(self) except *
+    cpdef void create(self, Scene scene, Camera camera) except *
     cpdef void delete(self) except *

@@ -1,4 +1,12 @@
 from cython.parallel import parallel, prange
+from pyorama.graphics.program cimport *
+from pyorama.graphics.shader cimport *
+from pyorama.graphics.sprite_batch cimport *
+from pyorama.graphics.tile_map cimport *
+from pyorama.graphics.view cimport *
+from pyorama.graphics.window cimport *
+from pyorama.graphics.scene cimport *
+from pyorama.graphics.node cimport *
 
 cdef class GraphicsManager:
 
@@ -34,11 +42,12 @@ cdef class GraphicsManager:
             VertexFormat, VertexBuffer, IndexBuffer,
             UniformFormat, Uniform, Shader, Program,
             Image, Texture, FrameBuffer,
-            #Mesh, MeshBatch, 
+            Mesh, #MeshBatch, 
             Sprite, SpriteBatch,
             #BitmapFont, Text,
             #TextureGrid, 
             TileMap,
+            Scene, Node,
         ]
         for item_type in item_types:
             item_types_info[item_type.get_type()] = item_type.get_size()
@@ -229,6 +238,55 @@ cdef class GraphicsManager:
             window.handle = window_ptr.handle
             window.render()
 
+    cdef void c_bind_view_textures(self, Handle view) except *:
+        cdef:
+            ViewC *view_ptr
+            Handle texture
+            TextureUnit texture_unit
+            uint32_t gl_texture_unit
+            TextureC *texture_ptr
+        
+        view_ptr = View.get_ptr_by_handle(self, view)
+        for i in range(view_ptr.num_texture_units):
+            texture_unit = view_ptr.texture_units[i]
+            gl_texture_unit = c_texture_unit_to_gl(texture_unit)
+            texture = view_ptr.textures[<size_t>texture_unit]
+            texture_ptr = Texture.get_ptr_by_handle(self, texture)
+            glActiveTexture(gl_texture_unit); self.c_check_gl()
+            glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
+
+    cdef void c_unbind_view_textures(self, Handle view) except *:
+        cdef:
+            ViewC *view_ptr
+            Handle texture
+            TextureUnit texture_unit
+            uint32_t gl_texture_unit
+        
+        view_ptr = View.get_ptr_by_handle(self, view)
+        for i in range(view_ptr.num_texture_units):
+            texture_unit = view_ptr.texture_units[i]
+            gl_texture_unit = c_texture_unit_to_gl(texture_unit)
+            glActiveTexture(gl_texture_unit); self.c_check_gl()
+            glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
+
+    cdef void c_view_clear(self, Handle view) except *:
+        cdef:
+            ViewC *view_ptr
+            uint32_t gl_clear_flags
+        
+        view_ptr = View.get_ptr_by_handle(self, view)
+        gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
+        glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
+        glClearColor(
+            view_ptr.clear_color.x,
+            view_ptr.clear_color.y,
+            view_ptr.clear_color.z,
+            view_ptr.clear_color.w,
+        ); self.c_check_gl()
+        glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
+        glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
+        glClear(gl_clear_flags); self.c_check_gl()
+
     cpdef void update(self) except *:
         cdef:
             ItemSlotMap slot_map
@@ -288,40 +346,20 @@ cdef class GraphicsManager:
             #glDepthFunc(GL_LESS); self.c_check_gl()
             #glDepthMask(False); self.c_check_gl()
             
+            
             fbo = view_ptr.frame_buffer
             if fbo != 0:
                 fbo_ptr = FrameBuffer.get_ptr_by_handle(self, fbo)
                 glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
             
-            gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
-            glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
-            glClearColor(
-                view_ptr.clear_color.x,
-                view_ptr.clear_color.y,
-                view_ptr.clear_color.z,
-                view_ptr.clear_color.w,
-            ); self.c_check_gl()
-            glClearDepthf(view_ptr.clear_depth); self.c_check_gl()
-            glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
-            glClear(gl_clear_flags); self.c_check_gl()
+            self.c_view_clear(view_ptr.handle)
             
-            for i in range(view_ptr.num_texture_units):
-                texture_unit = view_ptr.texture_units[i]
-                gl_texture_unit = c_texture_unit_to_gl(texture_unit)
-                texture = view_ptr.textures[<size_t>texture_unit]
-                texture_ptr = Texture.get_ptr_by_handle(self, texture)
-                glActiveTexture(gl_texture_unit); self.c_check_gl()
-                glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
-
+            self.c_bind_view_textures(view_ptr.handle)
             program._bind_attributes(vbo_ptr.handle)
             ibo.handle = ibo_ptr.handle
             ibo._draw()
             program._unbind_attributes()
-            for i in range(view_ptr.num_texture_units):
-                texture_unit = view_ptr.texture_units[i]
-                gl_texture_unit = c_texture_unit_to_gl(texture_unit)
-                glActiveTexture(gl_texture_unit); self.c_check_gl()
-                glBindTexture(GL_TEXTURE_2D, 0); self.c_check_gl()
+            self.c_unbind_view_textures(view_ptr.handle)
             if fbo != 0:
                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()
             glUseProgram(0); self.c_check_gl()

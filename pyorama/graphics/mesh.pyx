@@ -63,9 +63,9 @@ cdef class Mesh:
 
     cpdef void create_from_file(self, bytes file_path) except *:
         cdef:
+            MeshC *mesh_ptr
             aiScene *ai_scene
             str error_str
-            MeshC *mesh_ptr
             aiMesh *ai_mesh
             Vec3C *positions
             Vec3C *tex_coords#assimp uses Vec3 instead of Vec2
@@ -86,6 +86,9 @@ cdef class Mesh:
             uint8_t *index_data
             aiFace *ai_faces
 
+        self.handle = self.manager.create(ITEM_TYPE)
+        mesh_ptr = self.get_ptr()
+
         ai_scene = aiImportFile(file_path, 
             aiProcess_CalcTangentSpace | 
             aiProcess_GenNormals | #generates normals if not present in mesh file
@@ -100,8 +103,7 @@ cdef class Mesh:
             raise ValueError("Mesh: no meshes present in file")
         if ai_scene.mNumMeshes > 1:
             raise ValueError("Mesh: multiple mesh import not supported")
-        self.handle = self.manager.create(ITEM_TYPE)
-        mesh_ptr = self.get_ptr()
+        
         ai_mesh = ai_scene.mMeshes[0]
 
         #get vertex data (interleaved)

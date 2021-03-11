@@ -25,11 +25,11 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native", "-no-pie"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]#, "-no-pie"]
 include_dirs = [np.get_include(), "./pyorama/libs/include"]
 library_dirs = ["./pyorama/libs/shared"]
 macros = [
-    ("CYTHON_TRACE", "1"),
+    #("CYTHON_TRACE", "1"),
 ]
 
 annotate = True
@@ -40,9 +40,9 @@ directives = {
     "cdivision": True,
     "initializedcheck": False,
     "language_level": "3",
-    "linetrace": True,
+    #"linetrace": True,
     "nonecheck": False,
-    "profile": True,
+    #"profile": True,
     "wraparound": False,
 }
 

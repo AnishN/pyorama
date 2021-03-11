@@ -1,3 +1,5 @@
+from pyorama.graphics.texture cimport *
+
 ctypedef FrameBufferC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)

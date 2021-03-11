@@ -41,8 +41,13 @@ cdef class RenderPass:
     def get_size():
         return ITEM_SIZE
 
-    cpdef void create(self) except *:
+    cpdef void create(self, Scene scene, Camera camera) except *:
+        cdef:
+            RenderPassC *pass_ptr
         self.handle = self.manager.create(ITEM_TYPE)
+        pass_ptr = self.get_ptr()
+        pass_ptr.scene = scene.handle
+        pass_ptr.camera = camera.handle
 
     cpdef void delete(self) except *:
         self.manager.delete(self.handle)
