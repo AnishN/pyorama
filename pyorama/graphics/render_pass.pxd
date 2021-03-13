@@ -4,7 +4,9 @@ from pyorama.graphics.scene cimport *
 
 ctypedef struct RenderPassC:
     Handle handle
-    Handle view
+    Handle positions
+    Handle colors
+    Handle depths
     Handle scene
     Handle camera
 
@@ -23,5 +25,5 @@ cdef class RenderPass:
     cdef uint8_t c_get_type() nogil
     @staticmethod
     cdef size_t c_get_size() nogil
-    cpdef void create(self, Scene scene, Camera camera) except *
+    cpdef void create(self, Scene scene, Camera camera, Texture positions, Texture colors, Texture depths) except *
     cpdef void delete(self) except *

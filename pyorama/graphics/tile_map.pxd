@@ -1,5 +1,7 @@
 from pyorama.graphics.graphics_manager cimport *
 from pyorama.graphics.texture_grid_atlas cimport *
+from pyorama.graphics.vertex_buffer cimport *
+from pyorama.graphics.index_buffer cimport *
 
 ctypedef struct TileMapC:
     Handle handle

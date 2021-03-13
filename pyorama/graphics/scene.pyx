@@ -169,7 +169,7 @@ cdef class Scene:
             self.c_update_node_transform(curr_child, is_dirty)
             curr_child_ptr = <NodeC *>self.manager.get_ptr(curr_child)
             curr_child = curr_child_ptr.next_sibling
-
+    
     cdef void c_update_node_transforms(self) except *:
         cdef:
             SceneC *scene_ptr

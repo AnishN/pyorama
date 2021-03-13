@@ -8,6 +8,12 @@ from pyorama.libs.gles2 cimport *
 from pyorama.libs.sdl2 cimport *
 #from pyorama.math3d cimport *
 
+from pyorama.graphics.sprite_batch cimport *
+from pyorama.graphics.tile_map cimport *
+from pyorama.graphics.view cimport *
+from pyorama.graphics.window cimport *
+from pyorama.graphics.scene cimport *
+from pyorama.graphics.node cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *
 from pyorama.graphics.index_buffer cimport *
@@ -69,4 +75,6 @@ cdef class GraphicsManager(ItemManager):
     cdef void c_bind_view_textures(self, Handle view) except *
     cdef void c_unbind_view_textures(self, Handle view) except *
     cdef void c_view_clear(self, Handle view) except *
+    #cdef void c_update_node_transform(self, NodeC *node_ptr) except *
+    #cdef void c_update_node_transforms(self) except *
     cpdef void update(self) except *

@@ -39,7 +39,7 @@ class Game(App):
         self.scene.update()
 
     def create_random_graph(self):
-        num_nodes = 100000
+        num_nodes = 10000
         root = Node(self.graphics)
         self.scene.get_root_node(root)
 

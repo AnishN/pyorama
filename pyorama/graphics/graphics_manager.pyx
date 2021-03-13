@@ -1,12 +1,4 @@
 from cython.parallel import parallel, prange
-from pyorama.graphics.program cimport *
-from pyorama.graphics.shader cimport *
-from pyorama.graphics.sprite_batch cimport *
-from pyorama.graphics.tile_map cimport *
-from pyorama.graphics.view cimport *
-from pyorama.graphics.window cimport *
-from pyorama.graphics.scene cimport *
-from pyorama.graphics.node cimport *
 
 cdef class GraphicsManager:
 
@@ -287,6 +279,39 @@ cdef class GraphicsManager:
         glClearStencil(view_ptr.clear_stencil); self.c_check_gl()
         glClear(gl_clear_flags); self.c_check_gl()
 
+    """
+    cdef void c_update_node_transform(self, NodeC *node_ptr) except *:
+        cdef:
+            Handle parent
+            NodeC *parent_ptr
+        if node_ptr.is_dirty:
+            parent = node_ptr.parent
+            if parent != 0:
+                parent_ptr = <NodeC *>self.get_ptr(parent)
+                self.c_update_node_transform(parent_ptr)
+                Mat4.c_dot(&node_ptr.world, &node_ptr.local, &parent_ptr.world)
+            else:#parent == "root"
+                memcpy(&node_ptr.world, &node_ptr.local, sizeof(Mat4C))
+            node_ptr.is_dirty = False
+
+    cdef void c_update_node_transforms(self) except *:
+        cdef:
+            ItemSlotMap nodes
+            NodeC *nodes_ptr
+            size_t num_nodes
+            size_t i
+            NodeC *node_ptr
+        nodes = self.get_slot_map(Node.c_get_type())
+        nodes_ptr = <NodeC *>nodes.items.items
+        num_nodes = nodes.items.num_items
+        for i in range(num_nodes):
+            node_ptr = &nodes_ptr[i]
+            self.c_update_node_transform(node_ptr)
+
+    def update_node_transforms(self):
+        self.c_update_node_transforms()
+    """
+    
     cpdef void update(self) except *:
         cdef:
             ItemSlotMap slot_map
