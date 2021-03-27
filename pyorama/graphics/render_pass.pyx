@@ -11,20 +11,9 @@ cdef class RenderPass:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return RenderPass.get_ptr_by_handle(self.manager, self.handle)
-
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
+    
     @staticmethod
     cdef uint8_t c_get_type() nogil:
         return ITEM_TYPE
@@ -45,7 +34,7 @@ cdef class RenderPass:
         cdef:
             RenderPassC *pass_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        pass_ptr = self.get_ptr()
+        pass_ptr = self.c_get_ptr()
         pass_ptr.scene = scene.handle
         pass_ptr.camera = camera.handle
         pass_ptr.positions = positions.handle

@@ -8,10 +8,10 @@ cdef class Space:
         readonly Handle handle
     
     @staticmethod
-    cdef SpaceC *get_ptr_by_index(PhysicsManager manager, size_t index) except *
+    cdef SpaceC *c_get_ptr_by_index(PhysicsManager manager, size_t index) except *
     @staticmethod
-    cdef SpaceC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
-    cdef SpaceC *get_ptr(self) except *
+    cdef SpaceC *c_get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
+    cdef SpaceC *c_get_ptr(self) except *
     cpdef void create(self) except *
     cpdef void delete(self) except *
     cpdef Vec2 get_gravity(self)

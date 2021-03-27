@@ -17,19 +17,8 @@ cdef class Shader:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Shader.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -59,7 +48,7 @@ cdef class Shader:
             uint32_t gl_type
 
         self.handle = self.manager.create(ITEM_TYPE)
-        shader_ptr = self.get_ptr()
+        shader_ptr = self.c_get_ptr()
         gl_type = c_shader_type_to_gl(type)
         gl_id = glCreateShader(gl_type); self.manager.c_check_gl()
         source_ptr = source
@@ -89,7 +78,7 @@ cdef class Shader:
     cpdef void delete(self) except *:
         cdef:
             ShaderC *shader_ptr
-        shader_ptr = self.get_ptr()
+        shader_ptr = self.c_get_ptr()
         glDeleteShader(shader_ptr.gl_id); self.manager.c_check_gl()
         self.manager.delete(self.handle)
         self.handle = 0

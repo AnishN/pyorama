@@ -6,7 +6,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
             size_t num_pages
             size_t i
         font = self.bitmap_fonts.c_create()
-        font_ptr = self.bitmap_font_get_ptr(font)
+        font_ptr = self.bitmap_font_c_get_ptr(font)
         self._bitmap_font_parse_file(font, file_path)
         num_pages = font_ptr.common.num_pages
         for i in range(num_pages):
@@ -14,7 +14,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
         return font
 
     cpdef void bitmap_font_delete(self, Handle font) except *:
-        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        cdef BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
         free(font_ptr.pages)
         free(font_ptr.chars)
         free(font_ptr.kernings)
@@ -33,7 +33,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
             size_t i_c = 0
             size_t i_k = 0
         
-        font_ptr = self.bitmap_font_get_ptr(font)
+        font_ptr = self.bitmap_font_c_get_ptr(font)
         in_file = open(file_path, "rb")
         lines = in_file.readlines()
         for line in lines:
@@ -85,7 +85,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
         return out
 
     cdef void _bitmap_font_parse_info(self, Handle font, dict pairs) except *:
-        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        cdef BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
         str_len = len(pairs[b"face"])
         if str_len > 255:
             raise ValueError("BitmapFont: face names > 255 characters are not supported")
@@ -106,7 +106,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
         font_ptr.info.outline = int(pairs[b"outline"])
 
     cdef void _bitmap_font_parse_common(self, Handle font, dict pairs) except *:
-        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        cdef BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
         font_ptr.common.line_height = int(pairs[b"lineHeight"])
         font_ptr.common.base = int(pairs[b"base"])
         font_ptr.common.scale_w = int(pairs[b"scaleW"])
@@ -120,7 +120,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
 
     cdef void _bitmap_font_parse_page(self, Handle font, dict pairs) except *:
         cdef:
-            BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+            BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
             size_t page_num
             size_t str_len
         
@@ -136,7 +136,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
         memcpy(font_ptr.pages[page_num].file_name, <char *>pairs[b"file"], str_len)
 
     cdef void _bitmap_font_parse_char(self, Handle font, size_t i, dict pairs) except *:
-        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        cdef BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
         if font_ptr.chars == NULL:
             font_ptr.chars = <BitmapFontCharC *>calloc(font_ptr.num_chars, sizeof(BitmapFontCharC))
             if font_ptr.chars == NULL:
@@ -155,7 +155,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
         font_ptr.chars[i].channel = int(pairs[b"chnl"])
 
     cdef void _bitmap_font_parse_kerning(self, Handle font, size_t i, dict pairs) except *:
-        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        cdef BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
         if font_ptr.kernings == NULL:
             font_ptr.kernings = <BitmapFontKerningC *>calloc(font_ptr.num_kernings, sizeof(BitmapFontKerningC))
             if font_ptr.kernings == NULL:
@@ -167,7 +167,7 @@ cpdef Handle bitmap_font_create_from_file(self, bytes file_path):
         font_ptr.kernings[i].amount = int(pairs[b"amount"])
 
     cpdef Handle bitmap_font_get_page_texture(self, Handle font, size_t page_num) except *:
-        cdef BitmapFontC *font_ptr = self.bitmap_font_get_ptr(font)
+        cdef BitmapFontC *font_ptr = self.bitmap_font_c_get_ptr(font)
         if page_num >= font_ptr.common.num_pages:
             raise ValueError("BitmapFont: invalid page number")
         return font_ptr.pages[page_num].texture

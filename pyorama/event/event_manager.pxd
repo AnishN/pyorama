@@ -20,8 +20,8 @@ cdef class EventManager:
     cpdef bint event_type_check_registered(self, uint16_t event_type) except *
     cpdef void event_type_emit(self, uint16_t event_type, dict event_data=*) except *
     
-    cdef ListenerKeyC *key_get_ptr(self, Handle listener) except *
-    cdef ListenerC *listener_get_ptr(self, Handle listener) except *
+    cdef ListenerKeyC *key_c_get_ptr(self, Handle listener) except *
+    cdef ListenerC *listener_c_get_ptr(self, Handle listener) except *
 
     cdef dict parse_joystick_axis_event(self, SDL_JoyAxisEvent event)
     cdef dict parse_joystick_ball_event(self, SDL_JoyBallEvent event)

@@ -11,18 +11,18 @@ cdef class Shape:
         self.manager = None
     
     @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(PhysicsManager manager, size_t index) except *:
+    cdef ItemTypeC *c_get_ptr_by_index(PhysicsManager manager, size_t index) except *:
         cdef:
             PyObject *slot_map_ptr
         slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
         return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
 
     @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
+    cdef ItemTypeC *c_get_ptr_by_handle(PhysicsManager manager, Handle handle) except *:
+        return <ItemTypeC *>manager.c_get_ptr(handle)
 
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Shape.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return Shape.c_get_ptr_by_handle(self.manager, self.handle)
 
     @staticmethod
     cdef float c_moment_for_circle(float mass, float inner_radius, float outer_radius, Vec2 offset) except *:
@@ -120,8 +120,8 @@ cdef class Shape:
             cpVect *offset_ptr
         
         self.handle = self.manager.create(ITEM_TYPE)
-        shape_ptr = self.get_ptr()
-        body_ptr = body.get_ptr()
+        shape_ptr = self.c_get_ptr()
+        body_ptr = body.c_get_ptr()
         offset_ptr = <cpVect *>&offset.data
         shape_ptr.cp = cpCircleShapeNew(body_ptr.cp, radius, offset_ptr[0])
         if shape_ptr.cp == NULL:
@@ -136,8 +136,8 @@ cdef class Shape:
             cpVect *b_ptr
         
         self.handle = self.manager.create(ITEM_TYPE)
-        shape_ptr = self.get_ptr()
-        body_ptr = body.get_ptr()
+        shape_ptr = self.c_get_ptr()
+        body_ptr = body.c_get_ptr()
         a_ptr = <cpVect *>&a.data
         b_ptr = <cpVect *>&b.data
         shape_ptr.cp = cpSegmentShapeNew(body_ptr.cp, a_ptr[0], b_ptr[0], radius)
@@ -149,15 +149,15 @@ cdef class Shape:
     #cpdef void create_poly_shape(self) except *
     #cpdef void create_poly_box(self) except *
     cpdef void delete(self) except *:
-        cdef ShapeC *shape_ptr = self.get_ptr()
+        cdef ShapeC *shape_ptr = self.c_get_ptr()
         cpShapeFree(shape_ptr.cp)
         self.manager.delete(self.handle)
         self.handle = 0
 
     cpdef void set_elasticity(self, float elasticity) except *:
-        cdef ShapeC *shape_ptr = self.get_ptr()
+        cdef ShapeC *shape_ptr = self.c_get_ptr()
         cpShapeSetElasticity(shape_ptr.cp, elasticity)
 
     cpdef void set_friction(self, float friction) except *:
-        cdef ShapeC *shape_ptr = self.get_ptr()
+        cdef ShapeC *shape_ptr = self.c_get_ptr()
         cpShapeSetFriction(shape_ptr.cp, friction)

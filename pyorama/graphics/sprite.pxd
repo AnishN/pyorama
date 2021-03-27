@@ -20,12 +20,7 @@ cdef class Sprite:
         readonly GraphicsManager manager
         readonly Handle handle
         
-    @staticmethod
-    cdef SpriteC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
-    @staticmethod
-    cdef SpriteC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
-    cdef SpriteC *get_ptr(self) except *
-
+    cdef SpriteC *c_get_ptr(self) except *
     @staticmethod
     cdef uint8_t c_get_type() nogil
     @staticmethod

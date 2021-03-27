@@ -14,13 +14,8 @@ cdef class VertexBuffer:
     cdef:
         readonly GraphicsManager manager
         readonly Handle handle
-        
-    @staticmethod
-    cdef VertexBufferC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
-    @staticmethod
-    cdef VertexBufferC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
-    cdef VertexBufferC *get_ptr(self) except *
 
+    cdef VertexBufferC *c_get_ptr(self) except *
     @staticmethod
     cdef uint8_t c_get_type() nogil
     @staticmethod

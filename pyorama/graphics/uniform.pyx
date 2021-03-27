@@ -13,19 +13,8 @@ cdef class Uniform:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Uniform.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
     
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -50,9 +39,9 @@ cdef class Uniform:
             size_t data_size
             uint8_t *data_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        uniform_ptr = self.get_ptr()
+        uniform_ptr = self.c_get_ptr()
         uniform_ptr.format = format.handle
-        format_ptr = format.get_ptr()
+        format_ptr = format.c_get_ptr()
         type_size = c_uniform_type_get_size(format_ptr.type)
         data_size = format_ptr.count * type_size
         data_ptr = <uint8_t *>calloc(1, data_size)
@@ -74,9 +63,9 @@ cdef class Uniform:
             float float_data
             uint8_t *src_ptr
             uint8_t *dst_ptr
-        uniform_ptr = self.get_ptr()
+        uniform_ptr = self.c_get_ptr()
         format.handle = uniform_ptr.format
-        format_ptr = format.get_ptr()
+        format_ptr = format.c_get_ptr()
         if index >= format_ptr.count:
             raise ValueError("Uniform: attempting to set data outside of count boundaries")
         type = format_ptr.type

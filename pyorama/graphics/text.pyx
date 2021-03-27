@@ -4,7 +4,7 @@
             Handle text
             TextC *text_ptr
         text = self.texts.c_create()
-        text_ptr = self.text_get_ptr(text)
+        text_ptr = self.text_c_get_ptr(text)
         text_ptr.font = font
         text_ptr.data_length = len(data)
         text_ptr.data = <char *>calloc(text_ptr.data_length, sizeof(char))
@@ -17,7 +17,7 @@
         return text
 
     cpdef void text_delete(self, Handle text) except *:
-        cdef TextC *text_ptr = self.text_get_ptr(text)
+        cdef TextC *text_ptr = self.text_c_get_ptr(text)
         free(text_ptr.data)
         self.texts.c_delete(text)
 

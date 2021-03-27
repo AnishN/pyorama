@@ -11,19 +11,8 @@ cdef class Node:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Node.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -45,7 +34,7 @@ cdef class Node:
         cdef:
             NodeC *node_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.type = type
         node_ptr.object = 0
         node_ptr.is_dirty = True
@@ -56,7 +45,7 @@ cdef class Node:
         cdef:
             NodeC *node_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.type = NODE_TYPE_CAMERA
         node_ptr.object = camera.handle
         node_ptr.is_dirty = True
@@ -67,7 +56,7 @@ cdef class Node:
         cdef:
             NodeC *node_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.type = NODE_TYPE_MESH
         node_ptr.object = mesh.handle
         node_ptr.is_dirty = True
@@ -81,46 +70,46 @@ cdef class Node:
     cpdef void get_translation(self, Vec3 translation) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         translation.data = node_ptr.translation
 
     cpdef void set_translation(self, Vec3 translation) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.translation = translation.data
         node_ptr.is_dirty = True
 
     cpdef void get_rotation(self, Quat rotation) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         rotation.data = node_ptr.rotation
 
     cpdef void set_rotation(self, Quat rotation) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.rotation = rotation.data
         node_ptr.is_dirty = True
 
     cpdef void get_scale(self, Vec3 scale) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         scale.data = node_ptr.scale
 
     cpdef void set_scale(self, Vec3 scale) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.scale = scale.data
         node_ptr.is_dirty = True
 
     cpdef void get_local(self, Mat4 transform) except *:
         cdef:
             NodeC *node_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         if node_ptr.is_dirty:
             self.update_local()
         transform.data = node_ptr.local
@@ -133,7 +122,7 @@ cdef class Node:
             Vec3C scale
             Mat3C rotation_mat
 
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         node_ptr.local = transform.data
         node_ptr.is_dirty = True
 
@@ -164,7 +153,7 @@ cdef class Node:
         cdef:
             NodeC *node_ptr
             Mat4C *local_ptr
-        node_ptr = self.get_ptr()
+        node_ptr = self.c_get_ptr()
         local_ptr = &node_ptr.local
         Mat4.c_from_translation(local_ptr, &node_ptr.translation)
         Mat4.c_rotate_quat(local_ptr, local_ptr, &node_ptr.rotation)

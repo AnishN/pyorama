@@ -51,19 +51,8 @@ cdef class Program:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Program.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -85,7 +74,7 @@ cdef class Program:
         cdef:
             ProgramC *program_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        program_ptr = self.get_ptr()
+        program_ptr = self.c_get_ptr()
         program_ptr.gl_id = glCreateProgram(); self.manager.c_check_gl()
         program_ptr.vertex = vertex.handle
         program_ptr.fragment = fragment.handle
@@ -96,7 +85,7 @@ cdef class Program:
     cpdef void delete(self) except *:
         cdef:
             ProgramC *program_ptr
-        program_ptr = self.get_ptr()
+        program_ptr = self.c_get_ptr()
         glDeleteProgram(program_ptr.gl_id); self.manager.c_check_gl()
         self.manager.delete(self.handle)
         self.handle = 0
@@ -110,9 +99,9 @@ cdef class Program:
             uint32_t link_status
             char *log
             int log_length
-        program_ptr = self.get_ptr()
-        vertex_ptr = Shader.get_ptr_by_handle(self.manager, program_ptr.vertex)
-        fragment_ptr = Shader.get_ptr_by_handle(self.manager, program_ptr.fragment)
+        program_ptr = self.c_get_ptr()
+        vertex_ptr = <ShaderC *>self.manager.c_get_ptr(program_ptr.vertex)
+        fragment_ptr = <ShaderC *>self.manager.c_get_ptr(program_ptr.fragment)
         gl_id = program_ptr.gl_id
         glAttachShader(gl_id, vertex_ptr.gl_id); self.manager.c_check_gl()
         glAttachShader(gl_id, fragment_ptr.gl_id); self.manager.c_check_gl()
@@ -135,7 +124,7 @@ cdef class Program:
             int size
             uint32_t type
             ProgramAttributeC *attribute
-        program_ptr = self.get_ptr()
+        program_ptr = self.c_get_ptr()
         gl_id = program_ptr.gl_id
         glGetProgramiv(gl_id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &name_max_length); self.manager.c_check_gl()
         if name_max_length >= 256:
@@ -163,7 +152,7 @@ cdef class Program:
             int size
             uint32_t type
             ProgramUniformC *uniform
-        program_ptr = self.get_ptr()
+        program_ptr = self.c_get_ptr()
         gl_id = program_ptr.gl_id
         glGetProgramiv(gl_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &name_max_length); self.manager.c_check_gl()
         if name_max_length >= 256:
@@ -192,10 +181,10 @@ cdef class Program:
             size_t comp_type_size
             size_t comp_offset
             size_t location
-        program_ptr = self.get_ptr()
-        buffer_ptr = VertexBuffer.get_ptr_by_handle(self.manager, buffer)
+        program_ptr = self.c_get_ptr()
+        buffer_ptr = <VertexBufferC *>self.manager.c_get_ptr(buffer)
         glBindBuffer(GL_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
-        format_ptr = VertexFormat.get_ptr_by_handle(self.manager, buffer_ptr.format)
+        format_ptr = <VertexFormatC *>self.manager.c_get_ptr(buffer_ptr.format)
         for i in range(format_ptr.count):
             comp_ptr = &format_ptr.comps[i]
             for j in range(program_ptr.num_attributes):
@@ -222,7 +211,7 @@ cdef class Program:
             ProgramC *program_ptr
             size_t i
             ProgramAttributeC *attribute
-        program_ptr = self.get_ptr()
+        program_ptr = self.c_get_ptr()
         for i in range(program_ptr.num_attributes):
             attribute = &program_ptr.attributes[i]
             glDisableVertexAttribArray(attribute.location); self.manager.c_check_gl()
@@ -238,9 +227,9 @@ cdef class Program:
             UniformType u_type
             int32_t int_data
             float float_data
-        program_ptr = self.get_ptr()
-        uniform_ptr = Uniform.get_ptr_by_handle(self.manager, uniform)
-        format_ptr = UniformFormat.get_ptr_by_handle(self.manager, uniform_ptr.format)
+        program_ptr = self.c_get_ptr()
+        uniform_ptr = <UniformC *>self.manager.c_get_ptr(uniform)
+        format_ptr = <UniformFormatC *>self.manager.c_get_ptr(uniform_ptr.format)
         for i in range(program_ptr.num_uniforms):
             uniform_info = &program_ptr.uniforms[i]
             if strcmp(format_ptr.name, uniform_info.name) == 0:#TODO: validate uniform against program's uniform info

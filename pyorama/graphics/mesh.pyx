@@ -11,20 +11,9 @@ cdef class Mesh:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Mesh.get_ptr_by_handle(self.manager, self.handle)
-
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
+    
     @staticmethod
     cdef uint8_t c_get_type() nogil:
         return ITEM_TYPE
@@ -47,7 +36,7 @@ cdef class Mesh:
             size_t vertex_data_size
             size_t index_data_size
         self.handle = self.manager.create(ITEM_TYPE)
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
         vertex_data_size = vertex_data.shape[0]
         index_data_size = index_data.shape[0]
         mesh_ptr.vertex_data = <uint8_t *>calloc(vertex_data_size, sizeof(uint8_t))
@@ -87,7 +76,7 @@ cdef class Mesh:
             aiFace *ai_faces
 
         self.handle = self.manager.create(ITEM_TYPE)
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
 
         ai_scene = aiImportFile(file_path, 
             aiProcess_CalcTangentSpace | 
@@ -149,7 +138,7 @@ cdef class Mesh:
     cpdef void delete(self) except *:
         cdef:
             MeshC *mesh_ptr
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
         free(mesh_ptr.vertex_data)
         free(mesh_ptr.index_data)
         self.manager.delete(self.handle)

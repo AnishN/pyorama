@@ -60,15 +60,15 @@ cdef class EventManager:
         event.user.data2 = NULL
         SDL_PushEvent(&event)#TODO: check for errors here (e.g. what if queue is full)
     
-    cdef ListenerKeyC *key_get_ptr(self, Handle listener) except *:
+    cdef ListenerKeyC *key_c_get_ptr(self, Handle listener) except *:
         return <ListenerKeyC *>self.listener_keys.c_get_ptr(listener)
 
-    cdef ListenerC *listener_get_ptr(self, Handle listener) except *:
+    cdef ListenerC *listener_c_get_ptr(self, Handle listener) except *:
         cdef:
             ListenerKeyC *key_ptr
             ListenerC *listener_ptr
             PyObject *values_ptr
-        key_ptr = self.key_get_ptr(listener)
+        key_ptr = self.key_c_get_ptr(listener)
         values_ptr = self.listeners[key_ptr.event_type]
         listener_ptr = <ListenerC *>(<ItemVector>values_ptr).c_get_ptr(key_ptr.index)
         return listener_ptr

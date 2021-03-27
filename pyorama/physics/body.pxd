@@ -12,10 +12,10 @@ cdef class Body:
         readonly Handle handle
     
     @staticmethod
-    cdef BodyC *get_ptr_by_index(PhysicsManager manager, size_t index) except *
+    cdef BodyC *c_get_ptr_by_index(PhysicsManager manager, size_t index) except *
     @staticmethod
-    cdef BodyC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
-    cdef BodyC *get_ptr(self) except *
+    cdef BodyC *c_get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
+    cdef BodyC *c_get_ptr(self) except *
     cpdef void create(self, float mass=*, float moment=*, BodyType type=*) except *
     cpdef void delete(self) except *
     cpdef Space get_space(self)

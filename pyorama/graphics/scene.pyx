@@ -11,19 +11,8 @@ cdef class Scene:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Scene.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -46,7 +35,7 @@ cdef class Scene:
             SceneC *scene_ptr
             Node root
         self.handle = self.manager.create(ITEM_TYPE)
-        scene_ptr = self.get_ptr()
+        scene_ptr = self.c_get_ptr()
         root = Node(self.manager)
         root.create_empty(NODE_TYPE_ROOT)
         scene_ptr.root = root.handle
@@ -55,7 +44,7 @@ cdef class Scene:
         cdef:
             SceneC *scene_ptr
             Node root
-        scene_ptr = self.get_ptr()
+        scene_ptr = self.c_get_ptr()
         root = Node(self.manager)
         root.handle = scene_ptr.root
         root.delete()
@@ -65,7 +54,7 @@ cdef class Scene:
     cpdef void get_root_node(self, Node root) except *:
         cdef:
             SceneC *scene_ptr
-        scene_ptr = self.get_ptr()
+        scene_ptr = self.c_get_ptr()
         root.manager = self.manager
         root.handle = scene_ptr.root
     
@@ -79,20 +68,20 @@ cdef class Scene:
             NodeC *child_ptr
             Handle curr_child
             NodeC *curr_child_ptr
-        parent_ptr = parent.get_ptr()
-        child_ptr = child.get_ptr()
+        parent_ptr = parent.c_get_ptr()
+        child_ptr = child.c_get_ptr()
         child_ptr.parent = parent.handle
         curr_child = parent_ptr.first_child
         if curr_child == 0:
             parent_ptr.first_child = child.handle
         else:
             while True:
-                curr_child_ptr = <NodeC *>self.manager.get_ptr(curr_child)
+                curr_child_ptr = <NodeC *>self.manager.c_get_ptr(curr_child)
                 if curr_child_ptr.next_sibling == 0:
                     break
                 else:
                     curr_child = curr_child_ptr.next_sibling
-            curr_child_ptr = <NodeC *>self.manager.get_ptr(curr_child)
+            curr_child_ptr = <NodeC *>self.manager.c_get_ptr(curr_child)
             curr_child_ptr.next_sibling = child.handle
             child_ptr.prev_sibling = curr_child
 
@@ -115,19 +104,19 @@ cdef class Scene:
             Handle parent
             Handle prev_sibling
             Handle next_sibling
-        child_ptr = child.get_ptr()
+        child_ptr = child.c_get_ptr()
         parent = child_ptr.parent
         prev_sibling = child_ptr.prev_sibling
         next_sibling = child_ptr.next_sibling
         if parent != 0:
-            parent_ptr = <NodeC *>self.manager.get_ptr(parent)
+            parent_ptr = <NodeC *>self.manager.c_get_ptr(parent)
             if parent_ptr.first_child == child.handle:
                 parent_ptr.first_child = next_sibling
             if prev_sibling != 0:
-                prev_sibling_ptr = <NodeC *>self.manager.get_ptr(prev_sibling)
+                prev_sibling_ptr = <NodeC *>self.manager.c_get_ptr(prev_sibling)
                 prev_sibling_ptr.next_sibling = next_sibling
             if next_sibling != 0:
-                next_sibling_ptr = <NodeC *>self.manager.get_ptr(next_sibling)
+                next_sibling_ptr = <NodeC *>self.manager.c_get_ptr(next_sibling)
                 next_sibling_ptr.prev_sibling = prev_sibling
  
     def remove_children(self, list children):
@@ -147,7 +136,7 @@ cdef class Scene:
             NodeC *parent_ptr
             Handle curr_child
             NodeC *curr_child_ptr
-        node_ptr = <NodeC *>self.manager.get_ptr(node)
+        node_ptr = <NodeC *>self.manager.c_get_ptr(node)
         """
         print(
             node, 
@@ -161,19 +150,19 @@ cdef class Scene:
         if is_dirty:
             parent = node_ptr.parent
             if parent:
-                parent_ptr = <NodeC *>self.manager.get_ptr(parent)
+                parent_ptr = <NodeC *>self.manager.c_get_ptr(parent)
                 Mat4.c_dot(&node_ptr.world, &node_ptr.local, &parent_ptr.world)
             node_ptr.is_dirty = False
         curr_child = node_ptr.first_child
         while curr_child:
             self.c_update_node_transform(curr_child, is_dirty)
-            curr_child_ptr = <NodeC *>self.manager.get_ptr(curr_child)
+            curr_child_ptr = <NodeC *>self.manager.c_get_ptr(curr_child)
             curr_child = curr_child_ptr.next_sibling
     
     cdef void c_update_node_transforms(self) except *:
         cdef:
             SceneC *scene_ptr
-        scene_ptr = self.get_ptr()
+        scene_ptr = self.c_get_ptr()
         self.c_update_node_transform(scene_ptr.root, False)
 
     def update(self):

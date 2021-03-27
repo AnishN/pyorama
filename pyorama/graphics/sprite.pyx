@@ -11,19 +11,8 @@ cdef class Sprite:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Sprite.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -51,7 +40,7 @@ cdef class Sprite:
             0.0, 1.0, 1.0, 0.0, 1.0, 1.0,
         ]
         self.handle = self.manager.create(ITEM_TYPE)
-        sprite_ptr = self.get_ptr()
+        sprite_ptr = self.c_get_ptr()
         sprite_ptr.width = width
         sprite_ptr.height = height
         sprite_ptr.tex_coords = tex_coords
@@ -74,7 +63,7 @@ cdef class Sprite:
 
         if tex_coords.shape[0] != 12:
             raise ValueError("Sprite: tex coords array is invalid length")
-        sprite_ptr = self.get_ptr()
+        sprite_ptr = self.c_get_ptr()
         tex_coords_ptr = &tex_coords[0]
         memcpy(sprite_ptr.tex_coords, tex_coords_ptr, sizeof(float) * 12)
 
@@ -85,7 +74,7 @@ cdef class Sprite:
             Vec4C *rect_ptr
 
         rect_ptr = &rect.data  
-        sprite_ptr = self.get_ptr()
+        sprite_ptr = self.c_get_ptr()
         sprite_ptr.tex_coords = [
             rect_ptr.x, rect_ptr.y,
             rect_ptr.z, rect_ptr.y,
@@ -96,33 +85,33 @@ cdef class Sprite:
         ]
 
     cpdef void set_position(self, Vec2 position) except *:
-        self.get_ptr().position = position.data
+        self.c_get_ptr().position = position.data
 
     cpdef void set_anchor(self, Vec2 anchor) except *:
-        self.get_ptr().anchor = anchor.data
+        self.c_get_ptr().anchor = anchor.data
 
     cpdef void set_rotation(self, float rotation) except *:
-        self.get_ptr().rotation = rotation
+        self.c_get_ptr().rotation = rotation
 
     cpdef void set_scale(self, Vec2 scale) except *:
-        self.get_ptr().scale = scale.data
+        self.c_get_ptr().scale = scale.data
 
     cpdef void set_z_index(self, float z_index) except *:
-        self.get_ptr().z_index = z_index
+        self.c_get_ptr().z_index = z_index
 
     cpdef void set_visible(self, bint visible) except *:
-        self.get_ptr().visible = visible
+        self.c_get_ptr().visible = visible
 
     cpdef void set_tint(self, Vec3 tint) except *:
-        self.get_ptr().tint = tint.data
+        self.c_get_ptr().tint = tint.data
 
     cpdef void set_alpha(self, float alpha) except *:
-        self.get_ptr().alpha = alpha
+        self.c_get_ptr().alpha = alpha
 
     cpdef float[::1] get_tex_coords(self) except *:
         cdef:
             float[::1] tex_coords
-        tex_coords = <float[:12]>self.get_ptr().tex_coords
+        tex_coords = <float[:12]>self.c_get_ptr().tex_coords
         return tex_coords
 
     cpdef Vec4 get_tex_coords_as_rect(self):
@@ -130,7 +119,7 @@ cdef class Sprite:
             Vec4 rect
             SpriteC *sprite_ptr
         
-        sprite_ptr = self.get_ptr()
+        sprite_ptr = self.c_get_ptr()
         rect = Vec4(
             sprite_ptr.tex_coords[0],
             sprite_ptr.tex_coords[1],
@@ -142,35 +131,35 @@ cdef class Sprite:
     cpdef Vec2 get_position(self):
         cdef:
             Vec2 position = Vec2()
-        position.data = self.get_ptr().position
+        position.data = self.c_get_ptr().position
         return position
 
     cpdef Vec2 get_anchor(self):
         cdef:
             Vec2 anchor = Vec2()
-        anchor.data = self.get_ptr().anchor
+        anchor.data = self.c_get_ptr().anchor
         return anchor
 
     cpdef float get_rotation(self) except *:
-        return self.get_ptr().rotation
+        return self.c_get_ptr().rotation
 
     cpdef Vec2 get_scale(self):
         cdef:
             Vec2 scale = Vec2()
-        scale.data = self.get_ptr().scale
+        scale.data = self.c_get_ptr().scale
         return scale
 
     cpdef float get_z_index(self) except *:
-        return self.get_ptr().z_index
+        return self.c_get_ptr().z_index
 
     cpdef bint get_visible(self) except *:
-        return self.get_ptr().visible
+        return self.c_get_ptr().visible
 
     cpdef Vec3 get_tint(self):
         cdef:
             Vec3 tint = Vec3()
-        tint.data = self.get_ptr().tint
+        tint.data = self.c_get_ptr().tint
         return tint
 
     cpdef float get_alpha(self) except *:
-        return self.get_ptr().alpha
+        return self.c_get_ptr().alpha

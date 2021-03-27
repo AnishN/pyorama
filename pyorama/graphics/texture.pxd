@@ -26,12 +26,7 @@ cdef class Texture:
         readonly GraphicsManager manager
         readonly Handle handle
         
-    @staticmethod
-    cdef TextureC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
-    @staticmethod
-    cdef TextureC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
-    cdef TextureC *get_ptr(self) except *
-
+    cdef TextureC *c_get_ptr(self) except *
     @staticmethod
     cdef uint8_t c_get_type() nogil
     @staticmethod

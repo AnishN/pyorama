@@ -16,12 +16,7 @@ cdef class Shader:
         readonly GraphicsManager manager
         readonly Handle handle
     
-    @staticmethod
-    cdef ShaderC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
-    @staticmethod
-    cdef ShaderC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
-    cdef ShaderC *get_ptr(self) except *
-    
+    cdef ShaderC *c_get_ptr(self) except *
     @staticmethod
     cdef uint8_t c_get_type() nogil
     @staticmethod

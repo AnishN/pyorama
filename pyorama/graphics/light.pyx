@@ -1,8 +1,8 @@
-ctypedef EffectPassC ItemTypeC
+ctypedef LightC ItemTypeC
 cdef uint8_t ITEM_TYPE = handle_create_item_type()
 cdef size_t ITEM_SIZE = sizeof(ItemTypeC)
 
-cdef class EffectPass:
+cdef class Light:
     def __cinit__(self, GraphicsManager manager):
         self.handle = 0
         self.manager = manager
@@ -11,6 +11,9 @@ cdef class EffectPass:
         self.handle = 0
         self.manager = None
     
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
+
     @staticmethod
     cdef uint8_t c_get_type() nogil:
         return ITEM_TYPE
@@ -27,9 +30,6 @@ cdef class EffectPass:
     def get_size():
         return ITEM_SIZE
 
-    cdef ItemTypeC *c_get_ptr(self) except *:
-        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
-    
     cpdef void create(self) except *:
         self.handle = self.manager.create(ITEM_TYPE)
 

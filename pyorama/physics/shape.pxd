@@ -7,10 +7,10 @@ cdef class Shape:
         readonly Handle handle
     
     @staticmethod
-    cdef ShapeC *get_ptr_by_index(PhysicsManager manager, size_t index) except *
+    cdef ShapeC *c_get_ptr_by_index(PhysicsManager manager, size_t index) except *
     @staticmethod
-    cdef ShapeC *get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
-    cdef ShapeC *get_ptr(self) except *
+    cdef ShapeC *c_get_ptr_by_handle(PhysicsManager manager, Handle handle) except *
+    cdef ShapeC *c_get_ptr(self) except *
     @staticmethod
     cdef float c_moment_for_circle(float mass, float inner_radius, float outer_radius, Vec2 offset) except *
     @staticmethod

@@ -7,6 +7,7 @@ from pyorama.graphics.frame_buffer import *
 from pyorama.graphics.graphics_manager import *
 from pyorama.graphics.image import *
 from pyorama.graphics.index_buffer import *
+from pyorama.graphics.light import *
 from pyorama.graphics.mesh_batch import *
 from pyorama.graphics.mesh import *
 from pyorama.graphics.node import *

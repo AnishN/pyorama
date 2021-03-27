@@ -15,8 +15,8 @@ cdef class PhysicsManager(ItemManager):
     """
     cdef void c_create_slot_maps(self) except *
     cdef void c_delete_slot_maps(self) except *
-    cdef BodyC *body_get_ptr(self, Handle body) except *
-    cdef ShapeC *shape_get_ptr(self, Handle shape) except *
-    cdef SpaceC *space_get_ptr(self, Handle space) except *
+    cdef BodyC *body_c_get_ptr(self, Handle body) except *
+    cdef ShapeC *shape_c_get_ptr(self, Handle shape) except *
+    cdef SpaceC *space_c_get_ptr(self, Handle space) except *
     """
     cpdef void update(self, float delta) except *

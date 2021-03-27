@@ -19,12 +19,7 @@ cdef class SpriteBatch:
         readonly GraphicsManager manager
         readonly Handle handle
         
-    @staticmethod
-    cdef SpriteBatchC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
-    @staticmethod
-    cdef SpriteBatchC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
-    cdef SpriteBatchC *get_ptr(self) except *
-
+    cdef SpriteBatchC *c_get_ptr(self) except *
     @staticmethod
     cdef uint8_t c_get_type() nogil
     @staticmethod

@@ -27,19 +27,8 @@ cdef class IndexBuffer:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return IndexBuffer.get_ptr_by_handle(self.manager, self.handle) 
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
     
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -62,7 +51,7 @@ cdef class IndexBuffer:
             Handle buffer
             IndexBufferC *buffer_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        buffer_ptr = self.get_ptr()
+        buffer_ptr = self.c_get_ptr()
         glGenBuffers(1, &buffer_ptr.gl_id); self.manager.c_check_gl()
         if buffer_ptr.gl_id == 0:
             raise ValueError("IndexBuffer: failed to generate buffer id")
@@ -74,7 +63,7 @@ cdef class IndexBuffer:
         cdef:
             IndexBufferC *buffer_ptr
             uint32_t gl_usage
-        buffer_ptr = self.get_ptr()
+        buffer_ptr = self.c_get_ptr()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
         gl_usage = c_buffer_usage_to_gl(buffer_ptr.usage)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.size, NULL, gl_usage); self.manager.c_check_gl()
@@ -89,7 +78,7 @@ cdef class IndexBuffer:
             size_t data_size
             uint8_t *data_ptr
             uint32_t gl_usage
-        buffer_ptr = self.get_ptr()
+        buffer_ptr = self.c_get_ptr()
         data_size = data.shape[0]
         data_ptr = &data[0]
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
@@ -105,7 +94,7 @@ cdef class IndexBuffer:
         cdef:
             MeshC *mesh_ptr
             uint8_t[::1] data
-        mesh_ptr = mesh.get_ptr()
+        mesh_ptr = mesh.c_get_ptr()
         data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
         self.set_data(data)
 
@@ -114,7 +103,7 @@ cdef class IndexBuffer:
             IndexBufferC *buffer_ptr
             size_t data_size
             uint8_t *data_ptr
-        buffer_ptr = self.get_ptr()
+        buffer_ptr = self.c_get_ptr()
         data_size = data.shape[0]
         data_ptr = &data[0]
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
@@ -128,7 +117,7 @@ cdef class IndexBuffer:
         cdef:
             MeshC *mesh_ptr
             uint8_t[::1] data
-        mesh_ptr = mesh.get_ptr()
+        mesh_ptr = mesh.c_get_ptr()
         data = <uint8_t[:mesh_ptr.index_data_size]>mesh_ptr.index_data
         self.set_sub_data(data, offset)
 
@@ -137,7 +126,7 @@ cdef class IndexBuffer:
             IndexBufferC *buffer_ptr
             size_t format_size
             uint32_t format_gl
-        buffer_ptr = self.get_ptr()
+        buffer_ptr = self.c_get_ptr()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_ptr.gl_id); self.manager.c_check_gl()
         format_size = c_index_format_get_size(buffer_ptr.format)    
         format_gl = c_index_format_to_gl(buffer_ptr.format)

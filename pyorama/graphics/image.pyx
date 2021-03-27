@@ -52,19 +52,8 @@ cdef class Image:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Image.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -90,7 +79,7 @@ cdef class Image:
         if height == 0:
             raise ValueError("Image: height cannot be zero pixels")
         self.handle = self.manager.create(ITEM_TYPE)
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         image_ptr.width = width
         image_ptr.height = height
         image_ptr.bytes_per_channel = bytes_per_channel
@@ -138,7 +127,7 @@ cdef class Image:
     cpdef void delete(self) except *:
         cdef:
             ImageC *image_ptr
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         free(image_ptr.data)
         self.manager.delete(self.handle)
         self.handle = 0
@@ -146,7 +135,7 @@ cdef class Image:
     cpdef void set_data(self, uint8_t[::1] data=None) except *:
         cdef:
             ImageC *image_ptr
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         if data != None:
             if data.shape[0] != image_ptr.data_size:
                 raise ValueError("Image: invalid data size")
@@ -155,13 +144,13 @@ cdef class Image:
             memset(image_ptr.data, 0, image_ptr.data_size)
 
     cpdef uint16_t get_width(self) except *:
-        return self.get_ptr().width
+        return self.c_get_ptr().width
 
     cpdef uint16_t get_height(self) except *:
-        return self.get_ptr().height
+        return self.c_get_ptr().height
     
     cpdef uint8_t[::1] get_data(self) except *:
         cdef:
             ImageC *image_ptr
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         return <uint8_t[:image_ptr.data_size]>image_ptr.data

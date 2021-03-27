@@ -11,19 +11,8 @@ cdef class TileMap:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return TileMap.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
     
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -49,7 +38,7 @@ cdef class TileMap:
             size_t num_tiles
 
         self.handle = self.manager.create(ITEM_TYPE)
-        map_ptr = self.get_ptr()
+        map_ptr = self.c_get_ptr()
         map_ptr.atlas = atlas.handle
         map_ptr.tile_width = tile_width
         map_ptr.tile_height = tile_height
@@ -59,7 +48,7 @@ cdef class TileMap:
         map_ptr.indices = <uint32_t *>calloc(num_tiles, sizeof(uint32_t))
         if map_ptr.indices == NULL:
             raise MemoryError("TileMap: cannot allocate indices")
-        v_fmt_ptr = VertexFormat.get_ptr_by_handle(self.manager, self.manager.v_fmt_sprite.handle)
+        v_fmt_ptr = VertexFormat.c_get_ptr_by_handle(self.manager, self.manager.v_fmt_sprite.handle)
         vbo.create(self.manager.v_fmt_tile, usage=BUFFER_USAGE_DYNAMIC)
         vbo_size = v_fmt_ptr.stride * 6 * num_tiles
         map_ptr.vertex_buffer = vbo.handle
@@ -77,7 +66,7 @@ cdef class TileMap:
     cpdef void delete(self) except *:
         cdef:
             TileMapC *map_ptr
-        map_ptr = self.get_ptr()
+        map_ptr = self.c_get_ptr()
         free(map_ptr.indices)
         free(map_ptr.vertex_data_ptr)
         free(map_ptr.index_data_ptr)
@@ -87,7 +76,7 @@ cdef class TileMap:
     cpdef void set_indices(self, uint32_t[:] indices) except *:
         cdef:
             TileMapC *map_ptr
-        map_ptr = self.get_ptr()
+        map_ptr = self.c_get_ptr()
         if map_ptr.num_rows * map_ptr.num_columns != indices.shape[0]:
             raise ValueError("TileMap: invalid indices shape")
         memcpy(map_ptr.indices, &indices[0], indices.shape[0] * sizeof(uint32_t))
@@ -96,7 +85,7 @@ cdef class TileMap:
         cdef:
             TileMapC *map_ptr
             VertexBuffer out = VertexBuffer(self.manager)
-        map_ptr = self.get_ptr()
+        map_ptr = self.c_get_ptr()
         out.handle = map_ptr.vertex_buffer
         return out
 
@@ -104,7 +93,7 @@ cdef class TileMap:
         cdef:
             TileMapC *batch_ptr
             IndexBuffer out = IndexBuffer(self.manager)
-        map_ptr = self.get_ptr()
+        map_ptr = self.c_get_ptr()
         out.handle = map_ptr.index_buffer
         return out
 
@@ -134,8 +123,8 @@ cdef class TileMap:
             Vec2C(1.0, 0.0),
             Vec2C(1.0, 1.0),
         ]
-        map_ptr = self.get_ptr()
-        v_fmt_ptr = self.manager.v_fmt_tile.get_ptr()
+        map_ptr = self.c_get_ptr()
+        v_fmt_ptr = self.manager.v_fmt_tile.c_get_ptr()
         num_tiles = map_ptr.num_rows * map_ptr.num_columns
         vbo_size = v_fmt_ptr.stride * 6 * num_tiles
         ibo_size = sizeof(uint32_t) * 6 * num_tiles

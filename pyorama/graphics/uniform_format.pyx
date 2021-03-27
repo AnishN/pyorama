@@ -29,19 +29,8 @@ cdef class UniformFormat:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return UniformFormat.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -69,7 +58,7 @@ cdef class UniformFormat:
         if count == 0:
             raise ValueError("UniformFormat: count must be non-zero value")
         self.handle = self.manager.create(ITEM_TYPE)
-        format_ptr = self.get_ptr()
+        format_ptr = self.c_get_ptr()
         memcpy(format_ptr.name, <char *>name, sizeof(char) * name_length)
         format_ptr.name_length = name_length
         format_ptr.type = type

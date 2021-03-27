@@ -50,7 +50,7 @@ cdef class ItemManager:
         self.check_item_type(item_type)
         (<ItemSlotMap>self.slot_maps[item_type]).c_delete(handle)
 
-    cdef void *get_ptr(self, Handle handle) except *:
+    cdef void *c_get_ptr(self, Handle handle) except *:
         cdef:
             uint8_t item_type
             PyObject *slot_map_ptr
@@ -61,7 +61,13 @@ cdef class ItemManager:
         item_ptr = (<ItemSlotMap>slot_map_ptr).c_get_ptr(handle)
         return item_ptr
 
-    cdef void *get_ptr_unsafe(self, Handle handle) nogil:
+    cdef void *c_get_ptr_by_index(self, uint8_t item_type, size_t index) except *:
+        cdef:
+            PyObject *slot_map_ptr
+        slot_map_ptr = self.slot_maps[item_type]
+        return (<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
+
+    cdef void *c_get_ptr_unsafe(self, Handle handle) nogil:
         cdef:
             uint8_t item_type
             PyObject *slot_map_ptr

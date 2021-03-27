@@ -12,12 +12,7 @@ cdef class EffectPass:
         readonly GraphicsManager manager
         readonly Handle handle
     
-    @staticmethod
-    cdef EffectPassC *get_ptr_by_index(GraphicsManager manager, size_t index) except *
-    @staticmethod
-    cdef EffectPassC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *
-    cdef EffectPassC *get_ptr(self) except *
-    
+    cdef EffectPassC *c_get_ptr(self) except *
     @staticmethod
     cdef uint8_t c_get_type() nogil
     @staticmethod

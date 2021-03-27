@@ -23,6 +23,6 @@ cdef class PhysicsManager:
         space = Space(self)
         slot_map = self.get_slot_map(PHYSICS_ITEM_TYPE_SPACE)
         for i in range(slot_map.items.num_items):
-            space_ptr = Space.get_ptr_by_index(self, i)
+            space_ptr = Space.c_get_ptr_by_index(self, i)
             space.handle = space_ptr.handle
             space.step(delta)

@@ -101,19 +101,8 @@ cdef class Texture:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return Texture.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
 
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -137,7 +126,7 @@ cdef class Texture:
         cdef:
             TextureC *texture_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         texture_ptr.format = format
         texture_ptr.cubemap = cubemap
         glGenTextures(1, &texture_ptr.gl_id); self.manager.c_check_gl()
@@ -146,7 +135,7 @@ cdef class Texture:
     cpdef void delete(self) except *:
         cdef:
             TextureC *texture_ptr
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         glDeleteTextures(1, &texture_ptr.gl_id); self.manager.c_check_gl()
         self.manager.delete(self.handle)
         self.handle = 0
@@ -155,7 +144,7 @@ cdef class Texture:
         cdef:
             TextureC *texture_ptr
             uint32_t target
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         texture_ptr.mipmaps = mipmaps
         texture_ptr.filter = filter
         texture_ptr.wrap_s = wrap_s
@@ -175,13 +164,13 @@ cdef class Texture:
             uint32_t gl_internal_format
             uint32_t gl_format
             uint32_t gl_type
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         if texture_ptr.cubemap:
             raise ValueError("Texture: cannot use 2D data setter for cubemap texture")
         gl_internal_format = c_texture_format_to_internal_format_gl(texture_ptr.format)
         gl_format = c_texture_format_to_format_gl(texture_ptr.format)
         gl_type = c_texture_format_to_type_gl(texture_ptr.format)
-        image_ptr = image.get_ptr()
+        image_ptr = image.c_get_ptr()
         glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.manager.c_check_gl()
         glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.manager.c_check_gl()
         if texture_ptr.mipmaps:
@@ -204,7 +193,7 @@ cdef class Texture:
             pos_y.handle, neg_y.handle, 
             pos_z.handle, neg_z.handle,
         ]
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         if not texture_ptr.cubemap:
             raise ValueError("Texture: cannot use cubemap data setter for 2D texture")
         gl_internal_format = c_texture_format_to_internal_format_gl(texture_ptr.format)
@@ -212,7 +201,7 @@ cdef class Texture:
         gl_type = c_texture_format_to_type_gl(texture_ptr.format)
         glBindTexture(GL_TEXTURE_CUBE_MAP, texture_ptr.gl_id)
         for i in range(6):
-            image_ptr = Image.get_ptr_by_handle(self.manager, images[i])
+            image_ptr = <ImageC *>self.manager.c_get_ptr(images[i])
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl_internal_format, image_ptr.width, image_ptr.height, 0, gl_format, gl_type, image_ptr.data); self.manager.c_check_gl()
         if texture_ptr.mipmaps:
             glGenerateMipmap(GL_TEXTURE_CUBE_MAP); self.manager.c_check_gl()
@@ -226,7 +215,7 @@ cdef class Texture:
             uint32_t gl_internal_format
             uint32_t gl_format
             uint32_t gl_type
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         gl_internal_format = c_texture_format_to_internal_format_gl(texture_ptr.format)
         gl_format = c_texture_format_to_format_gl(texture_ptr.format)
         gl_type = c_texture_format_to_type_gl(texture_ptr.format)

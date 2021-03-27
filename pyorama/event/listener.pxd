@@ -5,6 +5,6 @@ cdef class Listener:
         readonly Handle handle
         readonly EventManager event
 
-    cdef ListenerC *get_ptr(self) except *
+    cdef ListenerC *c_get_ptr(self) except *
     cpdef void create(self, uint16_t event_type, object callback, list args=*, dict kwargs=*) except *
     cpdef void delete(self) except *

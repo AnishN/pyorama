@@ -69,19 +69,8 @@ cdef class View:
         self.handle = 0
         self.manager = None
     
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_index(GraphicsManager manager, size_t index) except *:
-        cdef:
-            PyObject *slot_map_ptr
-        slot_map_ptr = manager.slot_maps[<uint8_t>ITEM_TYPE]
-        return <ItemTypeC *>(<ItemSlotMap>slot_map_ptr).items.c_get_ptr(index)
-
-    @staticmethod
-    cdef ItemTypeC *get_ptr_by_handle(GraphicsManager manager, Handle handle) except *:
-        return <ItemTypeC *>manager.get_ptr(handle)
-
-    cdef ItemTypeC *get_ptr(self) except *:
-        return View.get_ptr_by_handle(self.manager, self.handle)
+    cdef ItemTypeC *c_get_ptr(self) except *:
+        return <ItemTypeC *>self.manager.c_get_ptr(self.handle)
     
     @staticmethod
     cdef uint8_t c_get_type() nogil:
@@ -103,7 +92,7 @@ cdef class View:
         cdef:
             ViewC *view_ptr
         self.handle = self.manager.create(ITEM_TYPE)
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.clear_flags = VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_STENCIL
         view_ptr.clear_color = Vec4C(0.0, 0.0, 0.0, 1.0)
         view_ptr.clear_depth = 1.0
@@ -124,25 +113,25 @@ cdef class View:
     cpdef void set_depth(self, bint depth) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.depth = depth
 
     cpdef void set_depth_func(self, DepthFunc depth_func) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.depth_func = depth_func
 
     cpdef void set_blend(self, bint blend) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.blend = blend
 
     cpdef void set_blend_func(self, BlendFunc src_rgb, BlendFunc dst_rgb, BlendFunc src_alpha, BlendFunc dst_alpha) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.src_rgb = src_rgb
         view_ptr.dst_rgb = dst_rgb
         view_ptr.src_alpha = src_alpha
@@ -151,43 +140,43 @@ cdef class View:
     cpdef void set_clear_flags(self, uint32_t clear_flags) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.clear_flags = clear_flags
 
     cpdef void set_clear_color(self, Vec4 color) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.clear_color = color.data
 
     cpdef void set_clear_depth(self, float depth) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.clear_depth = depth
 
     cpdef void set_clear_stencil(self, uint32_t stencil) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.clear_stencil = stencil
 
     cpdef void set_color_mask(self, bint r, bint g, bint b, bint a) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.color_mask = [r, g, b, a]
 
     cpdef void set_depth_mask(self, bint depth) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.depth_mask = depth
 
     cpdef void set_stencil_mask(self, bint stencil) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.stencil_mask = stencil
     
     cpdef void set_masks(self, bint r, bint g, bint b, bint a, bint depth, bint stencil) except *:
@@ -198,7 +187,7 @@ cdef class View:
     cpdef void set_rect(self, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.rect[0] = x
         view_ptr.rect[1] = y
         view_ptr.rect[2] = width
@@ -207,7 +196,7 @@ cdef class View:
     cpdef void set_program(self, Program program) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.program = program.handle
 
     cpdef void set_uniforms(self, list uniforms) except *:
@@ -216,7 +205,7 @@ cdef class View:
             size_t i
             size_t num_uniforms
             Handle uniform
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         num_uniforms = len(uniforms)
         if num_uniforms > 16:
             raise ValueError("View: cannot set more than {0} uniforms".format(PROGRAM_MAX_UNIFORMS))
@@ -228,13 +217,13 @@ cdef class View:
     cpdef void set_vertex_buffer(self, VertexBuffer buffer) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.vertex_buffer = buffer.handle
 
     cpdef void set_index_buffer(self, IndexBuffer buffer) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.index_buffer = buffer.handle
 
     cpdef void set_textures(self, dict textures) except *:
@@ -244,7 +233,7 @@ cdef class View:
             size_t i = 0
             TextureUnit unit
             Handle texture
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         num_textures = len(textures)
         if num_textures > MAX_TEXTURE_UNITS:
             raise ValueError("View: cannot set more than 16 textures")
@@ -260,5 +249,5 @@ cdef class View:
     cpdef void set_frame_buffer(self, FrameBuffer frame_buffer) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.frame_buffer = frame_buffer.handle

@@ -198,19 +198,21 @@ cdef class GraphicsManager:
             ItemSlotMap slot_map
             size_t i
             SpriteBatch sprite_batch = SpriteBatch(self)
+            SpriteBatchC *sprite_batch_ptr
             TileMap tile_map = TileMap(self)
+            TileMapC *tile_map_ptr
 
         #update sprite batches
         slot_map = self.get_slot_map(SpriteBatch.c_get_type())
         for i in range(slot_map.items.num_items):
-            sprite_batch_ptr = SpriteBatch.get_ptr_by_index(self, i)
+            sprite_batch_ptr = <SpriteBatchC *>self.c_get_ptr_by_index(SpriteBatch.c_get_type(), i)
             sprite_batch.handle = sprite_batch_ptr.handle
             sprite_batch._update()
 
         #update tile maps
         slot_map = self.get_slot_map(TileMap.c_get_type())
         for i in range(slot_map.items.num_items):
-            tile_map_ptr = TileMap.get_ptr_by_index(self, i)
+            tile_map_ptr = <TileMapC *>self.c_get_ptr_by_index(TileMap.c_get_type(), i)
             tile_map.handle = tile_map_ptr.handle
             tile_map._update()
 
@@ -223,10 +225,10 @@ cdef class GraphicsManager:
             size_t i
             Window window
             WindowC *window_ptr
+        window = Window(self)
         slot_map = self.get_slot_map(Window.c_get_type())
         for i in range(slot_map.items.num_items):
-            window_ptr = Window.get_ptr_by_index(self, i)
-            window = Window(self)
+            window_ptr = <WindowC *>self.c_get_ptr_by_index(Window.c_get_type(), i)
             window.handle = window_ptr.handle
             window.render()
 
@@ -238,12 +240,12 @@ cdef class GraphicsManager:
             uint32_t gl_texture_unit
             TextureC *texture_ptr
         
-        view_ptr = View.get_ptr_by_handle(self, view)
+        view_ptr = <ViewC *>self.c_get_ptr(view)
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
             texture = view_ptr.textures[<size_t>texture_unit]
-            texture_ptr = Texture.get_ptr_by_handle(self, texture)
+            texture_ptr = <TextureC *>self.c_get_ptr(texture)
             glActiveTexture(gl_texture_unit); self.c_check_gl()
             glBindTexture(GL_TEXTURE_2D, texture_ptr.gl_id); self.c_check_gl()
 
@@ -254,7 +256,7 @@ cdef class GraphicsManager:
             TextureUnit texture_unit
             uint32_t gl_texture_unit
         
-        view_ptr = View.get_ptr_by_handle(self, view)
+        view_ptr = <ViewC *>self.c_get_ptr(view)
         for i in range(view_ptr.num_texture_units):
             texture_unit = view_ptr.texture_units[i]
             gl_texture_unit = c_texture_unit_to_gl(texture_unit)
@@ -266,7 +268,7 @@ cdef class GraphicsManager:
             ViewC *view_ptr
             uint32_t gl_clear_flags
         
-        view_ptr = View.get_ptr_by_handle(self, view)
+        view_ptr = <ViewC *>self.c_get_ptr(view)
         gl_clear_flags = c_clear_flags_to_gl(view_ptr.clear_flags)
         glViewport(view_ptr.rect[0], view_ptr.rect[1], view_ptr.rect[2], view_ptr.rect[3]); self.c_check_gl()
         glClearColor(
@@ -287,7 +289,7 @@ cdef class GraphicsManager:
         if node_ptr.is_dirty:
             parent = node_ptr.parent
             if parent != 0:
-                parent_ptr = <NodeC *>self.get_ptr(parent)
+                parent_ptr = <NodeC *>self.c_get_ptr(parent)
                 self.c_update_node_transform(parent_ptr)
                 Mat4.c_dot(&node_ptr.world, &node_ptr.local, &parent_ptr.world)
             else:#parent == "root"
@@ -338,15 +340,15 @@ cdef class GraphicsManager:
 
         slot_map = self.get_slot_map(View.c_get_type())
         for i in range(slot_map.items.num_items):
-            view_ptr = View.get_ptr_by_index(self, i)
-            program_ptr = Program.get_ptr_by_handle(self, view_ptr.program)
+            view_ptr = <ViewC *>self.c_get_ptr_by_index(View.c_get_type(), i)
+            program_ptr = <ProgramC *>self.c_get_ptr(view_ptr.program)
             program.handle = view_ptr.program
-            vbo_ptr = VertexBuffer.get_ptr_by_handle(self, view_ptr.vertex_buffer)
-            ibo_ptr = IndexBuffer.get_ptr_by_handle(self, view_ptr.index_buffer)
+            vbo_ptr = <VertexBufferC *>self.c_get_ptr(view_ptr.vertex_buffer)
+            ibo_ptr = <IndexBufferC *>self.c_get_ptr(view_ptr.index_buffer)
             
             glUseProgram(program_ptr.gl_id); self.c_check_gl()
             for i in range(view_ptr.num_uniforms):
-                uniform_ptr = Uniform.get_ptr_by_index(self, i)
+                uniform_ptr = <UniformC *>self.c_get_ptr_by_index(Uniform.c_get_type(), i)
                 program._bind_uniform(uniform_ptr.handle)
             
             if view_ptr.blend:
@@ -374,7 +376,7 @@ cdef class GraphicsManager:
             
             fbo = view_ptr.frame_buffer
             if fbo != 0:
-                fbo_ptr = FrameBuffer.get_ptr_by_handle(self, fbo)
+                fbo_ptr = <FrameBufferC *>self.c_get_ptr(fbo)
                 glBindFramebuffer(GL_FRAMEBUFFER, fbo_ptr.gl_id); self.c_check_gl()
             
             self.c_view_clear(view_ptr.handle)
