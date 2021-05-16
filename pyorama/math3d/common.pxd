@@ -33,3 +33,11 @@ ctypedef struct QuatC:
     float y
     float z
     float w
+
+ctypedef struct Box2C:
+    Vec2C min
+    Vec2C max
+
+ctypedef struct Box3C:
+    Vec3C min
+    Vec3C max

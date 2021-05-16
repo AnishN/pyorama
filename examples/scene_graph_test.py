@@ -47,7 +47,7 @@ class Game(App):
         self.scene.update()
         end = time.time()
         print(end - start)
-
+        
         nodes = [root]
         random_transform = Mat4()
         for i in range(num_nodes):

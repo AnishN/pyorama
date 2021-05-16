@@ -1,4 +1,6 @@
 #from pyorama.math3d.common import *
+from pyorama.math3d.box2 import *
+from pyorama.math3d.box3 import *
 from pyorama.math3d.mat2 import *
 from pyorama.math3d.mat3 import *
 from pyorama.math3d.mat4 import *

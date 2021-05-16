@@ -97,7 +97,7 @@ cdef class TileMap:
         out.handle = map_ptr.index_buffer
         return out
 
-    cdef void _update(self) except *:
+    cdef void c_update(self) except *:
         cdef:
             TileMapC *map_ptr
             size_t i, j, index

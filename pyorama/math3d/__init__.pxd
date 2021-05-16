@@ -1,4 +1,6 @@
 from pyorama.math3d.common cimport *
+from pyorama.math3d.box2 cimport *
+from pyorama.math3d.box3 cimport *
 from pyorama.math3d.mat2 cimport *
 from pyorama.math3d.mat3 cimport *
 from pyorama.math3d.mat4 cimport *

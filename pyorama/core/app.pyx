@@ -17,8 +17,11 @@ cdef class App:
         lib_paths = glob.glob(lib_base_path)
         libs = []
         for lib_path in lib_paths:
-            lib = ctypes.CDLL(lib_path)
-            libs.append(lib)
+            try:
+                lib = ctypes.CDLL(lib_path)
+                libs.append(lib)
+            except:
+                pass
         
         #py_atexit.register(App.quit, self)
         SDL_Init(SDL_INIT_EVERYTHING)

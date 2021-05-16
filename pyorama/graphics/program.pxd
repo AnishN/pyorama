@@ -47,9 +47,9 @@ cdef class Program:
     cdef size_t c_get_size() nogil
     cpdef void create(self, Shader vertex, Shader fragment) except *
     cpdef void delete(self) except *
-    cdef void _compile(self) except *
-    cdef void _setup_attributes(self) except *
-    cdef void _setup_uniforms(self) except *
-    cdef void _bind_attributes(self, Handle buffer) except *
-    cdef void _unbind_attributes(self) except *
-    cdef void _bind_uniform(self, Handle uniform) except *
+    cdef void c_compile(self) except *
+    cdef void c_setup_attributes(self) except *
+    cdef void c_setup_uniforms(self) except *
+    cdef void c_bind_attributes(self, Handle buffer) except *
+    cdef void c_unbind_attributes(self) except *
+    cdef void c_bind_uniform(self, Handle uniform) except *

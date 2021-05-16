@@ -78,9 +78,9 @@ cdef class Program:
         program_ptr.gl_id = glCreateProgram(); self.manager.c_check_gl()
         program_ptr.vertex = vertex.handle
         program_ptr.fragment = fragment.handle
-        self._compile()
-        self._setup_attributes()
-        self._setup_uniforms()
+        self.c_compile()
+        self.c_setup_attributes()
+        self.c_setup_uniforms()
 
     cpdef void delete(self) except *:
         cdef:
@@ -90,7 +90,7 @@ cdef class Program:
         self.manager.delete(self.handle)
         self.handle = 0
 
-    cdef void _compile(self) except *:
+    cdef void c_compile(self) except *:
         cdef:
             ProgramC *program_ptr
             ShaderC *vertex_ptr
@@ -113,7 +113,7 @@ cdef class Program:
             glGetProgramInfoLog(gl_id, log_length, NULL, log); self.manager.c_check_gl()
             raise ValueError("Program: failed to compile (GL error message below)\n{0}".format(log.decode("utf-8")))
 
-    cdef void _setup_attributes(self) except *:
+    cdef void c_setup_attributes(self) except *:
         cdef:
             ProgramC *program_ptr
             uint32_t gl_id
@@ -141,7 +141,7 @@ cdef class Program:
             attribute.location = glGetAttribLocation(gl_id, attribute.name); self.manager.c_check_gl()
         program_ptr.num_attributes = count
 
-    cdef void _setup_uniforms(self) except *:
+    cdef void c_setup_uniforms(self) except *:
         cdef:
             ProgramC *program_ptr
             uint32_t gl_id
@@ -169,7 +169,7 @@ cdef class Program:
             uniform.location = glGetUniformLocation(gl_id, uniform.name)
         program_ptr.num_uniforms = count
 
-    cdef void _bind_attributes(self, Handle buffer) except *:
+    cdef void c_bind_attributes(self, Handle buffer) except *:
         cdef:
             ProgramC *program_ptr
             VertexBufferC *buffer_ptr
@@ -206,7 +206,7 @@ cdef class Program:
                     break
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
-    cdef void _unbind_attributes(self) except *:
+    cdef void c_unbind_attributes(self) except *:
         cdef:
             ProgramC *program_ptr
             size_t i
@@ -216,7 +216,7 @@ cdef class Program:
             attribute = &program_ptr.attributes[i]
             glDisableVertexAttribArray(attribute.location); self.manager.c_check_gl()
 
-    cdef void _bind_uniform(self, Handle uniform) except *:
+    cdef void c_bind_uniform(self, Handle uniform) except *:
         cdef:
             ProgramC *program_ptr
             UniformC *uniform_ptr

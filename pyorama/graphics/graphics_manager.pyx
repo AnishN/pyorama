@@ -207,14 +207,14 @@ cdef class GraphicsManager:
         for i in range(slot_map.items.num_items):
             sprite_batch_ptr = <SpriteBatchC *>self.c_get_ptr_by_index(SpriteBatch.c_get_type(), i)
             sprite_batch.handle = sprite_batch_ptr.handle
-            sprite_batch._update()
+            sprite_batch.c_update()
 
         #update tile maps
         slot_map = self.get_slot_map(TileMap.c_get_type())
         for i in range(slot_map.items.num_items):
             tile_map_ptr = <TileMapC *>self.c_get_ptr_by_index(TileMap.c_get_type(), i)
             tile_map.handle = tile_map_ptr.handle
-            tile_map._update()
+            tile_map.c_update()
 
         #update mesh batches
         pass
@@ -349,7 +349,7 @@ cdef class GraphicsManager:
             glUseProgram(program_ptr.gl_id); self.c_check_gl()
             for i in range(view_ptr.num_uniforms):
                 uniform_ptr = <UniformC *>self.c_get_ptr_by_index(Uniform.c_get_type(), i)
-                program._bind_uniform(uniform_ptr.handle)
+                program.c_bind_uniform(uniform_ptr.handle)
             
             if view_ptr.blend:
                 glEnable(GL_BLEND); self.c_check_gl()
@@ -382,10 +382,10 @@ cdef class GraphicsManager:
             self.c_view_clear(view_ptr.handle)
             
             self.c_bind_view_textures(view_ptr.handle)
-            program._bind_attributes(vbo_ptr.handle)
+            program.c_bind_attributes(vbo_ptr.handle)
             ibo.handle = ibo_ptr.handle
-            ibo._draw()
-            program._unbind_attributes()
+            ibo.c_draw()
+            program.c_unbind_attributes()
             self.c_unbind_view_textures(view_ptr.handle)
             if fbo != 0:
                 glBindFramebuffer(GL_FRAMEBUFFER, 0); self.c_check_gl()

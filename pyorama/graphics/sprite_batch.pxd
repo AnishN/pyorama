@@ -29,4 +29,4 @@ cdef class SpriteBatch:
     cpdef void set_sprites(self, list sprites) except *
     cpdef VertexBuffer get_vertex_buffer(self)
     cpdef IndexBuffer get_index_buffer(self)
-    cdef void _update(self) except *
+    cdef void c_update(self) except *

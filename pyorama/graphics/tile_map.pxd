@@ -31,4 +31,4 @@ cdef class TileMap:
     cpdef void set_indices(self, uint32_t[:] indices) except *
     cpdef VertexBuffer get_vertex_buffer(self)
     cpdef IndexBuffer get_index_buffer(self)
-    cdef void _update(self) except *
+    cdef void c_update(self) except *
