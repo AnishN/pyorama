@@ -66,7 +66,7 @@ class Game(App):
 
         self.bunny_width = self.image.get_width()
         self.bunny_height = self.image.get_height()
-
+        
         #setup piece sprites
         self.sprites = []
         self.num_sprites = 10000

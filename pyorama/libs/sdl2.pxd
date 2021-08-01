@@ -14,6 +14,7 @@ cdef extern from "SDL2/SDL.h" nogil:
     bint SDL_SetHint(const char *name, const char *value)
     char *SDL_HINT_NO_SIGNAL_HANDLERS
     char *SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS
+    char *SDL_HINT_VIDEO_EXTERNAL_CONTEXT
 
     enum: SDL_RENDERER_PRESENTVSYNC
     

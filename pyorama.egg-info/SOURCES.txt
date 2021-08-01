@@ -1,3 +1,4 @@
+LICENSE.txt
 README.md
 setup.py
 ./pyorama/core/app.c
@@ -59,7 +60,6 @@ setup.py
 ./pyorama/physics/physics_utils.c
 ./pyorama/physics/shape.c
 ./pyorama/physics/space.c
-./scraps/ft_text_demo.c
 examples/__init__.py
 examples/bitmap_font_test.py
 examples/bunny_mark.py

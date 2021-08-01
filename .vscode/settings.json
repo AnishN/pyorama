@@ -1,5 +1,13 @@
 {
     "files.associations": {
         "string_view": "cpp"
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.c": true,
+        "**/*.cpp": true,
+        "**/*.egg-info": true,
+        "**/*.html": true,
+        "**/*.pyd": true
     }
 }

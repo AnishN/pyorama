@@ -1,4 +1,4 @@
-Metadata-Version: 1.2
+Metadata-Version: 2.1
 Name: pyorama
 Version: 0.0.2
 Summary: A performant game engine written in cython.
@@ -7,7 +7,6 @@ Author: Anish Narayanan
 Author-email: anish.narayanan32@gmail.com
 License: MIT
 Project-URL: Source Code, https://github.com/AnishN/pyorama
-Description: UNKNOWN
 Keywords: game,2D,3D,rendering,cython,performance
 Platform: UNKNOWN
 Classifier: Development Status :: 3 - Alpha
@@ -17,3 +16,7 @@ Classifier: Topic :: Multimedia :: Graphics :: 3D Rendering
 Classifier: Topic :: Multimedia :: Graphics
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3
+License-File: LICENSE.txt
+
+UNKNOWN
+

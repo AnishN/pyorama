@@ -1,37 +1,46 @@
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension
 from Cython.Build import cythonize
-import numpy as np
 import os
 import platform
+import glob
+
+os.environ["LD_LIBRARY_PATH"] = "./pyorama/libs/shared/Windows"
 
 libraries = {
     "Linux": [
         "GLESv2",
         "z", "jpeg", "png", "webp", "jbig85",     
         "SDL2", "SDL2_image", "SDL2_mixer",
-        "openal",
-        "ogg", 
-        "vorbis", "vorbisfile", "vorbisenc",
-        "opus", 
-        "FLAC", 
         "assimp",
         "chipmunk",
-	"freetype", "harfbuzz",
+        "openal",
+        "FLAC", "opus",
+        "ogg", "vorbis", "vorbisfile", "vorbisenc",
+	    "freetype", "harfbuzz"
     ],
     "Windows": [
-        "opengl32", "libglew32", 
-        "SDL2", "SDL2_image", "SDL2_mixer", 
-        "openal",
+        #"opengl32", "glew32",
+        "bgfx-shared-libRelease", 
+        "SDL2main", "SDL2", "SDL2_image", "SDL2_mixer", "SDL2_net",
+
+        #"assimp",
+        #"chipmunk",
+        #"openal-1",
+        #"FLAC-8", "opus-0", "opusfile-0", "vorbis-0", "vorbisfile-3",
+        #"webp-7", 
+        #"zlib1",
+        #"freetype-6", "harfbuzz-0",
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]#, "-no-pie"]
-include_dirs = [np.get_include(), "./pyorama/libs/include"]
-library_dirs = ["./pyorama/libs/shared"]
-macros = [
-    #("CYTHON_TRACE", "1"),
-]
+args = ["-Wall", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+macros = []
 
+include_dirs = ["./pyorama/libs/include"]
+library_dirs = {
+    "Linux": ["./pyorama/libs/shared/Linux"],
+    "Windows": ["./pyorama/libs/shared/Windows"],
+}
 annotate = True
 quiet = False
 directives = {
@@ -40,18 +49,17 @@ directives = {
     "cdivision": True,
     "initializedcheck": False,
     "language_level": "3",
-    #"linetrace": True,
     "nonecheck": False,
-    #"profile": True,
     "wraparound": False,
 }
 
 if __name__ == "__main__":
     system = platform.system()
     libs = libraries[system]
+    lib_dirs = library_dirs[system]
     extensions = []
     ext_modules = []
-    
+
     #create extensions
     for path, dirs, file_names in os.walk("."):
         for file_name in file_names:
@@ -68,8 +76,8 @@ if __name__ == "__main__":
                     language=language,
                     extra_compile_args=args,
                     include_dirs=include_dirs,
-                    library_dirs=library_dirs,
-                    runtime_library_dirs=library_dirs,
+                    library_dirs=lib_dirs,
+                    #runtime_library_dirs=lib_dirs,
                     define_macros=macros,
                 )
                 extensions.append(ext)
@@ -81,37 +89,7 @@ if __name__ == "__main__":
         compiler_directives=directives,
         quiet=quiet
     )
-    
-    #setup all data files
-    data_files = {}
-    for path, dirs, file_names in os.walk("./resources"):
-        if file_names != []:
-            data_files[path] = file_names
 
     setup(
-        name="pyorama",
-        description="A performant game engine written in cython.",
-        version="0.0.2",
-        license="MIT",
-        url="https://github.com/AnishN/pyorama",
-        project_urls={
-            "Source Code": "https://github.com/AnishN/pyorama",
-        },
-        #download_url="https://github.com/AnishN/pyorama/archive/v0.0.2.tar.gz",
-        author="Anish Narayanan",
-        author_email="anish.narayanan32@gmail.com",
-        install_requires=["cython", "numpy", "setuptools"],
-        packages=find_packages(),
-        package_data=data_files,
-        keywords=["game", "2D", "3D", "rendering", "cython", "performance"],
-        classifiers=[
-            "Development Status :: 3 - Alpha",
-            "Intended Audience :: Developers",
-            "Topic :: Games/Entertainment",
-            "Topic :: Multimedia :: Graphics :: 3D Rendering",
-            "Topic :: Multimedia :: Graphics",
-            "License :: OSI Approved :: MIT License",
-            "Programming Language :: Python :: 3",
-        ],
         ext_modules=ext_modules,
     )

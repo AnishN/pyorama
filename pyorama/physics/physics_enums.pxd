@@ -1,9 +1,0 @@
-ctypedef enum PhysicsItemType:
-    PHYSICS_ITEM_TYPE_SPACE
-    PHYSICS_ITEM_TYPE_BODY
-    PHYSICS_ITEM_TYPE_SHAPE
-
-cpdef enum BodyType:
-    BODY_TYPE_DYNAMIC
-    BODY_TYPE_KINEMATIC
-    BODY_TYPE_STATIC
