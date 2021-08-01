@@ -28,7 +28,7 @@ SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
 SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
 SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
 SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "1")
-window = SDL_CreateWindow("bgfx", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
+window = SDL_CreateWindow("Hello, world!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
 
 #SDL_SetWindowPosition(window, 0, 0);
 bgfx_get_platform_data_from_window(window)
@@ -67,11 +67,8 @@ while running:
     bgfx_encoder_touch(encoder, 0)
     bgfx_encoder_end(encoder)
     bgfx_dbg_text_clear(0, False)
-    bgfx_dbg_text_printf(0, 1, 0x0f, "Color can be changed with ANSI \x1b[9me\x1b[10ms\x1b[11mc\x1b[12ma\x1b[13mp\x1b[14me\x1b[0m code too.")
-    bgfx_dbg_text_printf(80, 1, 0x0f, "\x1b[0m    \x1b[1m    \x1b[ 2m    \x1b[ 3m    \x1b[ 4m    \x1b[ 5m    \x1b[ 6m    \x1b[ 7m    \x1b[0m")
-    bgfx_dbg_text_printf(80, 2, 0x0f, "\x1b[8m    \x1b[9m    \x1b[10m    \x1b[11m    \x1b[12m    \x1b[13m    \x1b[14m    \x1b[15m    \x1b[0m")
-    bgfx_dbg_text_printf(0, 3, 0x1f, "bgfx/examples/25-c99")
-    bgfx_dbg_text_printf(0, 4, 0x3f, "Description: Initialization and debug text with C99 API.")
+    bgfx_dbg_text_printf(2, 1, 0x0f, "Hello, world!")
+    bgfx_dbg_text_printf(2, 2, 0x0f, "This is an example window created with BGFX in pyorama.")
     bgfx_frame(False)
 
 bgfx_shutdown()
