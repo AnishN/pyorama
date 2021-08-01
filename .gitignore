@@ -3,7 +3,7 @@ dist/
 *.so
 *.c
 *.html
-*.vscode
-*.egg-info
+*.vscode/
+*.egg-info/
 !pyorama/libs/**/*.so
 !pyorama/libs/**/*.c
