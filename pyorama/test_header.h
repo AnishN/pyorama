@@ -2,7 +2,15 @@
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
 
-bool sdlSetWindow(SDL_Window* _window)
+//platform-specific includes go up here
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#elif BX_PLATFORM_OSX
+#elif BX_PLATFORM_WINDOWS
+    #include <windows.h>
+#elif BX_PLATFORM_STEAMLINK
+#endif
+
+bool bgfx_get_platform_data_from_window(SDL_Window* _window)
 {
     SDL_SysWMinfo wmi;
     SDL_VERSION(&wmi.version);
@@ -19,12 +27,12 @@ bool sdlSetWindow(SDL_Window* _window)
         pd.ndt = NULL;
         pd.nwh = wmi.info.cocoa.window;
     #elif BX_PLATFORM_WINDOWS
-        #include <windows.h>
         typedef struct windows_info_t
         {
             HWND window;
             HDC hdc;
             HINSTANCE hinstance;
+            int a;
         } windows_info_t;
         pd.ndt = NULL;
         pd.nwh = ((windows_info_t *)wmi.info.dummy)->window;

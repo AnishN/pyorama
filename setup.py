@@ -29,7 +29,7 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-Wall", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
 macros = []
 
 include_dirs = ["./pyorama/libs/include"]

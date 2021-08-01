@@ -2,10 +2,7 @@ from pyorama.libs.sdl2 cimport *
 from pyorama.libs.bgfx cimport *
 
 cdef extern from "test_header.h" nogil:
-    bint sdlSetWindow(SDL_Window* _window)
-
-print("ran test")
-print(BX_PLATFORM_WINDOWS)
+    bint bgfx_get_platform_data_from_window(SDL_Window* _window)
 
 cdef:
     bint running = True
@@ -14,8 +11,8 @@ cdef:
     SDL_Event event
     SDL_WindowEvent wev
     int counter = 0
-    uint32_t width  = 1280
-    uint32_t height = 720
+    uint32_t width = 800
+    uint32_t height = 620
     uint32_t debug = BGFX_DEBUG_TEXT
     uint32_t reset = BGFX_RESET_VSYNC
     bgfx_init_t init
@@ -31,10 +28,10 @@ SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
 SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
 SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
 SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "1")
-window = SDL_CreateWindow("bgfx", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
+window = SDL_CreateWindow("bgfx", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
 
 #SDL_SetWindowPosition(window, 0, 0);
-sdlSetWindow(window)
+bgfx_get_platform_data_from_window(window)
 bgfx_init_ctor(&init)
 bgfx_init(&init)
 
