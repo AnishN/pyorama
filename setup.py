@@ -4,13 +4,11 @@ import os
 import platform
 import glob
 
-os.environ["LD_LIBRARY_PATH"] = "./pyorama/libs/shared/Windows"
-
 libraries = {
     "Linux": [
-        "GLESv2",
-        "z", "jpeg", "png", "webp", "jbig85",     
-        "SDL2", "SDL2_image", "SDL2_mixer",
+        "bgfx-shared-libRelease",
+        "z", "jpeg", "png", "webp", "jbig85",
+        "SDL2", "SDL2_image", "SDL2_mixer", 
         "assimp",
         "chipmunk",
         "openal",
@@ -19,17 +17,15 @@ libraries = {
 	    "freetype", "harfbuzz"
     ],
     "Windows": [
-        #"opengl32", "glew32",
         "bgfx-shared-libRelease", 
         "SDL2main", "SDL2", "SDL2_image", "SDL2_mixer", "SDL2_net",
-
-        #"assimp",
-        #"chipmunk",
-        #"openal-1",
-        #"FLAC-8", "opus-0", "opusfile-0", "vorbis-0", "vorbisfile-3",
-        #"webp-7", 
-        #"zlib1",
-        #"freetype-6", "harfbuzz-0",
+        "assimp",
+        "chipmunk",
+        "openal-1",
+        "FLAC-8", "opus-0", "opusfile-0", "vorbis-0", "vorbisfile-3",
+        "webp-7", 
+        "zlib1",
+        "freetype-6", "harfbuzz-0",
     ],
 }
 language = "c"
@@ -77,7 +73,7 @@ if __name__ == "__main__":
                     extra_compile_args=args,
                     include_dirs=include_dirs,
                     library_dirs=lib_dirs,
-                    #runtime_library_dirs=lib_dirs,
+                    runtime_library_dirs=lib_dirs,
                     define_macros=macros,
                 )
                 extensions.append(ext)
