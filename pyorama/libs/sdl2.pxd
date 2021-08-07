@@ -2,10 +2,20 @@ from libc.stdint cimport int8_t, int16_t, int32_t, int64_t
 from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t
 
 cdef extern from "SDL2/SDL.h" nogil:
-    #Core Functionality
-    cdef enum: SDL_INIT_EVERYTHING
+    cdef enum:
+        SDL_INIT_TIMER
+        SDL_INIT_AUDIO
+        SDL_INIT_VIDEO
+        SDL_INIT_JOYSTICK
+        SDL_INIT_HAPTIC
+        SDL_INIT_GAMECONTROLLER
+        SDL_INIT_EVENTS
+        SDL_INIT_EVERYTHING
+        SDL_INIT_NOPARACHUTE
     int SDL_Init(uint32_t flags)
+    int SDL_InitSubSystem(uint32_t flags)
     void SDL_Quit()
+    void SDL_QuitSubSystem(uint32_t flags)
     uint64_t SDL_GetPerformanceCounter()
     uint64_t SDL_GetPerformanceFrequency()
     void SDL_Delay(uint32_t ms)
@@ -44,7 +54,9 @@ cdef extern from "SDL2/SDL.h" nogil:
     cdef enum:
         SDL_WINDOWPOS_CENTERED
         SDL_WINDOWPOS_UNDEFINED
-        
+    
+    ctypedef struct SDL_SysWMinfo:
+        pass
     ctypedef struct SDL_Window:
         pass
     ctypedef struct SDL_Renderer:
@@ -72,6 +84,7 @@ cdef extern from "SDL2/SDL.h" nogil:
     void SDL_GetWindowSize(SDL_Window *window, int *w, int *h)
     void SDL_SetWindowTitle(SDL_Window *window, const char *title)
     const char *SDL_GetWindowTitle(SDL_Window *window)
+    void SDL_SetWindowIcon(SDL_Window *window, SDL_Surface *icon)
 
     int SDL_GetNumVideoDisplays()
     int SDL_GetDisplayBounds(int displayIndex, SDL_Rect *rect)
@@ -129,6 +142,7 @@ cdef extern from "SDL2/SDL.h" nogil:
     
     int SDL_GL_SetAttribute(SDL_GLattr attr, int value)
     int SDL_GL_GetAttribute(SDL_GLattr attr, int *value)
+    void SDL_GL_ResetAttributes()
     void SDL_DestroyWindow(SDL_Window *window)
     void SDL_DestroyRenderer(SDL_Renderer *renderer)
     void SDL_GL_DeleteContext(SDL_GLContext context)

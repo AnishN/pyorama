@@ -51,6 +51,9 @@ directives = {
 
 if __name__ == "__main__":
     system = platform.system()
+    old_path = os.environ["PATH"]
+    os.environ["PATH"] = old_path + os.pathsep + library_dirs[system][0]
+    
     libs = libraries[system]
     lib_dirs = library_dirs[system]
     extensions = []
@@ -89,3 +92,5 @@ if __name__ == "__main__":
     setup(
         ext_modules=ext_modules,
     )
+
+    os.environ["PATH"] = old_path

@@ -1,11 +1,20 @@
 from pyorama.libs.c cimport *
+from pyorama.libs.sdl2 cimport *
+
+cdef extern from "custom_bgfx_platform.h" nogil:
+    SDL_SysWMinfo *bgfx_fetch_wmi()
+    void *bgfx_get_window_nwh(SDL_SysWMinfo *wmi, SDL_Window* _window)
+    void *bgfx_get_window_ndt(SDL_SysWMinfo *wmi, SDL_Window* _window)
+    bint bgfx_get_platform_data_from_window(SDL_SysWMinfo *wmi, SDL_Window* _window)
 
 cdef extern from "bgfx/c99/bgfx.h" nogil:
     cdef enum:
         BGFX_DEBUG_TEXT
+        BGFX_RESET_NONE
         BGFX_RESET_VSYNC
         BGFX_CLEAR_COLOR
         BGFX_CLEAR_DEPTH
+        BGFX_CLEAR_STENCIL
 
     cdef enum:
         BGFX_INVALID_HANDLE
@@ -318,6 +327,37 @@ cdef extern from "bgfx/c99/bgfx.h" nogil:
         uint32_t minResourceCbSize  
         uint32_t transientVbSize    
         uint32_t transientIbSize    
+    
+    cdef enum:
+        BGFX_CAPS_ALPHA_TO_COVERAGE
+        BGFX_CAPS_BLEND_INDEPENDENT
+        BGFX_CAPS_COMPUTE
+        BGFX_CAPS_CONSERVATIVE_RASTER
+        BGFX_CAPS_DRAW_INDIRECT
+        BGFX_CAPS_FRAGMENT_DEPTH
+        BGFX_CAPS_FRAGMENT_ORDERING
+        BGFX_CAPS_GRAPHICS_DEBUGGER
+        BGFX_CAPS_HDR10
+        BGFX_CAPS_HIDPI
+        BGFX_CAPS_IMAGE_RW
+        BGFX_CAPS_INDEX32
+        BGFX_CAPS_INSTANCING
+        BGFX_CAPS_OCCLUSION_QUERY
+        BGFX_CAPS_RENDERER_MULTITHREADED
+        BGFX_CAPS_SWAP_CHAIN
+        BGFX_CAPS_TEXTURE_2D_ARRAY
+        BGFX_CAPS_TEXTURE_3D
+        BGFX_CAPS_TEXTURE_BLIT
+        BGFX_CAPS_TEXTURE_COMPARE_RESERVED
+        BGFX_CAPS_TEXTURE_COMPARE_LEQUAL
+        BGFX_CAPS_TEXTURE_CUBE_ARRAY
+        BGFX_CAPS_TEXTURE_DIRECT_ACCESS
+        BGFX_CAPS_TEXTURE_READ_BACK
+        BGFX_CAPS_VERTEX_ATTRIB_HALF
+        BGFX_CAPS_VERTEX_ATTRIB_UINT10
+        BGFX_CAPS_VERTEX_ID
+        BGFX_CAPS_VIEWPORT_LAYER_ARRAY
+        BGFX_CAPS_TEXTURE_COMPARE_ALL
 
     cdef enum:
         BGFX_CAPS_FORMAT_TEXTURE_NONE
