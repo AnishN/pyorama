@@ -1,37 +1,103 @@
+import time
+
 graphics = GraphicsSystem("graphics")
 audio = UserSystem("audio")
-events = UserSystem("events")
+event = EventSystem("event")
 physics = UserSystem("physics")
-engine_systems = {
-    "graphics": graphics,
-    "audio": audio,
-    "events": events,
-    "physics": physics,
-}
-engine_systems_order = ["graphics", "audio", "events", "physics"]
-user_systems = {}
-user_systems_order = []
 
-def iterate_systems(func_name, reverse=False, kwargs=None):
-    systems = {**engine_systems, **user_systems}
-    systems_order = engine_systems_order + user_systems_order
-    if reverse:
-        systems_order.reverse()
-    if kwargs == None:
-        kwargs = {}
-    for name in systems_order:
-        system = systems[name]
-        func = getattr(system, func_name)
-        func(**kwargs.get(name, {}))
-    systems = None
-    systems_order = None
+def init(dict config={}):
+    global target_fps, num_frame_times, use_vsync, use_sleep#need global when assigning variable
+    global frame_times
+    global frequency, start_time, curr_time, prev_time
 
-def init(config={}):
-    iterate_systems("init", config)
+    target_fps = config.get("target_fps", 60)
+    num_frame_times = config.get("num_frame_times", 20)
+    use_vsync = config.get("use_vsync", True)
+    use_sleep = config.get("use_sleep", False)
+    frame_times = [1.0 / target_fps] * num_frame_times
+    frequency = SDL_GetPerformanceFrequency()
+    start_time = c_get_current_time()
+
+    graphics.init()
+    audio.init()
+    event.init()
+    physics.init()
 
 def quit():
-    print("quit")
-    iterate_systems("quit", reverse=True)
+    physics.quit()
+    event.quit()
+    audio.quit()
+    graphics.quit()
 
-def update():
-    iterate_systems("update")
+def run():
+    global curr_time, prev_time
+    curr_time = start_time
+    prev_time = curr_time
+    if use_sleep:
+        run_sleep()
+    else:
+        run_fixed_timestep()
+
+def run_sleep():
+    cdef:
+        double delta_time
+        double sleep_time
+    global curr_time, prev_time
+
+    curr_time = start_time
+    while True:
+        prev_time = curr_time
+        step()
+        curr_time = c_get_current_time()
+        graphics.c_swap_root_window(use_vsync)
+        delta_time = curr_time - prev_time
+        sleep_time = max(0.0, (1.0 / target_fps) - delta_time)
+        time.sleep(sleep_time)
+
+def run_fixed_timestep():
+    cdef:
+        double delta_time
+        double accumulated_time
+    global curr_time, prev_time
+
+    curr_time = start_time
+    prev_time = curr_time
+    while True:
+        curr_time = c_get_current_time()
+        delta_time = curr_time - prev_time
+        accumulated_time += delta_time
+        while accumulated_time > 1.0 / target_fps:
+            step()
+            accumulated_time -= 1.0 / target_fps
+        prev_time = curr_time
+        graphics.c_swap_root_window(use_vsync)
+
+def step():
+    cdef:
+        size_t frame_index
+        double frame_time
+    global frame_count
+
+    frame_index = frame_count % num_frame_times
+    frame_time = curr_time - prev_time
+    PyErr_CheckSignals()
+    #event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
+    event.update(curr_time)
+    #physics.update(1.0 / target_fps)
+    graphics.update()
+    frame_times[frame_index] = frame_time
+    frame_count += 1
+
+def get_frame_time():
+    return sum(frame_times) / num_frame_times
+
+def get_fps():
+    return 1.0 / get_frame_time()
+
+cdef double c_get_current_time() nogil:
+    cdef:
+        double counter
+        double current_time
+    counter = SDL_GetPerformanceCounter()
+    current_time = counter / frequency
+    return current_time

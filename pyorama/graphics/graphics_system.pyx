@@ -1,6 +1,6 @@
 cdef size_t GRAPHICS_MAX_VIEWS = 2**16
 
-cdef class GraphicsSystem(object):
+cdef class GraphicsSystem:
     
     def __cinit__(self, str name):
         self.name = name
@@ -10,66 +10,44 @@ cdef class GraphicsSystem(object):
             GRAPHICS_SLOT_FRAME_BUFFER: sizeof(FrameBufferC),
             GRAPHICS_SLOT_VIEW: sizeof(ViewC),
         }
+        self.window_ids = HashMap()
     
     def __dealloc__(self):
+        self.window_ids = None
         self.slot_sizes = None
         self.slots = None
         self.name = None
 
     def init(self):
-        self.c_init_sdl2()
-        self.c_init_bgfx()
         self.slots.c_init(self.slot_sizes)
-        
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.used_views[0] = True#reserve as global view
         self.free_view_index = 0
+        self.window_ids.c_init()
+        self.c_init_sdl2()
+        self.c_init_bgfx()
+        
     
     def quit(self):
+        self.c_quit_bgfx()
+        self.c_quit_sdl2()
+        self.window_ids.c_free()
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
-
         self.slots.c_free()
-        self.c_quit_bgfx()
-        self.c_quit_sdl2()
 
     def update(self):
         cdef:
-            bint running = True
-            SDL_Event event
-            SDL_WindowEvent wev
-            int counter = 0
             size_t i
-            #bgfx_encoder_t *encoder
             SlotMap views
-            ViewC *view_ptr
-        
-        while running:
-            while SDL_PollEvent(&event):
-                if event.type == SDL_QUIT:
-                    running = False
-                elif event.type == SDL_WINDOWEVENT:
-                    wev = event.window
-                    if wev.event == SDL_WINDOWEVENT_RESIZED:
-                        break
-                    elif wev.event == SDL_WINDOWEVENT_SIZE_CHANGED:
-                        break
-                    elif wev.event == SDL_WINDOWEVENT_CLOSE:
-                        running = False
-                        break
-                break
-            
-            views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
-            for i in range(views.items.num_items):
-                view_ptr = <ViewC *>views.items.c_get_ptr_unsafe(i)
-                bgfx_touch(view_ptr.index)
-            #bgfx_set_view_rect(0, 0, 0, <uint16_t>width, <uint16_t>height)
-            #encoder = bgfx_encoder_begin(True)
-            #bgfx_encoder_touch(encoder, 0)
-            #bgfx_encoder_end(encoder)
-            bgfx_frame(False)
+            ViewC *view_ptr 
+        views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
+        for i in range(views.items.num_items):
+            view_ptr = <ViewC *>views.items.c_get_ptr_unsafe(i)
+            bgfx_touch(view_ptr.index)
+        bgfx_frame(False)
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)
@@ -82,12 +60,14 @@ cdef class GraphicsSystem(object):
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
         SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "1")
-        self.root_window = SDL_CreateWindow("Hello, world!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
+        self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
+        self.root_window_id = SDL_GetWindowID(self.root_window)
         self.wmi = bgfx_fetch_wmi()
 
     cdef void c_quit_sdl2(self) except *:
         SDL_DestroyWindow(self.root_window)
         self.root_window = NULL
+        self.root_window_id = 0
         SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "0")
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "0")
         SDL_GL_ResetAttributes()
@@ -131,3 +111,11 @@ cdef class GraphicsSystem(object):
                     graphics.used_views[i] = True
                     return i
         raise ValueError("GraphicsSystem: no free views available")
+
+    cdef void c_swap_root_window(self, bint use_vsync) except *:
+        #print("swapping root")
+        #SDL_GL_MakeCurrent(self.root_window, self.root_context)
+        #SDL_GL_SetSwapInterval(use_vsync)
+        #SDL_GL_SwapWindow(self.root_window)
+        #print("swapped root")
+        bgfx_frame(False)

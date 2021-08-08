@@ -1,14 +1,23 @@
-from pyorama.core.graphics_system cimport *
+from cpython.exc cimport PyErr_CheckSignals
+from pyorama.event.event_system cimport *
+from pyorama.graphics.graphics_system cimport *
 from pyorama.core.user_system cimport *
 
 cdef:
-    GraphicsSystem graphics
-    UserSystem audio
-    UserSystem events
-    UserSystem physics
-    object user
-    dict engine_systems
-    list engine_systems_order
-    dict user_systems
-    list user_systems_order
-    str old_path
+    public GraphicsSystem graphics
+    public UserSystem audio
+    public EventSystem event
+    public UserSystem physics
+
+    int target_fps
+    size_t num_frame_times
+    size_t frame_count
+    bint use_vsync
+    bint use_sleep
+    list frame_times
+    int frequency
+    double start_time
+    double curr_time
+    double prev_time
+
+cdef double c_get_current_time() nogil

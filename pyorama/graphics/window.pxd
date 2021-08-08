@@ -1,7 +1,7 @@
 from pyorama.app cimport *
 from pyorama.data.handle cimport *
 from pyorama.libs.sdl2 cimport *
-from pyorama.core.graphics_system cimport *
+from pyorama.graphics.graphics_system cimport *
 from pyorama.graphics.frame_buffer cimport *
 
 ctypedef struct WindowC:
@@ -21,6 +21,7 @@ cdef class Window:
     cdef WindowC *c_get_ptr(self) except *
     cpdef void create(self, uint16_t width, uint16_t height, bytes title) except *
     cpdef void delete(self) except *
+    cpdef void load_from_id(self, uint64_t window_id) except *
 
     cpdef uint16_t get_width(self) except *
     cpdef uint16_t get_height(self) except *

@@ -4,10 +4,10 @@ cdef class Vector:
     cdef:
         char *items
         size_t max_items
-        size_t slot_size
+        size_t item_size
         size_t num_items
     
-    cdef void c_init(self, size_t slot_size) except *
+    cdef void c_init(self, size_t item_size) except *
     cdef void c_free(self) except *
     cdef void c_push_empty(self) except *
     cdef void c_pop_empty(self) except *
@@ -27,3 +27,4 @@ cdef class Vector:
     cdef void c_insert(self, size_t index, void *item) except *
     cdef void c_remove_empty(self, size_t index) except *
     cdef void c_remove(self, size_t index, void *item) except *
+    cdef size_t c_find(self, void *item) except *

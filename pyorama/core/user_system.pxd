@@ -1,2 +1,2 @@
-cdef class UserSystem(object):
+cdef class UserSystem:
     cdef str name

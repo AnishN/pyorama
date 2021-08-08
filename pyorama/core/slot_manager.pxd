@@ -9,7 +9,7 @@ cdef class SlotManager:
     
     cdef:
         cdef size_t num_slot_types
-        cdef bint register_map[MAX_ITEM_TYPES]
+        cdef bint registered_maps[MAX_ITEM_TYPES]
         PyObject *slot_maps[MAX_ITEM_TYPES]
     
     cdef void c_init(self, dict slot_type_sizes) except *

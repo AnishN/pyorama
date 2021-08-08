@@ -37,7 +37,7 @@ cdef class HashMap:
         hashed_key = self.c_hash(key)
         for i in range(self.items.max_items):
             index = (hashed_key + i) & (self.items.max_items - 1)
-            item_ptr = <ItemC *>(self.items.items + (self.items.slot_size * index))
+            item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
             if item_ptr.used:
                 if item_ptr.key == key:
                     item_ptr.value = value
@@ -56,7 +56,7 @@ cdef class HashMap:
         
         self.c_shrink_if_needed()
         index = self.c_get_index(key)
-        item_ptr = <ItemC *>(self.items.items + (self.items.slot_size * index))
+        item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
         item_ptr.key = 0
         item_ptr.value = 0
         item_ptr.used = False
@@ -68,7 +68,7 @@ cdef class HashMap:
             ItemC *item_ptr
             
         index = self.c_get_index(key)
-        item_ptr = <ItemC *>(self.items.items + (self.items.slot_size * index))
+        item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
         return item_ptr.value
     
     cdef size_t c_get_index(self, uint64_t key) except *:
@@ -81,7 +81,7 @@ cdef class HashMap:
         hashed_key = self.c_hash(key)
         for i in range(self.items.max_items):
             index = (hashed_key + i) & (self.items.max_items - 1)
-            item_ptr = <ItemC *>(self.items.items + (self.items.slot_size * index))
+            item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
             if item_ptr.used:
                 if item_ptr.key == key:
                     return index
@@ -107,7 +107,7 @@ cdef class HashMap:
         hashed_key = self.c_hash(key)
         for i in range(self.items.max_items):
             index = (hashed_key + i) & (self.items.max_items - 1)
-            item_ptr = <ItemC *>(self.items.items + (self.items.slot_size * index))
+            item_ptr = <ItemC *>(self.items.items + (self.items.item_size * index))
             if item_ptr.used:
                 if item_ptr.key == key:
                     return True
@@ -139,7 +139,7 @@ cdef class HashMap:
             raise MemoryError()
 
         for i in range(self.items.max_items):
-            item_ptr = <ItemC *>(self.items.items + (self.items.slot_size * i))
+            item_ptr = <ItemC *>(self.items.items + (self.items.item_size * i))
             hashed_key = self.c_hash(item_ptr.key)
             if item_ptr.used:
                 for j in range(new_max_items):

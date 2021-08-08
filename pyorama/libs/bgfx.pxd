@@ -7,327 +7,319 @@ cdef extern from "custom_bgfx_platform.h" nogil:
     void *bgfx_get_window_ndt(SDL_SysWMinfo *wmi, SDL_Window* _window)
     bint bgfx_get_platform_data_from_window(SDL_SysWMinfo *wmi, SDL_Window* _window)
 
-cdef extern from "bgfx/c99/bgfx.h" nogil:
+cdef extern from "bgfx/defines.h" nogil:
     cdef enum:
-        BGFX_DEBUG_TEXT
-        BGFX_RESET_NONE
-        BGFX_RESET_VSYNC
+        BGFX_API_VERSION
+
+    cdef enum:
+        BGFX_STATE_WRITE_R
+        BGFX_STATE_WRITE_G
+        BGFX_STATE_WRITE_B
+        BGFX_STATE_WRITE_A
+        BGFX_STATE_WRITE_Z
+        BGFX_STATE_WRITE_RGB
+        BGFX_STATE_WRITE_MASK
+
+    cdef enum:
+        BGFX_STATE_DEPTH_TEST_LESS
+        BGFX_STATE_DEPTH_TEST_LEQUAL
+        BGFX_STATE_DEPTH_TEST_EQUAL
+        BGFX_STATE_DEPTH_TEST_GEQUAL
+        BGFX_STATE_DEPTH_TEST_GREATER
+        BGFX_STATE_DEPTH_TEST_NOTEQUAL
+        BGFX_STATE_DEPTH_TEST_NEVER
+        BGFX_STATE_DEPTH_TEST_ALWAYS
+        BGFX_STATE_DEPTH_TEST_SHIFT
+        BGFX_STATE_DEPTH_TEST_MASK
+
+    cdef enum:
+        BGFX_STATE_BLEND_ZERO
+        BGFX_STATE_BLEND_ONE
+        BGFX_STATE_BLEND_SRC_COLOR
+        BGFX_STATE_BLEND_INV_SRC_COLOR
+        BGFX_STATE_BLEND_SRC_ALPHA
+        BGFX_STATE_BLEND_INV_SRC_ALPHA
+        BGFX_STATE_BLEND_DST_ALPHA
+        BGFX_STATE_BLEND_INV_DST_ALPHA
+        BGFX_STATE_BLEND_DST_COLOR
+        BGFX_STATE_BLEND_INV_DST_COLOR
+        BGFX_STATE_BLEND_SRC_ALPHA_SAT
+        BGFX_STATE_BLEND_FACTOR
+        BGFX_STATE_BLEND_INV_FACTOR
+        BGFX_STATE_BLEND_SHIFT
+        BGFX_STATE_BLEND_MASK
+
+    cdef enum:
+        BGFX_STATE_BLEND_EQUATION_ADD
+        BGFX_STATE_BLEND_EQUATION_SUB
+        BGFX_STATE_BLEND_EQUATION_REVSUB
+        BGFX_STATE_BLEND_EQUATION_MIN
+        BGFX_STATE_BLEND_EQUATION_MAX
+        BGFX_STATE_BLEND_EQUATION_SHIFT
+        BGFX_STATE_BLEND_EQUATION_MASK
+
+    cdef enum:
+        BGFX_STATE_CULL_CW
+        BGFX_STATE_CULL_CCW
+        BGFX_STATE_CULL_SHIFT
+        BGFX_STATE_CULL_MASK
+
+    cdef enum:
+        BGFX_STATE_ALPHA_REF_SHIFT
+        BGFX_STATE_ALPHA_REF_MASK
+        BGFX_STATE_PT_TRISTRIP
+        BGFX_STATE_PT_LINES
+        BGFX_STATE_PT_LINESTRIP
+        BGFX_STATE_PT_POINTS
+        BGFX_STATE_PT_SHIFT
+        BGFX_STATE_PT_MASK
+    cdef uint64_t BGFX_STATE_ALPHA_REF(uint64_t v)
+
+    cdef enum:
+        BGFX_STATE_POINT_SIZE_SHIFT
+        BGFX_STATE_POINT_SIZE_MASK
+    cdef uint64_t BGFX_STATE_POINT_SIZE(uint64_t v)
+
+    cdef enum:
+        BGFX_STATE_MSAA
+        BGFX_STATE_LINEAA
+        BGFX_STATE_CONSERVATIVE_RASTER
+        BGFX_STATE_NONE
+        BGFX_STATE_FRONT_CCW
+        BGFX_STATE_BLEND_INDEPENDENT
+        BGFX_STATE_BLEND_ALPHA_TO_COVERAGE
+        BGFX_STATE_DEFAULT
+
+    cdef enum:
+        BGFX_STATE_MASK
+        BGFX_STATE_RESERVED_SHIFT
+        BGFX_STATE_RESERVED_MASK
+
+    cdef enum:
+        BGFX_STENCIL_FUNC_REF_SHIFT
+        BGFX_STENCIL_FUNC_REF_MASK
+    cdef uint32_t BGFX_STENCIL_FUNC_REF(uint32_t v)
+
+    cdef enum:
+        BGFX_STENCIL_FUNC_RMASK_SHIFT
+        BGFX_STENCIL_FUNC_RMASK_MASK
+    cdef uint32_t BGFX_STENCIL_FUNC_RMASK(uint32_t v)
+
+    cdef enum:
+        BGFX_STENCIL_NONE
+        BGFX_STENCIL_MASK
+        BGFX_STENCIL_DEFAULT
+
+    cdef enum:
+        BGFX_STENCIL_TEST_LESS
+        BGFX_STENCIL_TEST_LEQUAL
+        BGFX_STENCIL_TEST_EQUAL
+        BGFX_STENCIL_TEST_GEQUAL
+        BGFX_STENCIL_TEST_GREATER
+        BGFX_STENCIL_TEST_NOTEQUAL
+        BGFX_STENCIL_TEST_NEVER
+        BGFX_STENCIL_TEST_ALWAYS
+        BGFX_STENCIL_TEST_SHIFT
+        BGFX_STENCIL_TEST_MASK
+
+    cdef enum:
+        BGFX_STENCIL_OP_FAIL_S_ZERO
+        BGFX_STENCIL_OP_FAIL_S_KEEP
+        BGFX_STENCIL_OP_FAIL_S_REPLACE
+        BGFX_STENCIL_OP_FAIL_S_INCR
+        BGFX_STENCIL_OP_FAIL_S_INCRSAT
+        BGFX_STENCIL_OP_FAIL_S_DECR
+        BGFX_STENCIL_OP_FAIL_S_DECRSAT
+        BGFX_STENCIL_OP_FAIL_S_INVERT
+        BGFX_STENCIL_OP_FAIL_S_SHIFT
+        BGFX_STENCIL_OP_FAIL_S_MASK
+
+    cdef enum:
+        BGFX_STENCIL_OP_FAIL_Z_ZERO
+        BGFX_STENCIL_OP_FAIL_Z_KEEP
+        BGFX_STENCIL_OP_FAIL_Z_REPLACE
+        BGFX_STENCIL_OP_FAIL_Z_INCR
+        BGFX_STENCIL_OP_FAIL_Z_INCRSAT
+        BGFX_STENCIL_OP_FAIL_Z_DECR
+        BGFX_STENCIL_OP_FAIL_Z_DECRSAT
+        BGFX_STENCIL_OP_FAIL_Z_INVERT
+        BGFX_STENCIL_OP_FAIL_Z_SHIFT
+        BGFX_STENCIL_OP_FAIL_Z_MASK
+
+    cdef enum:
+        BGFX_STENCIL_OP_PASS_Z_ZERO
+        BGFX_STENCIL_OP_PASS_Z_KEEP
+        BGFX_STENCIL_OP_PASS_Z_REPLACE
+        BGFX_STENCIL_OP_PASS_Z_INCR
+        BGFX_STENCIL_OP_PASS_Z_INCRSAT
+        BGFX_STENCIL_OP_PASS_Z_DECR
+        BGFX_STENCIL_OP_PASS_Z_DECRSAT
+        BGFX_STENCIL_OP_PASS_Z_INVERT
+        BGFX_STENCIL_OP_PASS_Z_SHIFT
+        BGFX_STENCIL_OP_PASS_Z_MASK
+
+    cdef enum:
+        BGFX_CLEAR_NONE
         BGFX_CLEAR_COLOR
         BGFX_CLEAR_DEPTH
         BGFX_CLEAR_STENCIL
+        BGFX_CLEAR_DISCARD_COLOR_0
+        BGFX_CLEAR_DISCARD_COLOR_1
+        BGFX_CLEAR_DISCARD_COLOR_2
+        BGFX_CLEAR_DISCARD_COLOR_3
+        BGFX_CLEAR_DISCARD_COLOR_4
+        BGFX_CLEAR_DISCARD_COLOR_5
+        BGFX_CLEAR_DISCARD_COLOR_6
+        BGFX_CLEAR_DISCARD_COLOR_7
+        BGFX_CLEAR_DISCARD_DEPTH
+        BGFX_CLEAR_DISCARD_STENCIL
+        BGFX_CLEAR_DISCARD_COLOR_MASK
+        BGFX_CLEAR_DISCARD_MASK
 
     cdef enum:
-        BGFX_INVALID_HANDLE
-        BGFX_C_API
-        BGFX_SHARED_LIB_BUILD
-        BGFX_SHARED_LIB_USE
-        BGFX_SHARED_LIB_API 
-        BGFX_SYMBOL_EXPORT
-        BX_PLATFORM_WINDOWS
-        BX_PLATFORM_WINRT
+        BGFX_DISCARD_NONE
+        BGFX_DISCARD_BINDINGS
+        BGFX_DISCARD_INDEX_BUFFER
+        BGFX_DISCARD_INSTANCE_DATA
+        BGFX_DISCARD_STATE
+        BGFX_DISCARD_TRANSFORM
+        BGFX_DISCARD_VERTEX_STREAMS
+        BGFX_DISCARD_ALL
 
-    ctypedef enum bgfx_fatal_t:
-        BGFX_FATAL_DEBUG_CHECK,       
-        BGFX_FATAL_INVALID_SHADER,    
-        BGFX_FATAL_UNABLE_TO_INITIALIZE,          
-        BGFX_FATAL_UNABLE_TO_CREATE_TEXTURE,      
-        BGFX_FATAL_DEVICE_LOST,       
-        BGFX_FATAL_COUNT
+    cdef enum:
+        BGFX_DEBUG_NONE
+        BGFX_DEBUG_WIREFRAME
+        BGFX_DEBUG_IFH
+        BGFX_DEBUG_STATS
+        BGFX_DEBUG_TEXT
+        BGFX_DEBUG_PROFILER
 
-    ctypedef enum bgfx_renderer_type_t:
-        BGFX_RENDERER_TYPE_NOOP,      
-        BGFX_RENDERER_TYPE_DIRECT3D9, 
-        BGFX_RENDERER_TYPE_DIRECT3D11,            
-        BGFX_RENDERER_TYPE_DIRECT3D12,            
-        BGFX_RENDERER_TYPE_GNM,       
-        BGFX_RENDERER_TYPE_METAL,     
-        BGFX_RENDERER_TYPE_NVN,       
-        BGFX_RENDERER_TYPE_OPENGLES,  
-        BGFX_RENDERER_TYPE_OPENGL,    
-        BGFX_RENDERER_TYPE_VULKAN,    
-        BGFX_RENDERER_TYPE_WEBGPU,    
-        BGFX_RENDERER_TYPE_COUNT
+    cdef enum:
+        BGFX_BUFFER_COMPUTE_FORMAT_8X1
+        BGFX_BUFFER_COMPUTE_FORMAT_8X2
+        BGFX_BUFFER_COMPUTE_FORMAT_8X4
+        BGFX_BUFFER_COMPUTE_FORMAT_16X1
+        BGFX_BUFFER_COMPUTE_FORMAT_16X2
+        BGFX_BUFFER_COMPUTE_FORMAT_16X4
+        BGFX_BUFFER_COMPUTE_FORMAT_32X1
+        BGFX_BUFFER_COMPUTE_FORMAT_32X2
+        BGFX_BUFFER_COMPUTE_FORMAT_32X4
+        BGFX_BUFFER_COMPUTE_FORMAT_SHIFT
+        BGFX_BUFFER_COMPUTE_FORMAT_MASK
 
-    ctypedef enum bgfx_access_t:
-        BGFX_ACCESS_READ,             
-        BGFX_ACCESS_WRITE,            
-        BGFX_ACCESS_READWRITE,        
-        BGFX_ACCESS_COUNT
+    cdef enum:
+        BGFX_BUFFER_COMPUTE_TYPE_INT
+        BGFX_BUFFER_COMPUTE_TYPE_UINT
+        BGFX_BUFFER_COMPUTE_TYPE_FLOAT
+        BGFX_BUFFER_COMPUTE_TYPE_SHIFT
+        BGFX_BUFFER_COMPUTE_TYPE_MASK
 
-    ctypedef enum bgfx_attrib_t:
-        BGFX_ATTRIB_POSITION,         
-        BGFX_ATTRIB_NORMAL,           
-        BGFX_ATTRIB_TANGENT,          
-        BGFX_ATTRIB_BITANGENT,        
-        BGFX_ATTRIB_COLOR0,           
-        BGFX_ATTRIB_COLOR1,           
-        BGFX_ATTRIB_COLOR2,           
-        BGFX_ATTRIB_COLOR3,           
-        BGFX_ATTRIB_INDICES,          
-        BGFX_ATTRIB_WEIGHT,           
-        BGFX_ATTRIB_TEXCOORD0,        
-        BGFX_ATTRIB_TEXCOORD1,        
-        BGFX_ATTRIB_TEXCOORD2,        
-        BGFX_ATTRIB_TEXCOORD3,        
-        BGFX_ATTRIB_TEXCOORD4,        
-        BGFX_ATTRIB_TEXCOORD5,        
-        BGFX_ATTRIB_TEXCOORD6,        
-        BGFX_ATTRIB_TEXCOORD7,        
-        BGFX_ATTRIB_COUNT
+    cdef enum:
+        BGFX_BUFFER_NONE
+        BGFX_BUFFER_COMPUTE_READ
+        BGFX_BUFFER_COMPUTE_WRITE
+        BGFX_BUFFER_DRAW_INDIRECT
+        BGFX_BUFFER_ALLOW_RESIZE
+        BGFX_BUFFER_INDEX32
+        BGFX_BUFFER_COMPUTE_READ_WRITE
 
-    ctypedef enum bgfx_attrib_type_t:
-        BGFX_ATTRIB_TYPE_UINT8,       
-        BGFX_ATTRIB_TYPE_UINT10,      
-        BGFX_ATTRIB_TYPE_INT16,       
-        BGFX_ATTRIB_TYPE_HALF,        
-        BGFX_ATTRIB_TYPE_FLOAT,       
-        BGFX_ATTRIB_TYPE_COUNT
+    cdef enum:
+        BGFX_TEXTURE_NONE
+        BGFX_TEXTURE_MSAA_SAMPLE
+        BGFX_TEXTURE_RT
+        BGFX_TEXTURE_COMPUTE_WRITE
+        BGFX_TEXTURE_SRGB
+        BGFX_TEXTURE_BLIT_DST
+        BGFX_TEXTURE_READ_BACK
 
-    ctypedef enum bgfx_texture_format_t:
-        BGFX_TEXTURE_FORMAT_BC1,      
-        BGFX_TEXTURE_FORMAT_BC2,      
-        BGFX_TEXTURE_FORMAT_BC3,      
-        BGFX_TEXTURE_FORMAT_BC4,      
-        BGFX_TEXTURE_FORMAT_BC5,      
-        BGFX_TEXTURE_FORMAT_BC6H,     
-        BGFX_TEXTURE_FORMAT_BC7,      
-        BGFX_TEXTURE_FORMAT_ETC1,     
-        BGFX_TEXTURE_FORMAT_ETC2,     
-        BGFX_TEXTURE_FORMAT_ETC2A,    
-        BGFX_TEXTURE_FORMAT_ETC2A1,   
-        BGFX_TEXTURE_FORMAT_PTC12,    
-        BGFX_TEXTURE_FORMAT_PTC14,    
-        BGFX_TEXTURE_FORMAT_PTC12A,   
-        BGFX_TEXTURE_FORMAT_PTC14A,   
-        BGFX_TEXTURE_FORMAT_PTC22,    
-        BGFX_TEXTURE_FORMAT_PTC24,    
-        BGFX_TEXTURE_FORMAT_ATC,      
-        BGFX_TEXTURE_FORMAT_ATCE,     
-        BGFX_TEXTURE_FORMAT_ATCI,     
-        BGFX_TEXTURE_FORMAT_ASTC4X4,  
-        BGFX_TEXTURE_FORMAT_ASTC5X5,  
-        BGFX_TEXTURE_FORMAT_ASTC6X6,  
-        BGFX_TEXTURE_FORMAT_ASTC8X5,  
-        BGFX_TEXTURE_FORMAT_ASTC8X6,  
-        BGFX_TEXTURE_FORMAT_ASTC10X5, 
-        BGFX_TEXTURE_FORMAT_UNKNOWN,  
-        BGFX_TEXTURE_FORMAT_R1,       
-        BGFX_TEXTURE_FORMAT_A8,       
-        BGFX_TEXTURE_FORMAT_R8,       
-        BGFX_TEXTURE_FORMAT_R8I,      
-        BGFX_TEXTURE_FORMAT_R8U,      
-        BGFX_TEXTURE_FORMAT_R8S,      
-        BGFX_TEXTURE_FORMAT_R16,      
-        BGFX_TEXTURE_FORMAT_R16I,     
-        BGFX_TEXTURE_FORMAT_R16U,     
-        BGFX_TEXTURE_FORMAT_R16F,     
-        BGFX_TEXTURE_FORMAT_R16S,     
-        BGFX_TEXTURE_FORMAT_R32I,     
-        BGFX_TEXTURE_FORMAT_R32U,     
-        BGFX_TEXTURE_FORMAT_R32F,     
-        BGFX_TEXTURE_FORMAT_RG8,      
-        BGFX_TEXTURE_FORMAT_RG8I,     
-        BGFX_TEXTURE_FORMAT_RG8U,     
-        BGFX_TEXTURE_FORMAT_RG8S,     
-        BGFX_TEXTURE_FORMAT_RG16,     
-        BGFX_TEXTURE_FORMAT_RG16I,    
-        BGFX_TEXTURE_FORMAT_RG16U,    
-        BGFX_TEXTURE_FORMAT_RG16F,    
-        BGFX_TEXTURE_FORMAT_RG16S,    
-        BGFX_TEXTURE_FORMAT_RG32I,    
-        BGFX_TEXTURE_FORMAT_RG32U,    
-        BGFX_TEXTURE_FORMAT_RG32F,    
-        BGFX_TEXTURE_FORMAT_RGB8,     
-        BGFX_TEXTURE_FORMAT_RGB8I,    
-        BGFX_TEXTURE_FORMAT_RGB8U,    
-        BGFX_TEXTURE_FORMAT_RGB8S,    
-        BGFX_TEXTURE_FORMAT_RGB9E5F,  
-        BGFX_TEXTURE_FORMAT_BGRA8,    
-        BGFX_TEXTURE_FORMAT_RGBA8,    
-        BGFX_TEXTURE_FORMAT_RGBA8I,   
-        BGFX_TEXTURE_FORMAT_RGBA8U,   
-        BGFX_TEXTURE_FORMAT_RGBA8S,   
-        BGFX_TEXTURE_FORMAT_RGBA16,   
-        BGFX_TEXTURE_FORMAT_RGBA16I,  
-        BGFX_TEXTURE_FORMAT_RGBA16U,  
-        BGFX_TEXTURE_FORMAT_RGBA16F,  
-        BGFX_TEXTURE_FORMAT_RGBA16S,  
-        BGFX_TEXTURE_FORMAT_RGBA32I,  
-        BGFX_TEXTURE_FORMAT_RGBA32U,  
-        BGFX_TEXTURE_FORMAT_RGBA32F,  
-        BGFX_TEXTURE_FORMAT_R5G6B5,   
-        BGFX_TEXTURE_FORMAT_RGBA4,    
-        BGFX_TEXTURE_FORMAT_RGB5A1,   
-        BGFX_TEXTURE_FORMAT_RGB10A2,  
-        BGFX_TEXTURE_FORMAT_RG11B10F, 
-        BGFX_TEXTURE_FORMAT_UNKNOWNDEPTH,         
-        BGFX_TEXTURE_FORMAT_D16,      
-        BGFX_TEXTURE_FORMAT_D24,      
-        BGFX_TEXTURE_FORMAT_D24S8,    
-        BGFX_TEXTURE_FORMAT_D32,      
-        BGFX_TEXTURE_FORMAT_D16F,     
-        BGFX_TEXTURE_FORMAT_D24F,     
-        BGFX_TEXTURE_FORMAT_D32F,     
-        BGFX_TEXTURE_FORMAT_D0S8,     
-        BGFX_TEXTURE_FORMAT_COUNT
+    cdef enum:
+        BGFX_TEXTURE_RT_MSAA_X2
+        BGFX_TEXTURE_RT_MSAA_X4
+        BGFX_TEXTURE_RT_MSAA_X8
+        BGFX_TEXTURE_RT_MSAA_X16
+        BGFX_TEXTURE_RT_MSAA_SHIFT
+        BGFX_TEXTURE_RT_MSAA_MASK
+        BGFX_TEXTURE_RT_WRITE_ONLY
+        BGFX_TEXTURE_RT_SHIFT
+        BGFX_TEXTURE_RT_MASK
 
-    ctypedef enum bgfx_uniform_type_t:
-        BGFX_UNIFORM_TYPE_SAMPLER,    
-        BGFX_UNIFORM_TYPE_END,        
-        BGFX_UNIFORM_TYPE_VEC4,       
-        BGFX_UNIFORM_TYPE_MAT3,       
-        BGFX_UNIFORM_TYPE_MAT4,       
-        BGFX_UNIFORM_TYPE_COUNT
-
-    ctypedef enum bgfx_backbuffer_ratio_t:
-        BGFX_BACKBUFFER_RATIO_EQUAL,  
-        BGFX_BACKBUFFER_RATIO_HALF,   
-        BGFX_BACKBUFFER_RATIO_QUARTER,            
-        BGFX_BACKBUFFER_RATIO_EIGHTH, 
-        BGFX_BACKBUFFER_RATIO_SIXTEENTH,          
-        BGFX_BACKBUFFER_RATIO_DOUBLE, 
-        BGFX_BACKBUFFER_RATIO_COUNT
-
-    ctypedef enum bgfx_occlusion_query_result_t:
-        BGFX_OCCLUSION_QUERY_RESULT_INVISIBLE,    
-        BGFX_OCCLUSION_QUERY_RESULT_VISIBLE,      
-        BGFX_OCCLUSION_QUERY_RESULT_NORESULT,     
-        BGFX_OCCLUSION_QUERY_RESULT_COUNT
-
-    ctypedef enum bgfx_topology_t:
-        BGFX_TOPOLOGY_TRI_LIST,       
-        BGFX_TOPOLOGY_TRI_STRIP,      
-        BGFX_TOPOLOGY_LINE_LIST,      
-        BGFX_TOPOLOGY_LINE_STRIP,     
-        BGFX_TOPOLOGY_POINT_LIST,     
-        BGFX_TOPOLOGY_COUNT
-
-    ctypedef enum bgfx_topology_convert_t:
-        BGFX_TOPOLOGY_CONVERT_TRI_LIST_FLIP_WINDING, 
-        BGFX_TOPOLOGY_CONVERT_TRI_STRIP_FLIP_WINDING, 
-        BGFX_TOPOLOGY_CONVERT_TRI_LIST_TO_LINE_LIST, 
-        BGFX_TOPOLOGY_CONVERT_TRI_STRIP_TO_TRI_LIST, 
-        BGFX_TOPOLOGY_CONVERT_LINE_STRIP_TO_LINE_LIST, 
-        BGFX_TOPOLOGY_CONVERT_COUNT
-
-    ctypedef enum bgfx_topology_sort_t:
-        BGFX_TOPOLOGY_SORT_DIRECTION_FRONT_TO_BACK_MIN, 
-        BGFX_TOPOLOGY_SORT_DIRECTION_FRONT_TO_BACK_AVG, 
-        BGFX_TOPOLOGY_SORT_DIRECTION_FRONT_TO_BACK_MAX, 
-        BGFX_TOPOLOGY_SORT_DIRECTION_BACK_TO_FRONT_MIN, 
-        BGFX_TOPOLOGY_SORT_DIRECTION_BACK_TO_FRONT_AVG, 
-        BGFX_TOPOLOGY_SORT_DIRECTION_BACK_TO_FRONT_MAX, 
-        BGFX_TOPOLOGY_SORT_DISTANCE_FRONT_TO_BACK_MIN, 
-        BGFX_TOPOLOGY_SORT_DISTANCE_FRONT_TO_BACK_AVG, 
-        BGFX_TOPOLOGY_SORT_DISTANCE_FRONT_TO_BACK_MAX, 
-        BGFX_TOPOLOGY_SORT_DISTANCE_BACK_TO_FRONT_MIN, 
-        BGFX_TOPOLOGY_SORT_DISTANCE_BACK_TO_FRONT_AVG, 
-        BGFX_TOPOLOGY_SORT_DISTANCE_BACK_TO_FRONT_MAX, 
-        BGFX_TOPOLOGY_SORT_COUNT
-
-    ctypedef enum bgfx_view_mode_t:
-        BGFX_VIEW_MODE_DEFAULT,       
-        BGFX_VIEW_MODE_SEQUENTIAL,    
-        BGFX_VIEW_MODE_DEPTH_ASCENDING,           
-        BGFX_VIEW_MODE_DEPTH_DESCENDING,          
-        BGFX_VIEW_MODE_COUNT
-
-    ctypedef enum bgfx_render_frame_t:
-        BGFX_RENDER_FRAME_NO_CONTEXT, 
-        BGFX_RENDER_FRAME_RENDER,     
-        BGFX_RENDER_FRAME_TIMEOUT,    
-        BGFX_RENDER_FRAME_EXITING,    
-        BGFX_RENDER_FRAME_COUNT
-
-    ctypedef uint16_t bgfx_view_id_t
-
-    ctypedef struct bgfx_allocator_interface_t:
-        bgfx_allocator_vtbl_t* vtbl
-
-    ctypedef struct bgfx_allocator_vtbl_t:
-        void* (*realloc)(bgfx_allocator_interface_t* _this, void* _ptr, size_t _size, size_t _align, const char* _file, uint32_t _line)
-
-    ctypedef struct bgfx_interface_vtbl_t:
-        pass
+    cdef enum:
+        BGFX_SAMPLER_U_MIRROR
+        BGFX_SAMPLER_U_CLAMP
+        BGFX_SAMPLER_U_BORDER
+        BGFX_SAMPLER_U_SHIFT
+        BGFX_SAMPLER_U_MASK
+        BGFX_SAMPLER_V_MIRROR
+        BGFX_SAMPLER_V_CLAMP
+        BGFX_SAMPLER_V_BORDER
+        BGFX_SAMPLER_V_SHIFT
+        BGFX_SAMPLER_V_MASK
+        BGFX_SAMPLER_W_MIRROR
+        BGFX_SAMPLER_W_CLAMP
+        BGFX_SAMPLER_W_BORDER
+        BGFX_SAMPLER_W_SHIFT
+        BGFX_SAMPLER_W_MASK
+        BGFX_SAMPLER_MIN_POINT
+        BGFX_SAMPLER_MIN_ANISOTROPIC
+        BGFX_SAMPLER_MIN_SHIFT
+        BGFX_SAMPLER_MIN_MASK
+        BGFX_SAMPLER_MAG_POINT
+        BGFX_SAMPLER_MAG_ANISOTROPIC
+        BGFX_SAMPLER_MAG_SHIFT
+        BGFX_SAMPLER_MAG_MASK
+        BGFX_SAMPLER_MIP_POINT
+        BGFX_SAMPLER_MIP_SHIFT
+        BGFX_SAMPLER_MIP_MASK
+        BGFX_SAMPLER_COMPARE_LESS
+        BGFX_SAMPLER_COMPARE_LEQUAL
+        BGFX_SAMPLER_COMPARE_EQUAL
+        BGFX_SAMPLER_COMPARE_GEQUAL
+        BGFX_SAMPLER_COMPARE_GREATER
+        BGFX_SAMPLER_COMPARE_NOTEQUAL
+        BGFX_SAMPLER_COMPARE_NEVER
+        BGFX_SAMPLER_COMPARE_ALWAYS
+        BGFX_SAMPLER_COMPARE_SHIFT
+        BGFX_SAMPLER_COMPARE_MASK
+        BGFX_SAMPLER_BORDER_COLOR_SHIFT
+        BGFX_SAMPLER_BORDER_COLOR_MASK
+        BGFX_SAMPLER_RESERVED_SHIFT
+        BGFX_SAMPLER_RESERVED_MASK
+        BGFX_SAMPLER_NONE
+        BGFX_SAMPLER_SAMPLE_STENCIL
+        BGFX_SAMPLER_POINT
+        BGFX_SAMPLER_UVW_MIRROR
+        BGFX_SAMPLER_UVW_CLAMP
+        BGFX_SAMPLER_UVW_BORDER
+        BGFX_SAMPLER_BITS_MASK
     
-    ctypedef struct bgfx_callback_interface_t:
-        bgfx_callback_vtbl_t* vtbl
+    cdef uint32_t BGFX_SAMPLER_BORDER_COLOR(uint32_t v)
 
-    ctypedef struct bgfx_callback_vtbl_t:
-        void (*fatal)(bgfx_callback_interface_t* _this, const char* _filePath, uint16_t _line, bgfx_fatal_t _code, const char* _str)
-        void (*trace_vargs)(bgfx_callback_interface_t* _this, const char* _filePath, uint16_t _line, const char* _format, va_list _argList)
-        void (*profiler_begin)(bgfx_callback_interface_t* _this, const char* _name, uint32_t _abgr, const char* _filePath, uint16_t _line)
-        void (*profiler_begin_literal)(bgfx_callback_interface_t* _this, const char* _name, uint32_t _abgr, const char* _filePath, uint16_t _line)
-        void (*profiler_end)(bgfx_callback_interface_t* _this)
-        uint32_t (*cache_read_size)(bgfx_callback_interface_t* _this, uint64_t _id)
-        bint (*cache_read)(bgfx_callback_interface_t* _this, uint64_t _id, void* _data, uint32_t _size)
-        void (*cache_write)(bgfx_callback_interface_t* _this, uint64_t _id, const void* _data, uint32_t _size)
-        void (*screen_shot)(bgfx_callback_interface_t* _this, const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _pitch, const void* _data, uint32_t _size, bint _yflip)
-        void (*capture_begin)(bgfx_callback_interface_t* _this, uint32_t _width, uint32_t _height, uint32_t _pitch, bgfx_texture_format_t _format, bint _yflip)
-        void (*capture_end)(bgfx_callback_interface_t* _this)
-        void (*capture_frame)(bgfx_callback_interface_t* _this, const void* _data, uint32_t _size)
+    cdef enum:
+        BGFX_RESET_MSAA_X2
+        BGFX_RESET_MSAA_X4
+        BGFX_RESET_MSAA_X8
+        BGFX_RESET_MSAA_X16
+        BGFX_RESET_MSAA_SHIFT
+        BGFX_RESET_MSAA_MASK
 
-    ctypedef struct bgfx_dynamic_index_buffer_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_dynamic_vertex_buffer_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_frame_buffer_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_index_buffer_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_indirect_buffer_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_occlusion_query_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_program_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_shader_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_texture_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_uniform_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_vertex_buffer_handle_t:
-        uint16_t idx
-    ctypedef struct bgfx_vertex_layout_handle_t:
-        uint16_t idx
-    #not in original header
-    ctypedef struct bgfx_handle_t:
-        uint16_t idx
-    cdef bint BGFX_HANDLE_IS_VALID(bgfx_handle_t h)
+    cdef enum:
+        BGFX_RESET_NONE
+        BGFX_RESET_FULLSCREEN
+        BGFX_RESET_VSYNC
+        BGFX_RESET_MAXANISOTROPY
+        BGFX_RESET_CAPTURE
+        BGFX_RESET_FLUSH_AFTER_RENDER
+        BGFX_RESET_FLIP_AFTER_RENDER
+        BGFX_RESET_SRGB_BACKBUFFER
+        BGFX_RESET_HDR10
+        BGFX_RESET_HIDPI
+        BGFX_RESET_DEPTH_CLAMP
+        BGFX_RESET_SUSPEND
+        BGFX_RESET_FULLSCREEN_SHIFT
+        BGFX_RESET_FULLSCREEN_MASK
+        BGFX_RESET_RESERVED_SHIFT
+        BGFX_RESET_RESERVED_MASK
 
-    ctypedef void (*bgfx_release_fn_t)(void* _ptr, void* _userData)
-
-    ctypedef struct bgfx_caps_gpu_t:
-        uint16_t vendorId           
-        uint16_t deviceId           
-
-    ctypedef struct bgfx_caps_limits_t:
-        uint32_t maxDrawCalls       
-        uint32_t maxBlits           
-        uint32_t maxTextureSize     
-        uint32_t maxTextureLayers   
-        uint32_t maxViews           
-        uint32_t maxFrameBuffers    
-        uint32_t maxFBAttachments   
-        uint32_t maxPrograms        
-        uint32_t maxShaders         
-        uint32_t maxTextures        
-        uint32_t maxTextureSamplers 
-        uint32_t maxComputeBindings 
-        uint32_t maxVertexLayouts   
-        uint32_t maxVertexStreams   
-        uint32_t maxIndexBuffers    
-        uint32_t maxVertexBuffers   
-        uint32_t maxDynamicIndexBuffers 
-        uint32_t maxDynamicVertexBuffers 
-        uint32_t maxUniforms        
-        uint32_t maxOcclusionQueries 
-        uint32_t maxEncoders        
-        uint32_t minResourceCbSize  
-        uint32_t transientVbSize    
-        uint32_t transientIbSize    
-    
     cdef enum:
         BGFX_CAPS_ALPHA_TO_COVERAGE
         BGFX_CAPS_BLEND_INDEPENDENT
@@ -378,42 +370,9 @@ cdef extern from "bgfx/c99/bgfx.h" nogil:
         BGFX_CAPS_FORMAT_TEXTURE_MSAA
         BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN
 
-    ctypedef struct bgfx_caps_t:
-        bgfx_renderer_type_t rendererType       
-        uint64_t supported
-        uint16_t vendorId           
-        uint16_t deviceId           
-        bint homogeneousDepth   
-        bint originBottomLeft   
-        uint8_t numGPUs            
-        bgfx_caps_gpu_t gpu[4] 
-        bgfx_caps_limits_t limits 
-        uint16_t *formats
-
-    ctypedef struct bgfx_internal_data_t:
-        const bgfx_caps_t* caps   
-        void* context            
-
-    ctypedef struct bgfx_platform_data_t:
-        void* ndt    
-        void* nwh
-        void* context            
-        void* backBuffer
-        void* backBufferDS
-
-    ctypedef struct bgfx_resolution_t:
-        bgfx_texture_format_t format            
-        uint32_t width  
-        uint32_t height 
-        uint32_t reset  
-        uint8_t numBackBuffers     
-        uint8_t maxFrameLatency    
-
-    ctypedef struct bgfx_init_limits_t:
-        uint16_t maxEncoders        
-        uint32_t minResourceCbSize  
-        uint32_t transientVbSize    
-        uint32_t transientIbSize    
+    cdef enum:
+        BGFX_RESOLVE_NONE
+        BGFX_RESOLVE_AUTO_GEN_MIPS
 
     cdef enum:
         BGFX_PCI_ID_NONE
@@ -422,132 +381,513 @@ cdef extern from "bgfx/c99/bgfx.h" nogil:
         BGFX_PCI_ID_INTEL
         BGFX_PCI_ID_NVIDIA
 
+    cdef enum:
+        BGFX_CUBE_MAP_POSITIVE_X
+        BGFX_CUBE_MAP_NEGATIVE_X
+        BGFX_CUBE_MAP_POSITIVE_Y
+        BGFX_CUBE_MAP_NEGATIVE_Y
+        BGFX_CUBE_MAP_POSITIVE_Z
+        BGFX_CUBE_MAP_NEGATIVE_Z
+
+    cdef uint64_t BGFX_STATE_BLEND_FUNC_SEPARATE(uint64_t _srcRGB, uint64_t _dstRGB, uint64_t _srcA, uint64_t dstA)
+    cdef uint64_t BGFX_STATE_BLEND_EQUATION_SEPARATE(uint64_t _equationRGB, uint64_t _equationA)
+    cdef uint64_t BGFX_STATE_BLEND_FUNC(uint64_t _src, uint64_t _dst)
+    cdef uint64_t BGFX_STATE_BLEND_EQUATION(uint64_t _equation)
+
+    cdef enum:
+        BGFX_STATE_BLEND_ADD
+        BGFX_STATE_BLEND_ALPHA
+        BGFX_STATE_BLEND_DARKEN
+        BGFX_STATE_BLEND_LIGHTEN
+        BGFX_STATE_BLEND_MULTIPLY
+        BGFX_STATE_BLEND_NORMAL
+        BGFX_STATE_BLEND_SCREEN
+        BGFX_STATE_BLEND_LINEAR_BURN
+
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_x(uint64_t _src, uint64_t _dst)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_xE(uint64_t _src, uint64_t _dst, uint64_t _equation)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_1(uint64_t _src, uint64_t _dst)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_2(uint64_t _src, uint64_t _dst)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_3(uint64_t _src, uint64_t _dst)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_1E(uint64_t _src, uint64_t _dst, uint64_t _equation)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_2E(uint64_t _src, uint64_t _dst, uint64_t _equation)
+    cdef uint32_t BGFX_STATE_BLEND_FUNC_RT_3E(uint64_t _src, uint64_t _dst, uint64_t _equation)
+
+cdef extern from "bgfx/c99/bgfx.h" nogil:
+    cdef enum:
+        BGFX_INVALID_HANDLE
+        BGFX_C_API
+        BGFX_SHARED_LIB_BUILD
+        BGFX_SHARED_LIB_USE
+        BGFX_SHARED_LIB_API
+        BGFX_SYMBOL_EXPORT
+        BX_PLATFORM_WINDOWS
+        BX_PLATFORM_WINRT
+
+    ctypedef enum bgfx_fatal_t:
+        BGFX_FATAL_DEBUG_CHECK,
+        BGFX_FATAL_INVALID_SHADER,
+        BGFX_FATAL_UNABLE_TO_INITIALIZE,
+        BGFX_FATAL_UNABLE_TO_CREATE_TEXTURE,
+        BGFX_FATAL_DEVICE_LOST,
+        BGFX_FATAL_COUNT
+
+    ctypedef enum bgfx_renderer_type_t:
+        BGFX_RENDERER_TYPE_NOOP,
+        BGFX_RENDERER_TYPE_DIRECT3D9,
+        BGFX_RENDERER_TYPE_DIRECT3D11,
+        BGFX_RENDERER_TYPE_DIRECT3D12,
+        BGFX_RENDERER_TYPE_GNM,
+        BGFX_RENDERER_TYPE_METAL,
+        BGFX_RENDERER_TYPE_NVN,
+        BGFX_RENDERER_TYPE_OPENGLES,
+        BGFX_RENDERER_TYPE_OPENGL,
+        BGFX_RENDERER_TYPE_VULKAN,
+        BGFX_RENDERER_TYPE_WEBGPU,
+        BGFX_RENDERER_TYPE_COUNT
+
+    ctypedef enum bgfx_access_t:
+        BGFX_ACCESS_READ,
+        BGFX_ACCESS_WRITE,
+        BGFX_ACCESS_READWRITE,
+        BGFX_ACCESS_COUNT
+
+    ctypedef enum bgfx_attrib_t:
+        BGFX_ATTRIB_POSITION,
+        BGFX_ATTRIB_NORMAL,
+        BGFX_ATTRIB_TANGENT,
+        BGFX_ATTRIB_BITANGENT,
+        BGFX_ATTRIB_COLOR0,
+        BGFX_ATTRIB_COLOR1,
+        BGFX_ATTRIB_COLOR2,
+        BGFX_ATTRIB_COLOR3,
+        BGFX_ATTRIB_INDICES,
+        BGFX_ATTRIB_WEIGHT,
+        BGFX_ATTRIB_TEXCOORD0,
+        BGFX_ATTRIB_TEXCOORD1,
+        BGFX_ATTRIB_TEXCOORD2,
+        BGFX_ATTRIB_TEXCOORD3,
+        BGFX_ATTRIB_TEXCOORD4,
+        BGFX_ATTRIB_TEXCOORD5,
+        BGFX_ATTRIB_TEXCOORD6,
+        BGFX_ATTRIB_TEXCOORD7,
+        BGFX_ATTRIB_COUNT
+
+    ctypedef enum bgfx_attrib_type_t:
+        BGFX_ATTRIB_TYPE_UINT8,
+        BGFX_ATTRIB_TYPE_UINT10,
+        BGFX_ATTRIB_TYPE_INT16,
+        BGFX_ATTRIB_TYPE_HALF,
+        BGFX_ATTRIB_TYPE_FLOAT,
+        BGFX_ATTRIB_TYPE_COUNT
+
+    ctypedef enum bgfx_texture_format_t:
+        BGFX_TEXTURE_FORMAT_BC1,
+        BGFX_TEXTURE_FORMAT_BC2,
+        BGFX_TEXTURE_FORMAT_BC3,
+        BGFX_TEXTURE_FORMAT_BC4,
+        BGFX_TEXTURE_FORMAT_BC5,
+        BGFX_TEXTURE_FORMAT_BC6H,
+        BGFX_TEXTURE_FORMAT_BC7,
+        BGFX_TEXTURE_FORMAT_ETC1,
+        BGFX_TEXTURE_FORMAT_ETC2,
+        BGFX_TEXTURE_FORMAT_ETC2A,
+        BGFX_TEXTURE_FORMAT_ETC2A1,
+        BGFX_TEXTURE_FORMAT_PTC12,
+        BGFX_TEXTURE_FORMAT_PTC14,
+        BGFX_TEXTURE_FORMAT_PTC12A,
+        BGFX_TEXTURE_FORMAT_PTC14A,
+        BGFX_TEXTURE_FORMAT_PTC22,
+        BGFX_TEXTURE_FORMAT_PTC24,
+        BGFX_TEXTURE_FORMAT_ATC,
+        BGFX_TEXTURE_FORMAT_ATCE,
+        BGFX_TEXTURE_FORMAT_ATCI,
+        BGFX_TEXTURE_FORMAT_ASTC4X4,
+        BGFX_TEXTURE_FORMAT_ASTC5X5,
+        BGFX_TEXTURE_FORMAT_ASTC6X6,
+        BGFX_TEXTURE_FORMAT_ASTC8X5,
+        BGFX_TEXTURE_FORMAT_ASTC8X6,
+        BGFX_TEXTURE_FORMAT_ASTC10X5,
+        BGFX_TEXTURE_FORMAT_UNKNOWN,
+        BGFX_TEXTURE_FORMAT_R1,
+        BGFX_TEXTURE_FORMAT_A8,
+        BGFX_TEXTURE_FORMAT_R8,
+        BGFX_TEXTURE_FORMAT_R8I,
+        BGFX_TEXTURE_FORMAT_R8U,
+        BGFX_TEXTURE_FORMAT_R8S,
+        BGFX_TEXTURE_FORMAT_R16,
+        BGFX_TEXTURE_FORMAT_R16I,
+        BGFX_TEXTURE_FORMAT_R16U,
+        BGFX_TEXTURE_FORMAT_R16F,
+        BGFX_TEXTURE_FORMAT_R16S,
+        BGFX_TEXTURE_FORMAT_R32I,
+        BGFX_TEXTURE_FORMAT_R32U,
+        BGFX_TEXTURE_FORMAT_R32F,
+        BGFX_TEXTURE_FORMAT_RG8,
+        BGFX_TEXTURE_FORMAT_RG8I,
+        BGFX_TEXTURE_FORMAT_RG8U,
+        BGFX_TEXTURE_FORMAT_RG8S,
+        BGFX_TEXTURE_FORMAT_RG16,
+        BGFX_TEXTURE_FORMAT_RG16I,
+        BGFX_TEXTURE_FORMAT_RG16U,
+        BGFX_TEXTURE_FORMAT_RG16F,
+        BGFX_TEXTURE_FORMAT_RG16S,
+        BGFX_TEXTURE_FORMAT_RG32I,
+        BGFX_TEXTURE_FORMAT_RG32U,
+        BGFX_TEXTURE_FORMAT_RG32F,
+        BGFX_TEXTURE_FORMAT_RGB8,
+        BGFX_TEXTURE_FORMAT_RGB8I,
+        BGFX_TEXTURE_FORMAT_RGB8U,
+        BGFX_TEXTURE_FORMAT_RGB8S,
+        BGFX_TEXTURE_FORMAT_RGB9E5F,
+        BGFX_TEXTURE_FORMAT_BGRA8,
+        BGFX_TEXTURE_FORMAT_RGBA8,
+        BGFX_TEXTURE_FORMAT_RGBA8I,
+        BGFX_TEXTURE_FORMAT_RGBA8U,
+        BGFX_TEXTURE_FORMAT_RGBA8S,
+        BGFX_TEXTURE_FORMAT_RGBA16,
+        BGFX_TEXTURE_FORMAT_RGBA16I,
+        BGFX_TEXTURE_FORMAT_RGBA16U,
+        BGFX_TEXTURE_FORMAT_RGBA16F,
+        BGFX_TEXTURE_FORMAT_RGBA16S,
+        BGFX_TEXTURE_FORMAT_RGBA32I,
+        BGFX_TEXTURE_FORMAT_RGBA32U,
+        BGFX_TEXTURE_FORMAT_RGBA32F,
+        BGFX_TEXTURE_FORMAT_R5G6B5,
+        BGFX_TEXTURE_FORMAT_RGBA4,
+        BGFX_TEXTURE_FORMAT_RGB5A1,
+        BGFX_TEXTURE_FORMAT_RGB10A2,
+        BGFX_TEXTURE_FORMAT_RG11B10F,
+        BGFX_TEXTURE_FORMAT_UNKNOWNDEPTH,
+        BGFX_TEXTURE_FORMAT_D16,
+        BGFX_TEXTURE_FORMAT_D24,
+        BGFX_TEXTURE_FORMAT_D24S8,
+        BGFX_TEXTURE_FORMAT_D32,
+        BGFX_TEXTURE_FORMAT_D16F,
+        BGFX_TEXTURE_FORMAT_D24F,
+        BGFX_TEXTURE_FORMAT_D32F,
+        BGFX_TEXTURE_FORMAT_D0S8,
+        BGFX_TEXTURE_FORMAT_COUNT
+
+    ctypedef enum bgfx_uniform_type_t:
+        BGFX_UNIFORM_TYPE_SAMPLER,
+        BGFX_UNIFORM_TYPE_END,
+        BGFX_UNIFORM_TYPE_VEC4,
+        BGFX_UNIFORM_TYPE_MAT3,
+        BGFX_UNIFORM_TYPE_MAT4,
+        BGFX_UNIFORM_TYPE_COUNT
+
+    ctypedef enum bgfx_backbuffer_ratio_t:
+        BGFX_BACKBUFFER_RATIO_EQUAL,
+        BGFX_BACKBUFFER_RATIO_HALF,
+        BGFX_BACKBUFFER_RATIO_QUARTER,
+        BGFX_BACKBUFFER_RATIO_EIGHTH,
+        BGFX_BACKBUFFER_RATIO_SIXTEENTH,
+        BGFX_BACKBUFFER_RATIO_DOUBLE,
+        BGFX_BACKBUFFER_RATIO_COUNT
+
+    ctypedef enum bgfx_occlusion_query_result_t:
+        BGFX_OCCLUSION_QUERY_RESULT_INVISIBLE,
+        BGFX_OCCLUSION_QUERY_RESULT_VISIBLE,
+        BGFX_OCCLUSION_QUERY_RESULT_NORESULT,
+        BGFX_OCCLUSION_QUERY_RESULT_COUNT
+
+    ctypedef enum bgfx_topology_t:
+        BGFX_TOPOLOGY_TRI_LIST,
+        BGFX_TOPOLOGY_TRI_STRIP,
+        BGFX_TOPOLOGY_LINE_LIST,
+        BGFX_TOPOLOGY_LINE_STRIP,
+        BGFX_TOPOLOGY_POINT_LIST,
+        BGFX_TOPOLOGY_COUNT
+
+    ctypedef enum bgfx_topology_convert_t:
+        BGFX_TOPOLOGY_CONVERT_TRI_LIST_FLIP_WINDING,
+        BGFX_TOPOLOGY_CONVERT_TRI_STRIP_FLIP_WINDING,
+        BGFX_TOPOLOGY_CONVERT_TRI_LIST_TO_LINE_LIST,
+        BGFX_TOPOLOGY_CONVERT_TRI_STRIP_TO_TRI_LIST,
+        BGFX_TOPOLOGY_CONVERT_LINE_STRIP_TO_LINE_LIST,
+        BGFX_TOPOLOGY_CONVERT_COUNT
+
+    ctypedef enum bgfx_topology_sort_t:
+        BGFX_TOPOLOGY_SORT_DIRECTION_FRONT_TO_BACK_MIN,
+        BGFX_TOPOLOGY_SORT_DIRECTION_FRONT_TO_BACK_AVG,
+        BGFX_TOPOLOGY_SORT_DIRECTION_FRONT_TO_BACK_MAX,
+        BGFX_TOPOLOGY_SORT_DIRECTION_BACK_TO_FRONT_MIN,
+        BGFX_TOPOLOGY_SORT_DIRECTION_BACK_TO_FRONT_AVG,
+        BGFX_TOPOLOGY_SORT_DIRECTION_BACK_TO_FRONT_MAX,
+        BGFX_TOPOLOGY_SORT_DISTANCE_FRONT_TO_BACK_MIN,
+        BGFX_TOPOLOGY_SORT_DISTANCE_FRONT_TO_BACK_AVG,
+        BGFX_TOPOLOGY_SORT_DISTANCE_FRONT_TO_BACK_MAX,
+        BGFX_TOPOLOGY_SORT_DISTANCE_BACK_TO_FRONT_MIN,
+        BGFX_TOPOLOGY_SORT_DISTANCE_BACK_TO_FRONT_AVG,
+        BGFX_TOPOLOGY_SORT_DISTANCE_BACK_TO_FRONT_MAX,
+        BGFX_TOPOLOGY_SORT_COUNT
+
+    ctypedef enum bgfx_view_mode_t:
+        BGFX_VIEW_MODE_DEFAULT,
+        BGFX_VIEW_MODE_SEQUENTIAL,
+        BGFX_VIEW_MODE_DEPTH_ASCENDING,
+        BGFX_VIEW_MODE_DEPTH_DESCENDING,
+        BGFX_VIEW_MODE_COUNT
+
+    ctypedef enum bgfx_render_frame_t:
+        BGFX_RENDER_FRAME_NO_CONTEXT,
+        BGFX_RENDER_FRAME_RENDER,
+        BGFX_RENDER_FRAME_TIMEOUT,
+        BGFX_RENDER_FRAME_EXITING,
+        BGFX_RENDER_FRAME_COUNT
+
+    ctypedef uint16_t bgfx_view_id_t
+
+    ctypedef struct bgfx_allocator_interface_t:
+        bgfx_allocator_vtbl_t* vtbl
+
+    ctypedef struct bgfx_allocator_vtbl_t:
+        void* (*realloc)(bgfx_allocator_interface_t* _this, void* _ptr, size_t _size, size_t _align, const char* _file, uint32_t _line)
+
+    ctypedef struct bgfx_interface_vtbl_t:
+        pass
+
+    ctypedef struct bgfx_callback_interface_t:
+        bgfx_callback_vtbl_t* vtbl
+
+    ctypedef struct bgfx_callback_vtbl_t:
+        void (*fatal)(bgfx_callback_interface_t* _this, const char* _filePath, uint16_t _line, bgfx_fatal_t _code, const char* _str)
+        void (*trace_vargs)(bgfx_callback_interface_t* _this, const char* _filePath, uint16_t _line, const char* _format, va_list _argList)
+        void (*profiler_begin)(bgfx_callback_interface_t* _this, const char* _name, uint32_t _abgr, const char* _filePath, uint16_t _line)
+        void (*profiler_begin_literal)(bgfx_callback_interface_t* _this, const char* _name, uint32_t _abgr, const char* _filePath, uint16_t _line)
+        void (*profiler_end)(bgfx_callback_interface_t* _this)
+        uint32_t (*cache_read_size)(bgfx_callback_interface_t* _this, uint64_t _id)
+        bint (*cache_read)(bgfx_callback_interface_t* _this, uint64_t _id, void* _data, uint32_t _size)
+        void (*cache_write)(bgfx_callback_interface_t* _this, uint64_t _id, const void* _data, uint32_t _size)
+        void (*screen_shot)(bgfx_callback_interface_t* _this, const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _pitch, const void* _data, uint32_t _size, bint _yflip)
+        void (*capture_begin)(bgfx_callback_interface_t* _this, uint32_t _width, uint32_t _height, uint32_t _pitch, bgfx_texture_format_t _format, bint _yflip)
+        void (*capture_end)(bgfx_callback_interface_t* _this)
+        void (*capture_frame)(bgfx_callback_interface_t* _this, const void* _data, uint32_t _size)
+
+    ctypedef struct bgfx_dynamic_index_buffer_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_dynamic_vertex_buffer_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_frame_buffer_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_index_buffer_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_indirect_buffer_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_occlusion_query_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_program_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_shader_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_texture_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_uniform_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_vertex_buffer_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_vertex_layout_handle_t:
+        uint16_t idx
+    ctypedef struct bgfx_handle_t:
+        uint16_t idx
+    cdef bint BGFX_HANDLE_IS_VALID(bgfx_handle_t h)
+
+    ctypedef void (*bgfx_release_fn_t)(void* _ptr, void* _userData)
+
+    ctypedef struct bgfx_caps_gpu_t:
+        uint16_t vendorId
+        uint16_t deviceId
+
+    ctypedef struct bgfx_caps_limits_t:
+        uint32_t maxDrawCalls
+        uint32_t maxBlits
+        uint32_t maxTextureSize
+        uint32_t maxTextureLayers
+        uint32_t maxViews
+        uint32_t maxFrameBuffers
+        uint32_t maxFBAttachments
+        uint32_t maxPrograms
+        uint32_t maxShaders
+        uint32_t maxTextures
+        uint32_t maxTextureSamplers
+        uint32_t maxComputeBindings
+        uint32_t maxVertexLayouts
+        uint32_t maxVertexStreams
+        uint32_t maxIndexBuffers
+        uint32_t maxVertexBuffers
+        uint32_t maxDynamicIndexBuffers
+        uint32_t maxDynamicVertexBuffers
+        uint32_t maxUniforms
+        uint32_t maxOcclusionQueries
+        uint32_t maxEncoders
+        uint32_t minResourceCbSize
+        uint32_t transientVbSize
+        uint32_t transientIbSize
+
+    ctypedef struct bgfx_caps_t:
+        bgfx_renderer_type_t rendererType
+        uint64_t supported
+        uint16_t vendorId
+        uint16_t deviceId
+        bint homogeneousDepth
+        bint originBottomLeft
+        uint8_t numGPUs
+        bgfx_caps_gpu_t gpu[4]
+        bgfx_caps_limits_t limits
+        uint16_t *formats
+
+    ctypedef struct bgfx_internal_data_t:
+        const bgfx_caps_t* caps
+        void* context
+
+    ctypedef struct bgfx_platform_data_t:
+        void* ndt
+        void* nwh
+        void* context
+        void* backBuffer
+        void* backBufferDS
+
+    ctypedef struct bgfx_resolution_t:
+        bgfx_texture_format_t format
+        uint32_t width
+        uint32_t height
+        uint32_t reset
+        uint8_t numBackBuffers
+        uint8_t maxFrameLatency
+
+    ctypedef struct bgfx_init_limits_t:
+        uint16_t maxEncoders
+        uint32_t minResourceCbSize
+        uint32_t transientVbSize
+        uint32_t transientIbSize
+
     ctypedef struct bgfx_init_t:
         bgfx_renderer_type_t type
         uint16_t vendorId
         uint16_t deviceId
-        uint64_t capabilities       
-        bint debug  
-        bint profile            
-        bgfx_platform_data_t platformData       
-        bgfx_resolution_t resolution         
-        bgfx_init_limits_t limits 
+        uint64_t capabilities
+        bint debug
+        bint profile
+        bgfx_platform_data_t platformData
+        bgfx_resolution_t resolution
+        bgfx_init_limits_t limits
         bgfx_callback_interface_t* callback
         bgfx_allocator_interface_t* allocator
 
     ctypedef struct bgfx_memory_t:
-        uint8_t* data   
-        uint32_t size   
+        uint8_t* data
+        uint32_t size
 
     ctypedef struct bgfx_transient_index_buffer_t:
-        uint8_t* data   
-        uint32_t size   
-        uint32_t startIndex         
-        bgfx_index_buffer_handle_t handle       
-        bint isIndex16          
+        uint8_t* data
+        uint32_t size
+        uint32_t startIndex
+        bgfx_index_buffer_handle_t handle
+        bint isIndex16
 
     ctypedef struct bgfx_transient_vertex_buffer_t:
-        uint8_t* data   
-        uint32_t size   
-        uint32_t startVertex        
-        uint16_t stride 
-        bgfx_vertex_buffer_handle_t handle      
-        bgfx_vertex_layout_handle_t layoutHandle 
+        uint8_t* data
+        uint32_t size
+        uint32_t startVertex
+        uint16_t stride
+        bgfx_vertex_buffer_handle_t handle
+        bgfx_vertex_layout_handle_t layoutHandle
 
     ctypedef struct bgfx_instance_data_buffer_t:
-        uint8_t* data   
-        uint32_t size   
-        uint32_t offset 
-        uint32_t num    
-        uint16_t stride 
-        bgfx_vertex_buffer_handle_t handle      
+        uint8_t* data
+        uint32_t size
+        uint32_t offset
+        uint32_t num
+        uint16_t stride
+        bgfx_vertex_buffer_handle_t handle
 
     ctypedef struct bgfx_texture_info_t:
-        bgfx_texture_format_t format            
-        uint32_t storageSize        
-        uint16_t width  
-        uint16_t height 
-        uint16_t depth  
-        uint16_t numLayers          
-        uint8_t numMips            
-        uint8_t bitsPerPixel       
-        bint cubeMap            
+        bgfx_texture_format_t format
+        uint32_t storageSize
+        uint16_t width
+        uint16_t height
+        uint16_t depth
+        uint16_t numLayers
+        uint8_t numMips
+        uint8_t bitsPerPixel
+        bint cubeMap
 
     ctypedef struct bgfx_uniform_info_t:
-        char name[256]          
-        bgfx_uniform_type_t type   
-        uint16_t num    
+        char name[256]
+        bgfx_uniform_type_t type
+        uint16_t num
 
     ctypedef struct bgfx_attachment_t:
-        bgfx_access_t access 
-        bgfx_texture_handle_t handle            
-        uint16_t mip    
-        uint16_t layer  
-        uint16_t numLayers          
-        uint8_t resolve            
+        bgfx_access_t access
+        bgfx_texture_handle_t handle
+        uint16_t mip
+        uint16_t layer
+        uint16_t numLayers
+        uint8_t resolve
 
     ctypedef struct bgfx_transform_t:
-        float* data   
-        uint16_t num    
+        float* data
+        uint16_t num
 
     ctypedef struct bgfx_view_stats_t:
-        char name[256]          
-        bgfx_view_id_t view   
-        int64_t cpuTimeBegin       
-        int64_t cpuTimeEnd         
-        int64_t gpuTimeBegin       
-        int64_t gpuTimeEnd         
+        char name[256]
+        bgfx_view_id_t view
+        int64_t cpuTimeBegin
+        int64_t cpuTimeEnd
+        int64_t gpuTimeBegin
+        int64_t gpuTimeEnd
 
     ctypedef struct bgfx_encoder_stats_t:
-        int64_t cpuTimeBegin       
-        int64_t cpuTimeEnd         
+        int64_t cpuTimeBegin
+        int64_t cpuTimeEnd
 
     ctypedef struct bgfx_stats_t:
-        int64_t cpuTimeFrame       
-        int64_t cpuTimeBegin       
-        int64_t cpuTimeEnd         
-        int64_t cpuTimerFreq       
-        int64_t gpuTimeBegin       
-        int64_t gpuTimeEnd         
-        int64_t gpuTimerFreq       
-        int64_t waitRender         
-        int64_t waitSubmit         
-        uint32_t numDraw            
-        uint32_t numCompute         
-        uint32_t numBlit            
-        uint32_t maxGpuLatency      
-        uint16_t numDynamicIndexBuffers 
-        uint16_t numDynamicVertexBuffers 
-        uint16_t numFrameBuffers    
-        uint16_t numIndexBuffers    
-        uint16_t numOcclusionQueries 
-        uint16_t numPrograms        
-        uint16_t numShaders         
-        uint16_t numTextures        
-        uint16_t numUniforms        
-        uint16_t numVertexBuffers   
-        uint16_t numVertexLayouts   
-        int64_t textureMemoryUsed  
-        int64_t rtMemoryUsed       
-        int32_t transientVbUsed    
-        int32_t transientIbUsed    
+        int64_t cpuTimeFrame
+        int64_t cpuTimeBegin
+        int64_t cpuTimeEnd
+        int64_t cpuTimerFreq
+        int64_t gpuTimeBegin
+        int64_t gpuTimeEnd
+        int64_t gpuTimerFreq
+        int64_t waitRender
+        int64_t waitSubmit
+        uint32_t numDraw
+        uint32_t numCompute
+        uint32_t numBlit
+        uint32_t maxGpuLatency
+        uint16_t numDynamicIndexBuffers
+        uint16_t numDynamicVertexBuffers
+        uint16_t numFrameBuffers
+        uint16_t numIndexBuffers
+        uint16_t numOcclusionQueries
+        uint16_t numPrograms
+        uint16_t numShaders
+        uint16_t numTextures
+        uint16_t numUniforms
+        uint16_t numVertexBuffers
+        uint16_t numVertexLayouts
+        int64_t textureMemoryUsed
+        int64_t rtMemoryUsed
+        int32_t transientVbUsed
+        int32_t transientIbUsed
         uint32_t *numPrims
-        int64_t gpuMemoryMax       
-        int64_t gpuMemoryUsed      
-        uint16_t width  
-        uint16_t height 
-        uint16_t textWidth          
-        uint16_t textHeight         
-        uint16_t numViews           
-        bgfx_view_stats_t* viewStats          
-        uint8_t numEncoders        
-        bgfx_encoder_stats_t* encoderStats      
+        int64_t gpuMemoryMax
+        int64_t gpuMemoryUsed
+        uint16_t width
+        uint16_t height
+        uint16_t textWidth
+        uint16_t textHeight
+        uint16_t numViews
+        bgfx_view_stats_t* viewStats
+        uint8_t numEncoders
+        bgfx_encoder_stats_t* encoderStats
 
     ctypedef struct bgfx_vertex_layout_t:
-        uint32_t hash   
-        uint16_t stride 
+        uint32_t hash
+        uint16_t stride
         uint16_t *offset
-        uint16_t *attributes 
+        uint16_t *attributes
 
     ctypedef struct bgfx_encoder_t:
         pass

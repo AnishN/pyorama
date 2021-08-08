@@ -1,4 +1,4 @@
-cdef class UserSystem(object):
+cdef class UserSystem:
 
     def __cinit__(self, str name):
         self.name = name

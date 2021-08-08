@@ -30,7 +30,7 @@ cdef class SlotManager:
         self.num_slot_types = 0
         for slot_type, slot_size in slot_type_sizes.items():
             if 0 <= slot_type < MAX_ITEM_TYPES:
-                self.register_map[slot_type] = True
+                self.registered_maps[slot_type] = True
                 slot_map_ptr = self.slot_maps[slot_type]
                 (<SlotMap>slot_map_ptr).c_init(slot_type, slot_size)
             else:
@@ -42,12 +42,12 @@ cdef class SlotManager:
             size_t i
             PyObject *slot_map_ptr
         for i in range(MAX_ITEM_TYPES):
-            if self.register_map[i]:
+            if self.registered_maps[i]:
                 slot_map_ptr = self.slot_maps[i]
                 (<SlotMap>slot_map_ptr).c_free()
     
     cdef void c_check_slot_type(self, uint8_t slot_type) except *:
-        if not self.register_map[slot_type]:
+        if not self.registered_maps[slot_type]:
             print(slot_type)
             raise ValueError("SlotManager: invalid slot type")
     
