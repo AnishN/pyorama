@@ -1,9 +1,6 @@
 from pyorama import app
-from pyorama.event.event_system import *
-from pyorama.event.listener import *
-from pyorama.graphics.frame_buffer import *
-from pyorama.graphics.view import *
-from pyorama.graphics.window import *
+from pyorama.event import *
+from pyorama.graphics import *
 
 def on_window_event(event, *args, **kwargs):
     global num_windows
