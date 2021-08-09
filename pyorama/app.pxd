@@ -14,6 +14,7 @@ cdef:
     size_t frame_count
     bint use_vsync
     bint use_sleep
+    bint running
     list frame_times
     int frequency
     double start_time

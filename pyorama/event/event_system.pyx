@@ -78,8 +78,6 @@ cdef class EventSystem:
         while SDL_PollEvent(&event):
             ignore_event = False
             if event.type == EVENT_TYPE_WINDOW:
-                if event.window.windowID == graphics.root_window_id:
-                    ignore_event = True
                 event_data = self.parse_window_event(event.window)
             if not ignore_event:
                 listeners = self.slots.get_slot_map(EVENT_SLOT_LISTENER).items

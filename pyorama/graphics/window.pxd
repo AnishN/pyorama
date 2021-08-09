@@ -7,6 +7,7 @@ from pyorama.graphics.frame_buffer cimport *
 ctypedef struct WindowC:
     Handle handle
     SDL_Window *sdl_ptr
+    uint64_t sdl_id
     uint16_t width
     uint16_t height
     char[256] title
@@ -28,6 +29,7 @@ cdef class Window:
     cpdef tuple get_size(self)
     cpdef bytes get_title(self)
     cpdef uint32_t get_flags(self) except *
+    cpdef uint64_t get_id(self) except *
     cpdef void get_frame_buffer(self, FrameBuffer fbo) except *
 
     cpdef void set_width(self, uint16_t width) except *

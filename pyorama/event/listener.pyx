@@ -6,11 +6,10 @@ cdef class Listener:
         cdef:
             ListenerC *listener_ptr
             PyObject *handles_ptr
+        
+        if args == None: args = []
+        if kwargs == None: kwargs = {}
         self.handle = event.slots.c_create(EVENT_SLOT_LISTENER)
-        if args == None:
-            args = []
-        if kwargs == None:
-            kwargs = {}
         listener_ptr = self.c_get_ptr()
         listener_ptr.event_type = event_type
         listener_ptr.callback = <PyObject *>callback

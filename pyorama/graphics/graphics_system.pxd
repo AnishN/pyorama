@@ -21,8 +21,8 @@ cdef class GraphicsSystem:
         SlotManager slots
         dict slot_sizes
         SDL_Window *root_window
-        uint64_t root_window_id
         SDL_SysWMinfo *wmi
+        bgfx_frame_buffer_handle_t root_fbo
         bint[GRAPHICS_MAX_VIEWS] used_views
         uint16_t[GRAPHICS_MAX_VIEWS] free_views
         size_t free_view_index
@@ -33,4 +33,3 @@ cdef class GraphicsSystem:
     cdef void c_init_bgfx(self) except *
     cdef void c_quit_bgfx(self) except *
     cdef uint16_t c_get_next_view_index(self) except *
-    cdef void c_swap_root_window(self, bint use_vsync) except *

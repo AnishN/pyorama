@@ -20,8 +20,8 @@ cdef class Window:
             title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
             width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
         )
-        window_id = SDL_GetWindowID(window_ptr.sdl_ptr)
-        graphics.window_ids.c_insert(window_id, self.handle)
+        window_ptr.sdl_id = SDL_GetWindowID(window_ptr.sdl_ptr)
+        graphics.window_ids.c_insert(window_ptr.sdl_id, self.handle)
 
         window_ptr.width = width
         window_ptr.height = height
@@ -32,6 +32,7 @@ cdef class Window:
         bgfx_reset(width, height, reset, BGFX_TEXTURE_FORMAT_BGRA8)
         bgfx_set_debug(debug)
         bgfx_set_view_clear(1, clear_flags, 0x000000FF, 1.0, 0)
+        bgfx_touch(0)
         bgfx_frame(False)
         
     cpdef void delete(self) except *:
@@ -42,7 +43,6 @@ cdef class Window:
         window_ptr = self.c_get_ptr()
         window_id = SDL_GetWindowID(window_ptr.sdl_ptr)
         graphics.window_ids.c_remove(window_id)
-        print("window deleted", window_id, self.handle)
         SDL_DestroyWindow(window_ptr.sdl_ptr)
         graphics.slots.c_delete(self.handle)
         self.handle = 0
@@ -68,6 +68,9 @@ cdef class Window:
     cpdef uint32_t get_flags(self) except *:
         return self.c_get_ptr().flags
     
+    cpdef uint64_t get_id(self) except *:
+        return self.c_get_ptr().sdl_id
+
     cpdef void get_frame_buffer(self, FrameBuffer fbo) except *:
         fbo.handle = self.c_get_ptr().fbo
 

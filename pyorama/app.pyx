@@ -31,6 +31,8 @@ def quit():
 
 def run():
     global curr_time, prev_time
+    global running
+    running = True
     curr_time = start_time
     prev_time = curr_time
     if use_sleep:
@@ -45,11 +47,10 @@ def run_sleep():
     global curr_time, prev_time
 
     curr_time = start_time
-    while True:
+    while running:
         prev_time = curr_time
         step()
         curr_time = c_get_current_time()
-        graphics.c_swap_root_window(use_vsync)
         delta_time = curr_time - prev_time
         sleep_time = max(0.0, (1.0 / target_fps) - delta_time)
         time.sleep(sleep_time)
@@ -62,7 +63,7 @@ def run_fixed_timestep():
 
     curr_time = start_time
     prev_time = curr_time
-    while True:
+    while running:
         curr_time = c_get_current_time()
         delta_time = curr_time - prev_time
         accumulated_time += delta_time
@@ -70,7 +71,6 @@ def run_fixed_timestep():
             step()
             accumulated_time -= 1.0 / target_fps
         prev_time = curr_time
-        graphics.c_swap_root_window(use_vsync)
 
 def step():
     cdef:
@@ -93,6 +93,10 @@ def get_frame_time():
 
 def get_fps():
     return 1.0 / get_frame_time()
+
+def trigger_quit():
+    global running
+    running = False
 
 cdef double c_get_current_time() nogil:
     cdef:

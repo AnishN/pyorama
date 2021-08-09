@@ -34,7 +34,6 @@ cdef class SlotManager:
                 slot_map_ptr = self.slot_maps[slot_type]
                 (<SlotMap>slot_map_ptr).c_init(slot_type, slot_size)
             else:
-                print(slot_type)
                 raise ValueError("SlotManager: invalid slot type")
 
     cdef void c_free(self) except *:
@@ -48,7 +47,6 @@ cdef class SlotManager:
     
     cdef void c_check_slot_type(self, uint8_t slot_type) except *:
         if not self.registered_maps[slot_type]:
-            print(slot_type)
             raise ValueError("SlotManager: invalid slot type")
     
     cdef Handle c_create(self, uint8_t slot_type) except *:
