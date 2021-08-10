@@ -28,3 +28,4 @@ cdef class Vector:
     cdef void c_remove_empty(self, size_t index) except *
     cdef void c_remove(self, size_t index, void *item) except *
     cdef size_t c_find(self, void *item) except *
+    cdef bint c_contains(self, void *item) nogil

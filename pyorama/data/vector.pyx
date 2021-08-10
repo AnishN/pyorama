@@ -203,6 +203,18 @@ cdef class Vector:
                 return i
         raise ITEM_NOT_FOUND_ERROR
     
+    cdef bint c_contains(self, void *item) nogil:
+        cdef:
+            size_t i
+            void *test_item
+            int check
+        for i in range(self.num_items):
+            test_item = self.c_get_ptr_unsafe(i)
+            check = memcmp(test_item, item, self.item_size)
+            if check == 0:
+                return True
+        return False
+    
     """
     def print(self):
         cdef:
