@@ -158,3 +158,15 @@ cdef class HashMap:
         free(self.items.items)
         self.items.items = <char *>new_items
         self.items.max_items = new_max_items
+
+    """
+    def print(self):
+        cdef:
+            size_t i
+            ItemC *item
+            list items = []
+        for i in range(self.items.max_items):
+            item = <ItemC *>self.items.c_get_ptr(i)
+            items.append((i, item.key, item.value, item.used))
+        print(items)
+    """

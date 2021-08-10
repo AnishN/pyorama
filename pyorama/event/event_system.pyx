@@ -56,7 +56,7 @@ cdef class EventSystem:
             "type": event.type,
             "sub_type": event.event,
             "timestamp": self.timestamp,
-            "window_id": event.windowID,
+            "window": graphics.window_ids.c_get(event.windowID),
         }
         if event.event == SDL_WINDOWEVENT_MOVED:
             event_data["x"] = event.data1
@@ -78,7 +78,11 @@ cdef class EventSystem:
         while SDL_PollEvent(&event):
             ignore_event = False
             if event.type == EVENT_TYPE_WINDOW:
-                event_data = self.parse_window_event(event.window)
+                #if event.window.windowID == SDL_GetWindowID(graphics.root_window):
+                if not graphics.window_ids.c_contains(event.window.windowID):
+                    ignore_event = True
+                else:
+                    event_data = self.parse_window_event(event.window)
             if not ignore_event:
                 listeners = self.slots.get_slot_map(EVENT_SLOT_LISTENER).items
                 for i in range(listeners.num_items):

@@ -1,98 +1,88 @@
-cdef class Window:
+cdef WindowC *window_get_ptr(Handle window) except *:
+    return <WindowC *>graphics.slots.c_get_ptr(window)
 
-    cdef WindowC *c_get_ptr(self) except *:
-        return <WindowC *>graphics.slots.c_get_ptr(self.handle)
-
-    cpdef void create(self, uint16_t width, uint16_t height, bytes title) except *:
-        cdef:
-            Handle window
-            WindowC *window_ptr
-            uint64_t window_id
-            size_t title_length
-            FrameBuffer fbo
-            uint32_t clear_flags = BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL
-            uint32_t debug = BGFX_DEBUG_TEXT
-            uint32_t reset = BGFX_RESET_VSYNC
-            
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_WINDOW)
-        window_ptr = self.c_get_ptr()
-        window_ptr.sdl_ptr = SDL_CreateWindow(
-            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-            width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
-        )
-        window_ptr.sdl_id = SDL_GetWindowID(window_ptr.sdl_ptr)
-        graphics.window_ids.c_insert(window_ptr.sdl_id, self.handle)
-
-        window_ptr.width = width
-        window_ptr.height = height
-        self.set_title(title)
-        fbo = FrameBuffer()
-        fbo.create_from_window(self)
-        window_ptr.fbo = fbo.handle
-        bgfx_reset(width, height, reset, BGFX_TEXTURE_FORMAT_BGRA8)
-        bgfx_set_debug(debug)
-        bgfx_set_view_clear(1, clear_flags, 0x000000FF, 1.0, 0)
-        bgfx_touch(0)
-        bgfx_frame(False)
+cpdef Handle window_create(uint16_t width, uint16_t height, bytes title) except *:
+    cdef:
+        Handle window
+        WindowC *window_ptr
+        uint64_t window_id
+        size_t title_length
+        uint32_t clear_flags = BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL
+        uint32_t debug = BGFX_DEBUG_TEXT
+        uint32_t reset = BGFX_RESET_VSYNC
         
-    cpdef void delete(self) except *:
-        cdef:
-            WindowC *window_ptr
-            uint64_t window_id
-        
-        window_ptr = self.c_get_ptr()
-        window_id = SDL_GetWindowID(window_ptr.sdl_ptr)
-        graphics.window_ids.c_remove(window_id)
-        SDL_DestroyWindow(window_ptr.sdl_ptr)
-        graphics.slots.c_delete(self.handle)
-        self.handle = 0
+    window = graphics.slots.c_create(GRAPHICS_SLOT_WINDOW)
+    window_ptr = window_get_ptr(window)
+    window_ptr.sdl_ptr = SDL_CreateWindow(
+        title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+        width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
+    )
+    window_ptr.sdl_id = SDL_GetWindowID(window_ptr.sdl_ptr)
+    graphics.window_ids.c_insert(window_ptr.sdl_id, window)
 
-    cpdef void load_from_id(self, uint64_t window_id) except *:
-        self.handle = graphics.window_ids.c_get(window_id)
+    window_ptr.width = width
+    window_ptr.height = height
+    window_ptr.title = <char *>title
+    window_ptr.title_length = len(title)
+    bgfx_reset(width, height, reset, BGFX_TEXTURE_FORMAT_BGRA8)
+    bgfx_set_debug(debug)
+    bgfx_set_view_clear(1, clear_flags, 0x000000FF, 1.0, 0)
+    bgfx_touch(0)
+    bgfx_frame(False)
+    return window
 
-    cpdef uint16_t get_width(self) except *:
-        return self.c_get_ptr().width
-
-    cpdef uint16_t get_height(self) except *:
-        return self.c_get_ptr().height
-
-    cpdef tuple get_size(self):
-        cdef:
-            WindowC *window_ptr
-        window_ptr = self.c_get_ptr()
-        return (window_ptr.width, window_ptr.height)
-
-    cpdef bytes get_title(self):
-        return self.c_get_ptr().title
-
-    cpdef uint32_t get_flags(self) except *:
-        return self.c_get_ptr().flags
+cpdef void window_delete(Handle window) except *:
+    cdef:
+        WindowC *window_ptr
     
-    cpdef uint64_t get_id(self) except *:
-        return self.c_get_ptr().sdl_id
+    window_ptr = window_get_ptr(window)
+    graphics.window_ids.c_remove(window_ptr.sdl_id)
+    SDL_DestroyWindow(window_ptr.sdl_ptr)
+    graphics.slots.c_delete(window)
 
-    cpdef void get_frame_buffer(self, FrameBuffer fbo) except *:
-        fbo.handle = self.c_get_ptr().fbo
+#cpdef void window_load_from_id(Handle window, uint64_t window_id) except *:
+#    graphics.window_ids.c_get(window_id)
 
-    cpdef void set_width(self, uint16_t width) except *:
-        self.c_get_ptr().width = width
+cpdef uint16_t window_get_width(Handle window) except *:
+    return window_get_ptr(window).width
 
-    cpdef void set_height(self, uint16_t height) except *:
-        self.c_get_ptr().height = height
+cpdef uint16_t window_get_height(Handle window) except *:
+    return window_get_ptr(window).height
 
-    cpdef void set_size(self, uint16_t width, uint16_t height) except *:
-        cdef:
-            WindowC *window_ptr
-        window_ptr = self.c_get_ptr()
-        window_ptr.width = width
-        window_ptr.height = height
+cpdef tuple window_get_size(Handle window):
+    cdef:
+        WindowC *window_ptr
+    window_ptr = window_get_ptr(window)
+    return (window_ptr.width, window_ptr.height)
 
-    cpdef void set_title(self, bytes title) except *:
-        cdef:
-            WindowC *window_ptr
-        window_ptr = self.c_get_ptr()
-        window_ptr.title = <char *>title
-        window_ptr.title_length = len(title)
+cpdef bytes window_get_title(Handle window):
+    return window_get_ptr(window).title
 
-    cpdef void set_flags(self, uint32_t flags) except *:
-        self.c_get_ptr().flags = flags
+cpdef uint32_t window_get_flags(Handle window) except *:
+    return window_get_ptr(window).flags
+
+cpdef uint64_t window_get_id(Handle window) except *:
+    return window_get_ptr(window).sdl_id
+
+cpdef void window_set_width(Handle window, uint16_t width) except *:
+    window_get_ptr(window).width = width
+
+cpdef void window_set_height(Handle window, uint16_t height) except *:
+    window_get_ptr(window).height = height
+
+cpdef void window_set_size(Handle window, uint16_t width, uint16_t height) except *:
+    cdef:
+        WindowC *window_ptr
+    window_ptr = window_get_ptr(window)
+    window_ptr.width = width
+    window_ptr.height = height
+
+cpdef void window_set_title(Handle window, bytes title) except *:
+    cdef:
+        WindowC *window_ptr
+    window_ptr = window_get_ptr(window)
+    window_ptr.title = title
+    window_ptr.title_length = len(title)
+
+cpdef void window_set_flags(Handle window, uint32_t flags) except *:
+    window_get_ptr(window).flags = flags

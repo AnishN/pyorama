@@ -1,19 +1,15 @@
-from pyorama import app
-from pyorama.event import *
-from pyorama.graphics import *
+import pyorama
 
 def on_window_event(event, *args, **kwargs):
     global num_windows
-    if event["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
-        window_id = event["window_id"]
-        window = Window()
-        window.load_from_id(window_id)
-        window.delete()
+    if event["sub_type"] == pyorama.event.WINDOW_EVENT_TYPE_CLOSE:
+        window = event["window"]
+        pyorama.graphics.window_delete(window)
         num_windows -= 1
         if num_windows == 0:
-            app.trigger_quit()
+            pyorama.app.trigger_quit()
 
-app.init({
+pyorama.app.init({
     #"use_sleep": True,
     "use_sleep": False,
 })
@@ -25,11 +21,17 @@ kwargs = {
     "f": 3,
 }
 
-on_window_listener = Listener()
-on_window_listener.create(EVENT_TYPE_WINDOW, on_window_event, args, kwargs)
+on_window_listener = pyorama.event.listener_create(
+    pyorama.event.EVENT_TYPE_WINDOW, 
+    on_window_event, 
+    args, 
+    kwargs,
+)
 
+windows = []
+frame_buffers = []
+views = []
 num_windows = 3
-window = Window()
 colors = [0xFF0000FF, 0x00FF00FF, 0x0000FFFF]
 init_params = [
     (550, 400, b"RED!"),
@@ -37,17 +39,25 @@ init_params = [
     (550, 400, b"BLUE!"),
 ]
 
-fbo = FrameBuffer()
 for i in range(num_windows):
     width, height, title = init_params[i]
     color = colors[i]
-    window.create(width, height, title)
-    window.get_frame_buffer(fbo)
-    view = View()
-    view.create()
-    view.set_frame_buffer(fbo)
-    view.set_clear(VIEW_CLEAR_COLOR, color, 0.0, 1.0)
-    view.set_rect(0, 0, width, height)
+    window = pyorama.graphics.window_create(width, height, title)
+    fbo = pyorama.graphics.frame_buffer_create_from_window(window)
+    view = pyorama.graphics.view_create()
+    pyorama.graphics.view_set_frame_buffer(view, fbo)
+    pyorama.graphics.view_set_clear(view, pyorama.graphics.VIEW_CLEAR_COLOR, color, 0.0, 1.0)
+    pyorama.graphics.view_set_rect(view, 0, 0, width, height)
+    windows.append(window)
+    frame_buffers.append(fbo)
+    views.append(view)
 
-app.run()
-app.quit()
+pyorama.app.run()
+
+for fbo in frame_buffers:
+    pyorama.graphics.frame_buffer_delete(fbo)
+for view in views:
+    pyorama.graphics.view_delete(view)
+pyorama.event.listener_delete(on_window_listener)
+
+pyorama.app.quit()

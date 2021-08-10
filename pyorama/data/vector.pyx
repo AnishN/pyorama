@@ -202,3 +202,15 @@ cdef class Vector:
             if check == 0:
                 return i
         raise ITEM_NOT_FOUND_ERROR
+    
+    """
+    def print(self):
+        cdef:
+            size_t i
+            void *item
+            list items = []
+        for i in range(self.num_items):
+            item = self.c_get_ptr(i)
+            items.append(<int>item)
+        print(items)
+    """
