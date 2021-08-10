@@ -43,6 +43,10 @@ for i in range(num_windows):
     width, height, title = init_params[i]
     color = colors[i]
     window = pyorama.graphics.window_create(width, height, title)
+    #pyorama.graphics.window_set_flags(window, pyorama.graphics.WINDOW_FLAGS_BORDERLESS)
+    #print(pyorama.graphics.window_is_borderless(window))
+    #pyorama.graphics.window_set_maximized(window)
+    #pyorama.graphics.window_toggle_maximized(window)
     fbo = pyorama.graphics.frame_buffer_create_from_window(window)
     view = pyorama.graphics.view_create()
     pyorama.graphics.view_set_frame_buffer(view, fbo)

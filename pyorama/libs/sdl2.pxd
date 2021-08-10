@@ -78,6 +78,10 @@ cdef extern from "SDL2/SDL.h" nogil:
     SDL_Window *SDL_GetGrabbedWindow()
     bint SDL_GetWindowGrab(SDL_Window *window)
 
+    #int SDL_SetWindowInputFocus(SDL_Window *window)
+    #void SDL_SetMouseFocus(SDL_Window *window)
+    int SDL_CaptureMouse(bint enabled)
+
     void SDL_SetWindowPosition(SDL_Window *window, int x, int y)
     void SDL_GetWindowPosition(SDL_Window *window, int *x, int *y)
     void SDL_SetWindowSize(SDL_Window *window, int w, int h)
