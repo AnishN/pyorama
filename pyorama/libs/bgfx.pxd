@@ -1,11 +1,9 @@
 from pyorama.libs.c cimport *
 from pyorama.libs.sdl2 cimport *
 
-cdef extern from "custom_bgfx_platform.h" nogil:
-    SDL_SysWMinfo *bgfx_fetch_wmi()
-    void *bgfx_get_window_nwh(SDL_SysWMinfo *wmi, SDL_Window* _window)
-    void *bgfx_get_window_ndt(SDL_SysWMinfo *wmi, SDL_Window* _window)
-    bint bgfx_get_platform_data_from_window(SDL_SysWMinfo *wmi, SDL_Window* _window)
+cdef enum:
+    BGFX_CONFIG_RENDERER_OPENGL
+    BGFX_CONFIG_RENDERER_OPENGLES
 
 cdef extern from "bgfx/defines.h" nogil:
     cdef enum:
@@ -1476,3 +1474,9 @@ cdef extern from "bgfx/c99/bgfx.h" nogil:
 
     ctypedef bgfx_interface_vtbl_t* (*PFN_BGFX_GET_INTERFACE)(uint32_t _version)
     bgfx_interface_vtbl_t* bgfx_get_interface(uint32_t _version)
+
+cdef extern from "custom_bgfx_platform.h" nogil:
+    SDL_SysWMinfo *bgfx_fetch_wmi()
+    void *bgfx_get_window_nwh(SDL_SysWMinfo *wmi, SDL_Window* _window)
+    void *bgfx_get_window_ndt(SDL_SysWMinfo *wmi, SDL_Window* _window)
+    bint bgfx_get_platform_data_from_window(SDL_SysWMinfo *wmi, SDL_Window* _window)

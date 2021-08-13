@@ -9,6 +9,8 @@ cdef class GraphicsSystem:
             GRAPHICS_SLOT_WINDOW: sizeof(WindowC),
             GRAPHICS_SLOT_FRAME_BUFFER: sizeof(FrameBufferC),
             GRAPHICS_SLOT_VIEW: sizeof(ViewC),
+            GRAPHICS_SLOT_SHADER: sizeof(ShaderC),
+            GRAPHICS_SLOT_PROGRAM: sizeof(ProgramC),
         }
         self.window_ids = HashMap()
     

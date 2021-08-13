@@ -7,6 +7,8 @@ from pyorama.libs.sdl2 cimport *
 from pyorama.graphics.view cimport *
 from pyorama.graphics.window cimport *
 from pyorama.graphics.frame_buffer cimport *
+from pyorama.graphics.shader cimport *
+from pyorama.graphics.program cimport *
 
 DEF GRAPHICS_MAX_VIEWS = 2**16
 
@@ -14,6 +16,8 @@ cpdef enum GraphicsSlot:
     GRAPHICS_SLOT_WINDOW
     GRAPHICS_SLOT_FRAME_BUFFER
     GRAPHICS_SLOT_VIEW
+    GRAPHICS_SLOT_SHADER
+    GRAPHICS_SLOT_PROGRAM
 
 cdef class GraphicsSystem:
     cdef:

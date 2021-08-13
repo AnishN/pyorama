@@ -1,3 +1,4 @@
+import platform
 import time
 
 graphics = GraphicsSystem("graphics")
@@ -9,6 +10,17 @@ def init(dict config={}):
     global target_fps, num_frame_times, use_vsync, use_sleep#need global when assigning variable
     global frame_times
     global frequency, start_time, curr_time, prev_time
+    global platform_os
+
+    cdef str platform_str = platform.system()
+    if platform_str == "Windows":
+        platform_os = PLATFORM_OS_WINDOWS
+    elif platform_str == "Linux":
+        platform_os = PLATFORM_OS_LINUX
+    elif platform_str == "Darwin":
+        platform_os = PLATFORM_OS_MACOS
+    elif platform_str == "":
+        platform_os = PLATFORM_OS_UNKNOWN
 
     target_fps = config.get("target_fps", 60)
     num_frame_times = config.get("num_frame_times", 20)
@@ -105,3 +117,6 @@ cdef double c_get_current_time() nogil:
     counter = SDL_GetPerformanceCounter()
     current_time = counter / frequency
     return current_time
+
+cdef PlatformOS c_get_platform_os() nogil:
+    return platform_os

@@ -47,19 +47,19 @@ for i in range(num_windows):
     #print(pyorama.graphics.window_is_borderless(window))
     #pyorama.graphics.window_set_maximized(window)
     #pyorama.graphics.window_toggle_maximized(window)
-    fbo = pyorama.graphics.frame_buffer_create_from_window(window)
+    frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)
     view = pyorama.graphics.view_create()
-    pyorama.graphics.view_set_frame_buffer(view, fbo)
+    pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
     pyorama.graphics.view_set_clear(view, pyorama.graphics.VIEW_CLEAR_COLOR, color, 0.0, 1.0)
     pyorama.graphics.view_set_rect(view, 0, 0, width, height)
     windows.append(window)
-    frame_buffers.append(fbo)
+    frame_buffers.append(frame_buffer)
     views.append(view)
 
 pyorama.app.run()
 
-for fbo in frame_buffers:
-    pyorama.graphics.frame_buffer_delete(fbo)
+for frame_buffer in frame_buffers:
+    pyorama.graphics.frame_buffer_delete(frame_buffer)
 for view in views:
     pyorama.graphics.view_delete(view)
 pyorama.event.listener_delete(on_window_listener)
