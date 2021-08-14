@@ -6,6 +6,7 @@ cdef class EventSystem:
             Vector handles
             PyObject *handles_ptr
         
+        self.name = name
         self.slots = SlotManager()
         self.slot_sizes = {
             EVENT_SLOT_LISTENER: sizeof(ListenerC),
@@ -33,6 +34,7 @@ cdef class EventSystem:
             size_t i
             PyObject *handles_ptr
         
+        print(self.name, "init")
         SDL_InitSubSystem(SDL_INIT_EVENTS)
         self.timestamp = 0.0
         self.slots.c_init(self.slot_sizes)
@@ -45,6 +47,7 @@ cdef class EventSystem:
             size_t i
             PyObject *handles_ptr
         
+        print(self.name, "quit")
         for i in range(MAX_EVENT_TYPES):
             handles_ptr = <PyObject *>self.listener_handles[i]
             (<Vector>handles_ptr).c_free()
@@ -75,6 +78,7 @@ cdef class EventSystem:
             Vector listeners
             ListenerC *listener_ptr
         
+        print(self.name, "update")
         while SDL_PollEvent(&event):
             ignore_event = False
             if event.type == EVENT_TYPE_WINDOW:

@@ -29,7 +29,10 @@ libraries = {
     ],
 }
 language = "c"
-args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+release_args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
+debug_args = ["-w", "-std=c11", "-O0"]
+#args = debug_args
+args = release_args
 macros = []
 
 include_dirs = ["./pyorama/libs/include"]
@@ -86,7 +89,8 @@ if __name__ == "__main__":
         extensions, 
         annotate=annotate, 
         compiler_directives=directives,
-        quiet=quiet
+        quiet=quiet,
+        #gdb_debug=True
     )
 
     setup(

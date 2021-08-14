@@ -4,11 +4,15 @@ from pyorama.data.vector cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.libs.sdl2 cimport *
+
+from pyorama.graphics.frame_buffer cimport *
+from pyorama.graphics.index_buffer cimport *
+from pyorama.graphics.program cimport *
+from pyorama.graphics.shader cimport *
+from pyorama.graphics.vertex_buffer cimport *
+from pyorama.graphics.vertex_layout cimport *
 from pyorama.graphics.view cimport *
 from pyorama.graphics.window cimport *
-from pyorama.graphics.frame_buffer cimport *
-from pyorama.graphics.shader cimport *
-from pyorama.graphics.program cimport *
 
 DEF GRAPHICS_MAX_VIEWS = 2**16
 
@@ -18,6 +22,9 @@ cpdef enum GraphicsSlot:
     GRAPHICS_SLOT_VIEW
     GRAPHICS_SLOT_SHADER
     GRAPHICS_SLOT_PROGRAM
+    GRAPHICS_SLOT_VERTEX_LAYOUT
+    GRAPHICS_SLOT_VERTEX_BUFFER
+    GRAPHICS_SLOT_INDEX_BUFFER
 
 cdef class GraphicsSystem:
     cdef:

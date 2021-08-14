@@ -38,4 +38,9 @@ cpdef enum ShaderModel:
     SHADER_MODEL_GLSL_430
     SHADER_MODEL_GLSL_440
 
-cpdef void utils_runtime_compile_shader(bytes in_file_path, bytes out_file_path, ShaderType shader_type, bytes varying_def_path=*, ShaderTargetPlatform target=*, ShaderModel model=*) except *
+cpdef void utils_runtime_compile_shader(
+        bytes in_file_path, 
+        bytes out_file_path, 
+        ShaderType shader_type, bytes varying_def_path=*, 
+        ShaderTargetPlatform target=*, 
+        ShaderModel model=*) except *

@@ -38,83 +38,89 @@ cdef str c_get_target_str(ShaderTargetPlatform target):
         target_str = "windows"
     return target_str
 
-cdef str c_get_shader_model_str(ShaderModel model, ShaderType shader_type):
+cdef str c_get_shader_model_auto_str(ShaderType shader_type):
     cdef:
         str model_str
         bgfx_renderer_type_t renderer
         int GL
         int GLES
     
-    if model == SHADER_MODEL_AUTO:
-        renderer = bgfx_get_renderer_type()
-        if renderer == BGFX_RENDERER_TYPE_NOOP:
-            raise ValueError("GraphicsUtils: invalid renderer type")
-        elif renderer == BGFX_RENDERER_TYPE_DIRECT3D9:
-            if shader_type == SHADER_TYPE_VERTEX:
-                model_str = "vs_3_0"
-            elif shader_type == SHADER_TYPE_FRAGMENT:
-                model_str = "ps_3_0"
-            elif shader_type == SHADER_TYPE_COMPUTE:
-                raise ValueError("GraphicsUtils: compute shaders not supported in HLSL 3.0")
-        elif renderer == BGFX_RENDERER_TYPE_DIRECT3D11:
-            if shader_type == SHADER_TYPE_VERTEX:
-                model_str = "vs_5_0"
-            elif shader_type == SHADER_TYPE_FRAGMENT:
-                model_str = "ps_5_0"
-            elif shader_type == SHADER_TYPE_COMPUTE:
-                model_str = "cs_5_0"
-        elif renderer == BGFX_RENDERER_TYPE_DIRECT3D12:
-            if shader_type == SHADER_TYPE_VERTEX:
-                model_str = "vs_5_0"
-            elif shader_type == SHADER_TYPE_FRAGMENT:
-                model_str = "ps_5_0"
-            elif shader_type == SHADER_TYPE_COMPUTE:
-                model_str = "cs_5_0"
-        elif renderer == BGFX_RENDERER_TYPE_GNM:
-            model_str = "pssl"
-        elif renderer == BGFX_RENDERER_TYPE_METAL:
-            model_str = "metal"
-        elif renderer == BGFX_RENDERER_TYPE_NVN:
-            raise ValueError("GraphicsUtils: invalid renderer type")
-        elif renderer == BGFX_RENDERER_TYPE_OPENGLES:
-            GLES = BGFX_CONFIG_RENDERER_OPENGLES
-            if GLES == 30:
-                model_str = "300_es"
-            elif GLES == 31:
-                model_str = "310_es"
-            elif GLES == 32:
-                model_str = "320_es"
-            else:
-                model_str = "100_es"
-        elif renderer == BGFX_RENDERER_TYPE_OPENGL:
-            GL = BGFX_CONFIG_RENDERER_OPENGL
-            if GL == 31:
-                model_str = "140"
-            elif GL == 32:
-                model_str = "150"
-            elif GL == 33:
-                model_str = "330"
-            elif GL == 40:
-                model_str = "400"
-            elif GL == 41:
-                model_str = "410"
-            elif GL == 42:
-                model_str = "420"
-            elif GL == 43:
-                model_str = "430"
-            elif GL == 44:
-                model_str = "440"
-            elif GL == 45:
-                model_str = "450"
-            elif GL == 46:
-                model_str = "460"
-            else:
-                model_str = "120"
-        elif renderer == BGFX_RENDERER_TYPE_VULKAN:
-            model_str = "spirv"#not sure how to detect version
-        elif renderer == BGFX_RENDERER_TYPE_WEBGPU:
-            raise ValueError("GraphicsUtils: invalid renderer type")
+    renderer = bgfx_get_renderer_type()
+    if renderer == BGFX_RENDERER_TYPE_NOOP:
+        raise ValueError("GraphicsUtils: invalid renderer type")
+    elif renderer == BGFX_RENDERER_TYPE_DIRECT3D9:
+        if shader_type == SHADER_TYPE_VERTEX:
+            model_str = "vs_3_0"
+        elif shader_type == SHADER_TYPE_FRAGMENT:
+            model_str = "ps_3_0"
+        elif shader_type == SHADER_TYPE_COMPUTE:
+            raise ValueError("GraphicsUtils: compute shaders not supported in HLSL 3.0")
+    elif renderer == BGFX_RENDERER_TYPE_DIRECT3D11:
+        if shader_type == SHADER_TYPE_VERTEX:
+            model_str = "vs_5_0"
+        elif shader_type == SHADER_TYPE_FRAGMENT:
+            model_str = "ps_5_0"
+        elif shader_type == SHADER_TYPE_COMPUTE:
+            model_str = "cs_5_0"
+    elif renderer == BGFX_RENDERER_TYPE_DIRECT3D12:
+        if shader_type == SHADER_TYPE_VERTEX:
+            model_str = "vs_5_0"
+        elif shader_type == SHADER_TYPE_FRAGMENT:
+            model_str = "ps_5_0"
+        elif shader_type == SHADER_TYPE_COMPUTE:
+            model_str = "cs_5_0"
+    elif renderer == BGFX_RENDERER_TYPE_GNM:
+        model_str = "pssl"
+    elif renderer == BGFX_RENDERER_TYPE_METAL:
+        model_str = "metal"
+    elif renderer == BGFX_RENDERER_TYPE_NVN:
+        raise ValueError("GraphicsUtils: invalid renderer type")
+    elif renderer == BGFX_RENDERER_TYPE_OPENGLES:
+        GLES = BGFX_CONFIG_RENDERER_OPENGLES
+        if GLES == 30:
+            model_str = "300_es"
+        elif GLES == 31:
+            model_str = "310_es"
+        elif GLES == 32:
+            model_str = "320_es"
+        else:
+            model_str = "100_es"
+    elif renderer == BGFX_RENDERER_TYPE_OPENGL:
+        GL = BGFX_CONFIG_RENDERER_OPENGL
+        if GL == 31:
+            model_str = "140"
+        elif GL == 32:
+            model_str = "150"
+        elif GL == 33:
+            model_str = "330"
+        elif GL == 40:
+            model_str = "400"
+        elif GL == 41:
+            model_str = "410"
+        elif GL == 42:
+            model_str = "420"
+        elif GL == 43:
+            model_str = "430"
+        elif GL == 44:
+            model_str = "440"
+        elif GL == 45:
+            model_str = "450"
+        elif GL == 46:
+            model_str = "460"
+        else:
+            model_str = "120"
+    elif renderer == BGFX_RENDERER_TYPE_VULKAN:
+        model_str = "spirv"#not sure how to detect version
+    elif renderer == BGFX_RENDERER_TYPE_WEBGPU:
+        raise ValueError("GraphicsUtils: invalid renderer type")
+    return model_str
 
+cdef str c_get_shader_model_str(ShaderModel model, ShaderType shader_type):
+    cdef:
+        str model_str
+    
+    if model == SHADER_MODEL_AUTO:
+        model_str = c_get_shader_model_auto_str(shader_type)
     elif model == SHADER_MODEL_ES_100:
         model_str = "100_es"
     elif model == SHADER_MODEL_ES_300:
@@ -180,7 +186,12 @@ cdef str c_get_shader_model_str(ShaderModel model, ShaderType shader_type):
         model_str = "440"
     return model_str
 
-cpdef void utils_runtime_compile_shader(bytes in_file_path, bytes out_file_path, ShaderType shader_type, bytes varying_def_path=None, ShaderTargetPlatform target=SHADER_TARGET_PLATFORM_AUTO, ShaderModel model=SHADER_MODEL_AUTO) except *:
+cpdef void utils_runtime_compile_shader(
+        bytes in_file_path, 
+        bytes out_file_path, 
+        ShaderType shader_type, bytes varying_def_path=None, 
+        ShaderTargetPlatform target=SHADER_TARGET_PLATFORM_AUTO, 
+        ShaderModel model=SHADER_MODEL_AUTO) except *:
     cdef:
         PlatformOS platform_os
         bytes shaderc_path
@@ -213,8 +224,6 @@ cpdef void utils_runtime_compile_shader(bytes in_file_path, bytes out_file_path,
         "--platform", target_str,
         "--profile", model_str,
     ]
-    print(cmd_args)
-
     try:
         subprocess.check_output(cmd_args)
     except subprocess.CalledProcessError as error:

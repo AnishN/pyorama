@@ -73,6 +73,7 @@ cpdef enum WindowEventType:
 
 cdef class EventSystem:
     cdef:
+        str name
         double timestamp
         SlotManager slots
         dict slot_sizes

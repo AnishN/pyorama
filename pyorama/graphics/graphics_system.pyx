@@ -11,6 +11,9 @@ cdef class GraphicsSystem:
             GRAPHICS_SLOT_VIEW: sizeof(ViewC),
             GRAPHICS_SLOT_SHADER: sizeof(ShaderC),
             GRAPHICS_SLOT_PROGRAM: sizeof(ProgramC),
+            GRAPHICS_SLOT_VERTEX_LAYOUT: sizeof(VertexLayoutC),
+            GRAPHICS_SLOT_VERTEX_BUFFER: sizeof(VertexBufferC),
+            GRAPHICS_SLOT_INDEX_BUFFER: sizeof(IndexBufferC),
         }
         self.window_ids = HashMap()
     
@@ -21,6 +24,7 @@ cdef class GraphicsSystem:
         self.name = None
 
     def init(self):
+        print(self.name, "init")
         self.c_init_sdl2()
         self.c_init_bgfx()
         self.slots.c_init(self.slot_sizes)
@@ -32,19 +36,25 @@ cdef class GraphicsSystem:
         self.window_ids.c_init()
     
     def quit(self):
+        print(self.name, "quit")
         self.window_ids.c_free()
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
+        print("cleared windows and views")
         self.slots.c_free()
+        print("cleared slots")
         self.c_quit_bgfx()
+        print("quit bgfx")
         self.c_quit_sdl2()
+        print("quit sdl2")
 
     def update(self):
         cdef:
             size_t i
             SlotMap views
             ViewC *view_ptr 
+        print(self.name, "update")
         views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
         for i in range(views.items.num_items):
             view_ptr = <ViewC *>views.items.c_get_ptr_unsafe(i)
@@ -89,20 +99,8 @@ cdef class GraphicsSystem:
         bgfx_get_platform_data_from_window(self.wmi, self.root_window)
         bgfx_init_ctor(&init)
         bgfx_init(&init)
-
-        #self.root_fbo = bgfx_create_frame_buffer_from_nwh(
-        #    bgfx_get_window_nwh(self.wmi, self.root_window),
-        #    1, 1,
-        #    BGFX_TEXTURE_FORMAT_BGRA8, BGFX_TEXTURE_FORMAT_D24S8,
-        #)
-        #bgfx_reset(width, height, reset, init.resolution.format)
-        #bgfx_set_debug(debug)
-        #bgfx_set_view_clear(0, clear_flags, 0x000000FF, 1.0, 0)
-        #bgfx_frame(False)
     
     cdef void c_quit_bgfx(self) except *:
-        #bgfx_destroy_frame_buffer(self.root_fbo)
-        free(self.wmi)
         bgfx_shutdown()
 
     cdef uint16_t c_get_next_view_index(self) except *:

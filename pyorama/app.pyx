@@ -12,6 +12,7 @@ def init(dict config={}):
     global frequency, start_time, curr_time, prev_time
     global platform_os
 
+    print("app init")
     cdef str platform_str = platform.system()
     if platform_str == "Windows":
         platform_os = PLATFORM_OS_WINDOWS
@@ -40,6 +41,7 @@ def quit():
     event.quit()
     audio.quit()
     graphics.quit()
+    print("app quit")
 
 def run():
     global curr_time, prev_time
