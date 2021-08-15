@@ -6,7 +6,7 @@ cdef class UserSystem:
     def __dealloc__(self):
         self.name = None
 
-    def init(self):
+    def init(self, dict config=None):
         pass
         #print(self.name, "init")
     

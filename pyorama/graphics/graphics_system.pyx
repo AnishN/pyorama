@@ -23,10 +23,14 @@ cdef class GraphicsSystem:
         self.slots = None
         self.name = None
 
-    def init(self):
+    def init(self, dict config=None):
         #print(self.name, "init")
+        cdef:
+            GraphicsRendererType renderer_type
+        renderer_type = config.get("renderer_type", GRAPHICS_RENDERER_TYPE_DEFAULT)
+
         self.c_init_sdl2()
-        self.c_init_bgfx()
+        self.c_init_bgfx(renderer_type)
         self.slots.c_init(self.slot_sizes)
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
@@ -75,13 +79,13 @@ cdef class GraphicsSystem:
         SDL_QuitSubSystem(SDL_INIT_VIDEO)
         
     
-    cdef void c_init_bgfx(self) except *:
+    cdef void c_init_bgfx(self, GraphicsRendererType renderer_type) except *:
         cdef:
             bgfx_init_t init
         
         self.wmi = bgfx_fetch_wmi()
         bgfx_init_ctor(&init)
-        init.type = BGFX_RENDERER_TYPE_COUNT
+        init.type = <bgfx_renderer_type_t>renderer_type
         init.resolution.reset = BGFX_RESET_VSYNC
         bgfx_init(&init)
     

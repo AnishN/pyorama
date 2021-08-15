@@ -6,7 +6,7 @@ audio = UserSystem("audio")
 event = EventSystem("event")
 physics = UserSystem("physics")
 
-def init(dict config={}):
+def init(dict config=None):
     global target_fps, num_frame_times, use_vsync, use_sleep#need global when assigning variable
     global frame_times
     global frequency, start_time, curr_time, prev_time
@@ -23,6 +23,9 @@ def init(dict config={}):
     elif platform_str == "":
         platform_os = PLATFORM_OS_UNKNOWN
 
+    if config == None:
+        config = {}
+    
     target_fps = config.get("target_fps", 60)
     num_frame_times = config.get("num_frame_times", 20)
     use_vsync = config.get("use_vsync", True)
@@ -31,10 +34,10 @@ def init(dict config={}):
     frequency = SDL_GetPerformanceFrequency()
     start_time = c_get_current_time()
 
-    graphics.init()
-    audio.init()
-    event.init()
-    physics.init()
+    graphics.init(config.get("graphics", None))
+    audio.init(config.get("audio", None))
+    event.init(config.get("event", None))
+    physics.init(config.get("physics", None))
 
 def quit():
     physics.quit()

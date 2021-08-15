@@ -13,8 +13,10 @@ def on_enter_frame_event(event, *args, **kwargs):
     pass
 
 pyorama.app.init({
-    #"use_sleep": True,
     "use_sleep": False,
+    "graphics": {
+        "renderer": pyorama.graphics.GRAPHICS_RENDERER_TYPE_VULKAN
+    }
 })
 
 args = ["a", "b", "c"]

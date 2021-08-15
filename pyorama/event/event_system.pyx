@@ -29,7 +29,7 @@ cdef class EventSystem:
         self.slot_sizes = None
         self.slots = None
 
-    def init(self):
+    def init(self, dict config=None):
         cdef:
             size_t i
             PyObject *handles_ptr

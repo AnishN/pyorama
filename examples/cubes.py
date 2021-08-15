@@ -14,18 +14,18 @@ def on_enter_frame_event(event, *args, **kwargs):
     Vec3.set_data(eye, math.sin(float(counter) / 100) * 8, 2, math.cos(float(counter) / 100) * 8)
     Mat4.look_at(view_mat, eye, at, up)
     Mat4.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
-    Mat4.identity(mtx)
+    Mat4.identity(model_mat)
     Mat4.from_rotation_x(mtx_x, counter * 0.007)
     Mat4.from_rotation_y(mtx_y, counter * 0.01)
-    Mat4.dot(mtx, mtx_x, mtx_y)
+    Mat4.dot(model_mat, mtx_x, mtx_y)
     
-    pyorama.graphics.view_set_transform_model(view, mtx)
+    pyorama.graphics.view_set_transform_model(view, model_mat)
     pyorama.graphics.view_set_transform_view(view, view_mat)
     pyorama.graphics.view_set_transform_projection(view, proj_mat)
     pyorama.graphics.view_submit(view)
 
-    Mat4.from_translation(mtx, shift)
-    pyorama.graphics.view_set_transform_model(view, mtx)
+    Mat4.from_translation(model_mat, shift)
+    pyorama.graphics.view_set_transform_model(view, model_mat)
     pyorama.graphics.view_submit(view)
 
     counter += 1
@@ -44,7 +44,7 @@ def runtime_compile_shaders():
 
 width = 800
 height = 600
-title = b"Hello, world!"
+title = b"Cubes"
 index_layout = pyorama.graphics.INDEX_LAYOUT_UINT16
 vertices = Buffer()
 indices = Buffer()
@@ -56,11 +56,16 @@ up = Vec3(0.0, 1.0, 0.0)
 shift = Vec3(3.0, 0.0, 0.0)
 view_mat = Mat4()
 proj_mat = Mat4()
-mtx = Mat4()
+model_mat = Mat4()
 mtx_x = Mat4()
 mtx_y = Mat4()
 
-pyorama.app.init()
+pyorama.app.init({
+    "use_sleep": False,
+    "graphics": {
+        "renderer": pyorama.graphics.GRAPHICS_RENDERER_TYPE_VULKAN
+    }
+})
 
 vertex_layout = pyorama.graphics.vertex_layout_create([
     (pyorama.graphics.VERTEX_ATTRIBUTE_POSITION, 3, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_FLOAT, False, False),
