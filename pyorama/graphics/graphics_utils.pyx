@@ -206,7 +206,7 @@ cpdef void utils_runtime_compile_shader(
     if platform_os == app.PLATFORM_OS_WINDOWS:
         shaderc_path = b"./pyorama/libs/shared/Windows/shadercRelease.exe"
     elif platform_os == app.PLATFORM_OS_LINUX:
-        raise NotImplementedError("Runtime compilation on linux is not yet supported")
+        shaderc_path = b"./pyorama/libs/shared/Linux/shadercRelease"
     elif platform_os == app.PLATFORM_OS_MACOS:
         raise NotImplementedError("Runtime compilation on mac os is not yet supported")
     else:
