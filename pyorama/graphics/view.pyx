@@ -116,3 +116,9 @@ cpdef void view_submit(Handle view, Handle program) except *:
     view_ptr = view_get_ptr(view)
     program_ptr = program_get_ptr(program)
     bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_ALL)
+
+cpdef void view_touch(Handle view) except *:
+    cdef:
+        ViewC *view_ptr
+    view_ptr = view_get_ptr(view)
+    bgfx_touch(view_ptr.index)

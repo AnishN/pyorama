@@ -36,6 +36,7 @@ cdef class EventSystem:
         
         #print(self.name, "init")
         SDL_InitSubSystem(SDL_INIT_EVENTS)
+        SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
         self.timestamp = 0.0
         self.slots.c_init(self.slot_sizes)
         for i in range(MAX_EVENT_TYPES):
@@ -52,6 +53,7 @@ cdef class EventSystem:
             handles_ptr = <PyObject *>self.listener_handles[i]
             (<Vector>handles_ptr).c_free()
         self.slots.c_free()
+        SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "0")
         SDL_QuitSubSystem(SDL_INIT_EVENTS)
 
     cpdef void event_type_emit(self, uint16_t event_type, dict event_data={}) except *:
@@ -216,15 +218,10 @@ cdef class EventSystem:
             Vector listeners
             ListenerC *listener_ptr
         
-        #print(self.name, "update")
         while SDL_PollEvent(&event):
             ignore_event = False
             if event.type == EVENT_TYPE_WINDOW:
-                #if event.window.windowID == SDL_GetWindowID(graphics.root_window):
-                if not graphics.window_ids.c_contains(event.window.windowID):
-                    ignore_event = True
-                else:
-                    event_data = self.parse_window_event(event.window)
+                event_data = self.parse_window_event(event.window)
             elif event.type == EVENT_TYPE_JOYSTICK_AXIS:
                 event_data = self.parse_joystick_axis_event(event.jaxis)
             elif event.type == EVENT_TYPE_JOYSTICK_BALL:

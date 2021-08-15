@@ -1479,4 +1479,4 @@ cdef extern from "custom_bgfx_platform.h" nogil:
     SDL_SysWMinfo *bgfx_fetch_wmi()
     void *bgfx_get_window_nwh(SDL_SysWMinfo *wmi, SDL_Window* _window)
     void *bgfx_get_window_ndt(SDL_SysWMinfo *wmi, SDL_Window* _window)
-    bint bgfx_get_platform_data_from_window(SDL_SysWMinfo *wmi, SDL_Window* _window)
+    void bgfx_get_platform_data_from_window(bgfx_platform_data_t *pd, SDL_SysWMinfo *wmi, SDL_Window* _window)

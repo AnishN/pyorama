@@ -9,6 +9,10 @@ def on_window_event(event, *args, **kwargs):
         if num_windows == 0:
             pyorama.app.trigger_quit()
 
+def on_enter_frame_event(event, *args, **kwargs):
+    for view in views:
+        pyorama.graphics.view_touch(view)
+
 pyorama.app.init({
     #"use_sleep": True,
     "use_sleep": False,
@@ -23,9 +27,12 @@ kwargs = {
 
 on_window_listener = pyorama.event.listener_create(
     pyorama.event.EVENT_TYPE_WINDOW, 
-    on_window_event, 
-    args, 
-    kwargs,
+    on_window_event, None, None,
+)
+
+on_enter_frame_listener = pyorama.event.listener_create(
+    pyorama.event.EVENT_TYPE_ENTER_FRAME,
+    on_enter_frame_event, None, None,
 )
 
 windows = []
@@ -63,5 +70,6 @@ for frame_buffer in frame_buffers:
 for view in views:
     pyorama.graphics.view_delete(view)
 pyorama.event.listener_delete(on_window_listener)
+pyorama.event.listener_delete(on_enter_frame_listener)
 
 pyorama.app.quit()

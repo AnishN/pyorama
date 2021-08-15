@@ -9,8 +9,8 @@ def on_window_event(event, *args, **kwargs):
         pyorama.app.trigger_quit()
 
 def on_enter_frame_event(event, *args, **kwargs):
-    pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
     pyorama.graphics.view_set_clear(view, clear_flags, clear_color, 0.0, 1.0)
+    pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
     pyorama.graphics.view_set_rect(view, 0, 0, width, height)
     pyorama.graphics.view_set_transform(view, view_mat, proj_mat)
     pyorama.graphics.view_set_vertex_buffer(view, vertex_buffer)
@@ -45,7 +45,7 @@ fs = pyorama.graphics.shader_create_from_file(
 program = pyorama.graphics.program_create(vs, fs)
 
 vertex_layout = pyorama.graphics.vertex_layout_create([
-    (pyorama.graphics.VERTEX_ATTRIBUTE_POSITION, 3, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_FLOAT),
+    (pyorama.graphics.VERTEX_ATTRIBUTE_POSITION, 3, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_FLOAT, False, False),
     #(pyorama.graphics.VERTEX_ATTRIBUTE_COLOR_0, 4, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_UINT8),
 ])
 
@@ -93,7 +93,7 @@ view = pyorama.graphics.view_create()
 
 view_mat = Mat4()
 proj_mat = Mat4()
-Mat4.ortho(proj_mat, 0, width, 0, height, -1, 1)
+Mat4.ortho(proj_mat, 0, width, 0, height, 0.01, 1000)
 
 pyorama.app.run()
 

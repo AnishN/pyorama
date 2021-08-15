@@ -30,8 +30,8 @@ cdef class GraphicsSystem:
         self.slots.c_init(self.slot_sizes)
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
-        self.used_views[0] = True#reserve as global view
-        self.used_views[1] = True#view count starts from 1
+        #self.used_views[0] = True#reserve as global view
+        #self.used_views[1] = True#view count starts from 1
         self.free_view_index = 0
         self.window_ids.c_init()
     
@@ -50,58 +50,34 @@ cdef class GraphicsSystem:
         #print("quit sdl2")
 
     def update(self):
-        cdef:
-            size_t i
-            SlotMap views
-            ViewC *view_ptr 
-        #print(self.name, "update")
-        views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
-        for i in range(views.items.num_items):
-            view_ptr = <ViewC *>views.items.c_get_ptr_unsafe(i)
-            bgfx_touch(view_ptr.index)
         bgfx_frame(False)
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)
-        SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
-        SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
-        #SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "1")
-        self.root_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE)
-        #self.root_window = SDL_CreateWindow("ROOT", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)
-        self.wmi = bgfx_fetch_wmi()
+        
 
     cdef void c_quit_sdl2(self) except *:
-        SDL_DestroyWindow(self.root_window)
-        self.root_window = NULL
-        free(self.wmi)
-        self.wmi = NULL
-        SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "0")
-        #SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "0")
-        SDL_GL_ResetAttributes()
+        
         IMG_Quit()
+        #SDL_QuitSubSystem(SDL_INIT_EVENTS)
         SDL_QuitSubSystem(SDL_INIT_VIDEO)
+        
     
     cdef void c_init_bgfx(self) except *:
         cdef:
-            uint16_t width = 1
-            uint16_t height = 1
-            uint32_t clear_flags = BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL
-            uint32_t debug = BGFX_DEBUG_TEXT
-            uint32_t reset = BGFX_RESET_VSYNC
             bgfx_init_t init
         
-        bgfx_get_platform_data_from_window(self.wmi, self.root_window)
+        self.wmi = bgfx_fetch_wmi()
         bgfx_init_ctor(&init)
+        init.type = BGFX_RENDERER_TYPE_COUNT
+        init.resolution.reset = BGFX_RESET_VSYNC
         bgfx_init(&init)
     
     cdef void c_quit_bgfx(self) except *:
         bgfx_shutdown()
+        free(self.wmi)
+        self.wmi = NULL
 
     cdef uint16_t c_get_next_view_index(self) except *:
         cdef:

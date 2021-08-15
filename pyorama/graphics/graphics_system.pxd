@@ -31,7 +31,6 @@ cdef class GraphicsSystem:
         str name
         SlotManager slots
         dict slot_sizes
-        SDL_Window *root_window
         SDL_SysWMinfo *wmi
         bgfx_frame_buffer_handle_t root_fbo
         bint[GRAPHICS_MAX_VIEWS] used_views

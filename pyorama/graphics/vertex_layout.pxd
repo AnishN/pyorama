@@ -32,8 +32,7 @@ cpdef enum VertexAttributeType:
 
 ctypedef struct VertexLayoutC:
     Handle handle
-    bgfx_vertex_layout_handle_t bgfx_id
-    bgfx_vertex_layout_t layout
+    bgfx_vertex_layout_t bgfx_id
 
 cdef VertexLayoutC *vertex_layout_get_ptr(Handle vertex_layout) except *
 cpdef Handle vertex_layout_create(list attributes) except *

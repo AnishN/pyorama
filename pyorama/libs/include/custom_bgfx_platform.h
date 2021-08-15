@@ -64,17 +64,18 @@ void *bgfx_get_window_ndt(SDL_SysWMinfo *wmi, SDL_Window* _window)
     return ndt;
 }
 
-bool bgfx_get_platform_data_from_window(SDL_SysWMinfo *wmi, SDL_Window* _window)
+void bgfx_get_platform_data_from_window(bgfx_platform_data_t *pd, SDL_SysWMinfo *wmi, SDL_Window* _window)
 {
+    /*
     if (!SDL_GetWindowWMInfo(_window, wmi)) {
-        return false;
+        return;
     }
-    bgfx_platform_data_t pd;
-    pd.nwh = bgfx_get_window_nwh(wmi, _window);
-    pd.ndt = bgfx_get_window_ndt(wmi, _window);
-    pd.context = NULL;
-    pd.backBuffer = NULL;
-    pd.backBufferDS = NULL;
-    bgfx_set_platform_data(&pd);
-    return true;
+    */
+    pd->nwh = bgfx_get_window_nwh(wmi, _window);
+    pd->ndt = bgfx_get_window_ndt(wmi, _window);
+    pd->context = NULL;
+    pd->backBuffer = NULL;
+    pd->backBufferDS = NULL;
+    //bgfx_set_platform_data(&pd);
+    return;
 }
