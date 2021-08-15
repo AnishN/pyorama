@@ -1,7 +1,6 @@
-from pyorama.libs.bgfx cimport *
 import pyorama
-from pyorama.math cimport *
-from pyorama.data cimport *
+from pyorama.math import *
+from pyorama.data import *
 import math
 
 def on_window_event(event, *args, **kwargs):
@@ -11,41 +10,23 @@ def on_window_event(event, *args, **kwargs):
 
 def on_enter_frame_event(event, *args, **kwargs):
     global counter
-    clear_flags = pyorama.graphics.VIEW_CLEAR_COLOR | pyorama.graphics.VIEW_CLEAR_DEPTH
 
-    Vec3.set_data(
-        eye, 
-        c_math.sin(<float>counter/100)*8, 
-        2,
-        c_math.cos(<float>counter/100)*8,
-    )
+    Vec3.set_data(eye, math.sin(float(counter) / 100) * 8, 2, math.cos(float(counter) / 100) * 8)
     Mat4.look_at(view_mat, eye, at, up)
-    Mat4.perspective(proj_mat, math.radians(60.0), <float>width / <float>height,  0.01, 1000.0)
+    Mat4.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
     Mat4.identity(mtx)
     Mat4.from_rotation_x(mtx_x, counter * 0.007)
     Mat4.from_rotation_y(mtx_y, counter * 0.01)
     Mat4.dot(mtx, mtx_x, mtx_y)
-
-    pyorama.graphics.view_set_clear(view, clear_flags, 0x443355FF, 1.0, 0)
-    pyorama.graphics.view_set_rect(view, 0, 0, width, height)
-    pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
-    pyorama.graphics.view_set_transform(view, view_mat, proj_mat)
-    #pyorama.graphics.view_set_view_matrix(
-    #pyorama.graphics.view_set_model_matrix(
-    #pyorama.graphics.view_set_projection_matrix(
-    pyorama.graphics.view_set_vertex_buffer(view, vertex_buffer)
-    pyorama.graphics.view_set_index_buffer(view, index_buffer)
-
-    bgfx_set_transform(&mtx.data, 1)
-    pyorama.graphics.view_submit(view, program)
-    #bgfx_submit(0, program_get_ptr(program).bgfx_id, 0, BGFX_DISCARD_ALL)
+    
+    pyorama.graphics.view_set_transform_model(view, mtx)
+    pyorama.graphics.view_set_transform_view(view, view_mat)
+    pyorama.graphics.view_set_transform_projection(view, proj_mat)
+    pyorama.graphics.view_submit(view)
 
     Mat4.from_translation(mtx, shift)
-    bgfx_set_transform(&mtx.data, 1)
-    pyorama.graphics.view_set_vertex_buffer(view, vertex_buffer)
-    pyorama.graphics.view_set_index_buffer(view, index_buffer)
-    pyorama.graphics.view_submit(view, program)
-    #bgfx_submit(0, program_get_ptr(program).bgfx_id, 0, BGFX_DISCARD_ALL)
+    pyorama.graphics.view_set_transform_model(view, mtx)
+    pyorama.graphics.view_submit(view)
 
     counter += 1
 
@@ -75,11 +56,9 @@ up = Vec3(0.0, 1.0, 0.0)
 shift = Vec3(3.0, 0.0, 0.0)
 view_mat = Mat4()
 proj_mat = Mat4()
-
-cdef:
-    Mat4 mtx = Mat4()
-    Mat4 mtx_x = Mat4()
-    Mat4 mtx_y = Mat4()
+mtx = Mat4()
+mtx_x = Mat4()
+mtx_y = Mat4()
 
 pyorama.app.init()
 
@@ -126,13 +105,20 @@ program = pyorama.graphics.program_create(vertex_shader, fragment_shader)
 window = pyorama.graphics.window_create(width, height, title)
 frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)
 view = pyorama.graphics.view_create()
-
 on_window_listener = pyorama.event.listener_create(pyorama.event.EVENT_TYPE_WINDOW, on_window_event, None, None)
 on_enter_frame_listener = pyorama.event.listener_create(pyorama.event.EVENT_TYPE_ENTER_FRAME, on_enter_frame_event, None, None)
+
+clear_flags = pyorama.graphics.VIEW_CLEAR_COLOR | pyorama.graphics.VIEW_CLEAR_DEPTH
+pyorama.graphics.view_set_clear(view, clear_flags, 0x443355FF, 1.0, 0)
+pyorama.graphics.view_set_rect(view, 0, 0, width, height)
+pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
+pyorama.graphics.view_set_vertex_buffer(view, vertex_buffer)
+pyorama.graphics.view_set_index_buffer(view, index_buffer)
+pyorama.graphics.view_set_program(view, program)
 pyorama.app.run()
+
 pyorama.event.listener_delete(on_enter_frame_listener)
 pyorama.event.listener_delete(on_window_listener)
-
 pyorama.graphics.program_delete(program)
 pyorama.graphics.shader_delete(fragment_shader)
 pyorama.graphics.shader_delete(vertex_shader)

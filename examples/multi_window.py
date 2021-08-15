@@ -10,8 +10,7 @@ def on_window_event(event, *args, **kwargs):
             pyorama.app.trigger_quit()
 
 def on_enter_frame_event(event, *args, **kwargs):
-    for view in views:
-        pyorama.graphics.view_touch(view)
+    pass
 
 pyorama.app.init({
     #"use_sleep": True,
