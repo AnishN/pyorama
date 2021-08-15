@@ -50,6 +50,17 @@ cdef class GraphicsSystem:
         #print("quit sdl2")
 
     def update(self):
+        cdef:
+            SlotMap views
+            size_t num_views
+            size_t i
+            ViewC *view_ptr
+
+        views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
+        num_views = views.items.num_items
+        for i in range(num_views):
+            view_ptr = <ViewC *>views.c_get_ptr_unsafe(i)
+            bgfx_touch(view_ptr.index)
         bgfx_frame(False)
 
     cdef void c_init_sdl2(self) except *:

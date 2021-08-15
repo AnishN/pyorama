@@ -38,7 +38,6 @@ cpdef enum WindowFlags:
 cdef WindowC *window_get_ptr(Handle window) except *
 cpdef Handle window_create(uint16_t width, uint16_t height, bytes title, uint32_t flags=*) except *
 cpdef void window_delete(Handle window) except *
-#cpdef void window_load_from_id(Handle window, uint64_t window_id) except *
 
 cpdef uint16_t window_get_width(Handle window) except *
 cpdef uint16_t window_get_height(Handle window) except *

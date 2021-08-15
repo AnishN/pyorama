@@ -1,4 +1,5 @@
 from pyorama.data.handle cimport *
+from pyorama.data.buffer cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.c cimport *
 
@@ -13,5 +14,5 @@ ctypedef struct IndexBufferC:
     size_t num_indices
 
 cdef IndexBufferC *index_buffer_get_ptr(Handle index_buffer) except *
-cpdef Handle index_buffer_create(IndexLayout index_layout, uint8_t[::1] index_data) except *
+cpdef Handle index_buffer_create(IndexLayout index_layout, Buffer index_data) except *
 cpdef void index_buffer_delete(Handle index_buffer) except *

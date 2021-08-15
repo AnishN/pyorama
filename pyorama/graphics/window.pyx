@@ -24,11 +24,6 @@ cpdef Handle window_create(uint16_t width, uint16_t height, bytes title, uint32_
     window_ptr.height = height
     window_ptr.title = <char *>title
     window_ptr.title_length = len(title)
-    #bgfx_reset(width, height, reset, BGFX_TEXTURE_FORMAT_BGRA8)
-    #bgfx_set_debug(debug)
-    #bgfx_set_view_clear(1, clear_flags, 0x000000FF, 1.0, 0)
-    #bgfx_touch(0)
-    #bgfx_frame(False)
     return window
 
 cpdef void window_delete(Handle window) except *:
@@ -39,9 +34,6 @@ cpdef void window_delete(Handle window) except *:
     graphics.window_ids.c_remove(window_ptr.sdl_id)
     SDL_DestroyWindow(window_ptr.sdl_ptr)
     graphics.slots.c_delete(window)
-
-#cpdef void window_load_from_id(Handle window, uint64_t window_id) except *:
-#    graphics.window_ids.c_get(window_id)
 
 cpdef uint16_t window_get_width(Handle window) except *:
     return window_get_ptr(window).width
