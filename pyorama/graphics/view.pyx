@@ -86,7 +86,33 @@ cpdef void view_set_frame_buffer(Handle view, Handle frame_buffer) except *:
     view_ptr = view_get_ptr(view)
     frame_buffer_ptr = frame_buffer_get_ptr(frame_buffer)
     bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
-#cpdef void view_set_transform(Handle view, void* view, void* proj) except *
-#cpdef void view_set_order(Handle view, uint16_t num, bgfx_view_id_t* order) except *
-cpdef void view_submit(Handle view) except *:
-    pass
+
+cpdef void view_set_transform(Handle view, Mat4 view_mat, Mat4 proj_mat) except *:
+    cdef:
+        ViewC *view_ptr
+    view_ptr = view_get_ptr(view)
+    bgfx_set_view_transform(view_ptr.index, &view_mat.data, &proj_mat.data)
+
+cpdef void view_set_vertex_buffer(Handle view, Handle vertex_buffer) except *:
+    cdef:
+        ViewC *view_ptr
+        VertexBufferC *vertex_buffer_ptr
+    view_ptr = view_get_ptr(view)
+    vertex_buffer_ptr = vertex_buffer_get_ptr(vertex_buffer)
+    bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id, 0, vertex_buffer_ptr.num_vertices)
+
+cpdef void view_set_index_buffer(Handle view, Handle index_buffer) except *:
+    cdef:
+        ViewC *view_ptr
+        IndexBufferC *index_buffer_ptr
+    view_ptr = view_get_ptr(view)
+    index_buffer_ptr = index_buffer_get_ptr(index_buffer)
+    bgfx_set_index_buffer(index_buffer_ptr.bgfx_id, 0, index_buffer_ptr.num_indices)
+
+cpdef void view_submit(Handle view, Handle program) except *:
+    cdef:
+        ViewC *view_ptr
+        ProgramC *program_ptr
+    view_ptr = view_get_ptr(view)
+    program_ptr = program_get_ptr(program)
+    bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_ALL)

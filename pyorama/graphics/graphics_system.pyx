@@ -24,7 +24,7 @@ cdef class GraphicsSystem:
         self.name = None
 
     def init(self):
-        print(self.name, "init")
+        #print(self.name, "init")
         self.c_init_sdl2()
         self.c_init_bgfx()
         self.slots.c_init(self.slot_sizes)
@@ -36,25 +36,25 @@ cdef class GraphicsSystem:
         self.window_ids.c_init()
     
     def quit(self):
-        print(self.name, "quit")
+        #print(self.name, "quit")
         self.window_ids.c_free()
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
-        print("cleared windows and views")
+        #print("cleared windows and views")
         self.slots.c_free()
-        print("cleared slots")
+        #print("cleared slots")
         self.c_quit_bgfx()
-        print("quit bgfx")
+        #print("quit bgfx")
         self.c_quit_sdl2()
-        print("quit sdl2")
+        #print("quit sdl2")
 
     def update(self):
         cdef:
             size_t i
             SlotMap views
             ViewC *view_ptr 
-        print(self.name, "update")
+        #print(self.name, "update")
         views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
         for i in range(views.items.num_items):
             view_ptr = <ViewC *>views.items.c_get_ptr_unsafe(i)
@@ -81,8 +81,8 @@ cdef class GraphicsSystem:
         self.root_window = NULL
         free(self.wmi)
         self.wmi = NULL
-        #SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "0")
-        SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "0")
+        SDL_SetHint(SDL_HINT_VIDEO_EXTERNAL_CONTEXT, "0")
+        #SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "0")
         SDL_GL_ResetAttributes()
         IMG_Quit()
         SDL_QuitSubSystem(SDL_INIT_VIDEO)

@@ -1,4 +1,4 @@
-from pyorama.math3d.common cimport *
+from pyorama.math.common cimport *
 
 ctypedef Vec2C aiVector2D
 ctypedef Vec3C aiVector3D

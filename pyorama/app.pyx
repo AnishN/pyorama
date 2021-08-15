@@ -12,7 +12,7 @@ def init(dict config={}):
     global frequency, start_time, curr_time, prev_time
     global platform_os
 
-    print("app init")
+    #print("app init")
     cdef str platform_str = platform.system()
     if platform_str == "Windows":
         platform_os = PLATFORM_OS_WINDOWS
@@ -41,7 +41,7 @@ def quit():
     event.quit()
     audio.quit()
     graphics.quit()
-    print("app quit")
+    #print("app quit")
 
 def run():
     global curr_time, prev_time
@@ -95,7 +95,7 @@ def step():
     frame_index = frame_count % num_frame_times
     frame_time = curr_time - prev_time
     PyErr_CheckSignals()
-    #event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
+    event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
     event.update(curr_time)
     #physics.update(1.0 / target_fps)
     graphics.update()
