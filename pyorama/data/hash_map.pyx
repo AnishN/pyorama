@@ -159,14 +159,18 @@ cdef class HashMap:
         self.items.items = <char *>new_items
         self.items.max_items = new_max_items
 
-    """
-    def print(self):
+    def debug_print(self):
         cdef:
             size_t i
             ItemC *item
             list items = []
         for i in range(self.items.max_items):
             item = <ItemC *>self.items.c_get_ptr(i)
-            items.append((i, item.key, item.value, item.used))
-        print(items)
-    """
+            items.append({
+                "i": i,
+                "key": item.key,
+                "value": item.value,
+                "used": item.used,
+            })
+        for it in items:
+            print(it)

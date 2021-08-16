@@ -28,7 +28,10 @@ cpdef void view_set_rect(Handle view, uint16_t x, uint16_t y, uint16_t width, ui
     cdef:
         ViewC *view_ptr
     view_ptr = view_get_ptr(view)
-    bgfx_set_view_rect(view_ptr.index, x, y, width, height)
+    view_ptr.rect.x = x
+    view_ptr.rect.y = y
+    view_ptr.rect.width = width
+    view_ptr.rect.height = height
 
 cpdef void view_set_clear(Handle view, uint16_t flags, uint32_t color, float depth, uint8_t stencil) except *:
     cdef:
@@ -98,6 +101,7 @@ cpdef void view_submit(Handle view) except *:
 
     if view_ptr.name_length != 0:
         bgfx_set_view_name(view_ptr.index, view_ptr.name)
+    bgfx_set_view_rect(view_ptr.index, view_ptr.rect.x, view_ptr.rect.y, view_ptr.rect.width, view_ptr.rect.height)
     bgfx_set_view_clear(view_ptr.index, view_ptr.clear.flags, view_ptr.clear.color, view_ptr.clear.depth, view_ptr.clear.stencil)
     bgfx_set_transform(&view_ptr.transform.model, 1)#TODO: support multiple model transforms!
     bgfx_set_view_transform(view_ptr.index, &view_ptr.transform.view, &view_ptr.transform.projection)
@@ -105,3 +109,18 @@ cpdef void view_submit(Handle view) except *:
     bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id, 0, vertex_buffer_ptr.num_vertices)
     bgfx_set_index_buffer(index_buffer_ptr.bgfx_id, 0, index_buffer_ptr.num_indices)
     bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_ALL)
+
+cpdef void view_touch(Handle view) except *:
+    cdef:
+        ViewC *view_ptr
+        FrameBufferC *frame_buffer_ptr
+    
+    view_ptr = view_get_ptr(view)
+    if view_ptr.name_length != 0:
+        bgfx_set_view_name(view_ptr.index, view_ptr.name)
+    if view_ptr.frame_buffer != 0:
+        frame_buffer_ptr = frame_buffer_get_ptr(view_ptr.frame_buffer)
+        bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
+    bgfx_set_view_rect(view_ptr.index, view_ptr.rect.x, view_ptr.rect.y, view_ptr.rect.width, view_ptr.rect.height)
+    bgfx_set_view_clear(view_ptr.index, view_ptr.clear.flags, view_ptr.clear.color, view_ptr.clear.depth, view_ptr.clear.stencil)
+    bgfx_touch(view_ptr.index)

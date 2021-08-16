@@ -199,7 +199,7 @@ cdef class EventSystem:
             "type": event.type,
             "sub_type": event.event,
             "timestamp": self.timestamp,
-            "window": graphics.window_ids.c_get(event.windowID),
+            "window": graphics.window_ids.c_get(event.windowID),#must be there, otherwise event would have been ignored
         }
         if event.event == SDL_WINDOWEVENT_MOVED:
             event_data["x"] = event.data1
@@ -221,7 +221,10 @@ cdef class EventSystem:
         while SDL_PollEvent(&event):
             ignore_event = False
             if event.type == EVENT_TYPE_WINDOW:
-                event_data = self.parse_window_event(event.window)
+                if graphics.window_ids.c_contains(event.window.windowID):
+                    event_data = self.parse_window_event(event.window)
+                else:
+                    ignore_event = True
             elif event.type == EVENT_TYPE_JOYSTICK_AXIS:
                 event_data = self.parse_joystick_axis_event(event.jaxis)
             elif event.type == EVENT_TYPE_JOYSTICK_BALL:

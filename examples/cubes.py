@@ -63,7 +63,7 @@ mtx_y = Mat4()
 pyorama.app.init({
     "use_sleep": False,
     "graphics": {
-        "renderer": pyorama.graphics.GRAPHICS_RENDERER_TYPE_VULKAN
+        "renderer_type": pyorama.graphics.GRAPHICS_RENDERER_TYPE_OPENGLES
     }
 })
 

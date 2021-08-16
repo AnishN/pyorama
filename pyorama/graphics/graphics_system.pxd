@@ -43,6 +43,7 @@ cpdef enum GraphicsSlot:
 cdef class GraphicsSystem:
     cdef:
         str name
+        GraphicsRendererType renderer_type
         SlotManager slots
         dict slot_sizes
         SDL_SysWMinfo *wmi
@@ -54,6 +55,6 @@ cdef class GraphicsSystem:
 
     cdef void c_init_sdl2(self) except *
     cdef void c_quit_sdl2(self) except *
-    cdef void c_init_bgfx(self, GraphicsRendererType renderer_type) except *
+    cdef void c_init_bgfx(self) except *
     cdef void c_quit_bgfx(self) except *
     cdef uint16_t c_get_next_view_index(self) except *

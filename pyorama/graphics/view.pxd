@@ -53,3 +53,4 @@ cpdef void view_set_vertex_buffer(Handle view, Handle vertex_buffer) except *
 cpdef void view_set_index_buffer(Handle view, Handle index_buffer) except *
 cpdef void view_set_program(Handle view, Handle program) except *
 cpdef void view_submit(Handle view) except *
+cpdef void view_touch(Handle view) except *

@@ -15,16 +15,9 @@ def on_enter_frame_event(event, *args, **kwargs):
 pyorama.app.init({
     "use_sleep": False,
     "graphics": {
-        "renderer": pyorama.graphics.GRAPHICS_RENDERER_TYPE_VULKAN
+        "renderer_type": pyorama.graphics.GRAPHICS_RENDERER_TYPE_OPENGLES
     }
 })
-
-args = ["a", "b", "c"]
-kwargs = {
-    "d": 1,
-    "e": 2,
-    "f": 3,
-}
 
 on_window_listener = pyorama.event.listener_create(
     pyorama.event.EVENT_TYPE_WINDOW, 
