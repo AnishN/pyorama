@@ -47,7 +47,9 @@ cdef class GraphicsSystem:
         SlotManager slots
         dict slot_sizes
         SDL_SysWMinfo *wmi
-        bgfx_frame_buffer_handle_t root_fbo
+        SDL_Window *root_window
+        bgfx_platform_data_t pd
+        bgfx_init_t bgfx_init
         bint[GRAPHICS_MAX_VIEWS] used_views
         uint16_t[GRAPHICS_MAX_VIEWS] free_views
         size_t free_view_index

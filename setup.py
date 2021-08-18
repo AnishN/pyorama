@@ -7,14 +7,14 @@ import glob
 libraries = {
     "Linux": [
         "bgfx-shared-libRelease",
-        "z", "jpeg", "png", "webp", "jbig85",
+        #"z", "jpeg", "png", "webp", "jbig85",
         "SDL2", "SDL2_image", "SDL2_mixer", 
         "assimp",
         "chipmunk",
         "openal",
         "FLAC", "opus",
         "ogg", "vorbis", "vorbisfile", "vorbisenc",
-	    "freetype", "harfbuzz"
+	    "freetype", "harfbuzz",
     ],
     "Windows": [
         "bgfx-shared-libRelease", 

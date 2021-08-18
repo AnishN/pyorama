@@ -203,6 +203,7 @@ cpdef void utils_runtime_compile_shader(
 
     #find the shaderc executable path
     platform_os = app.c_get_platform_os()
+
     if platform_os == app.PLATFORM_OS_WINDOWS:
         shaderc_path = b"./pyorama/libs/shared/Windows/shadercRelease.exe"
     elif platform_os == app.PLATFORM_OS_LINUX:
@@ -229,3 +230,5 @@ cpdef void utils_runtime_compile_shader(
     except subprocess.CalledProcessError as error:
         error_str = error.output.decode("utf-8")
         raise ValueError("ShaderC compilation failed: {0}".format(error_str))
+
+    print("comp shader", platform_os, shaderc_path, cmd_args)

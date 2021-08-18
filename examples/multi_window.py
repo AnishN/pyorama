@@ -53,6 +53,7 @@ for i in range(num_windows):
     pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
     pyorama.graphics.view_set_clear(view, pyorama.graphics.VIEW_CLEAR_COLOR, color, 0.0, 1.0)
     pyorama.graphics.view_set_rect(view, 0, 0, width, height)
+    #pyorama.graphics.view_touch(view)
     windows.append(window)
     frame_buffers.append(frame_buffer)
     views.append(view)

@@ -100,8 +100,10 @@ def step():
     PyErr_CheckSignals()
     event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
     event.update(curr_time)
+    print("done with event update")
     #physics.update(1.0 / target_fps)
     graphics.update()
+    print("done with graphics update")
     frame_times[frame_index] = frame_time
     frame_count += 1
 

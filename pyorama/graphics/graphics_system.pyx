@@ -24,23 +24,26 @@ cdef class GraphicsSystem:
         self.name = None
 
     def init(self, dict config=None):
+        if config == None:
+            config = {}
+        
         self.renderer_type = config.get("renderer_type", GRAPHICS_RENDERER_TYPE_DEFAULT)
         print(self.renderer_type)
 
         self.c_init_sdl2()
         self.c_init_bgfx()
-        self.slots.c_init(self.slot_sizes)
-        memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
-        memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
-        self.free_view_index = 0
-        self.window_ids.c_init()
+        #self.slots.c_init(self.slot_sizes)
+        #memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
+        #memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
+        #self.free_view_index = 0
+        #self.window_ids.c_init()
     
     def quit(self):
-        self.window_ids.c_free()
-        memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
-        memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
-        self.free_view_index = 0
-        self.slots.c_free()
+        #self.window_ids.c_free()
+        #memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
+        #memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
+        #self.free_view_index = 0
+        #self.slots.c_free()
         self.c_quit_bgfx()
         self.c_quit_sdl2()
 
@@ -60,36 +63,27 @@ cdef class GraphicsSystem:
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)
-        IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)
-        if self.renderer_type == GRAPHICS_RENDERER_TYPE_OPENGLES:
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES)
-            SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, True)
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, True)
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
+        self.wmi = bgfx_fetch_wmi()
+        self.root_window = SDL_CreateWindow(
+            b"", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+            1, 1, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE,
+        )
 
     cdef void c_quit_sdl2(self) except *:
-        if self.renderer_type == GRAPHICS_RENDERER_TYPE_OPENGLES:
-            SDL_GL_ResetAttributes()
-
-        IMG_Quit()
+        SDL_DestroyWindow(self.root_window); self.root_window = NULL
+        free(self.wmi); self.wmi = NULL
         SDL_QuitSubSystem(SDL_INIT_VIDEO)
     
     cdef void c_init_bgfx(self) except *:
-        cdef:
-            bgfx_init_t init
-        
-        self.wmi = bgfx_fetch_wmi()
-        bgfx_init_ctor(&init)
-        init.type = <bgfx_renderer_type_t>self.renderer_type
-        init.resolution.reset = BGFX_RESET_VSYNC
-        bgfx_init(&init)
+        bgfx_get_platform_data_from_window(&self.pd, self.wmi, self.root_window)
+        bgfx_set_platform_data(&self.pd)
+        bgfx_init_ctor(&self.bgfx_init)
+        self.bgfx_init.type = BGFX_RENDERER_TYPE_COUNT
+        self.bgfx_init.resolution.reset = BGFX_RESET_VSYNC
+        bgfx_init(&self.bgfx_init)
     
     cdef void c_quit_bgfx(self) except *:
         bgfx_shutdown()
-        free(self.wmi)
-        self.wmi = NULL
 
     cdef uint16_t c_get_next_view_index(self) except *:
         cdef:
