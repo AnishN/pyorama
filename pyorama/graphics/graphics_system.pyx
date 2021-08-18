@@ -26,39 +26,26 @@ cdef class GraphicsSystem:
     def init(self, dict config=None):
         if config == None:
             config = {}
-        
         self.renderer_type = config.get("renderer_type", GRAPHICS_RENDERER_TYPE_DEFAULT)
-        print(self.renderer_type)
-
         self.c_init_sdl2()
         self.c_init_bgfx()
-        #self.slots.c_init(self.slot_sizes)
-        #memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
-        #memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
-        #self.free_view_index = 0
-        #self.window_ids.c_init()
+        self.slots.c_init(self.slot_sizes)
+        memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
+        memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
+        self.free_view_index = 0
+        self.window_ids.c_init()
     
     def quit(self):
-        #self.window_ids.c_free()
-        #memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
-        #memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
-        #self.free_view_index = 0
-        #self.slots.c_free()
+        self.window_ids.c_free()
+        memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
+        memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
+        self.free_view_index = 0
+        self.slots.c_free()
         self.c_quit_bgfx()
         self.c_quit_sdl2()
+        self.renderer_type = GRAPHICS_RENDERER_TYPE_DEFAULT
 
     def update(self):
-        cdef:
-            SlotMap views
-            size_t num_views
-            size_t i
-            ViewC *view_ptr
-
-        views = self.slots.get_slot_map(GRAPHICS_SLOT_VIEW)
-        num_views = views.items.num_items
-        for i in range(num_views):
-            view_ptr = <ViewC *>views.c_get_ptr_unsafe(i)
-            view_touch(view_ptr.handle)
         bgfx_frame(False)
 
     cdef void c_init_sdl2(self) except *:

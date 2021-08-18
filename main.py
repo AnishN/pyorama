@@ -1,2 +1,0 @@
-import pyorama.simple_pyorama_init_test
-#import pyorama.simple_test

@@ -124,4 +124,3 @@ cpdef void view_touch(Handle view) except *:
     bgfx_set_view_rect(view_ptr.index, view_ptr.rect.x, view_ptr.rect.y, view_ptr.rect.width, view_ptr.rect.height)
     bgfx_set_view_clear(view_ptr.index, view_ptr.clear.flags, view_ptr.clear.color, view_ptr.clear.depth, view_ptr.clear.stencil)
     bgfx_touch(view_ptr.index)
-    print("view touch", view, view_ptr.rect, view_ptr.clear, view_ptr.frame_buffer)
