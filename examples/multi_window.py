@@ -10,24 +10,10 @@ def on_window_event(event, *args, **kwargs):
             pyorama.app.trigger_quit()
 
 def on_enter_frame_event(event, *args, **kwargs):
-    pass
+    for view in views:
+        pyorama.graphics.view_touch(view)
 
-pyorama.app.init({
-    "use_sleep": False,
-    "graphics": {
-        "renderer_type": pyorama.graphics.GRAPHICS_RENDERER_TYPE_OPENGLES
-    }
-})
-
-on_window_listener = pyorama.event.listener_create(
-    pyorama.event.EVENT_TYPE_WINDOW, 
-    on_window_event, None, None,
-)
-
-on_enter_frame_listener = pyorama.event.listener_create(
-    pyorama.event.EVENT_TYPE_ENTER_FRAME,
-    on_enter_frame_event, None, None,
-)
+pyorama.app.init()
 
 windows = []
 frame_buffers = []
@@ -44,27 +30,29 @@ for i in range(num_windows):
     width, height, title = init_params[i]
     color = colors[i]
     window = pyorama.graphics.window_create(width, height, title)
-    #pyorama.graphics.window_set_flags(window, pyorama.graphics.WINDOW_FLAGS_BORDERLESS)
-    #print(pyorama.graphics.window_is_borderless(window))
-    #pyorama.graphics.window_set_maximized(window)
-    #pyorama.graphics.window_toggle_maximized(window)
     frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)
     view = pyorama.graphics.view_create()
     pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
     pyorama.graphics.view_set_clear(view, pyorama.graphics.VIEW_CLEAR_COLOR, color, 0.0, 1.0)
     pyorama.graphics.view_set_rect(view, 0, 0, width, height)
-    #pyorama.graphics.view_touch(view)
     windows.append(window)
     frame_buffers.append(frame_buffer)
     views.append(view)
 
+on_enter_frame_listener = pyorama.event.listener_create(
+    pyorama.event.EVENT_TYPE_ENTER_FRAME,
+    on_enter_frame_event, None, None,
+)
+on_window_listener = pyorama.event.listener_create(
+    pyorama.event.EVENT_TYPE_WINDOW, 
+    on_window_event, None, None,
+)
 pyorama.app.run()
 
+pyorama.event.listener_delete(on_window_listener)
+pyorama.event.listener_delete(on_enter_frame_listener)
 for frame_buffer in frame_buffers:
     pyorama.graphics.frame_buffer_delete(frame_buffer)
 for view in views:
     pyorama.graphics.view_delete(view)
-pyorama.event.listener_delete(on_window_listener)
-pyorama.event.listener_delete(on_enter_frame_listener)
-
 pyorama.app.quit()
