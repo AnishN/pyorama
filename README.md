@@ -3,27 +3,27 @@ A performant game engine written in cython
 
 This library has the following dependencies:
 * Graphics: 
-    * SDL2 (with SDL2_image and SDL2_mixer)
-    * OpenGLES2
-    * Assimp
+    * Bgfx (for cross-platform rendering)
+    * SDL2 (for window creation, including potentially SDL2_image, SDL2_mixer, SDL2_net, and SDL2_ttf)
+    * Assimp (for planned 3d model/asset loading)
+    * Freetype and Harfbuzz (for planned text rendering)
 * Audio:
-    * OpenAL
-    * Ogg/Vorbis
-    * Opus
-    * FLAC
+    * OpenAL (for planned 3d spatial audio)
+    * Ogg/Vorbis, Opus, FLAC (for planned audio file loading)
 * Physics:
-    * Chipmunk
+    * Chipmunk (for planned 2d physics)
 
-## Installation instructions (Linux only):
+## Installation instructions:
 The above C library dependencies are included in the repository as .so (shared library) files.
-These were built in CentOS 7, so they should be compatible with manylinux2014.
-Working on getting Windows and OSX builds (which will be needed for convenient wheels).
+The libraries were built on both Windows 10 and Ubuntu 21.04. Work-in-progress build instructions can be found in BUILD_INSTRUCTIONS.md.
+Working on getting OSX builds as well as (eventually) convenient .whl files.
+Cython and setuptools are needed to build the cython portion of the code.
 
 Install manually as follows:
 ```
 git clone https://github.com/AnishN/pyorama.git
 cd ./pyorama
-python3 setup.py build_ext -i -q -f
+python3 setup.py build_ext -i -q
 ```
 
 Install the library as a development library using pip:
@@ -33,5 +33,5 @@ python3 -m pip install -e . --user
 
 Once this process is complete, you can run files in the example folder as follows:
 ```
-python3 ./examples/sprite_test.py
+python3 ./examples/cubes.py
 ```
