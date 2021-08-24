@@ -20,6 +20,7 @@ cdef class Buffer:
         if items_ptr == NULL:
             raise MEMORY_ERROR
         self.items = <uint8_t[:self.num_items * self.item_size]>items_ptr
+        self.is_owner = True
 
     cpdef void init_and_set_items(self, bytes item_format, list items, bint is_flat=False, size_t num_row_items=0) except *:
         cdef:
@@ -28,11 +29,13 @@ cdef class Buffer:
         self.set_items(items, is_flat=is_flat, num_row_items=num_row_items)
 
     cpdef void free(self) except *:
-        self.item_size = 0
-        self.num_items = 0
-        self.item_format = None
-        free(&self.items[0])
-        self.items = None
+        if self.is_owner:
+            self.item_size = 0
+            self.num_items = 0
+            self.item_format = None
+            free(&self.items[0])
+            self.items = None
+            self.is_owner = False
     
     cpdef void set_items(self, list items, size_t start_index=0, bint is_flat=False, size_t num_row_items=0) except *:
         cdef:
@@ -50,3 +53,10 @@ cdef class Buffer:
                 item = <tuple>items[i:i+num_row_items]
                 py_struct.pack_into(self.item_format, self.items, offset, *item)
                 offset += self.item_size
+
+    cdef void c_init_from_ptr(self, bytes item_format, uint8_t *items_ptr, size_t num_items) except *:
+        self.num_items = num_items
+        self.item_format = item_format
+        self.item_size = py_struct.calcsize(self.item_format)
+        self.items = <uint8_t[:self.num_items * self.item_size]>items_ptr
+        self.is_owner = False

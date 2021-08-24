@@ -147,6 +147,16 @@ cd ./harfbuzz-2.7.2
 make
 ```
 
+Chipmunk:
+```
+git clone https://github.com/assimp/assimp.git
+cd ./assimp
+mkdir build
+cd ./build
+cmake -G "MinGW Makefiles" ../
+make
+```
+
 Basic readme cython code build instructions:
 ```
 sudo apt-get install python3-pip

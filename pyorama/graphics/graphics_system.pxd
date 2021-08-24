@@ -7,6 +7,7 @@ from pyorama.libs.sdl2 cimport *
 
 from pyorama.graphics.frame_buffer cimport *
 from pyorama.graphics.index_buffer cimport *
+from pyorama.graphics.mesh cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *
 from pyorama.graphics.vertex_buffer cimport *
@@ -39,6 +40,7 @@ cpdef enum GraphicsSlot:
     GRAPHICS_SLOT_VERTEX_LAYOUT
     GRAPHICS_SLOT_VERTEX_BUFFER
     GRAPHICS_SLOT_INDEX_BUFFER
+    GRAPHICS_SLOT_MESH
 
 cdef class GraphicsSystem:
     cdef:

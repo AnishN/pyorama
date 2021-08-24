@@ -14,6 +14,7 @@ cdef class GraphicsSystem:
             GRAPHICS_SLOT_VERTEX_LAYOUT: sizeof(VertexLayoutC),
             GRAPHICS_SLOT_VERTEX_BUFFER: sizeof(VertexBufferC),
             GRAPHICS_SLOT_INDEX_BUFFER: sizeof(IndexBufferC),
+            GRAPHICS_SLOT_MESH: sizeof(MeshC),
         }
         self.window_ids = HashMap()
     

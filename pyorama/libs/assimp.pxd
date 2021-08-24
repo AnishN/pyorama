@@ -403,8 +403,10 @@ cdef extern from "assimp/scene.h":
         aiCamera** mCameras
 
 cdef extern from "assimp/cfileio.h":
-    cdef struct aiFileIO
-    cdef struct aiFile
+    cdef struct aiFileIO:
+        pass
+    cdef struct aiFile:
+        pass
     ctypedef size_t (*aiFileWriteProc) (aiFile*, const char*, size_t, size_t)
     ctypedef size_t (*aiFileReadProc) (aiFile*, char*, size_t,size_t)
     ctypedef size_t (*aiFileTellProc) (aiFile*)

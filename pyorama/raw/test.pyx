@@ -168,7 +168,7 @@ window = pyorama.graphics.window_create(width, height, title)
 frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)
 view = pyorama.graphics.view_create()
 
-print("loop time!")
+#print("loop time!")
 
 on_window_listener = pyorama.event.listener_create(
     pyorama.event.EVENT_TYPE_WINDOW, 

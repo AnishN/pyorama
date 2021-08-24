@@ -231,4 +231,4 @@ cpdef void utils_runtime_compile_shader(
         error_str = error.output.decode("utf-8")
         raise ValueError("ShaderC compilation failed: {0}".format(error_str))
 
-    print("comp shader", platform_os, shaderc_path, cmd_args)
+    #print("comp shader", platform_os, shaderc_path, cmd_args)

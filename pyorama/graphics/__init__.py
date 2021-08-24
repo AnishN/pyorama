@@ -2,6 +2,7 @@ from pyorama.graphics.graphics_system import *
 from pyorama.graphics.graphics_utils import *
 from pyorama.graphics.frame_buffer import *
 from pyorama.graphics.index_buffer import *
+from pyorama.graphics.mesh import *
 from pyorama.graphics.program import *
 from pyorama.graphics.shader import *
 from pyorama.graphics.vertex_buffer import *
