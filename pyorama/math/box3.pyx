@@ -4,6 +4,28 @@ from pyorama.math.vec3 cimport *
 
 cdef class Box3:
     
+    def __init__(self, Vec3 min, Vec3 max):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <Box3C *>calloc(1, sizeof(Box3C))
+            if self.data == NULL:
+                raise MemoryError("Box3: failed to allocate data")
+            self.is_owner = True
+            self.data.min = min.data[0]
+            self.data.max = max.data[0]
+    
+    def __dealloc__(self):
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+    
+    @staticmethod
+    cdef Box3 c_from_ptr(Box3C *a):
+        cdef Box3 out = Box3.__new__(Box3)
+        out.data = a
+        out.is_owner = False
+        return out
+
     @staticmethod
     cdef void c_center(Vec3C *out, Box3C *a) nogil:
         out.x = 0.5 * (a.min.x + a.max.x)

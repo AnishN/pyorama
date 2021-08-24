@@ -3,8 +3,12 @@ from pyorama.math.common cimport *
 from pyorama.math.vec3 cimport *
 
 cdef class Box3:
-    cdef Box3C data
+    cdef:
+        Box3C *data
+        readonly bint is_owner
 
+    @staticmethod
+    cdef Box3 c_from_ptr(Box3C *a)
     @staticmethod
     cdef void c_center(Vec3C *out, Box3C *a) nogil
     @staticmethod
