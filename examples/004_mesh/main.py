@@ -29,12 +29,12 @@ def on_enter_frame_event(event, *args, **kwargs):
 def runtime_compile_shaders():
     pyorama.graphics.utils_runtime_compile_shader(
         in_file_path=b"./examples/004_mesh/vs_mesh.sc",
-        out_file_path=b"./examples/004_mesh/vs_mesh.glsl",
+        out_file_path=b"./examples/004_mesh/vs_mesh.sc_bin",
         shader_type=pyorama.graphics.SHADER_TYPE_VERTEX,
     )
     pyorama.graphics.utils_runtime_compile_shader(
         in_file_path=b"./examples/004_mesh/fs_mesh.sc",
-        out_file_path=b"./examples/004_mesh/fs_mesh.glsl",
+        out_file_path=b"./examples/004_mesh/fs_mesh.sc_bin",
         shader_type=pyorama.graphics.SHADER_TYPE_FRAGMENT,
     )
 
@@ -73,8 +73,8 @@ indices = pyorama.graphics.mesh_get_indices(mesh)
 index_buffer = pyorama.graphics.index_buffer_create(index_layout, indices)
 
 runtime_compile_shaders()
-vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, b"./examples/004_mesh/vs_mesh.glsl")
-fragment_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_FRAGMENT, b"./examples/004_mesh/fs_mesh.glsl")
+vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, b"./examples/004_mesh/vs_mesh.sc_bin")
+fragment_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_FRAGMENT, b"./examples/004_mesh/fs_mesh.sc_bin")
 program = pyorama.graphics.program_create(vertex_shader, fragment_shader)
 window = pyorama.graphics.window_create(width, height, title)
 frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)

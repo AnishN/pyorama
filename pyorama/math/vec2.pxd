@@ -12,6 +12,7 @@ cdef class Vec2:
     
     @staticmethod
     cdef Vec2 c_from_ptr(Vec2C *a)
+    cdef void c_set_ptr(self, Vec2C *a) nogil
     
     @staticmethod
     cdef void c_add(Vec2C *out, Vec2C *a, Vec2C *b) nogil

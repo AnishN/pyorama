@@ -10,6 +10,8 @@ cdef class Mat4:
     
     @staticmethod
     cdef Mat4 c_from_ptr(Mat4C *a)
+    cdef void c_set_ptr(self, Mat4C *a) nogil
+
     @staticmethod
     cdef void c_add(Mat4C *out, Mat4C *a, Mat4C *b) nogil
     @staticmethod

@@ -203,7 +203,6 @@ cpdef void utils_runtime_compile_shader(
 
     #find the shaderc executable path
     platform_os = app.c_get_platform_os()
-
     if platform_os == app.PLATFORM_OS_WINDOWS:
         shaderc_path = b"./pyorama/libs/shared/Windows/shadercRelease.exe"
     elif platform_os == app.PLATFORM_OS_LINUX:
@@ -220,6 +219,7 @@ cpdef void utils_runtime_compile_shader(
     cmd_args = [
         shaderc_path,
         "-f", in_file_path,
+        "-i", b"./resources/shaders",
         "-o", out_file_path,
         "--type", shader_type_str,
         "--platform", target_str,

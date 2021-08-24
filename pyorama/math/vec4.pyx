@@ -21,6 +21,13 @@ cdef class Vec4:
         out.is_owner = False
         return out
     
+    cdef void c_set_ptr(self, Vec4C *a) nogil:
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+        self.data = a
+
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         buffer.buf = self.data
         buffer.len = 4

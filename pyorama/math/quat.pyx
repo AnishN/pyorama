@@ -21,6 +21,13 @@ cdef class Quat:
         out.is_owner = False
         return out
 
+    cdef void c_set_ptr(self, QuatC *a) nogil:
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+        self.data = a
+
     def __dealloc__(self):
         memset(self.data, 0, sizeof(QuatC))
     

@@ -26,6 +26,13 @@ cdef class Box3:
         out.is_owner = False
         return out
 
+    cdef void c_set_ptr(self, Box3C *a) nogil:
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+        self.data = a
+
     @staticmethod
     cdef void c_center(Vec3C *out, Box3C *a) nogil:
         out.x = 0.5 * (a.min.x + a.max.x)

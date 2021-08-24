@@ -11,6 +11,8 @@ cdef class Mat3:
     
     @staticmethod
     cdef Mat3 c_from_ptr(Mat3C *a)
+    cdef void c_set_ptr(self, Mat3C *a) nogil
+
     @staticmethod
     cdef void c_add(Mat3C *out, Mat3C *a, Mat3C *b) nogil
     @staticmethod

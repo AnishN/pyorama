@@ -9,6 +9,8 @@ cdef class Box3:
 
     @staticmethod
     cdef Box3 c_from_ptr(Box3C *a)
+    cdef void c_set_ptr(self, Box3C *a) nogil
+    
     @staticmethod
     cdef void c_center(Vec3C *out, Box3C *a) nogil
     @staticmethod

@@ -10,6 +10,8 @@ cdef class Quat:
     
     @staticmethod
     cdef Quat c_from_ptr(QuatC *a)
+    cdef void c_set_ptr(self, QuatC *a) nogil
+
     @staticmethod
     cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil
     @staticmethod
