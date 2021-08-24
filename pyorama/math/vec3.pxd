@@ -5,7 +5,12 @@ from pyorama.math.mat4 cimport *
 from pyorama.math.quat cimport *
 
 cdef class Vec3:
-    cdef Vec3C data
+    cdef:
+        Vec3C *data
+        readonly bint is_owner
+    
+    @staticmethod
+    cdef Vec3 c_from_ptr(Vec3C *a)
     
     @staticmethod
     cdef void c_add(Vec3C *out, Vec3C *a, Vec3C *b) nogil

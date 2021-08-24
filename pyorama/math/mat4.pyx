@@ -1,18 +1,33 @@
 cdef class Mat4:
     
-    def __cinit__(self):
-        Mat4.c_identity(&self.data)
+    def __init__(self):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <Mat4C *>calloc(1, sizeof(Mat4C))
+            if self.data == NULL:
+                raise MemoryError("Mat4: failed to allocate data")
+            self.is_owner = True
+        Mat4.c_identity(self.data)
     
     def __dealloc__(self):
-        memset(&self.data, 0, sizeof(Mat4C))
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+    
+    @staticmethod
+    cdef Mat4 c_from_ptr(Mat4C *a):
+        cdef Mat4 out = Mat4.__new__(Mat4)
+        out.data = a
+        out.is_owner = False
+        return out
     
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = &self.data
+        buffer.buf = self.data
         buffer.len = 16
         buffer.readonly = 0
         buffer.format = "f"
         buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>&buffer.len
+        buffer.shape = <Py_ssize_t *>buffer.len
         buffer.strides = NULL
         buffer.suboffsets = NULL
         buffer.itemsize = sizeof(float)
@@ -23,134 +38,134 @@ cdef class Mat4:
     
     @staticmethod
     def add(Mat4 out, Mat4 a, Mat4 b):
-        Mat4.c_add(&out.data, &a.data, &b.data)
+        Mat4.c_add(out.data, a.data, b.data)
 
     @staticmethod
     def copy(Mat4 out, Mat4 a):
-        Mat4.c_copy(&out.data, &a.data)
+        Mat4.c_copy(out.data, a.data)
 
     @staticmethod
     def det(Mat4 a):
-        return Mat4.c_det(&a.data)
+        return Mat4.c_det(a.data)
 
     @staticmethod
     def div(Mat4 out, Mat4 a, Mat4 b):
-        Mat4.c_div(&out.data, &a.data, &b.data)
+        Mat4.c_div(out.data, a.data, b.data)
 
     @staticmethod
     def dot(Mat4 out, Mat4 a, Mat4 b):
-        Mat4.c_dot(&out.data, &a.data, &b.data)
+        Mat4.c_dot(out.data, a.data, b.data)
 
     @staticmethod
     def equals(Mat4 a, Mat4 b):
-        return Mat4.c_equals(&a.data, &b.data)
+        return Mat4.c_equals(a.data, b.data)
 
     @staticmethod
     def from_quat(Mat4 out, Quat a):
-        Mat4.c_from_quat(&out.data, &a.data)
+        Mat4.c_from_quat(out.data, a.data)
 
     @staticmethod
     def from_rotation(Mat4 out, float radians, Vec3 axis):
-        Mat4.c_from_rotation(&out.data, radians, &axis.data)
+        Mat4.c_from_rotation(out.data, radians, axis.data)
 
     @staticmethod
     def from_rotation_x(Mat4 out, float radians):
-        Mat4.c_from_rotation_x(&out.data, radians)
+        Mat4.c_from_rotation_x(out.data, radians)
 
     @staticmethod
     def from_rotation_y(Mat4 out, float radians):
-        Mat4.c_from_rotation_y(&out.data, radians)
+        Mat4.c_from_rotation_y(out.data, radians)
 
     @staticmethod
     def from_rotation_z(Mat4 out, float radians):
-        Mat4.c_from_rotation_z(&out.data, radians)
+        Mat4.c_from_rotation_z(out.data, radians)
 
     @staticmethod
     def from_scaling(Mat4 out, Vec3 scale):
-        Mat4.c_from_scaling(&out.data, &scale.data)
+        Mat4.c_from_scaling(out.data, scale.data)
 
     @staticmethod
     def from_translation(Mat4 out, Vec3 shift):
-        Mat4.c_from_translation(&out.data, &shift.data)
+        Mat4.c_from_translation(out.data, shift.data)
 
     @staticmethod
     def frustum(Mat4 out, float left, float right, float bottom, float top, float near, float far):
-        Mat4.c_frustum(&out.data, left, right, bottom, top, near, far)
+        Mat4.c_frustum(out.data, left, right, bottom, top, near, far)
 
     @staticmethod
     def get_rotation(Quat out, Mat4 a):
-        Mat4.c_get_rotation(&out.data, &a.data)
+        Mat4.c_get_rotation(out.data, a.data)
 
     @staticmethod
     def get_scale(Vec3 out, Mat4 a):
-        Mat4.c_get_scale(&out.data, &a.data)
+        Mat4.c_get_scale(out.data, a.data)
 
     @staticmethod
     def get_translation(Vec3 out, Mat4 a):
-        Mat4.c_get_translation(&out.data, &a.data)
+        Mat4.c_get_translation(out.data, a.data)
 
     @staticmethod
     def identity(Mat4 out):
-        Mat4.c_identity(&out.data)
+        Mat4.c_identity(out.data)
 
     @staticmethod
     def inv(Mat4 out, Mat4 a):
-        Mat4.c_inv(&out.data, &a.data)
+        Mat4.c_inv(out.data, a.data)
 
     @staticmethod
     def look_at(Mat4 out, Vec3 eye, Vec3 center, Vec3 up):
-        Mat4.c_look_at(&out.data, &eye.data, &center.data, &up.data)
+        Mat4.c_look_at(out.data, eye.data, center.data, up.data)
 
     @staticmethod
     def mul(Mat4 out, Mat4 a, Mat4 b):
-        Mat4.c_mul(&out.data, &a.data, &b.data)
+        Mat4.c_mul(out.data, a.data, b.data)
 
     @staticmethod
     def nearly_equals(Mat4 a, Mat4 b, float epsilon=0.000001):
-        return Mat4.c_nearly_equals(&a.data, &b.data, epsilon)
+        return Mat4.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
     def ortho(Mat4 out, float left, float right, float bottom, float top, float near, float far):
-        Mat4.c_ortho(&out.data, left, right, bottom, top, near, far)
+        Mat4.c_ortho(out.data, left, right, bottom, top, near, far)
 
     @staticmethod
     def perspective(Mat4 out, float fovy, float aspect, float near, float far):
-        Mat4.c_perspective(&out.data, fovy, aspect, near, far)
+        Mat4.c_perspective(out.data, fovy, aspect, near, far)
 
     @staticmethod
     def random(Mat4 out):
-        Mat4.c_random(&out.data)
+        Mat4.c_random(out.data)
 
     @staticmethod
     def rotate(Mat4 out, Mat4 a, float radians, Vec3 axis):
-        Mat4.c_rotate(&out.data, &a.data, radians, &axis.data)
+        Mat4.c_rotate(out.data, a.data, radians, axis.data)
 
     @staticmethod
     def rotate_x(Mat4 out, Mat4 a, float radians):
-        Mat4.c_rotate_x(&out.data, &a.data, radians)
+        Mat4.c_rotate_x(out.data, a.data, radians)
 
     @staticmethod
     def rotate_y(Mat4 out, Mat4 a, float radians):
-        Mat4.c_rotate_y(&out.data, &a.data, radians)
+        Mat4.c_rotate_y(out.data, a.data, radians)
 
     @staticmethod
     def rotate_z(Mat4 out, Mat4 a, float radians):
-        Mat4.c_rotate_z(&out.data, &a.data, radians)
+        Mat4.c_rotate_z(out.data, a.data, radians)
 
     @staticmethod
     def scale(Mat4 out, Mat4 a, Vec3 factor):
-        Mat4.c_scale(&out.data, &a.data, &factor.data)
+        Mat4.c_scale(out.data, a.data, factor.data)
 
     @staticmethod
     def scale_add(Mat4 out, Mat4 a, float scale=1.0, float add=0.0):
-        Mat4.c_scale_add(&out.data, &a.data, scale, add)
+        Mat4.c_scale_add(out.data, a.data, scale, add)
 
     @staticmethod
     def set_data(Mat4 out, float m00=0.0, float m01=0.0, float m02=0.0, float m03=0.0,
             float m10=0.0, float m11=0.0, float m12=0.0, float m13=0.0,
             float m20=0.0, float m21=0.0, float m22=0.0, float m23=0.0,
             float m30=0.0, float m31=0.0, float m32=0.0, float m33=0.0):
-        Mat4.c_set_data(&out.data, 
+        Mat4.c_set_data(out.data, 
                 m00, m01, m02, m03,
                 m10, m11, m12, m13,
                 m20, m21, m22, m23,
@@ -158,15 +173,15 @@ cdef class Mat4:
 
     @staticmethod
     def sub(Mat4 out, Mat4 a, Mat4 b):
-        Mat4.c_sub(&out.data, &a.data, &b.data)
+        Mat4.c_sub(out.data, a.data, b.data)
 
     @staticmethod
     def translate(Mat4 out, Mat4 a, Vec3 shift):
-        Mat4.c_translate(&out.data, &a.data, &shift.data)
+        Mat4.c_translate(out.data, a.data, shift.data)
 
     @staticmethod
     def transpose(Mat4 out, Mat4 a):
-        Mat4.c_transpose(&out.data, &a.data)
+        Mat4.c_transpose(out.data, a.data)
     
     @staticmethod
     cdef void c_add(Mat4C *out, Mat4C *a, Mat4C *b) nogil:

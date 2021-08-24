@@ -1,17 +1,33 @@
 cdef class Mat2:
-    def __cinit__(self):
-        Mat2.c_identity(&self.data)
+
+    def __init__(self):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <Mat2C *>calloc(1, sizeof(Mat2C))
+            if self.data == NULL:
+                raise MemoryError("Mat2: failed to allocate data")
+            self.is_owner = True
+        Mat2.c_identity(self.data)
     
     def __dealloc__(self):
-        memset(&self.data, 0, sizeof(Mat2C))
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
     
+    @staticmethod
+    cdef Mat2 c_from_ptr(Mat2C *a):
+        cdef Mat2 out = Mat2.__new__(Mat2)
+        out.data = a
+        out.is_owner = False
+        return out
+
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = &self.data
+        buffer.buf = self.data
         buffer.len = 4
         buffer.readonly = 0
         buffer.format = "f"
         buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>&buffer.len
+        buffer.shape = <Py_ssize_t *>buffer.len
         buffer.strides = NULL
         buffer.suboffsets = NULL
         buffer.itemsize = sizeof(float)
@@ -22,79 +38,79 @@ cdef class Mat2:
     
     @staticmethod
     def add(Mat2 out, Mat2 a, Mat2 b):
-        Mat2.c_add(&out.data, &a.data, &b.data)
+        Mat2.c_add(out.data, a.data, b.data)
     
     @staticmethod
     def copy(Mat2 out, Mat2 a):
-        Mat2.c_copy(&out.data, &a.data)
+        Mat2.c_copy(out.data, a.data)
 
     @staticmethod
     def det(Mat2 a):
-        return Mat2.c_det(&a.data)
+        return Mat2.c_det(a.data)
 
     @staticmethod
     def div(Mat2 out, Mat2 a, Mat2 b):
-        Mat2.c_div(&out.data, &a.data, &b.data)
+        Mat2.c_div(out.data, a.data, b.data)
 
     @staticmethod
     def dot(Mat2 out, Mat2 a, Mat2 b):
-        Mat2.c_dot(&out.data, &a.data, &b.data)
+        Mat2.c_dot(out.data, a.data, b.data)
 
     @staticmethod
     def equals(Mat2 a, Mat2 b):
-        return Mat2.c_equals(&a.data, &b.data)
+        return Mat2.c_equals(a.data, b.data)
 
     @staticmethod
     def from_rotation(Mat2 out, float radians):
-        Mat2.c_from_rotation(&out.data, radians)
+        Mat2.c_from_rotation(out.data, radians)
 
     @staticmethod
     def from_scaling(Mat2 out, Vec3 scale):
-        Mat2.c_from_scaling(&out.data, &scale.data)
+        Mat2.c_from_scaling(out.data, scale.data)
     
     @staticmethod
     def identity(Mat2 out):
-        Mat2.c_identity(&out.data)
+        Mat2.c_identity(out.data)
 
     @staticmethod
     def inv(Mat2 out, Mat2 a):
-        Mat2.c_inv(&out.data, &a.data)
+        Mat2.c_inv(out.data, a.data)
 
     @staticmethod
     def mul(Mat2 out, Mat2 a, Mat2 b):
-        Mat2.c_mul(&out.data, &a.data, &b.data)
+        Mat2.c_mul(out.data, a.data, b.data)
 
     @staticmethod
     def nearly_equals(Mat2 a, Mat2 b, float epsilon=0.000001):
-        return Mat2.c_nearly_equals(&a.data, &b.data, epsilon)
+        return Mat2.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
     def random(Mat2 out):
-        Mat2.c_random(&out.data)
+        Mat2.c_random(out.data)
 
     @staticmethod
     def rotate(Mat2 out, Mat2 a, float radians):
-        Mat2.c_rotate(&out.data, &a.data, radians)
+        Mat2.c_rotate(out.data, a.data, radians)
 
     @staticmethod
     def scale(Mat2 out, Mat2 a, Vec3 factor):
-        Mat2.c_scale(&out.data, &a.data, &factor.data)
+        Mat2.c_scale(out.data, a.data, factor.data)
 
     @staticmethod
     def scale_add(Mat2 out, Mat2 a, float scale=1.0, float add=0.0):
-        Mat2.c_scale_add(&out.data, &a.data, scale, add)
+        Mat2.c_scale_add(out.data, a.data, scale, add)
 
     @staticmethod
     def set_data(Mat2 out, float m00=0.0, float m01=0.0, float m10=0.0, float m11=0.0):
-        Mat2.c_set_data(&out.data, m00, m01, m10, m11)
+        Mat2.c_set_data(out.data, m00, m01, m10, m11)
 
     @staticmethod
     def sub(Mat2 out, Mat2 a, Mat2 b):
-        Mat2.c_sub(&out.data, &a.data, &b.data)
+        Mat2.c_sub(out.data, a.data, b.data)
     
     @staticmethod
     def transpose(Mat2 out, Mat2 a):
-        Mat2.c_transpose(&out.data, &a.data)
+        Mat2.c_transpose(out.data, a.data)
     
     @staticmethod
     cdef void c_add(Mat2C *out, Mat2C *a, Mat2C *b) nogil:

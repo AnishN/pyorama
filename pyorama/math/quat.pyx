@@ -1,18 +1,36 @@
 cdef class Quat:
-    
-    def __cinit__(self, float x=0.0, float y=0.0, float z=0.0, float w=0.0):
-        Quat.c_set_data(&self.data, x, y, z, w)
+
+    def __init__(self, float x=0.0, float y=0.0, float z=0.0, float w=0.0):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <QuatC *>calloc(1, sizeof(QuatC))
+            if self.data == NULL:
+                raise MemoryError("Quat: failed to allocate data")
+            self.is_owner = True
+        Quat.c_set_data(self.data, x, y, z, w)
     
     def __dealloc__(self):
-        memset(&self.data, 0, sizeof(QuatC))
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+    
+    @staticmethod
+    cdef Quat c_from_ptr(QuatC *a):
+        cdef Quat out = Quat.__new__(Quat)
+        out.data = a
+        out.is_owner = False
+        return out
+
+    def __dealloc__(self):
+        memset(self.data, 0, sizeof(QuatC))
     
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = &self.data
+        buffer.buf = self.data
         buffer.len = 4
         buffer.readonly = 0
         buffer.format = "f"
         buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>&buffer.len
+        buffer.shape = <Py_ssize_t *>buffer.len
         buffer.strides = NULL
         buffer.suboffsets = NULL
         buffer.itemsize = sizeof(float)
@@ -39,107 +57,107 @@ cdef class Quat:
         
     @staticmethod
     def add(Quat out, Quat a, Quat b):
-        Quat.c_add(&out.data, &a.data, &b.data)
+        Quat.c_add(out.data, a.data, b.data)
 
     @staticmethod
     def calculate_w(Quat out, Quat a):
-        Quat.c_calculate_w(&out.data, &a.data)
+        Quat.c_calculate_w(out.data, a.data)
 
     @staticmethod
     def conjugate(Quat out, Quat a):
-        Quat.c_conjugate(&out.data, &a.data)
+        Quat.c_conjugate(out.data, a.data)
 
     @staticmethod
     def copy(Quat out, Quat a):
-        Quat.c_copy(&out.data, &a.data)
+        Quat.c_copy(out.data, a.data)
 
     @staticmethod
     def dot(Quat a, Quat b):
-        return Quat.c_dot(&a.data, &b.data)
+        return Quat.c_dot(a.data, b.data)
 
     @staticmethod
     def equals(Quat a, Quat b):
-        return Quat.c_equals(&a.data, &b.data)
+        return Quat.c_equals(a.data, b.data)
 
     @staticmethod
     def from_euler(Quat out, float x, float y, float z):
-        Quat.c_from_euler(&out.data, x, y, z)
+        Quat.c_from_euler(out.data, x, y, z)
 
     @staticmethod
     def from_mat3(Quat out, Mat3 a):
-        Quat.c_from_mat3(&out.data, &a.data)
+        Quat.c_from_mat3(out.data, a.data)
 
     @staticmethod
     def get_axis_angle(Vec3 out, Quat a):
-        return Quat.c_get_axis_angle(&out.data, &a.data)
+        return Quat.c_get_axis_angle(out.data, a.data)
 
     @staticmethod
     def identity(Quat out):
-        Quat.c_identity(&out.data)
+        Quat.c_identity(out.data)
 
     @staticmethod
     def inv(Quat out, Quat a):
-        Quat.c_inv(&out.data, &a.data)
+        Quat.c_inv(out.data, a.data)
 
     @staticmethod
     def length(Quat a):
-        return Quat.c_length(&a.data)
+        return Quat.c_length(a.data)
 
     @staticmethod
     def lerp(Quat out, Quat a, Quat b, float t):
-        Quat.c_lerp(&out.data, &a.data, &b.data, t)
+        Quat.c_lerp(out.data, a.data, b.data, t)
 
     @staticmethod
     def mul(Quat out, Quat a, Quat b):
-        Quat.c_mul(&out.data, &a.data, &b.data)
+        Quat.c_mul(out.data, a.data, b.data)
 
     @staticmethod
     def nearly_equals(Quat a, Quat b, float epsilon=0.000001):
-        return Quat.c_nearly_equals(&a.data, &b.data, epsilon)
+        return Quat.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
     def norm(Quat out, Quat a):
-        Quat.c_norm(&out.data, &a.data)
+        Quat.c_norm(out.data, a.data)
 
     @staticmethod
     def rotate_x(Quat out, Quat a, float radians):
-        Quat.c_rotate_x(&out.data, &a.data, radians)
+        Quat.c_rotate_x(out.data, a.data, radians)
 
     @staticmethod
     def rotate_y(Quat out, Quat a, float radians):
-        Quat.c_rotate_y(&out.data, &a.data, radians)
+        Quat.c_rotate_y(out.data, a.data, radians)
 
     @staticmethod
     def rotate_z(Quat out, Quat a, float radians):
-        Quat.c_rotate_z(&out.data, &a.data, radians)
+        Quat.c_rotate_z(out.data, a.data, radians)
 
     @staticmethod
     def rotation_to(Quat out, Vec3 a, Vec3 b):
-        Quat.c_rotation_to(&out.data, &a.data, &b.data)
+        Quat.c_rotation_to(out.data, a.data, b.data)
 
     @staticmethod
     def scale_add(Quat out, Quat a, float scale=1.0, float add=0.0):
-        Quat.c_scale_add(&out.data, &a.data, scale, add)
+        Quat.c_scale_add(out.data, a.data, scale, add)
 
     @staticmethod
     def set_axes(Quat out, Vec3 view, Vec3 right, Vec3 up):
-        Quat.c_set_axes(&out.data, &view.data, &right.data, &up.data)
+        Quat.c_set_axes(out.data, view.data, right.data, up.data)
 
     @staticmethod
     def set_axis_angle(Quat out, Vec3 axis, float radians):
-        Quat.c_set_axis_angle(&out.data, &axis.data, radians)
+        Quat.c_set_axis_angle(out.data, axis.data, radians)
 
     @staticmethod
     def set_data(Quat out, float x=0.0, float y=0.0, float z=0.0, float w=0.0):
-        Quat.c_set_data(&out.data, x, y, z, w)
+        Quat.c_set_data(out.data, x, y, z, w)
 
     @staticmethod
     def slerp(Quat out, Quat a, Quat b, float t):
-        Quat.c_slerp(&out.data, &a.data, &b.data, t)
+        Quat.c_slerp(out.data, a.data, b.data, t)
 
     @staticmethod
     def sqr_length(Quat a):
-        return Quat.c_sqr_length(&a.data)
+        return Quat.c_sqr_length(a.data)
     
     @staticmethod
     cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil:

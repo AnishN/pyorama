@@ -1,18 +1,33 @@
 cdef class Mat3:
     
-    def __cinit__(self):
-        Mat3.c_identity(&self.data)
+    def __init__(self):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <Mat3C *>calloc(1, sizeof(Mat3C))
+            if self.data == NULL:
+                raise MemoryError("Mat3: failed to allocate data")
+            self.is_owner = True
+        Mat3.c_identity(self.data)
     
     def __dealloc__(self):
-        memset(&self.data, 0, sizeof(Mat3C))
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+    
+    @staticmethod
+    cdef Mat3 c_from_ptr(Mat3C *a):
+        cdef Mat3 out = Mat3.__new__(Mat3)
+        out.data = a
+        out.is_owner = False
+        return out
     
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = &self.data
+        buffer.buf = self.data
         buffer.len = 9
         buffer.readonly = 0
         buffer.format = "f"
         buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>&buffer.len
+        buffer.shape = <Py_ssize_t *>buffer.len
         buffer.strides = NULL
         buffer.suboffsets = NULL
         buffer.itemsize = sizeof(float)
@@ -23,128 +38,128 @@ cdef class Mat3:
     
     @staticmethod
     def add(Mat3 out, Mat3 a, Mat3 b):
-        Mat3.c_add(&out.data, &a.data, &b.data)
+        Mat3.c_add(out.data, a.data, b.data)
 
     @staticmethod
     def copy(Mat3 out, Mat3 a):
-        Mat3.c_copy(&out.data, &a.data)
+        Mat3.c_copy(out.data, a.data)
 
     @staticmethod
     def det(Mat3 a):
-        return Mat3.c_det(&a.data)
+        return Mat3.c_det(a.data)
 
     @staticmethod
     def div(Mat3 out, Mat3 a, Mat3 b):
-        Mat3.c_div(&out.data, &a.data, &b.data)
+        Mat3.c_div(out.data, a.data, b.data)
 
     @staticmethod
     def dot(Mat3 out, Mat3 a, Mat3 b):
-        Mat3.c_dot(&out.data, &a.data, &b.data)
+        Mat3.c_dot(out.data, a.data, b.data)
 
     @staticmethod
     def equals(Mat3 a, Mat3 b):
-        return Mat3.c_equals(&a.data, &b.data)
+        return Mat3.c_equals(a.data, b.data)
 
     @staticmethod
     def from_mat4(Mat3 out, Mat4 a):
-        Mat3.c_from_mat4(&out.data, &a.data)
+        Mat3.c_from_mat4(out.data, a.data)
 
     @staticmethod
     def from_quat(Mat3 out, Quat a):
-        Mat3.c_from_quat(&out.data, &a.data)
+        Mat3.c_from_quat(out.data, a.data)
 
     @staticmethod
     def from_rotation(Mat3 out, float radians):
-        Mat3.c_from_rotation(&out.data, radians)
+        Mat3.c_from_rotation(out.data, radians)
 
     @staticmethod
     def from_scaling(Mat3 out, Vec2 scale):
-        Mat3.c_from_scaling(&out.data, &scale.data)
+        Mat3.c_from_scaling(out.data, scale.data)
 
     @staticmethod
     def from_skewing(Mat3 out, Vec2 factor):
-        Mat3.c_from_skewing(&out.data, &factor.data)
+        Mat3.c_from_skewing(out.data, factor.data)
 
     @staticmethod
     def from_skewing_x(Mat3 out, float radians):
-        Mat3.c_from_skewing_x(&out.data, radians)
+        Mat3.c_from_skewing_x(out.data, radians)
 
     @staticmethod
     def from_skewing_y(Mat3 out, float radians):
-        Mat3.c_from_skewing_y(&out.data, radians)
+        Mat3.c_from_skewing_y(out.data, radians)
 
     @staticmethod
     def from_translation(Mat3 out, Vec2 shift):
-        Mat3.c_from_translation(&out.data, &shift.data)
+        Mat3.c_from_translation(out.data, shift.data)
 
     @staticmethod
     def identity(Mat3 out):
-        Mat3.c_identity(&out.data)
+        Mat3.c_identity(out.data)
 
     @staticmethod
     def inv(Mat3 out, Mat3 a):
-        Mat3.c_inv(&out.data, &a.data)
+        Mat3.c_inv(out.data, a.data)
 
     @staticmethod
     def mul(Mat3 out, Mat3 a, Mat3 b):
-        Mat3.c_mul(&out.data, &a.data, &b.data)
+        Mat3.c_mul(out.data, a.data, b.data)
 
     @staticmethod
     def nearly_equals(Mat3 a, Mat3 b, float epsilon=0.000001):
-        return Mat3.c_nearly_equals(&a.data, &b.data, epsilon)
+        return Mat3.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
     def normal_from_mat4(Mat3 out, Mat4 a):
-        Mat3.c_normal_from_mat4(&out.data, &a.data)
+        Mat3.c_normal_from_mat4(out.data, a.data)
 
     @staticmethod
     def random(Mat3 out):
-        Mat3.c_random(&out.data)
+        Mat3.c_random(out.data)
 
     @staticmethod
     def rotate(Mat3 out, Mat3 a, float radians):
-        Mat3.c_rotate(&out.data, &a.data, radians)
+        Mat3.c_rotate(out.data, a.data, radians)
 
     @staticmethod
     def scale(Mat3 out, Mat3 a, Vec2 factor):
-        Mat3.c_scale(&out.data, &a.data, &factor.data)
+        Mat3.c_scale(out.data, a.data, factor.data)
 
     @staticmethod
     def scale_add(Mat3 out, Mat3 a, float scale=1.0, float add=0.0):
-        Mat3.c_scale_add(&out.data, &a.data, scale, add)
+        Mat3.c_scale_add(out.data, a.data, scale, add)
 
     @staticmethod
     def set_data(Mat3 out, float m00=0.0, float m01=0.0, float m02=0.0,
             float m10=0.0, float m11=0.0, float m12=0.0,
             float m20=0.0, float m21=0.0, float m22=0.0):
-        Mat3.c_set_data(&out.data,
+        Mat3.c_set_data(out.data,
                 m00, m01, m02,
                 m10, m11, m12,
                 m20, m21, m22)
 
     @staticmethod
     def skew(Mat3 out, Mat3 a, Vec2 factor):
-        Mat3.c_skew(&out.data, &a.data, &factor.data)
+        Mat3.c_skew(out.data, a.data, factor.data)
 
     @staticmethod
     def skew_x(Mat3 out, Mat3 a, float radians):
-        Mat3.c_skew_x(&out.data, &a.data, radians)
+        Mat3.c_skew_x(out.data, a.data, radians)
 
     @staticmethod
     def skew_y(Mat3 out, Mat3 a, float radians):
-        Mat3.c_skew_y(&out.data, &a.data, radians)
+        Mat3.c_skew_y(out.data, a.data, radians)
 
     @staticmethod
     def sub(Mat3 out, Mat3 a, Mat3 b):
-        Mat3.c_sub(&out.data, &a.data, &b.data)
+        Mat3.c_sub(out.data, a.data, b.data)
 
     @staticmethod
     def transpose(Mat3 out, Mat3 a):
-        Mat3.c_transpose(&out.data, &a.data)
+        Mat3.c_transpose(out.data, a.data)
 
     @staticmethod
     def translate(Mat3 out, Mat3 a, Vec2 shift):
-        Mat3.c_translate(&out.data, &a.data, &shift.data)
+        Mat3.c_translate(out.data, a.data, shift.data)
     
     @staticmethod
     cdef void c_add(Mat3C *out, Mat3C *a, Mat3C *b) nogil:

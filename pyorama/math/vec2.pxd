@@ -6,7 +6,12 @@ from pyorama.math.mat4 cimport *
 from pyorama.math.vec3 cimport *
 
 cdef class Vec2:
-    cdef Vec2C data
+    cdef:
+        Vec2C *data
+        readonly bint is_owner
+    
+    @staticmethod
+    cdef Vec2 c_from_ptr(Vec2C *a)
     
     @staticmethod
     cdef void c_add(Vec2C *out, Vec2C *a, Vec2C *b) nogil

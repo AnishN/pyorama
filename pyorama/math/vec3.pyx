@@ -1,18 +1,33 @@
 cdef class Vec3:
     
-    def __cinit__(self, float x=0.0, float y=0.0, float z=0.0):
-        Vec3.c_set_data(&self.data, x, y, z)
+    def __init__(self, float x=0.0, float y=0.0, float z=0.0):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <Vec3C *>calloc(1, sizeof(Vec3C))
+            if self.data == NULL:
+                raise MemoryError("Vec3: failed to allocate data")
+            self.is_owner = True
+        Vec3.c_set_data(self.data, x, y, z)
     
     def __dealloc__(self):
-        memset(&self.data, 0, sizeof(Vec3C))
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+    
+    @staticmethod
+    cdef Vec3 c_from_ptr(Vec3C *a):
+        cdef Vec3 out = Vec3.__new__(Vec3)
+        out.data = a
+        out.is_owner = False
+        return out
     
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = &self.data
+        buffer.buf = self.data
         buffer.len = 3
         buffer.readonly = 0
         buffer.format = "f"
         buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>&buffer.len
+        buffer.shape = <Py_ssize_t *>buffer.len
         buffer.strides = NULL
         buffer.suboffsets = NULL
         buffer.itemsize = sizeof(float)
@@ -35,119 +50,119 @@ cdef class Vec3:
     
     @staticmethod
     def add(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_add(&out.data, &a.data, &b.data)
+        Vec3.c_add(out.data, a.data, b.data)
 
     @staticmethod
     def angle(Vec3 a, Vec3 b):
-        return Vec3.c_angle(&a.data, &b.data)
+        return Vec3.c_angle(a.data, b.data)
 
     @staticmethod
     def ceil(Vec3 out, Vec3 a):
-        Vec3.c_ceil(&out.data, &a.data)
+        Vec3.c_ceil(out.data, a.data)
 
     @staticmethod
     def copy(Vec3 out, Vec3 a):
-        Vec3.c_copy(&out.data, &a.data)
+        Vec3.c_copy(out.data, a.data)
 
     @staticmethod
     def cross(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_cross(&out.data, &a.data, &b.data)
+        Vec3.c_cross(out.data, a.data, b.data)
 
     @staticmethod
     def dist(Vec3 a, Vec3 b):
-        return Vec3.c_dist(&a.data, &b.data)
+        return Vec3.c_dist(a.data, b.data)
 
     @staticmethod
     def div(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_div(&out.data, &a.data, &b.data)
+        Vec3.c_div(out.data, a.data, b.data)
 
     @staticmethod
     def dot(Vec3 a, Vec3 b):
-        return Vec3.c_dot(&a.data, &b.data)
+        return Vec3.c_dot(a.data, b.data)
 
     @staticmethod
     def equals(Vec3 a, Vec3 b):
-        return Vec3.c_equals(&a.data, &b.data)
+        return Vec3.c_equals(a.data, b.data)
 
     @staticmethod
     def floor(Vec3 out, Vec3 a):
-        Vec3.c_floor(&out.data, &a.data)
+        Vec3.c_floor(out.data, a.data)
 
     @staticmethod
     def inv(Vec3 out, Vec3 a):
-        Vec3.c_inv(&out.data, &a.data)
+        Vec3.c_inv(out.data, a.data)
 
     @staticmethod
     def length(Vec3 a):
-        return Vec3.c_length(&a.data)
+        return Vec3.c_length(a.data)
 
     @staticmethod
     def lerp(Vec3 out, Vec3 a, Vec3 b, float t):
-        Vec3.c_lerp(&out.data, &a.data, &b.data, t)
+        Vec3.c_lerp(out.data, a.data, b.data, t)
 
     @staticmethod
     def max_comps(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_max_comps(&out.data, &a.data, &b.data)
+        Vec3.c_max_comps(out.data, a.data, b.data)
 
     @staticmethod
     def min_comps(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_min_comps(&out.data, &a.data, &b.data)
+        Vec3.c_min_comps(out.data, a.data, b.data)
 
     @staticmethod
     def mul(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_mul(&out.data, &a.data, &b.data)
+        Vec3.c_mul(out.data, a.data, b.data)
 
     @staticmethod
     def nearly_equals(Vec3 a, Vec3 b, float epsilon=0.000001):
-        Vec3.c_nearly_equals(&a.data, &b.data, epsilon)
+        Vec3.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
     def negate(Vec3 out, Vec3 a):
-        Vec3.c_negate(&out.data, &a.data)
+        Vec3.c_negate(out.data, a.data)
 
     @staticmethod
     def norm(Vec3 out, Vec3 a):
-        Vec3.c_norm(&out.data, &a.data)
+        Vec3.c_norm(out.data, a.data)
 
     @staticmethod
     def random(Vec3 out):
-        Vec3.c_random(&out.data)
+        Vec3.c_random(out.data)
 
     @staticmethod
     def round(Vec3 out, Vec3 a):
-        Vec3.c_round(&out.data, &a.data)
+        Vec3.c_round(out.data, a.data)
 
     @staticmethod
     def scale_add(Vec3 out, Vec3 a, float scale=1.0, float add=0.0):
-        Vec3.c_scale_add(&out.data, &a.data, scale, add)
+        Vec3.c_scale_add(out.data, a.data, scale, add)
 
     @staticmethod
     def set_data(Vec3 out, float x=0.0, float y=0.0, float z=0.0):
-        Vec3.c_set_data(&out.data, x, y, z)
+        Vec3.c_set_data(out.data, x, y, z)
 
     @staticmethod
     def sqr_dist(Vec3 a, Vec3 b):
-        return Vec3.c_sqr_dist(&a.data, &b.data)
+        return Vec3.c_sqr_dist(a.data, b.data)
 
     @staticmethod
     def sqr_length(Vec3 a):
-        return Vec3.c_sqr_length(&a.data)
+        return Vec3.c_sqr_length(a.data)
 
     @staticmethod
     def sub(Vec3 out, Vec3 a, Vec3 b):
-        Vec3.c_sub(&out.data, &a.data, &b.data)
+        Vec3.c_sub(out.data, a.data, b.data)
 
     @staticmethod
     def transform_mat3(Vec3 out, Vec3 a, Mat3 m):
-        Vec3.c_transform_mat3(&out.data, &a.data, &m.data)
+        Vec3.c_transform_mat3(out.data, a.data, m.data)
 
     @staticmethod
     def transform_mat4(Vec3 out, Vec3 a, Mat4 m):
-        Vec3.c_transform_mat4(&out.data, &a.data, &m.data)
+        Vec3.c_transform_mat4(out.data, a.data, m.data)
 
     @staticmethod
     def transform_quat(Vec3 out, Vec3 a, Quat q):
-        Vec3.c_transform_quat(&out.data, &a.data, &q.data)
+        Vec3.c_transform_quat(out.data, a.data, q.data)
 
     @staticmethod
     cdef void c_add(Vec3C *out, Vec3C *a, Vec3C *b) nogil:

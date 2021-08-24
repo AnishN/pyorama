@@ -46,19 +46,19 @@ cpdef void view_set_transform_model(Handle view, Mat4 transform_model) except *:
     cdef:
         ViewC *view_ptr
     view_ptr = view_get_ptr(view)
-    view_ptr.transform.model = transform_model.data
+    view_ptr.transform.model = transform_model.data[0]
 
 cpdef void view_set_transform_view(Handle view, Mat4 transform_view) except *:
     cdef:
         ViewC *view_ptr
     view_ptr = view_get_ptr(view)
-    view_ptr.transform.view = transform_view.data
+    view_ptr.transform.view = transform_view.data[0]
 
 cpdef void view_set_transform_projection(Handle view, Mat4 transform_projection) except *:
     cdef:
         ViewC *view_ptr
     view_ptr = view_get_ptr(view)
-    view_ptr.transform.projection = transform_projection.data
+    view_ptr.transform.projection = transform_projection.data[0]
 
 cpdef void view_set_frame_buffer(Handle view, Handle frame_buffer) except *:
     cdef:

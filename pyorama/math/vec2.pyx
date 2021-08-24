@@ -1,18 +1,33 @@
 cdef class Vec2:
     
-    def __cinit__(self, float x=0.0, float y=0.0):
-        Vec2.c_set_data(&self.data, x, y)
+    def __init__(self, float x=0.0, float y=0.0):#NOT __cinit__ so that __new__ does not call this!
+        if self.data == NULL:
+            self.data = <Vec2C *>calloc(1, sizeof(Vec2C))
+            if self.data == NULL:
+                raise MemoryError("Vec2: failed to allocate data")
+            self.is_owner = True
+        Vec2.c_set_data(self.data, x, y)
     
     def __dealloc__(self):
-        memset(&self.data, 0, sizeof(Vec2C))
+        if self.is_owner:
+            free(self.data)
+            self.data = NULL
+            self.is_owner = False
+    
+    @staticmethod
+    cdef Vec2 c_from_ptr(Vec2C *a):
+        cdef Vec2 out = Vec2.__new__(Vec2)
+        out.data = a
+        out.is_owner = False
+        return out
 
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = &self.data
+        buffer.buf = self.data
         buffer.len = 2
         buffer.readonly = 0
         buffer.format = "f"
         buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>&buffer.len
+        buffer.shape = <Py_ssize_t *>buffer.len
         buffer.strides = NULL
         buffer.suboffsets = NULL
         buffer.itemsize = sizeof(float)
@@ -31,119 +46,119 @@ cdef class Vec2:
     
     @staticmethod
     def add(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_add(&out.data, &a.data, &b.data)
+        Vec2.c_add(out.data, a.data, b.data)
 
     @staticmethod
     def ceil(Vec2 out, Vec2 a):
-        Vec2.c_ceil(&out.data, &a.data)
+        Vec2.c_ceil(out.data, a.data)
 
     @staticmethod
     def copy(Vec2 out, Vec2 a):
-        Vec2.c_copy(&out.data, &a.data)
+        Vec2.c_copy(out.data, a.data)
 
     @staticmethod
     def cross(Vec3 out, Vec2 a, Vec2 b):
-        Vec2.c_cross(&out.data, &a.data, &b.data)
+        Vec2.c_cross(out.data, a.data, b.data)
 
     @staticmethod
     def dist(Vec2 a, Vec2 b):
-        return Vec2.c_dist(&a.data, &b.data)
+        return Vec2.c_dist(a.data, b.data)
 
     @staticmethod
     def div(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_div(&out.data, &a.data, &b.data)
+        Vec2.c_div(out.data, a.data, b.data)
 
     @staticmethod
     def dot(Vec2 a, Vec2 b):
-        return Vec2.c_dot(&a.data, &b.data)
+        return Vec2.c_dot(a.data, b.data)
 
     @staticmethod
     def equals(Vec2 a, Vec2 b):
-        return Vec2.c_equals(&a.data, &b.data)
+        return Vec2.c_equals(a.data, b.data)
 
     @staticmethod
     def floor(Vec2 out, Vec2 a):
-        Vec2.c_floor(&out.data, &a.data)
+        Vec2.c_floor(out.data, a.data)
 
     @staticmethod
     def inv(Vec2 out, Vec2 a):
-        Vec2.c_inv(&out.data, &a.data)
+        Vec2.c_inv(out.data, a.data)
 
     @staticmethod
     def length(Vec2 a):
-        Vec2.c_length(&a.data)
+        Vec2.c_length(a.data)
 
     @staticmethod
     def lerp(Vec2 out, Vec2 a, Vec2 b, float t):
-        Vec2.c_lerp(&out.data, &a.data, &b.data, t)
+        Vec2.c_lerp(out.data, a.data, b.data, t)
 
     @staticmethod
     def max_comps(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_max_comps(&out.data, &a.data, &b.data)
+        Vec2.c_max_comps(out.data, a.data, b.data)
 
     @staticmethod
     def min_comps(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_min_comps(&out.data, &a.data, &b.data)
+        Vec2.c_min_comps(out.data, a.data, b.data)
 
     @staticmethod
     def mul(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_mul(&out.data, &a.data, &b.data)
+        Vec2.c_mul(out.data, a.data, b.data)
 
     @staticmethod
     def nearly_equals(Vec2 a, Vec2 b, float epsilon=0.000001):
-        return Vec2.c_nearly_equals(&a.data, &b.data, epsilon)
+        return Vec2.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
     def negate(Vec2 out, Vec2 a):
-        Vec2.c_negate(&out.data, &a.data)
+        Vec2.c_negate(out.data, a.data)
 
     @staticmethod
     def norm(Vec2 out, Vec2 a):
-        Vec2.c_norm(&out.data, &a.data)
+        Vec2.c_norm(out.data, a.data)
 
     @staticmethod
     def random(Vec2 out):
-        Vec2.c_random(&out.data)
+        Vec2.c_random(out.data)
 
     @staticmethod
     def rotate(Vec2 out, Vec2 a, Vec2 b, float radians):
-        Vec2.c_rotate(&out.data, &a.data, &b.data, radians)
+        Vec2.c_rotate(out.data, a.data, b.data, radians)
 
     @staticmethod
     def round(Vec2 out, Vec2 a):
-        Vec2.c_round(&out.data, &a.data)
+        Vec2.c_round(out.data, a.data)
 
     @staticmethod
     def scale_add(Vec2 out, Vec2 a, float scale=1.0, float add=0.0):
-        Vec2.c_scale_add(&out.data, &a.data, scale, add)
+        Vec2.c_scale_add(out.data, a.data, scale, add)
 
     @staticmethod
     def set_data(Vec2 out, float x=0.0, float y=0.0):
-        Vec2.c_set_data(&out.data, x, y)
+        Vec2.c_set_data(out.data, x, y)
 
     @staticmethod
     def sqr_dist(Vec2 a, Vec2 b):
-        return Vec2.c_sqr_dist(&a.data, &b.data)
+        return Vec2.c_sqr_dist(a.data, b.data)
 
     @staticmethod
     def sqr_length(Vec2 a):
-        return Vec2.c_sqr_length(&a.data)
+        return Vec2.c_sqr_length(a.data)
 
     @staticmethod
     def sub(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_sub(&out.data, &a.data, &b.data)
+        Vec2.c_sub(out.data, a.data, b.data)
 
     @staticmethod
     def transform_mat2(Vec2 out, Vec2 a, Mat2 m):
-        Vec2.c_transform_mat2(&out.data, &a.data, &m.data)
+        Vec2.c_transform_mat2(out.data, a.data, m.data)
 
     @staticmethod
     def transform_mat3(Vec2 out, Vec2 a, Mat3 m):
-        Vec2.c_transform_mat3(&out.data, &a.data, &m.data)
+        Vec2.c_transform_mat3(out.data, a.data, m.data)
 
     @staticmethod
     def transform_mat4(Vec2 out, Vec2 a, Mat4 m):
-        Vec2.c_transform_mat4(&out.data, &a.data, &m.data)
+        Vec2.c_transform_mat4(out.data, a.data, m.data)
 
     @staticmethod
     cdef void c_add(Vec2C *out, Vec2C *a, Vec2C *b) nogil:

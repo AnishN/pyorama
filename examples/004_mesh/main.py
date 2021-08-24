@@ -103,3 +103,9 @@ pyorama.graphics.view_delete(view)
 pyorama.graphics.frame_buffer_delete(frame_buffer)
 pyorama.graphics.window_delete(window)
 pyorama.app.quit()
+
+#plans for asset queue loading system
+#pyorama.io.asset_queue("./examples/004_mesh.cube.obj", pyorama.asset.ASSET_TYPE_MESH, "cube_mesh")
+#pyorama.io.asset_queue("./examples/004_mesh.vs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER, "vertex_shader")
+#pyorama.io.asset_queue("./examples/004_mesh.fs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER, "fragment_shader")
+#pyorama.io.asset_load_queue()
