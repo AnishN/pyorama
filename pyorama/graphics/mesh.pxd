@@ -15,6 +15,6 @@ ctypedef struct MeshC:
 
 cdef MeshC *mesh_get_ptr(Handle mesh) except *
 cpdef Handle mesh_create_from_file(bytes file_path) except *
-cpdef Buffer mesh_get_vertices(Handle mesh)
-cpdef Buffer mesh_get_indices(Handle mesh)
+cpdef void mesh_get_vertices(Handle mesh, Buffer vertices) except *
+cpdef void mesh_get_indices(Handle mesh, Buffer indices) except *
 cpdef void mesh_delete(Handle mesh) except *

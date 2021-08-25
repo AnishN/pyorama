@@ -15,8 +15,8 @@ def on_enter_frame_event(event, *args, **kwargs):
     Mat4.look_at(view_mat, eye, at, up)
     Mat4.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
     Mat4.identity(model_mat)
-    Mat4.from_rotation_x(mtx_x, counter * 0.007)
-    Mat4.from_rotation_y(mtx_y, counter * 0.01)
+    #Mat4.from_rotation_x(mtx_x, counter * 0.007)
+    #Mat4.from_rotation_y(mtx_y, counter * 0.01)
     Mat4.dot(model_mat, mtx_x, mtx_y)
     
     pyorama.graphics.view_set_transform_model(view, model_mat)
@@ -28,7 +28,7 @@ def on_enter_frame_event(event, *args, **kwargs):
     pyorama.graphics.view_set_transform_model(view, model_mat)
     pyorama.graphics.view_submit(view)
 
-    counter += 1
+    #counter += 1
 
 def runtime_compile_shaders():
     pyorama.graphics.utils_runtime_compile_shader(
@@ -60,7 +60,7 @@ mtx_y = Mat4()
 pyorama.app.init({
     "use_sleep": False,
     "graphics": {
-        "renderer_type": pyorama.graphics.GRAPHICS_RENDERER_TYPE_OPENGLES
+        "renderer_type": pyorama.graphics.GRAPHICS_RENDERER_TYPE_OPENGLES,
     }
 })
 

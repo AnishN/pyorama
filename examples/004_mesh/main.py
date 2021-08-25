@@ -42,8 +42,6 @@ width = 800
 height = 600
 title = b"Mesh"
 index_layout = pyorama.graphics.INDEX_LAYOUT_UINT32
-vertices = Buffer()
-indices = Buffer()
 
 counter = 0
 at = Vec3(0.0, 0.0, 0.0)
@@ -64,13 +62,25 @@ pyorama.app.init({
 
 mesh_path = b"./examples/004_mesh/cube.obj"
 mesh = pyorama.graphics.mesh_create_from_file(mesh_path)
-vertex_layout = pyorama.graphics.vertex_layout_create([
-    (pyorama.graphics.VERTEX_ATTRIBUTE_POSITION, 3, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_FLOAT, False, False),
+vertex_format = BufferFormat([
+    (b"a_position", 3, BUFFER_FIELD_TYPE_F32),
 ])
-vertices = pyorama.graphics.mesh_get_vertices(mesh)
+vertices = Buffer(vertex_format)
+
+vertex_layout = pyorama.graphics.vertex_layout_create(vertex_format, [False], [False])
+pyorama.graphics.mesh_get_vertices(mesh, vertices)
 vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
-indices = pyorama.graphics.mesh_get_indices(mesh)
+
+index_format = BufferFormat([
+    (b"a_indices", 1, BUFFER_FIELD_TYPE_U32),
+])
+indices = Buffer(index_format)
+pyorama.graphics.mesh_get_indices(mesh, indices)
 index_buffer = pyorama.graphics.index_buffer_create(index_layout, indices)
+
+import numpy as np
+print(np.array(vertices.get_view()))
+print(np.array(indices.get_view()))
 
 runtime_compile_shaders()
 vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, b"./examples/004_mesh/vs_mesh.sc_bin")
@@ -105,7 +115,7 @@ pyorama.graphics.window_delete(window)
 pyorama.app.quit()
 
 #plans for asset queue loading system
-#pyorama.io.asset_queue("./examples/004_mesh.cube.obj", pyorama.asset.ASSET_TYPE_MESH, "cube_mesh")
-#pyorama.io.asset_queue("./examples/004_mesh.vs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER, "vertex_shader")
-#pyorama.io.asset_queue("./examples/004_mesh.fs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER, "fragment_shader")
+#pyorama.io.asset_queue("./examples/004_mesh.cube.obj", pyorama.asset.ASSET_TYPE_MESH)
+#pyorama.io.asset_queue("./examples/004_mesh.vs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER)
+#pyorama.io.asset_queue("./examples/004_mesh.fs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER)
 #pyorama.io.asset_load_queue()

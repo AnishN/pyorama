@@ -51,13 +51,13 @@ cpdef Handle vertex_layout_create(BufferFormat attributes, list normalize, list 
         elif a.type_ == BUFFER_FIELD_TYPE_F32: a_type = VERTEX_ATTRIBUTE_TYPE_F32
         else:
             raise ValueError("Vertex Layout: unsupported attribute field type {0}".format(a.type_))
+        a_count = a.count
         a_norm = <bint>normalize[i]
         a_as_int = <bint>cast_to_int[i]
-        print(a.name, a_name, a_count, a_type, a_norm, a_as_int)
         bgfx_vertex_layout_add(
             layout_ptr, 
             <bgfx_attrib_t>a_name, 
-            a.count, 
+            a_count, 
             <bgfx_attrib_type_t>a_type, 
             a_norm, 
             a_as_int,

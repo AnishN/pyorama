@@ -52,7 +52,8 @@ cdef class Buffer:
         bint is_owner
     
     cpdef void init_empty(self, size_t num_items) except *
-    cpdef void init_from_bytes(self, bytes items, copy=*) except *
+    cpdef void init_from_bytes(self, bytes items, bint copy=*) except *
     cpdef void init_from_list(self, list items, bint is_flat=*) except *
+    cdef void c_init_from_ptr(self, uint8_t *items, size_t num_items, bint copy=*) except *
     cpdef void free(self) except *
     cpdef uint8_t[::1] get_view(self) except *

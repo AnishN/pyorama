@@ -83,7 +83,7 @@ cdef class Buffer:
             raise BUFFER_MEMORY_ERROR
         self.is_owner = True
 
-    cpdef void init_from_bytes(self, bytes items, copy=True) except *:
+    cpdef void init_from_bytes(self, bytes items, bint copy=True) except *:
         cdef size_t num_bytes = <size_t>len(items)
         self.num_items = num_bytes / self.item_size
         if copy:
@@ -147,6 +147,18 @@ cdef class Buffer:
                         memcpy(curr_item_ptr, &c_value, field_ptr.type_size)
                         curr_item_ptr += field_ptr.type_size
                         v_index += 1
+
+    cdef void c_init_from_ptr(self, uint8_t *items, size_t num_items, bint copy=True) except *:
+        self.num_items = num_items
+        if copy:
+            self.items = <uint8_t *>calloc(self.num_items, self.item_size)
+            if self.items == NULL:
+                raise BUFFER_MEMORY_ERROR
+            memcpy(self.items, items, self.num_items * self.item_size)
+            self.is_owner = True
+        else:
+            self.items = items
+            self.is_owner = False
 
     cpdef void free(self) except *:
         if self.is_owner:

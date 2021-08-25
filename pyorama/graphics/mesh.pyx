@@ -76,28 +76,18 @@ cpdef Handle mesh_create_from_file(bytes file_path) except *:
     mesh_ptr.indices = indices
     mesh_ptr.num_indices = num_faces * 3
     mesh_ptr.index_size = sizeof(uint32_t)#TODO: support more than just uint32_t indices
-    
+
     return mesh
 
-cpdef Buffer mesh_get_vertices(Handle mesh):
-    cdef:
-        MeshC *mesh_ptr
-        Buffer vertices
-    
+cpdef void mesh_get_vertices(Handle mesh, Buffer vertices) except *:
+    cdef MeshC *mesh_ptr
     mesh_ptr = mesh_get_ptr(mesh)
-    vertices = Buffer()
-    vertices.c_init_from_ptr(b"=fff", mesh_ptr.vertices, mesh_ptr.num_vertices)
-    return vertices
+    vertices.c_init_from_ptr(mesh_ptr.vertices, mesh_ptr.num_vertices)
     
-cpdef Buffer mesh_get_indices(Handle mesh):
-    cdef:
-        MeshC *mesh_ptr
-        Buffer vertices
-    
+cpdef void mesh_get_indices(Handle mesh, Buffer indices) except *:
+    cdef MeshC *mesh_ptr
     mesh_ptr = mesh_get_ptr(mesh)
-    vertices = Buffer()
-    vertices.c_init_from_ptr(b"=I", mesh_ptr.indices, mesh_ptr.num_indices)
-    return vertices
+    indices.c_init_from_ptr(mesh_ptr.indices, mesh_ptr.num_indices)
 
 cpdef void mesh_delete(Handle mesh) except *:
     cdef:
