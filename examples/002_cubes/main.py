@@ -45,9 +45,6 @@ def runtime_compile_shaders():
 width = 800
 height = 600
 title = b"Cubes"
-index_layout = pyorama.graphics.INDEX_LAYOUT_UINT16
-vertices = Buffer()
-indices = Buffer()
 
 counter = 0
 at = Vec3(0.0, 0.0, 0.0)
@@ -67,41 +64,43 @@ pyorama.app.init({
     }
 })
 
-vertex_layout = pyorama.graphics.vertex_layout_create([
-    (pyorama.graphics.VERTEX_ATTRIBUTE_POSITION, 3, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_FLOAT, False, False),
-    (pyorama.graphics.VERTEX_ATTRIBUTE_COLOR_0, 4, pyorama.graphics.VERTEX_ATTRIBUTE_TYPE_UINT8, True, False),
+vertex_format = BufferFormat([
+    (b"a_position", 3, BUFFER_FIELD_TYPE_F32),
+    (b"a_color_0", 4, BUFFER_FIELD_TYPE_U8),
 ])
-vertex_format = b"=fffI"
-vertices_list = [
-    (-1.0,  1.0,  1.0, 0xff888888),
-    ( 1.0,  1.0,  1.0, 0xff8888ff),
-    (-1.0, -1.0,  1.0, 0xff88ff88),
-    ( 1.0, -1.0,  1.0, 0xff88ffff),
-    (-1.0,  1.0, -1.0, 0xffff8888),
-    ( 1.0,  1.0, -1.0, 0xffff88ff),
-    (-1.0, -1.0, -1.0, 0xffffff88),
-    ( 1.0, -1.0, -1.0, 0xffffffff),
-]
-
-vertices.init_and_set_items(vertex_format, vertices_list)
+vertex_layout = pyorama.graphics.vertex_layout_create(vertex_format, [False, True], [False, False])
+vertices = Buffer(vertex_format)
+vertices.init_from_list([
+    (-1.0,  1.0,  1.0, 0x00, 0x00, 0x00, 0xff),
+    ( 1.0,  1.0,  1.0, 0xff, 0x00, 0x00, 0xff),
+    (-1.0, -1.0,  1.0, 0x00, 0xff, 0x00, 0xff),
+    ( 1.0, -1.0,  1.0, 0x00, 0x00, 0xff, 0xff),
+    (-1.0,  1.0, -1.0, 0xff, 0xff, 0x00, 0xff),
+    ( 1.0,  1.0, -1.0, 0xff, 0x00, 0xff, 0xff),
+    (-1.0, -1.0, -1.0, 0x00, 0xff, 0xff, 0xff),
+    ( 1.0, -1.0, -1.0, 0xff, 0xff, 0xff, 0xff),
+])
 vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
 
-index_format = b"=HHH"
-indices_list = [
-    (2, 1, 0),
-    (2, 3, 1),
-    (5, 6, 4),
-    (7, 6, 5),
-    (4, 2, 0),
-    (6, 2, 4),
-    (3, 5, 1),
-    (3, 7, 5),
-    (1, 4, 0),
-    (1, 5, 4),
-    (6, 3, 2),
-    (7, 3, 6),
-]
-indices.init_and_set_items(index_format, indices_list)
+index_format = BufferFormat([
+    (b"a_indices", 1, BUFFER_FIELD_TYPE_U16),
+])
+indices = Buffer(index_format)
+indices.init_from_list([
+    2, 1, 0,
+    2, 3, 1,
+    5, 6, 4,
+    7, 6, 5,
+    4, 2, 0,
+    6, 2, 4,
+    3, 5, 1,
+    3, 7, 5,
+    1, 4, 0,
+    1, 5, 4,
+    6, 3, 2,
+    7, 3, 6,
+], is_flat=True)
+index_layout = pyorama.graphics.INDEX_LAYOUT_UINT16
 index_buffer = pyorama.graphics.index_buffer_create(index_layout, indices)
 
 runtime_compile_shaders()

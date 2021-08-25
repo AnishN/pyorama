@@ -1,4 +1,5 @@
 from pyorama.data.handle cimport *
+from pyorama.data.buffer cimport *
 from pyorama.graphics.graphics_system cimport *
 
 cpdef enum VertexAttribute:
@@ -23,11 +24,11 @@ cpdef enum VertexAttribute:
     VERTEX_ATTRIBUTE_COUNT = BGFX_ATTRIB_COUNT
 
 cpdef enum VertexAttributeType:
-    VERTEX_ATTRIBUTE_TYPE_UINT8 = BGFX_ATTRIB_TYPE_UINT8
-    VERTEX_ATTRIBUTE_TYPE_UINT10 = BGFX_ATTRIB_TYPE_UINT10
-    VERTEX_ATTRIBUTE_TYPE_INT16 = BGFX_ATTRIB_TYPE_INT16
-    VERTEX_ATTRIBUTE_TYPE_HALF = BGFX_ATTRIB_TYPE_HALF
-    VERTEX_ATTRIBUTE_TYPE_FLOAT = BGFX_ATTRIB_TYPE_FLOAT
+    VERTEX_ATTRIBUTE_TYPE_U8 = BGFX_ATTRIB_TYPE_UINT8
+    #VERTEX_ATTRIBUTE_TYPE_U10 = BGFX_ATTRIB_TYPE_UINT10
+    VERTEX_ATTRIBUTE_TYPE_I16 = BGFX_ATTRIB_TYPE_INT16
+    #VERTEX_ATTRIBUTE_TYPE_HALF = BGFX_ATTRIB_TYPE_HALF
+    VERTEX_ATTRIBUTE_TYPE_F32 = BGFX_ATTRIB_TYPE_FLOAT
     VERTEX_ATTRIBUTE_TYPE_COUNT = BGFX_ATTRIB_TYPE_COUNT
 
 ctypedef struct VertexLayoutC:
@@ -35,5 +36,5 @@ ctypedef struct VertexLayoutC:
     bgfx_vertex_layout_t bgfx_id
 
 cdef VertexLayoutC *vertex_layout_get_ptr(Handle vertex_layout) except *
-cpdef Handle vertex_layout_create(list attributes) except *
+cpdef Handle vertex_layout_create(BufferFormat attributes, list normalize, list cast_to_int) except *
 cpdef void vertex_layout_delete(Handle vertex_layout) except *

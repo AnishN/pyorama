@@ -1,15 +1,58 @@
 from pyorama.libs.c cimport *
 
+ctypedef union BufferFieldValue:
+    uint8_t u8
+    uint16_t u16
+    uint32_t u32
+    uint64_t u64
+    int8_t i8
+    int16_t i16
+    int32_t i32
+    int64_t i64
+    float f32
+    double f64
+
+cpdef enum BufferFieldType:
+    BUFFER_FIELD_TYPE_U8
+    BUFFER_FIELD_TYPE_U16
+    BUFFER_FIELD_TYPE_U32
+    BUFFER_FIELD_TYPE_U64
+    BUFFER_FIELD_TYPE_I8
+    BUFFER_FIELD_TYPE_I16
+    BUFFER_FIELD_TYPE_I32
+    BUFFER_FIELD_TYPE_I64
+    BUFFER_FIELD_TYPE_F32
+    BUFFER_FIELD_TYPE_F64
+
+ctypedef struct BufferFieldC:
+    char[256] name
+    size_t name_length
+    size_t count
+    BufferFieldType type_
+    size_t type_size
+    size_t field_size
+
+cdef class BufferFormat:
+    cdef:
+        size_t size
+        size_t num_fields
+        BufferFieldC *fields
+
+    @staticmethod
+    cdef size_t c_get_field_type_size(BufferFieldType field_type) nogil
+    @staticmethod
+    cdef BufferFieldValue c_convert_value(object value, BufferFieldType field_type) except *
+
 cdef class Buffer:
     cdef:
-        readonly uint8_t[::1] items
-        bytes item_format
+        BufferFormat item_format
+        uint8_t *items
         size_t item_size
         size_t num_items
         bint is_owner
     
-    cpdef void init(self, bytes item_format, size_t num_items) except *
-    cpdef void init_and_set_items(self, bytes item_format, list items, bint is_flat=*, size_t num_row_items=*) except *
+    cpdef void init_empty(self, size_t num_items) except *
+    cpdef void init_from_bytes(self, bytes items, copy=*) except *
+    cpdef void init_from_list(self, list items, bint is_flat=*) except *
     cpdef void free(self) except *
-    cpdef void set_items(self, list items, size_t start_index=*, bint is_flat=*, size_t num_row_items=*) except *
-    cdef void c_init_from_ptr(self, bytes item_format, uint8_t *items_ptr, size_t num_items) except *
+    cpdef uint8_t[::1] get_view(self) except *
