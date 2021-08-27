@@ -29,6 +29,7 @@ cpdef Handle image_create_from_file(bytes file_path) except *:
     memcpy(image_ptr.pixels, sdl_pixels, pixels_size)
     SDL_FreeSurface(surface)
     SDL_FreeSurface(converted_surface)
+    image_flip_y(image)
     return image
 
 cpdef void image_delete(Handle image) except *:
@@ -43,22 +44,22 @@ cpdef void image_delete(Handle image) except *:
 cpdef void image_flip_x(Handle image) except *:
     cdef:
         ImageC *image_ptr
-        uint8_t *pixels
-        uint32_t width, height
+        uint32_t *pixels
+        uint16_t width, height
         size_t src, dst
         size_t y
         uint32_t left, right
     
     image_ptr = image_get_ptr(image)
-    pixels = image_ptr.pixels
+    pixels = <uint32_t *>image_ptr.pixels
     width = image_ptr.width
     height = image_ptr.height
     for y in range(height):
         left = 0
         right = width - 1
         while left < right:
-            src = y * width + left
-            dst = y * width + right
+            src = <uint16_t>y * width + left
+            dst = <uint16_t>y * width + right
             pixels[src], pixels[dst] = pixels[dst], pixels[src]
             left += 1
             right -= 1
@@ -66,22 +67,22 @@ cpdef void image_flip_x(Handle image) except *:
 cpdef void image_flip_y(Handle image) except *:
     cdef:
         ImageC *image_ptr
-        uint8_t *pixels
-        uint32_t width, height
+        uint32_t *pixels
+        uint16_t width, height
         size_t src, dst
         size_t x
         uint32_t top, bottom
 
     image_ptr = image_get_ptr(image)
-    pixels = image_ptr.pixels
+    pixels = <uint32_t *>image_ptr.pixels
     width = image_ptr.width
     height = image_ptr.height
     for x in range(width):
         top = 0
         bottom = height - 1
         while top < bottom:
-            src = top * width + x
-            dst = bottom * width + x
+            src = <uint16_t>top * width + x
+            dst = <uint16_t>bottom * width + x
             pixels[src], pixels[dst] = pixels[dst], pixels[src]
             top += 1
             bottom -= 1
@@ -90,7 +91,7 @@ cpdef void image_premultiply_alpha(Handle image) except *:
     cdef:
         ImageC *image_ptr
         uint8_t *pixels
-        uint32_t width, height
+        uint16_t width, height
         size_t i
 
     image_ptr = image_get_ptr(image)
@@ -98,6 +99,6 @@ cpdef void image_premultiply_alpha(Handle image) except *:
     width = image_ptr.width
     height = image_ptr.height
     for i in range(0, width * height * 4, 4):
-        pixels[i] = pixels[i] * pixels[i + 3] / 255
-        pixels[i + 1] = pixels[i + 1] * pixels[i + 3] / 255
-        pixels[i + 2] = pixels[i + 2] * pixels[i + 3] / 255
+        pixels[i] = <uint16_t>pixels[i] * pixels[i + 3] / 255
+        pixels[i + 1] = <uint16_t>pixels[i + 1] * pixels[i + 3] / 255
+        pixels[i + 2] = <uint16_t>pixels[i + 2] * pixels[i + 3] / 255
