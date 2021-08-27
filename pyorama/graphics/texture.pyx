@@ -40,9 +40,9 @@ cpdef Handle texture_create_2d_from_image(Handle image) except *:
         image_ptr.width,
         image_ptr.height,
         False,
-        1,
-        BGFX_TEXTURE_FORMAT_RGBA8U,
-        BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+        0,
+        BGFX_TEXTURE_FORMAT_RGBA8,
+        0,#BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
         memory_ptr,
     )
     return texture

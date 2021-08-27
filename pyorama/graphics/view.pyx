@@ -94,7 +94,7 @@ cpdef void view_set_texture(Handle view, Handle sampler, Handle texture, uint8_t
 
 cpdef void view_submit(Handle view) except *:
     cdef:
-        uint8_t i
+        size_t i
         Handle texture
         Handle sampler
         TextureC *texture_ptr

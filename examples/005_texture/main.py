@@ -90,6 +90,7 @@ pyorama.graphics.view_set_vertex_buffer(view, vertex_buffer)
 pyorama.graphics.view_set_index_buffer(view, index_buffer)
 pyorama.graphics.view_set_program(view, program)
 pyorama.graphics.view_set_texture(view, sampler, texture, 0)
+
 pyorama.app.run()
 
 pyorama.event.listener_delete(on_enter_frame_listener)
