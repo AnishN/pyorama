@@ -35,11 +35,15 @@ ctypedef struct BufferFieldC:
 cdef class BufferFormat:
     cdef:
         size_t size
+        size_t count
         size_t num_fields
         BufferFieldC *fields
+        char *format_str
 
     @staticmethod
     cdef size_t c_get_field_type_size(BufferFieldType field_type) nogil
+    @staticmethod
+    cdef char c_get_field_type_char(BufferFieldType field_type) nogil
     @staticmethod
     cdef BufferFieldValue c_convert_value(object value, BufferFieldType field_type) except *
 
@@ -56,4 +60,3 @@ cdef class Buffer:
     cpdef void init_from_list(self, list items, bint is_flat=*) except *
     cdef void c_init_from_ptr(self, uint8_t *items, size_t num_items, bint copy=*) except *
     cpdef void free(self) except *
-    cpdef uint8_t[::1] get_view(self) except *

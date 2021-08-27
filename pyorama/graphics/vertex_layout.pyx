@@ -3,26 +3,26 @@ cdef dict vertex_attribute_map = {
     b"a_normal": VERTEX_ATTRIBUTE_NORMAL,
     b"a_tangent": VERTEX_ATTRIBUTE_TANGENT,
     b"a_bitangent": VERTEX_ATTRIBUTE_BITANGENT,
-    b"a_color_0": VERTEX_ATTRIBUTE_COLOR_0,
-    b"a_color_1": VERTEX_ATTRIBUTE_COLOR_1,
-    b"a_color_2": VERTEX_ATTRIBUTE_COLOR_2,
-    b"a_color_3": VERTEX_ATTRIBUTE_COLOR_3,
+    b"a_color0": VERTEX_ATTRIBUTE_COLOR0,
+    b"a_color1": VERTEX_ATTRIBUTE_COLOR1,
+    b"a_color2": VERTEX_ATTRIBUTE_COLOR2,
+    b"a_color3": VERTEX_ATTRIBUTE_COLOR3,
     b"a_indices": VERTEX_ATTRIBUTE_INDICES,
     b"a_weight": VERTEX_ATTRIBUTE_WEIGHT,
-    b"a_tex_coord_0": VERTEX_ATTRIBUTE_TEX_COORD_0,
-    b"a_tex_coord_1": VERTEX_ATTRIBUTE_TEX_COORD_1,
-    b"a_tex_coord_2": VERTEX_ATTRIBUTE_TEX_COORD_2,
-    b"a_tex_coord_3": VERTEX_ATTRIBUTE_TEX_COORD_3,
-    b"a_tex_coord_4": VERTEX_ATTRIBUTE_TEX_COORD_4,
-    b"a_tex_coord_5": VERTEX_ATTRIBUTE_TEX_COORD_5,
-    b"a_tex_coord_6": VERTEX_ATTRIBUTE_TEX_COORD_6,
-    b"a_tex_coord_7": VERTEX_ATTRIBUTE_TEX_COORD_7,
+    b"a_texcoord0": VERTEX_ATTRIBUTE_TEXCOORD0,
+    b"a_texcoord1": VERTEX_ATTRIBUTE_TEXCOORD1,
+    b"a_texcoord2": VERTEX_ATTRIBUTE_TEXCOORD2,
+    b"a_texcoord3": VERTEX_ATTRIBUTE_TEXCOORD3,
+    b"a_texcoord4": VERTEX_ATTRIBUTE_TEXCOORD4,
+    b"a_texcoord5": VERTEX_ATTRIBUTE_TEXCOORD5,
+    b"a_texcoord6": VERTEX_ATTRIBUTE_TEXCOORD6,
+    b"a_texcoord7": VERTEX_ATTRIBUTE_TEXCOORD7,
 }
 
 cdef VertexLayoutC *vertex_layout_get_ptr(Handle vertex_layout) except *:
     return <VertexLayoutC *>graphics.slots.c_get_ptr(vertex_layout)
 
-cpdef Handle vertex_layout_create(BufferFormat attributes, list normalize, list cast_to_int) except *:
+cpdef Handle vertex_layout_create(BufferFormat attributes, set normalize=None, set cast_to_int=None) except *:
     cdef:
         Handle vertex_layout
         VertexLayoutC *vertex_layout_ptr
@@ -41,6 +41,11 @@ cpdef Handle vertex_layout_create(BufferFormat attributes, list normalize, list 
     layout_ptr = &vertex_layout_ptr.bgfx_id
     bgfx_vertex_layout_begin(layout_ptr, bgfx_get_renderer_type())
     num_attributes = attributes.num_fields
+    if num_attributes > 16:
+        raise ValueError("Vertex Layout: more than 16 fields not supported")
+    if normalize == None: normalize = set()
+    if cast_to_int == None: cast_to_int = set()
+
     for i in range(num_attributes):
         a = &attributes.fields[i]
         a_name = vertex_attribute_map.get(a.name, VERTEX_ATTRIBUTE_COUNT)
@@ -52,8 +57,8 @@ cpdef Handle vertex_layout_create(BufferFormat attributes, list normalize, list 
         else:
             raise ValueError("Vertex Layout: unsupported attribute field type {0}".format(a.type_))
         a_count = a.count
-        a_norm = <bint>normalize[i]
-        a_as_int = <bint>cast_to_int[i]
+        a_norm = a.name in normalize
+        a_as_int = a.name in cast_to_int
         bgfx_vertex_layout_add(
             layout_ptr, 
             <bgfx_attrib_t>a_name, 

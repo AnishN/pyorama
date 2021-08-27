@@ -6,9 +6,10 @@ cdef class BufferFormat:
 
     def __cinit__(self, list fields):
         cdef:
-            size_t i
+            size_t i, j, k
             tuple f
             bytes f_name
+            char f_char
             BufferFieldC *f_ptr
         
         self.size = 0
@@ -24,19 +25,31 @@ cdef class BufferFormat:
             f_name = <bytes>f[0]
             f_ptr.name_length = <size_t>len(f_name)
             strncpy(f_ptr.name, <char *>f_name, 256)
-            #memset(f_ptr.name, 0, 256)
-            #memcpy(f_ptr.name, <char *>f_name, f_ptr.name_length + 1)
             f_ptr.count = <size_t>f[1]
             f_ptr.type_ = <BufferFieldType>f[2]
             f_ptr.type_size = BufferFormat.c_get_field_type_size(f_ptr.type_)
             f_ptr.field_size = f_ptr.type_size * f_ptr.count
             self.size += f_ptr.field_size
+            self.count += f_ptr.count
+
+        #generate the format string
+        self.format_str = <char *>calloc(self.size + 1, sizeof(char))
+        if self.format_str == NULL:
+            raise MemoryError("BufferFormat: cannot allocate format string")
+        k = 0
+        for i in range(self.num_fields):
+            f_ptr = &self.fields[i]
+            f_char = BufferFormat.c_get_field_type_char(f_ptr.type_)
+            for j in range(f_ptr.count):
+                self.format_str[k] = f_char
+                k += 1
 
     def __dealloc__(self):
         self.size = 0
+        self.count = 0
         self.num_fields = 0
-        free(self.fields)
-        self.fields = NULL
+        free(self.fields); self.fields = NULL
+        free(self.format_str); self.format_str = NULL
 
     @staticmethod
     cdef size_t c_get_field_type_size(BufferFieldType field_type) nogil:
@@ -50,6 +63,19 @@ cdef class BufferFormat:
         elif field_type == BUFFER_FIELD_TYPE_I64: return sizeof(int64_t)
         elif field_type == BUFFER_FIELD_TYPE_F32: return sizeof(float)
         elif field_type == BUFFER_FIELD_TYPE_F64: return sizeof(double)
+
+    @staticmethod
+    cdef char c_get_field_type_char(BufferFieldType field_type) nogil:
+        if field_type == BUFFER_FIELD_TYPE_U8: return b"B"
+        elif field_type == BUFFER_FIELD_TYPE_U16: return b"H"
+        elif field_type == BUFFER_FIELD_TYPE_U32: return b"I"
+        elif field_type == BUFFER_FIELD_TYPE_U64: return b"L"
+        elif field_type == BUFFER_FIELD_TYPE_I8: return b"b"
+        elif field_type == BUFFER_FIELD_TYPE_I16: return b"h"
+        elif field_type == BUFFER_FIELD_TYPE_I32: return b"i"
+        elif field_type == BUFFER_FIELD_TYPE_I64: return b"l"
+        elif field_type == BUFFER_FIELD_TYPE_F32: return b"f"
+        elif field_type == BUFFER_FIELD_TYPE_F64: return b"d"
 
     @staticmethod
     cdef BufferFieldValue c_convert_value(object value, BufferFieldType field_type) except *:
@@ -76,6 +102,22 @@ cdef class Buffer:
         self.item_format = None
         self.item_size = 0
     
+    def __getbuffer__(self, Py_buffer *buffer, int flags):
+        buffer.buf = self.items
+        buffer.format = self.item_format.format_str
+        buffer.internal = NULL
+        buffer.itemsize = self.item_size
+        buffer.len = self.num_items
+        buffer.ndim = 1
+        buffer.obj = self
+        buffer.readonly = True
+        buffer.shape = <Py_ssize_t *>&self.num_items
+        buffer.strides = <Py_ssize_t *>&self.item_size
+        buffer.suboffsets = NULL
+
+    def __releasebuffer__(self, Py_buffer *buffer):
+        pass
+
     cpdef void init_empty(self, size_t num_items) except *:
         self.num_items = num_items
         self.items = <uint8_t *>calloc(self.num_items, self.item_size)
@@ -167,6 +209,3 @@ cdef class Buffer:
             self.is_owner = False
         else:
             raise BUFFER_FREE_ERROR
-
-    cpdef uint8_t[::1] get_view(self) except *:
-        return <uint8_t[:self.num_items * self.item_size]>self.items

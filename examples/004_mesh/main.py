@@ -41,7 +41,6 @@ def runtime_compile_shaders():
 width = 800
 height = 600
 title = b"Mesh"
-index_layout = pyorama.graphics.INDEX_LAYOUT_UINT32
 
 counter = 0
 at = Vec3(0.0, 0.0, 0.0)
@@ -71,16 +70,13 @@ vertex_layout = pyorama.graphics.vertex_layout_create(vertex_format, [False], [F
 pyorama.graphics.mesh_get_vertices(mesh, vertices)
 vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
 
+index_layout = pyorama.graphics.INDEX_LAYOUT_UINT32
 index_format = BufferFormat([
     (b"a_indices", 1, BUFFER_FIELD_TYPE_U32),
 ])
 indices = Buffer(index_format)
 pyorama.graphics.mesh_get_indices(mesh, indices)
 index_buffer = pyorama.graphics.index_buffer_create(index_layout, indices)
-
-import numpy as np
-print(np.array(vertices.get_view()))
-print(np.array(indices.get_view()))
 
 runtime_compile_shaders()
 vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, b"./examples/004_mesh/vs_mesh.sc_bin")
@@ -113,9 +109,3 @@ pyorama.graphics.view_delete(view)
 pyorama.graphics.frame_buffer_delete(frame_buffer)
 pyorama.graphics.window_delete(window)
 pyorama.app.quit()
-
-#plans for asset queue loading system
-#pyorama.io.asset_queue("./examples/004_mesh.cube.obj", pyorama.asset.ASSET_TYPE_MESH)
-#pyorama.io.asset_queue("./examples/004_mesh.vs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER)
-#pyorama.io.asset_queue("./examples/004_mesh.fs_mesh.sc", pyorama.asset.ASSET_TYPE_SHADER)
-#pyorama.io.asset_load_queue()

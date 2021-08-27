@@ -2,6 +2,8 @@ from pyorama.data.handle cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.graphics.frame_buffer cimport *
+from pyorama.graphics.texture cimport *
+from pyorama.graphics.uniform cimport *
 from pyorama.math cimport *
 
 cpdef enum ViewClearFlags:
@@ -38,6 +40,8 @@ ctypedef struct ViewC:
     Handle vertex_buffer
     Handle index_buffer
     Handle program
+    Handle textures[256]
+    Handle samplers[256]
 
 cdef ViewC *view_get_ptr(Handle view) except *
 cpdef Handle view_create() except *
@@ -52,5 +56,6 @@ cpdef void view_set_frame_buffer(Handle view, Handle frame_buffer) except *
 cpdef void view_set_vertex_buffer(Handle view, Handle vertex_buffer) except *
 cpdef void view_set_index_buffer(Handle view, Handle index_buffer) except *
 cpdef void view_set_program(Handle view, Handle program) except *
+cpdef void view_set_texture(Handle view, Handle sampler, Handle texture, uint8_t unit) except *
 cpdef void view_submit(Handle view) except *
 cpdef void view_touch(Handle view) except *

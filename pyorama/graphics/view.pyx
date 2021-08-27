@@ -85,8 +85,20 @@ cpdef void view_set_program(Handle view, Handle program) except *:
     view_ptr = view_get_ptr(view)
     view_ptr.program = program
 
+cpdef void view_set_texture(Handle view, Handle sampler, Handle texture, uint8_t unit) except *:
+    cdef:
+        ViewC *view_ptr
+    view_ptr = view_get_ptr(view)
+    view_ptr.samplers[unit] = sampler
+    view_ptr.textures[unit] = texture
+
 cpdef void view_submit(Handle view) except *:
     cdef:
+        uint8_t i
+        Handle texture
+        Handle sampler
+        TextureC *texture_ptr
+        UniformC *sampler_ptr
         ViewC *view_ptr
         FrameBufferC *frame_buffer_ptr
         VertexBufferC *vertex_buffer_ptr
@@ -108,7 +120,14 @@ cpdef void view_submit(Handle view) except *:
     bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
     bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id, 0, vertex_buffer_ptr.num_vertices)
     bgfx_set_index_buffer(index_buffer_ptr.bgfx_id, 0, index_buffer_ptr.num_indices)
-    bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_ALL)
+    for i in range(256):
+        texture = view_ptr.textures[i]
+        sampler = view_ptr.samplers[i]
+        if texture != 0 and sampler != 0:
+            texture_ptr = texture_get_ptr(texture)
+            sampler_ptr = uniform_get_ptr(sampler)
+            bgfx_set_texture(i, sampler_ptr.bgfx_id, texture_ptr.bgfx_id, 0)
+    bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_BINDINGS | BGFX_DISCARD_ALL)
 
 cpdef void view_touch(Handle view) except *:
     cdef:
