@@ -38,12 +38,13 @@ model_mat = Mat4()
 mtx_x = Mat4()
 mtx_y = Mat4()
 
-image_path = b"./examples/005_texture/textures/cube.png"
-mesh_path = b"./examples/005_texture/meshes/cube.obj"
-vs_source_path = b"./examples/005_texture/shaders/vs_mesh.sc"
-fs_source_path = b"./examples/005_texture/shaders/fs_mesh.sc"
-vs_bin_path = b"./examples/005_texture/shaders/vs_mesh.sc_bin"
-fs_bin_path = b"./examples/005_texture/shaders/fs_mesh.sc_bin"
+base_path = b"./examples/005_texture/"
+image_path = base_path + b"textures/cube.png"
+mesh_path =  base_path + b"meshes/cube.obj"
+vs_source_path = base_path + b"shaders/vs_mesh.sc"
+fs_source_path = base_path + b"shaders/fs_mesh.sc"
+vs_bin_path = base_path + b"shaders/vs_mesh.sc_bin"
+fs_bin_path = base_path + b"shaders/fs_mesh.sc_bin"
 
 pyorama.app.init()
 
