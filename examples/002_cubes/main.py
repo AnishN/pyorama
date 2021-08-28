@@ -34,10 +34,10 @@ width = 800
 height = 600
 title = b"Cubes"
 
-vs_source_path = b"./examples/002_cubes/vs_cubes.sc"
-fs_source_path = b"./examples/002_cubes/fs_cubes.sc"
-vs_bin_path = b"./examples/002_cubes/vs_cubes.sc_bin"
-fs_bin_path = b"./examples/002_cubes/fs_cubes.sc_bin"
+vs_source_path = b"./examples/002_cubes/shaders/vs_cubes.sc"
+fs_source_path = b"./examples/002_cubes/shaders/fs_cubes.sc"
+vs_bin_path = b"./examples/002_cubes/shaders/vs_cubes.sc_bin"
+fs_bin_path = b"./examples/002_cubes/shaders/fs_cubes.sc_bin"
 
 counter = 0
 at = Vec3(0.0, 0.0, 0.0)

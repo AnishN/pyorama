@@ -47,11 +47,11 @@ pyorama.app.init({
     }
 })
 
-mesh_path = b"./examples/004_mesh/cube.obj"
-vs_source_path = b"./examples/004_mesh/vs_mesh.sc"
-fs_source_path = b"./examples/004_mesh/fs_mesh.sc"
-vs_bin_path = b"./examples/004_mesh/vs_mesh.sc_bin"
-fs_bin_path = b"./examples/004_mesh/fs_mesh.sc_bin"
+mesh_path = b"./examples/004_mesh/meshes/cube.obj"
+vs_source_path = b"./examples/004_mesh/shaders/vs_mesh.sc"
+fs_source_path = b"./examples/004_mesh/shaders/fs_mesh.sc"
+vs_bin_path = b"./examples/004_mesh/shaders/vs_mesh.sc_bin"
+fs_bin_path = b"./examples/004_mesh/shaders/fs_mesh.sc_bin"
 mesh = pyorama.graphics.mesh_create_from_file(mesh_path, load_texcoords=False, load_normals=False)
 
 vertex_format = BufferFormat([
