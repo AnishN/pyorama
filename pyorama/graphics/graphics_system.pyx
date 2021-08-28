@@ -18,6 +18,7 @@ cdef class GraphicsSystem:
             GRAPHICS_SLOT_IMAGE: sizeof(ImageC),
             GRAPHICS_SLOT_TEXTURE: sizeof(TextureC),
             GRAPHICS_SLOT_UNIFORM: sizeof(UniformC),
+            GRAPHICS_SLOT_LIGHT: sizeof(LightC),
         }
         self.window_ids = HashMap()
     

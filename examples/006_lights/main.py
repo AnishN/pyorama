@@ -25,7 +25,7 @@ def on_enter_frame_event(event, *args, **kwargs):
 
 width = 800
 height = 600
-title = b"Mesh"
+title = b"Lights"
 
 clear_color = 0x443355FF
 counter = 0
@@ -47,6 +47,15 @@ vs_bin_path = base_path + b"shaders/vs_mesh.sc_bin"
 fs_bin_path = base_path + b"shaders/fs_mesh.sc_bin"
 
 pyorama.app.init()
+
+dir_light = pyorama.graphics.light_create(
+    pyorama.graphics.LIGHT_TYPE_DIRECTION,
+    params={
+        "direction": Vec3(1, 2, 3),
+        "color": 0xFF0000FF,
+        "intensity": 5.0,
+    },
+)
 
 sampler = pyorama.graphics.uniform_create(b"s_tex0", pyorama.graphics.UNIFORM_TYPE_SAMPLER)
 

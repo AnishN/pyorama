@@ -157,6 +157,13 @@ cmake -G "MinGW Makefiles" ../
 make
 ```
 
+CImGUI:
+```
+git clone --recursive https://github.com/cimgui/cimgui.git
+cd ./cimgui
+make
+```
+
 Basic readme cython code build instructions:
 ```
 sudo apt-get install python3-pip

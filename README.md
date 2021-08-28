@@ -4,9 +4,10 @@ A performant game engine written in cython
 This library has the following dependencies:
 * Graphics: 
     * Bgfx (for cross-platform rendering)
-    * SDL2 (for window creation, including potentially SDL2_image, SDL2_mixer, SDL2_net, and SDL2_ttf)
-    * Assimp (for planned 3d model/asset loading)
+    * SDL2 (for window creation, including sub-dependencies such as SDL2_image, SDL2_mixer, SDL2_net, and SDL2_ttf)
+    * Assimp (for 3d mesh/asset loading)
     * Freetype and Harfbuzz (for planned text rendering)
+    * Dear ImGUI (cimgui specifically, for debug UI rendering)
 * Audio:
     * OpenAL (for planned 3d spatial audio)
     * Ogg/Vorbis, Opus, FLAC (for planned audio file loading)

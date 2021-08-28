@@ -3,6 +3,7 @@ from pyorama.graphics.graphics_utils cimport *
 from pyorama.graphics.frame_buffer cimport *
 from pyorama.graphics.image cimport *
 from pyorama.graphics.index_buffer cimport *
+from pyorama.graphics.light cimport *
 from pyorama.graphics.mesh cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *
