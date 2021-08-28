@@ -14,7 +14,8 @@ libraries = {
         "openal",
         "FLAC", "opus",
         "ogg", "vorbis", "vorbisfile", "vorbisenc",
-	    "freetype", "harfbuzz",
+	"freetype", "harfbuzz",
+	"cimgui",
     ],
     "Windows": [
         "bgfx-shared-libRelease", 
