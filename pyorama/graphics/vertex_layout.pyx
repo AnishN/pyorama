@@ -32,9 +32,10 @@ cpdef Handle vertex_layout_create(BufferFormat attributes, set normalize=None, s
         VertexAttribute a_name
         size_t a_count
         bint a_norm
-        bint a_as_int
+        bint a_to_int
         VertexAttributeType a_type
         bgfx_vertex_layout_t *layout_ptr
+
 
     vertex_layout = graphics.slots.c_create(GRAPHICS_SLOT_VERTEX_LAYOUT)
     vertex_layout_ptr = vertex_layout_get_ptr(vertex_layout)
@@ -58,14 +59,14 @@ cpdef Handle vertex_layout_create(BufferFormat attributes, set normalize=None, s
             raise ValueError("Vertex Layout: unsupported attribute field type {0}".format(a.type_))
         a_count = a.count
         a_norm = a.name in normalize
-        a_as_int = a.name in cast_to_int
+        a_to_int = a.name in cast_to_int
         bgfx_vertex_layout_add(
             layout_ptr, 
             <bgfx_attrib_t>a_name, 
             a_count, 
             <bgfx_attrib_type_t>a_type, 
             a_norm, 
-            a_as_int,
+            a_to_int,
         )
     bgfx_vertex_layout_end(layout_ptr)
     return vertex_layout

@@ -1,7 +1,7 @@
 cdef MeshC *mesh_get_ptr(Handle mesh) except *:
     return <MeshC *>graphics.slots.c_get_ptr(mesh)
 
-cpdef Handle mesh_create_from_file(bytes file_path, bint load_tex_coords=True, bint load_normals=True) except *:
+cpdef Handle mesh_create_from_file(bytes file_path, bint load_texcoords=True, bint load_normals=True) except *:
     cdef:
         Handle mesh
         MeshC *mesh_ptr
@@ -53,7 +53,7 @@ cpdef Handle mesh_create_from_file(bytes file_path, bint load_tex_coords=True, b
     #TODO: support more than just raw vertex positions
     vertex_size = (
         sizeof(Vec3C) + 
-        sizeof(Vec2C) * load_tex_coords +
+        sizeof(Vec2C) * load_texcoords +
         sizeof(Vec3C) * load_normals
     )
 
@@ -71,7 +71,7 @@ cpdef Handle mesh_create_from_file(bytes file_path, bint load_tex_coords=True, b
         p = &ai_mesh.mVertices[i]
         memcpy(&vertices[j], p, p_size)
         j += p_size
-        if load_tex_coords:
+        if load_texcoords:
             t = <Vec2C *>&ai_mesh.mTextureCoords[0][i]
             memcpy(&vertices[j], t, t_size)
             j += t_size

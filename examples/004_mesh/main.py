@@ -26,18 +26,6 @@ def on_enter_frame_event(event, *args, **kwargs):
 
     counter += 1
 
-def runtime_compile_shaders():
-    pyorama.graphics.utils_runtime_compile_shader(
-        in_file_path=b"./examples/004_mesh/vs_mesh.sc",
-        out_file_path=b"./examples/004_mesh/vs_mesh.sc_bin",
-        shader_type=pyorama.graphics.SHADER_TYPE_VERTEX,
-    )
-    pyorama.graphics.utils_runtime_compile_shader(
-        in_file_path=b"./examples/004_mesh/fs_mesh.sc",
-        out_file_path=b"./examples/004_mesh/fs_mesh.sc_bin",
-        shader_type=pyorama.graphics.SHADER_TYPE_FRAGMENT,
-    )
-
 width = 800
 height = 600
 title = b"Mesh"
@@ -60,15 +48,21 @@ pyorama.app.init({
 })
 
 mesh_path = b"./examples/004_mesh/cube.obj"
-mesh = pyorama.graphics.mesh_create_from_file(mesh_path)
+vs_source_path = b"./examples/004_mesh/vs_mesh.sc"
+fs_source_path = b"./examples/004_mesh/fs_mesh.sc"
+vs_bin_path = b"./examples/004_mesh/vs_mesh.sc_bin"
+fs_bin_path = b"./examples/004_mesh/fs_mesh.sc_bin"
+mesh = pyorama.graphics.mesh_create_from_file(mesh_path, load_texcoords=False, load_normals=False)
+
 vertex_format = BufferFormat([
     (b"a_position", 3, BUFFER_FIELD_TYPE_F32),
 ])
 vertices = Buffer(vertex_format)
 
-vertex_layout = pyorama.graphics.vertex_layout_create(vertex_format, [False], [False])
+vertex_layout = pyorama.graphics.vertex_layout_create(vertex_format)
 pyorama.graphics.mesh_get_vertices(mesh, vertices)
 vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
+
 
 index_layout = pyorama.graphics.INDEX_LAYOUT_UINT32
 index_format = BufferFormat([
@@ -78,9 +72,10 @@ indices = Buffer(index_format)
 pyorama.graphics.mesh_get_indices(mesh, indices)
 index_buffer = pyorama.graphics.index_buffer_create(index_layout, indices)
 
-runtime_compile_shaders()
-vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, b"./examples/004_mesh/vs_mesh.sc_bin")
-fragment_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_FRAGMENT, b"./examples/004_mesh/fs_mesh.sc_bin")
+pyorama.graphics.utils_runtime_compile_shader(vs_source_path, vs_bin_path, pyorama.graphics.SHADER_TYPE_VERTEX)
+pyorama.graphics.utils_runtime_compile_shader(fs_source_path, fs_bin_path, pyorama.graphics.SHADER_TYPE_FRAGMENT)
+vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, vs_bin_path)
+fragment_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_FRAGMENT, fs_bin_path)
 program = pyorama.graphics.program_create(vertex_shader, fragment_shader)
 window = pyorama.graphics.window_create(width, height, title)
 frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)
