@@ -66,7 +66,7 @@ pyorama.graphics.mesh_get_vertices(mesh, vertices)
 vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
 
 
-index_layout = pyorama.graphics.INDEX_LAYOUT_UINT32
+index_layout = pyorama.graphics.INDEX_LAYOUT_U32
 index_format = BufferFormat([
     (b"a_indices", 1, BUFFER_FIELD_TYPE_U32),
 ])

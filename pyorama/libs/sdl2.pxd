@@ -86,6 +86,7 @@ cdef extern from "SDL2/SDL.h" nogil:
     void SDL_GetWindowPosition(SDL_Window *window, int *x, int *y)
     void SDL_SetWindowSize(SDL_Window *window, int w, int h)
     void SDL_GetWindowSize(SDL_Window *window, int *w, int *h)
+    void SDL_GL_GetDrawableSize(SDL_Window *window, int *w, int *h)
     void SDL_SetWindowTitle(SDL_Window *window, const char *title)
     const char *SDL_GetWindowTitle(SDL_Window *window)
     void SDL_SetWindowIcon(SDL_Window *window, SDL_Surface *icon)
@@ -833,6 +834,8 @@ cdef extern from "SDL2/SDL.h" nogil:
         int32_t y
         uint32_t direction
 
+    uint32_t SDL_GetMouseState(int *x, int *y)
+
     ctypedef int32_t SDL_JoystickID
     ctypedef struct SDL_JoyAxisEvent:
         uint32_t type
@@ -1130,6 +1133,16 @@ cdef extern from "SDL2/SDL.h" nogil:
     int SDL_AudioStreamFlush(SDL_AudioStream *stream)
     void SDL_AudioStreamClear(SDL_AudioStream *stream)
     void SDL_FreeAudioStream(SDL_AudioStream *stream)
+
+    char *SDL_GetClipboardText()
+    int SDL_SetClipboardText(char *text)
+    bint SDL_HasClipboardText()
+
+    SDL_Keymod SDL_GetModState()
+    uint8_t *SDL_GetKeyboardState(int *numkeys)
+
+    ctypedef struct SDL_Cursor:
+        pass
     
 cdef extern from "SDL2/SDL_image.h" nogil:
     cdef enum:

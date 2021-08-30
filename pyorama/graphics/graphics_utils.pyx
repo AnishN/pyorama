@@ -219,7 +219,7 @@ cpdef void utils_runtime_compile_shader(
     cmd_args = [
         shaderc_path,
         "-f", in_file_path,
-        "-i", b"./resources/shaders",
+        "-i", b"./pyorama/resources/shaders",
         "-o", out_file_path,
         "--type", shader_type_str,
         "--platform", target_str,

@@ -11,10 +11,10 @@ cpdef Handle index_buffer_create(IndexLayout index_layout, Buffer index_data) ex
     index_buffer_ptr = index_buffer_get_ptr(index_buffer)
     index_buffer_ptr.index_layout = index_layout
     memory_ptr = bgfx_copy(index_data.items, index_data.num_items * index_data.item_size)
-    if index_buffer_ptr.index_layout == INDEX_LAYOUT_UINT16:
+    if index_buffer_ptr.index_layout == INDEX_LAYOUT_U16:
         index_buffer_ptr.bgfx_id = bgfx_create_index_buffer(memory_ptr, BGFX_BUFFER_NONE)
         index_buffer_ptr.num_indices = index_data.num_items * index_data.item_size / sizeof(uint16_t)
-    elif index_buffer_ptr.index_layout == INDEX_LAYOUT_UINT32:
+    elif index_buffer_ptr.index_layout == INDEX_LAYOUT_U32:
         index_buffer_ptr.bgfx_id = bgfx_create_index_buffer(memory_ptr, BGFX_BUFFER_NONE | BGFX_BUFFER_INDEX32)
         index_buffer_ptr.num_indices = index_data.num_items * index_data.item_size / sizeof(uint32_t)
     return index_buffer

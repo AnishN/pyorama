@@ -4,8 +4,8 @@ from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.c cimport *
 
 cpdef enum IndexLayout:
-    INDEX_LAYOUT_UINT16
-    INDEX_LAYOUT_UINT32
+    INDEX_LAYOUT_U16
+    INDEX_LAYOUT_U32
 
 ctypedef struct IndexBufferC:
     Handle handle

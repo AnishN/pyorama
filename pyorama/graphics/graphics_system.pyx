@@ -51,7 +51,8 @@ cdef class GraphicsSystem:
         self.renderer_type = GRAPHICS_RENDERER_TYPE_DEFAULT
 
     def update(self):
-        bgfx_frame(False)
+        pass
+        #bgfx_frame(False)
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)

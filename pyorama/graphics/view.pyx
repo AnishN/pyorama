@@ -24,6 +24,12 @@ cpdef void view_set_name(Handle view, bytes name) except *:
     view_ptr.name = name
     view_ptr.name_length = len(name)
 
+cpdef void view_set_mode(Handle view, ViewMode mode) except *:
+    cdef:
+        ViewC *view_ptr
+    view_ptr = view_get_ptr(view)
+    view_ptr.mode = mode
+
 cpdef void view_set_rect(Handle view, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
     cdef:
         ViewC *view_ptr
@@ -32,6 +38,15 @@ cpdef void view_set_rect(Handle view, uint16_t x, uint16_t y, uint16_t width, ui
     view_ptr.rect.y = y
     view_ptr.rect.width = width
     view_ptr.rect.height = height
+
+cpdef void view_set_scissor(Handle view, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
+    cdef:
+        ViewC *view_ptr
+    view_ptr = view_get_ptr(view)
+    view_ptr.scissor.x = x
+    view_ptr.scissor.y = y
+    view_ptr.scissor.width = width
+    view_ptr.scissor.height = height
 
 cpdef void view_set_clear(Handle view, uint16_t flags, uint32_t color, float depth, uint8_t stencil) except *:
     cdef:
@@ -73,11 +88,17 @@ cpdef void view_set_vertex_buffer(Handle view, Handle vertex_buffer) except *:
     view_ptr = view_get_ptr(view)
     view_ptr.vertex_buffer = vertex_buffer
 
-cpdef void view_set_index_buffer(Handle view, Handle index_buffer) except *:
+cpdef void view_set_index_buffer(Handle view, Handle index_buffer, int32_t offset=0, int32_t count=-1) except *:
     cdef:
         ViewC *view_ptr
+        IndexBufferC *index_buffer_ptr
     view_ptr = view_get_ptr(view)
     view_ptr.index_buffer = index_buffer
+    view_ptr.index_offset = offset
+    if count == -1:
+        index_buffer_ptr = index_buffer_get_ptr(index_buffer)
+        count = index_buffer_ptr.num_indices
+    view_ptr.index_count = count
 
 cpdef void view_set_program(Handle view, Handle program) except *:
     cdef:
@@ -113,13 +134,15 @@ cpdef void view_submit(Handle view) except *:
 
     if view_ptr.name_length != 0:
         bgfx_set_view_name(view_ptr.index, view_ptr.name)
+    bgfx_set_view_mode(view_ptr.index, <bgfx_view_mode_t>view_ptr.mode)
     bgfx_set_view_rect(view_ptr.index, view_ptr.rect.x, view_ptr.rect.y, view_ptr.rect.width, view_ptr.rect.height)
+    bgfx_set_view_scissor(view_ptr.index, view_ptr.scissor.x, view_ptr.scissor.y, view_ptr.scissor.width, view_ptr.scissor.height)
     bgfx_set_view_clear(view_ptr.index, view_ptr.clear.flags, view_ptr.clear.color, view_ptr.clear.depth, view_ptr.clear.stencil)
     bgfx_set_transform(&view_ptr.transform.model, 1)#TODO: support multiple model transforms!
     bgfx_set_view_transform(view_ptr.index, &view_ptr.transform.view, &view_ptr.transform.projection)
     bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
     bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id, 0, vertex_buffer_ptr.num_vertices)
-    bgfx_set_index_buffer(index_buffer_ptr.bgfx_id, 0, index_buffer_ptr.num_indices)
+    bgfx_set_index_buffer(index_buffer_ptr.bgfx_id, view_ptr.index_offset, view_ptr.index_count)#0, index_buffer_ptr.num_indices)
     for i in range(256):
         texture = view_ptr.textures[i]
         sampler = view_ptr.samplers[i]
