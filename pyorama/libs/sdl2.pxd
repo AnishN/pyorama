@@ -20,6 +20,7 @@ cdef extern from "SDL2/SDL.h" nogil:
     uint64_t SDL_GetPerformanceFrequency()
     void SDL_Delay(uint32_t ms)
     const char *SDL_GetError()
+    const char *SDL_GetCurrentVideoDriver()
 
     bint SDL_SetHint(const char *name, const char *value)
     char *SDL_HINT_NO_SIGNAL_HANDLERS
@@ -906,6 +907,45 @@ cdef extern from "SDL2/SDL.h" nogil:
     uint8_t SDL_JoystickGetButton(SDL_Joystick *joystick, int button)
     int SDL_JoystickNumBalls(SDL_Joystick *joystick)
     int SDL_JoystickGetBall(SDL_Joystick *joystick, int ball, int *dx, int *dy)
+    
+    ctypedef struct SDL_GameController:
+        pass
+
+    ctypedef enum SDL_GameControllerButton:
+        SDL_CONTROLLER_BUTTON_INVALID
+        SDL_CONTROLLER_BUTTON_A
+        SDL_CONTROLLER_BUTTON_B
+        SDL_CONTROLLER_BUTTON_X
+        SDL_CONTROLLER_BUTTON_Y
+        SDL_CONTROLLER_BUTTON_BACK
+        SDL_CONTROLLER_BUTTON_GUIDE
+        SDL_CONTROLLER_BUTTON_START
+        SDL_CONTROLLER_BUTTON_LEFTSTICK
+        SDL_CONTROLLER_BUTTON_RIGHTSTICK
+        SDL_CONTROLLER_BUTTON_LEFTSHOULDER
+        SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+        SDL_CONTROLLER_BUTTON_DPAD_UP
+        SDL_CONTROLLER_BUTTON_DPAD_DOWN
+        SDL_CONTROLLER_BUTTON_DPAD_LEFT
+        SDL_CONTROLLER_BUTTON_DPAD_RIGHT
+        SDL_CONTROLLER_BUTTON_MAX
+
+    ctypedef enum SDL_GameControllerAxis:
+        SDL_CONTROLLER_AXIS_INVALID
+        SDL_CONTROLLER_AXIS_LEFTX
+        SDL_CONTROLLER_AXIS_LEFTY
+        SDL_CONTROLLER_AXIS_RIGHTX
+        SDL_CONTROLLER_AXIS_RIGHTY
+        SDL_CONTROLLER_AXIS_TRIGGERLEFT
+        SDL_CONTROLLER_AXIS_TRIGGERRIGHT
+        SDL_CONTROLLER_AXIS_MAX
+
+    SDL_GameController *SDL_GameControllerOpen(int joystick_index)
+    void SDL_GameControllerClose(SDL_GameController *gamecontroller)
+    const char *SDL_GameControllerNameForIndex(int joystick_index)
+    bint SDL_IsGameController(int joystick_index)
+    uint8_t SDL_GameControllerGetButton(SDL_GameController *gamecontroller, SDL_GameControllerButton button)
+    int16_t SDL_GameControllerGetAxis(SDL_GameController *gamecontroller, SDL_GameControllerAxis axis)
 
     ctypedef struct SDL_ControllerAxisEvent:
         uint32_t type
@@ -1143,6 +1183,27 @@ cdef extern from "SDL2/SDL.h" nogil:
 
     ctypedef struct SDL_Cursor:
         pass
+
+    ctypedef enum SDL_SystemCursor:
+        SDL_SYSTEM_CURSOR_ARROW
+        SDL_SYSTEM_CURSOR_IBEAM
+        SDL_SYSTEM_CURSOR_WAIT
+        SDL_SYSTEM_CURSOR_CROSSHAIR
+        SDL_SYSTEM_CURSOR_WAITARROW
+        SDL_SYSTEM_CURSOR_SIZENWSE
+        SDL_SYSTEM_CURSOR_SIZENESW
+        SDL_SYSTEM_CURSOR_SIZEWE
+        SDL_SYSTEM_CURSOR_SIZENS
+        SDL_SYSTEM_CURSOR_SIZEALL
+        SDL_SYSTEM_CURSOR_NO
+        SDL_SYSTEM_CURSOR_HAND
+
+    SDL_Cursor *SDL_CreateSystemCursor(SDL_SystemCursor id)
+    SDL_Cursor *SDL_CreateCursor(const uint8_t *data, uint8_t *mask, int w, int h, int hot_x, int hot_y)
+    SDL_Cursor *SDL_GetCursor()
+    void SDL_SetCursor(SDL_Cursor *cursor)
+    int SDL_ShowCursor(int toggle)
+    void SDL_FreeCursor(SDL_Cursor *cursor)
     
 cdef extern from "SDL2/SDL_image.h" nogil:
     cdef enum:
