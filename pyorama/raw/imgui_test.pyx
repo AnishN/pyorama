@@ -70,6 +70,9 @@ while running:
 
     igNewFrame()
     igShowDemoWindow(&running)
+    #igBegin(b"Hello, World!", &running, 0)
+    #igEnd()
+
     igRender()
     ImGui_Implbgfx_RenderDrawLists(igGetDrawData())
     bgfx_touch(0)

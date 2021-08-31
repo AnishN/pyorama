@@ -43,7 +43,7 @@ cdef void ImGui_Implbgfx_RenderDrawLists(ImDrawData *draw_data):
         bgfx_transient_index_buffer_t tib
         uint32_t num_vertices
         uint32_t num_indices
-        bint use_index_u32 = False#use uint16_t like a chump
+        bint use_index_u32 = sizeof(ImDrawIdx) == 4
         ImDrawVert *verts
         ImDrawIdx *indices
         size_t cmd_i
@@ -110,7 +110,7 @@ cdef void ImGui_Implbgfx_RenderDrawLists(ImDrawData *draw_data):
             bgfx_set_transient_vertex_buffer(0, &tvb, 0, num_vertices)
             bgfx_set_transient_index_buffer(&tib, idx_buffer_offset, cmd.ElemCount)
             bgfx_submit(g_View, g_ShaderHandle, 0, BGFX_DISCARD_ALL)
-        idx_buffer_offset += cmd.ElemCount
+            idx_buffer_offset += cmd.ElemCount
 
 cdef bint ImGui_Implbgfx_CreateDeviceObjects():
     cdef:
