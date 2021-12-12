@@ -24,6 +24,15 @@ cdef class VertexLayout(HandleObject):
     cdef VertexLayoutC *get_ptr(self) except *:
         return <VertexLayoutC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create(BufferFormat attributes, set normalize=None, set cast_to_int=None):
+        cdef:
+            VertexLayout vertex_layout
+
+        vertex_layout = VertexLayout.__new__(VertexLayout)
+        vertex_layout.create(attributes, normalize, cast_to_int)
+        return vertex_layout
+
     cpdef void create(self, BufferFormat attributes, set normalize=None, set cast_to_int=None) except *:
         cdef:
             VertexLayoutC *vertex_layout_ptr

@@ -3,6 +3,15 @@ cdef class Window(HandleObject):
     cdef WindowC *get_ptr(self) except *:
         return <WindowC *>graphics.slots.c_get_ptr(self.handle)
     
+    @staticmethod
+    def init_create(uint16_t width, uint16_t height, bytes title, uint32_t flags=WINDOW_FLAGS_SHOWN | WINDOW_FLAGS_RESIZABLE):
+        cdef:
+            Window window
+        
+        window = Window.__new__(Window)
+        window.create(width, height, title, flags)
+        return window
+
     cpdef void create(self, uint16_t width, uint16_t height, bytes title, uint32_t flags=WINDOW_FLAGS_SHOWN | WINDOW_FLAGS_RESIZABLE) except *:
         cdef:
             WindowC *window_ptr

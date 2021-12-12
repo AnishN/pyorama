@@ -3,6 +3,15 @@ cdef class IndexBuffer(HandleObject):
     cdef IndexBufferC *get_ptr(self) except *:
         return <IndexBufferC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create(IndexLayout index_layout, Buffer index_data, bint dynamic=False):
+        cdef:
+            IndexBuffer index_buffer
+
+        index_buffer = IndexBuffer.__new__(IndexBuffer)
+        index_buffer.create(index_layout, index_data, dynamic)
+        return index_buffer
+
     cpdef void create(self, IndexLayout index_layout, Buffer index_data, bint dynamic=False) except *:
         cdef:
             Handle index_buffer

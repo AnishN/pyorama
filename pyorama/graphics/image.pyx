@@ -2,6 +2,14 @@ cdef class Image(HandleObject):
 
     cdef ImageC *get_ptr(self) except *:
         return <ImageC *>graphics.slots.c_get_ptr(self.handle)
+    
+    @staticmethod
+    def init_create_from_data(uint8_t[::1] pixels, uint16_t width, uint16_t height):
+        cdef:
+            Image image
+        image = Image.__new__(Image)
+        image.create_from_data(pixels, width, height)
+        return image
 
     cpdef void create_from_data(self, uint8_t[::1] pixels, uint16_t width, uint16_t height) except *:
         cdef:

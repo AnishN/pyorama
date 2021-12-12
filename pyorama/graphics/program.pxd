@@ -11,5 +11,6 @@ ctypedef struct ProgramC:
 
 cdef class Program(HandleObject):
     cdef ProgramC *get_ptr(self) except *
+    
     cpdef void create(self, Shader vertex_shader, Shader fragment_shader) except *
     cpdef void delete(self) except *

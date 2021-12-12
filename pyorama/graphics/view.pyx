@@ -3,6 +3,15 @@ cdef class View(HandleObject):
     cdef ViewC *get_ptr(self) except *:
         return <ViewC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create():
+        cdef:
+            View view
+
+        view = View.__new__(View)
+        view.create()
+        return view
+
     cpdef void create(self) except *:
         cdef:
             ViewC *view_ptr
@@ -148,8 +157,8 @@ cdef class View(HandleObject):
             texture = view_ptr.textures[i]
             sampler = view_ptr.samplers[i]
             if texture != 0 and sampler != 0:
-                texture_ptr = texture_get_ptr(texture)
-                sampler_ptr = uniform_get_ptr(sampler)
+                texture_ptr = <TextureC *>graphics.slots.c_get_ptr(texture)
+                sampler_ptr = <UniformC *>graphics.slots.c_get_ptr(sampler)
                 bgfx_set_texture(i, sampler_ptr.bgfx_id, texture_ptr.bgfx_id, 0)
         bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_BINDINGS | BGFX_DISCARD_ALL)
 

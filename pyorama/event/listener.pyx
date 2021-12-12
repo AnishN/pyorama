@@ -3,6 +3,15 @@ cdef class Listener(HandleObject):
     cdef ListenerC *get_ptr(self) except *:
         return <ListenerC *>event.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create(uint16_t event_type, object callback, list args=None, dict kwargs=None):
+        cdef:
+            Listener listener
+
+        listener = Listener.__new__(Listener)
+        listener.create(event_type, callback, args, kwargs)
+        return listener
+
     cpdef void create(self, uint16_t event_type, object callback, list args=None, dict kwargs=None) except *:
         cdef:
             ListenerC *listener_ptr

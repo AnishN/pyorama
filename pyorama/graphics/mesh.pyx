@@ -3,6 +3,15 @@ cdef class Mesh(HandleObject):
     cdef MeshC *get_ptr(self) except *:
         return <MeshC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create_from_file(self, bytes file_path, bint load_texcoords=True, bint load_normals=True):
+        cdef:
+            Mesh mesh
+        
+        mesh = Mesh.__new__(Mesh)
+        mesh.create_from_file(file_path, load_texcoords, load_normals)
+        return mesh
+
     cpdef void create_from_file(self, bytes file_path, bint load_texcoords=True, bint load_normals=True) except *:
         cdef:
             MeshC *mesh_ptr

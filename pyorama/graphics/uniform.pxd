@@ -14,14 +14,15 @@ ctypedef struct UniformC:
     Handle handle
     bgfx_uniform_handle_t bgfx_id
 
-cdef UniformC *uniform_get_ptr(Handle uniform) except *
-cpdef Handle uniform_create(bytes name, UniformType type_) except *
-cpdef void uniform_delete(Handle uniform) except *
-cpdef void uniform_set_sampler(Handle uniform, uint32_t value) except *
-cpdef void uniform_set_vec4(Handle uniform, Vec4 value) except *
-cpdef void uniform_set_mat3(Handle uniform, Mat3 value) except *
-cpdef void uniform_set_mat4(Handle uniform, Mat4 value) except *
-cpdef void uniform_set(Handle uniform, object value) except *
-cpdef bytes uniform_get_name(Handle uniform)
-cpdef UniformType uniform_get_type(Handle uniform) except *
-#cpdef size_t uniform_get_count(Handle uniform) except *
+cdef class Uniform(HandleObject):
+
+    cdef UniformC *get_ptr(self) except *
+    cpdef void create(self, bytes name, UniformType type_) except *
+    cpdef void delete(self) except *
+    cpdef void set_sampler(self, uint32_t value) except *
+    cpdef void set_vec4(self, Vec4 value) except *
+    cpdef void set_mat3(self, Mat3 value) except *
+    cpdef void set_mat4(self, Mat4 value) except *
+    cpdef void set_value(self, object value) except *
+    cpdef bytes get_name(self)
+    cpdef UniformType get_type(self) except *

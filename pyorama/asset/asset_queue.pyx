@@ -5,6 +5,15 @@ cdef class AssetQueue(HandleObject):
     cdef AssetQueueC *get_ptr(self) except *:
         return <AssetQueueC *>app.asset.slots.c_get_ptr(self.handle)
     
+    @staticmethod
+    def init_create(size_t num_threads=ASSET_QUEUE_DEFAULT_NUM_THREADS):
+        cdef:
+            AssetQueue asset_queue
+
+        asset_queue = AssetQueue.__new__(AssetQueue)
+        asset_queue.create(num_threads)
+        return asset_queue
+
     cpdef void create(self, size_t num_threads=ASSET_QUEUE_DEFAULT_NUM_THREADS) except *:
         cdef:
             AssetQueueC *queue_ptr
@@ -16,7 +25,7 @@ cdef class AssetQueue(HandleObject):
         CHECK_ERROR(vector_init(&queue_ptr.assets, sizeof(AssetQueueItemC)))
         #queue_ptr.thread_args = <ThreadArgsC *>calloc(num_threads, sizeof(ThreadArgsC))
 
-    cpdef void add_asset(self, bytes name, bytes path, AssetType type_, dict options=None) except *:
+    cpdef void add_asset(self, AssetType type_, bytes name, bytes path, dict options=None) except *:
         cdef:
             AssetQueueC *queue_ptr
             size_t name_len = len(name)
@@ -41,6 +50,8 @@ cdef class AssetQueue(HandleObject):
             item.asset_id = app.graphics.slots.c_create(GRAPHICS_SLOT_IMAGE)
         elif item.type_ == ASSET_TYPE_MESH:
             item.asset_id = app.graphics.slots.c_create(GRAPHICS_SLOT_MESH)
+        elif item.type_ in (ASSET_TYPE_BINARY_SHADER, ASSET_TYPE_SOURCE_SHADER):
+            item.asset_id = app.graphics.slots.c_create(GRAPHICS_SLOT_SHADER)
 
         queue_ptr = self.get_ptr()
         CHECK_ERROR(vector_push(&queue_ptr.assets, &item))
@@ -77,6 +88,8 @@ cdef class AssetQueue(HandleObject):
                     cgltf_free(data)
                 else:
                     pass#did not load gltf
+            elif item_ptr.type_ == ASSET_TYPE_SOURCE_SHADER:
+                pass
             else:
                 pass
             str_hash_map_insert(&app.asset.assets_map, item_ptr.name, item_ptr.name_len, item_ptr.asset_id)

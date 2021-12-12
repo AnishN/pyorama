@@ -20,40 +20,50 @@ bgfx_texture_handle_t bgfx_create_texture_3d(uint16_t _width, uint16_t _height, 
 bgfx_texture_handle_t bgfx_create_texture_cube(uint16_t _size, bint _hasMips, uint16_t _numLayers, bgfx_texture_format_t _format, uint64_t _flags, const bgfx_memory_t* _mem)
 """
 
-cdef TextureC *texture_get_ptr(Handle texture) except *:
-    return <TextureC *>graphics.slots.c_get_ptr(texture)
+cdef class Texture(HandleObject):
 
-cpdef Handle texture_create_2d_from_image(Handle image) except *:
-    cdef:
-        Handle texture
-        TextureC *texture_ptr
-        ImageC *image_ptr
-        size_t num_pixel_bytes
-        bgfx_memory_t *memory_ptr
-    
-    texture = graphics.slots.c_create(GRAPHICS_SLOT_TEXTURE)
-    texture_ptr = texture_get_ptr(texture)
-    image_ptr = NULL#image_get_ptr(image)
-    num_pixel_bytes = image_ptr.width * image_ptr.height * 4 * sizeof(uint8_t)
-    memory_ptr = bgfx_copy(image_ptr.pixels, num_pixel_bytes)
-    texture_ptr.bgfx_id = bgfx_create_texture_2d(
-        image_ptr.width,
-        image_ptr.height,
-        False,
-        0,
-        #BGFX_TEXTURE_FORMAT_RGBA8,
-        BGFX_TEXTURE_FORMAT_BGRA8,
-        #BGFX_TEXTURE_FORMAT_ABGR8,
-        0,#BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-        memory_ptr,
-    )
-    return texture
+    cdef TextureC *get_ptr(self) except *:
+        return <TextureC *>graphics.slots.c_get_ptr(self.handle)
 
-#cpdef void texture_update_2d_from_image(Handle image)
+    @staticmethod
+    def init_create_2d_from_image(Image image):
+        cdef:
+            Texture texture
 
-cpdef void texture_delete(Handle texture) except *:
-    cdef:
-        TextureC *texture_ptr
-    texture_ptr = texture_get_ptr(texture)
-    bgfx_destroy_texture(texture_ptr.bgfx_id)
-    graphics.slots.c_delete(texture)
+        texture = Texture.__new__(Texture)
+        texture.create_2d_from_image(image)
+        return texture
+
+    cpdef void create_2d_from_image(self, Image image) except *:
+        cdef:
+            TextureC *texture_ptr
+            ImageC *image_ptr
+            size_t num_pixel_bytes
+            bgfx_memory_t *memory_ptr
+        
+        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_TEXTURE)
+        texture_ptr = self.get_ptr()
+        image_ptr = image.get_ptr()
+        num_pixel_bytes = image_ptr.width * image_ptr.height * image_ptr.bytes_per_pixel
+        memory_ptr = bgfx_copy(image_ptr.pixels, num_pixel_bytes)
+        texture_ptr.bgfx_id = bgfx_create_texture_2d(
+            image_ptr.width,
+            image_ptr.height,
+            False,
+            0,
+            #BGFX_TEXTURE_FORMAT_RGBA8,
+            BGFX_TEXTURE_FORMAT_BGRA8,
+            #BGFX_TEXTURE_FORMAT_ABGR8,
+            0,#BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+            memory_ptr,
+        )
+
+    #cpdef void texture_update_2d_from_image(Handle image)
+
+    cpdef void delete(self) except *:
+        cdef:
+            TextureC *texture_ptr
+        texture_ptr = self.get_ptr()
+        bgfx_destroy_texture(texture_ptr.bgfx_id)
+        graphics.slots.c_delete(self.handle)
+        self.handle = 0

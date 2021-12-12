@@ -1,5 +1,6 @@
 from pyorama.data.handle cimport *
 from pyorama.graphics.graphics_system cimport *
+from pyorama.graphics.image cimport *
 from pyorama.libs.c cimport *
 
 cpdef enum TextureType:
@@ -17,6 +18,8 @@ ctypedef struct TextureC:
     #TextureFlags texture_flags
     #TextureSamplerFlags sampler_flags
 
-cdef TextureC *texture_get_ptr(Handle texture) except *
-cpdef Handle texture_create_2d_from_image(Handle image) except *
-cpdef void texture_delete(Handle texture) except *
+cdef class Texture(HandleObject):
+
+    cdef TextureC *get_ptr(self) except *
+    cpdef void create_2d_from_image(self, Image image) except *
+    cpdef void delete(self) except *

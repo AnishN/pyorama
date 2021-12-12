@@ -3,6 +3,15 @@ cdef class VertexBuffer(HandleObject):
     cdef VertexBufferC *get_ptr(self) except *:
         return <VertexBufferC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create(VertexLayout vertex_layout, Buffer vertex_data, bint dynamic=False):
+        cdef:
+            VertexBuffer vertex_buffer
+        
+        vertex_buffer = VertexBuffer.__new__(VertexBuffer)
+        vertex_buffer.create(vertex_layout, vertex_data, dynamic)
+        return vertex_buffer
+
     cpdef void create(self, VertexLayout vertex_layout, Buffer vertex_data, bint dynamic=False) except *:
         cdef:
             VertexBufferC *vertex_buffer_ptr

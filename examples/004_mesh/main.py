@@ -9,7 +9,7 @@ from pyorama.math import *
 
 def on_window_event(event, *args, **kwargs):
     if event["sub_type"] == pyorama.event.WINDOW_EVENT_TYPE_CLOSE:
-        pyorama.app.trigger_quit()
+        app.trigger_quit()
 
 def on_enter_frame_event(event, *args, **kwargs):
     global counter
@@ -63,10 +63,10 @@ mesh = Mesh()
 
 queue = AssetQueue()
 queue.create()
-queue.add_asset(b"helmet", b"./examples/004_mesh/meshes/helmet.glb", ASSET_TYPE_MESH)
-queue.add_asset(b"box", b"./examples/004_mesh/meshes/box.glb", ASSET_TYPE_MESH)
-queue.add_asset(b"capsule", b"./examples/005_texture/textures/capsule.jpg", ASSET_TYPE_IMAGE)
-queue.add_asset(b"cube", b"./examples/005_texture/textures/cube.png", ASSET_TYPE_IMAGE)
+queue.add_asset(ASSET_TYPE_MESH, b"helmet", b"./examples/004_mesh/meshes/helmet.glb") 
+queue.add_asset(ASSET_TYPE_MESH, b"box", b"./examples/004_mesh/meshes/box.glb")
+queue.add_asset(ASSET_TYPE_IMAGE, b"capsule", b"./examples/005_texture/textures/capsule.jpg")
+queue.add_asset(ASSET_TYPE_IMAGE, b"cube", b"./examples/005_texture/textures/cube.png")
 #queue.add_asset(b"Sphere", b"path/to/sphere.obj", ASSET_TYPE_MESH)
 
 import time
@@ -80,7 +80,6 @@ image = Image()
 pyorama.app.get_asset_system().get_asset(b"cube", image)
 print(image.get_width(), image.get_height())
 print(image.get_pixels())
-
 
 pixels = image.get_shaped_pixels()
 start = time.time()

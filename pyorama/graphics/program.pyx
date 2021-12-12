@@ -3,6 +3,15 @@ cdef class Program(HandleObject):
     cdef ProgramC *get_ptr(self) except *:
         return <ProgramC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create(Shader vertex_shader, Shader fragment_shader):
+        cdef:
+            Program program
+
+        program = Program.__new__(Program)
+        program.create(vertex_shader, fragment_shader)
+        return program
+
     cpdef void create(self, Shader vertex_shader, Shader fragment_shader) except *:
         cdef:
             Handle program

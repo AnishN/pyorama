@@ -9,14 +9,16 @@ ctypedef struct TransformC:
     Vec3C scale
     Vec3C offset
 
-cdef TransformC *transform_get_ptr(Handle transform) except *
-cpdef Handle transform_create(Vec3 translation=*, Quat rotation=*, Vec3 scale=*, Vec3 offset=*) except *
-cpdef void transform_delete(Handle transform) except *
-cpdef void transform_set_translation(Handle transform, Vec3 translation=*) except *
-cpdef void transform_set_rotation(Handle transform, Quat rotation=*) except *
-cpdef void transform_set_scale(Handle transform, Vec3 scale=*) except *
-cpdef void transform_set_offset(Handle transform, Vec3 offset=*) except *
-cpdef void transform_get_translation(Handle transform, Vec3 translation, bint copy=*) except *
-cpdef void transform_get_rotation(Handle transform, Quat rotation, bint copy=*) except *
-cpdef void transform_get_scale(Handle transform, Vec3 scale, bint copy=*) except *
-cpdef void transform_get_offset(Handle transform, Vec3 offset, bint copy=*) except *
+cdef class Transform(HandleObject):
+
+    cdef TransformC *get_ptr(self) except *
+    cpdef void create(self, Vec3 translation=*, Quat rotation=*, Vec3 scale=*, Vec3 offset=*) except *
+    cpdef void delete(self) except *
+    cpdef void set_translation(self, Vec3 translation=*) except *
+    cpdef void transform_set_rotation(self, Quat rotation=*) except *
+    cpdef void transform_set_scale(self, Vec3 scale=*) except *
+    cpdef void transform_set_offset(self, Vec3 offset=*) except *
+    cpdef void transform_get_translation(self, Vec3 translation, bint copy=*) except *
+    cpdef void transform_get_rotation(self, Quat rotation, bint copy=*) except *
+    cpdef void transform_get_scale(self, Vec3 scale, bint copy=*) except *
+    cpdef void transform_get_offset(self, Vec3 offset, bint copy=*) except *

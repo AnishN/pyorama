@@ -3,6 +3,15 @@ cdef class FrameBuffer(HandleObject):
     cdef FrameBufferC *get_ptr(self) except *:
         return <FrameBufferC *>graphics.slots.c_get_ptr(self.handle)
 
+    @staticmethod
+    def init_create_from_window(Window window):
+        cdef:
+            FrameBuffer frame_buffer
+
+        frame_buffer = FrameBuffer.__new__(FrameBuffer)
+        frame_buffer.create_from_window(window)
+        return frame_buffer
+
     cpdef void create_from_window(self, Window window) except *:
         cdef:
             FrameBufferC *frame_buffer_ptr
