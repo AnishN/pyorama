@@ -61,3 +61,11 @@ cdef void handle_set_type(Handle *handle, uint8_t type) nogil:
     
 cdef void handle_set_free(Handle *handle, bint free) nogil:
     handle[0] = (handle[0] & (~FREE_MASK)) | (<uint64_t>free << FREE_BIT & FREE_MASK)
+
+cdef class HandleObject:
+    
+    def __cinit__(self):
+        pass
+    
+    def __dealloc__(self):
+        pass

@@ -19,11 +19,12 @@ cdef class GraphicsSystem:
             GRAPHICS_SLOT_TEXTURE: sizeof(TextureC),
             GRAPHICS_SLOT_UNIFORM: sizeof(UniformC),
             GRAPHICS_SLOT_LIGHT: sizeof(LightC),
+            GRAPHICS_SLOT_TRANSFORM: sizeof(TransformC),
+            GRAPHICS_SLOT_SPRITE: sizeof(SpriteC),
+            GRAPHICS_SLOT_SPRITE_BATCH: sizeof(SpriteBatchC),
         }
-        self.window_ids = HashMap()
     
     def __dealloc__(self):
-        self.window_ids = None
         self.slot_sizes = None
         self.slots = None
         self.name = None
@@ -38,10 +39,10 @@ cdef class GraphicsSystem:
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
-        self.window_ids.c_init()
+        int_hash_map_init(&self.window_ids)
     
     def quit(self):
-        self.window_ids.c_free()
+        int_hash_map_free(&self.window_ids)
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
@@ -52,7 +53,7 @@ cdef class GraphicsSystem:
 
     def update(self):
         pass
-        #bgfx_frame(False)
+        bgfx_frame(False)
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)

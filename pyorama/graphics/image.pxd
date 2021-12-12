@@ -15,11 +15,12 @@ ctypedef struct ImageC:
     uint16_t height
     size_t bytes_per_pixel
 
-cdef ImageC *image_get_ptr(Handle image) except *
-cpdef Handle image_create_from_data(uint8_t[::1] pixels, uint16_t width, uint16_t height) except *
-cpdef Handle image_create_from_file(bytes file_path) except *
-cpdef void image_delete(Handle image) except *
-cpdef void image_flip_x(Handle image) except *
-cpdef void image_flip_y(Handle image) except *
-cpdef void image_premultiply_alpha(Handle image) except *
-cpdef void image_write_to_file(Handle image, bytes file_path, ImageFileType file_type) except *
+cdef class Image(HandleObject):
+
+    cdef ImageC *get_ptr(self) except *
+    cpdef void create_from_data(self, uint8_t[::1] pixels, uint16_t width, uint16_t height) except *
+    cpdef void delete(self) except *
+    cpdef uint8_t[::1] get_pixels(self)
+    cpdef uint8_t[:, :, ::1] get_shaped_pixels(self)
+    cpdef uint16_t get_width(self) except *
+    cpdef uint16_t get_height(self) except *

@@ -1,5 +1,5 @@
 from pyorama.app cimport *
-from pyorama.graphics.graphics_utils cimport *
+from pyorama.asset.shader_loader cimport *
 from pyorama.data.buffer cimport *
 from pyorama.data.handle cimport *
 from pyorama.graphics.image cimport *

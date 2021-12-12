@@ -1,5 +1,5 @@
 from pyorama.core.slot_manager cimport *
-from pyorama.data.hash_map cimport *
+from pyorama.data.int_hash_map cimport *
 from pyorama.data.vector cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
@@ -12,7 +12,10 @@ from pyorama.graphics.light cimport *
 from pyorama.graphics.mesh cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *
+from pyorama.graphics.sprite cimport *
+from pyorama.graphics.sprite_batch cimport *
 from pyorama.graphics.texture cimport *
+from pyorama.graphics.transform cimport *
 from pyorama.graphics.uniform cimport *
 from pyorama.graphics.vertex_buffer cimport *
 from pyorama.graphics.vertex_layout cimport *
@@ -49,6 +52,9 @@ cpdef enum GraphicsSlot:
     GRAPHICS_SLOT_TEXTURE
     GRAPHICS_SLOT_UNIFORM
     GRAPHICS_SLOT_LIGHT
+    GRAPHICS_SLOT_TRANSFORM
+    GRAPHICS_SLOT_SPRITE
+    GRAPHICS_SLOT_SPRITE_BATCH
 
 cdef class GraphicsSystem:
     cdef:
@@ -63,7 +69,7 @@ cdef class GraphicsSystem:
         bint[GRAPHICS_MAX_VIEWS] used_views
         uint16_t[GRAPHICS_MAX_VIEWS] free_views
         size_t free_view_index
-        HashMap window_ids
+        IntHashMapC window_ids
 
     cdef void c_init_sdl2(self) except *
     cdef void c_quit_sdl2(self) except *

@@ -35,6 +35,8 @@ ctypedef struct VertexLayoutC:
     Handle handle
     bgfx_vertex_layout_t bgfx_id
 
-cdef VertexLayoutC *vertex_layout_get_ptr(Handle vertex_layout) except *
-cpdef Handle vertex_layout_create(BufferFormat attributes, set normalize=*, set cast_to_int=*) except *
-cpdef void vertex_layout_delete(Handle vertex_layout) except *
+cdef class VertexLayout(HandleObject):
+
+    cdef VertexLayoutC *get_ptr(self) except *
+    cpdef void create(self, BufferFormat attributes, set normalize=*, set cast_to_int=*) except *
+    cpdef void delete(self) except *

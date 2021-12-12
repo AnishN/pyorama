@@ -29,6 +29,16 @@ cd ./examples/runtime
 ../../.build/linux64_gcc/bin/examplesRelease
 ```
 
+STB nothings libraries (such as stb_image):
+```
+There is nothing to build (header-only).
+```
+
+CGLTF:
+```
+There is nothing to build (header-only).
+```
+
 Chipmunk:
 ```
 git clone https://github.com/slembcke/Chipmunk2D.git
@@ -147,7 +157,7 @@ cd ./harfbuzz-2.7.2
 make
 ```
 
-Chipmunk:
+Assimp:
 ```
 git clone https://github.com/assimp/assimp.git
 cd ./assimp

@@ -43,8 +43,8 @@ image_path = base_path + b"textures/cube.png"
 mesh_path =  base_path + b"meshes/cube.obj"
 vs_source_path = base_path + b"shaders/vs_mesh.sc"
 fs_source_path = base_path + b"shaders/fs_mesh.sc"
-vs_bin_path = base_path + b"shaders/vs_mesh.sc_bin"
-fs_bin_path = base_path + b"shaders/fs_mesh.sc_bin"
+vs_bin_path = base_path + b"shaders/vs_mesh.bin"
+fs_bin_path = base_path + b"shaders/fs_mesh.bin"
 
 pyorama.app.init()
 

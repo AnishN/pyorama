@@ -1,271 +1,270 @@
-cdef WindowC *window_get_ptr(Handle window) except *:
-    return <WindowC *>graphics.slots.c_get_ptr(window)
+cdef class Window(HandleObject):
 
-cpdef Handle window_create(uint16_t width, uint16_t height, bytes title, uint32_t flags=WINDOW_FLAGS_SHOWN | WINDOW_FLAGS_RESIZABLE) except *:
-    cdef:
-        Handle window
-        WindowC *window_ptr
-        uint64_t window_id
-        size_t title_length
-        uint32_t clear_flags = BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL
-        uint32_t debug = BGFX_DEBUG_TEXT
-        uint32_t reset = BGFX_RESET_VSYNC
+    cdef WindowC *get_ptr(self) except *:
+        return <WindowC *>graphics.slots.c_get_ptr(self.handle)
+    
+    cpdef void create(self, uint16_t width, uint16_t height, bytes title, uint32_t flags=WINDOW_FLAGS_SHOWN | WINDOW_FLAGS_RESIZABLE) except *:
+        cdef:
+            WindowC *window_ptr
+            uint64_t window_id
+            size_t title_length
+            uint32_t clear_flags = BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL
+            uint32_t debug = BGFX_DEBUG_TEXT
+            uint32_t reset = BGFX_RESET_VSYNC
+            
+        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_WINDOW)
+        window_ptr = self.get_ptr()
+        window_ptr.sdl_ptr = SDL_CreateWindow(
+            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+            width, height, flags,
+        )
+        window_ptr.sdl_id = SDL_GetWindowID(window_ptr.sdl_ptr)
+        int_hash_map_insert(&graphics.window_ids, window_ptr.sdl_id, self.handle)
+        window_ptr.width = width
+        window_ptr.height = height
+        window_ptr.title = <char *>title
+        window_ptr.title_length = len(title)
+
+    cpdef void load_from_id(self, uint32_t id_) except *:
+        self.handle = int_hash_map_get(&graphics.window_ids, id_)
+
+    cpdef void delete(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        int_hash_map_remove(&graphics.window_ids, window_ptr.sdl_id)
+        SDL_DestroyWindow(window_ptr.sdl_ptr)
+        graphics.slots.c_delete(self.handle)
+        self.handle = 0
+
+    cpdef uint16_t get_width(self) except *:
+        return self.get_ptr().width
+
+    cpdef uint16_t get_height(self) except *:
+        return self.get_ptr().height
+
+    cpdef tuple get_size(self):
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        return (window_ptr.width, window_ptr.height)
+
+    cpdef bytes get_title(self):
+        return self.get_ptr().title
+
+    cpdef uint32_t get_flags(self) except *:
+        return SDL_GetWindowFlags(self.get_ptr().sdl_ptr)
+
+    cpdef uint64_t get_id(self) except *:
+        return self.get_ptr().sdl_id
+
+    cpdef bint is_fullscreen(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_FULLSCREEN
+
+    cpdef bint is_fullscreen_desktop(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_FULLSCREEN_DESKTOP
+
+    cpdef bint is_shown(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_SHOWN
+
+    cpdef bint is_hidden(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_HIDDEN
+
+    cpdef bint is_borderless(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_BORDERLESS
+
+    cpdef bint is_resizable(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_RESIZABLE
+
+    cpdef bint is_minimized(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_MINIMIZED
+
+    cpdef bint is_maximized(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_MAXIMIZED
+
+    cpdef bint is_input_grabbed(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_INPUT_GRABBED
+
+    cpdef bint is_mouse_captured(self) except *:
+        return self.get_flags() & WINDOW_FLAGS_MOUSE_CAPTURED
+
+    cpdef void set_width(self, uint16_t width) except *:
+        self.get_ptr().width = width
+
+    cpdef void set_height(self, uint16_t height) except *:
+        self.get_ptr().height = height
+
+    cpdef void set_size(self, uint16_t width, uint16_t height) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        window_ptr.width = width
+        window_ptr.height = height
+
+    cpdef void set_title(self, bytes title) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        window_ptr.title = title
+        window_ptr.title_length = len(title)
+
+    cpdef void set_flags(self, uint32_t flags) except *:
+        cdef:
+            WindowC *window_ptr
+            bint full_screen
+        window_ptr = self.get_ptr()
         
-    window = graphics.slots.c_create(GRAPHICS_SLOT_WINDOW)
-    window_ptr = window_get_ptr(window)
-    window_ptr.sdl_ptr = SDL_CreateWindow(
-        title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-        width, height, flags,
-    )
-    window_ptr.sdl_id = SDL_GetWindowID(window_ptr.sdl_ptr)
-    graphics.window_ids.c_insert(window_ptr.sdl_id, window)
-
-    window_ptr.width = width
-    window_ptr.height = height
-    window_ptr.title = <char *>title
-    window_ptr.title_length = len(title)
-    return window
-
-cpdef void window_delete(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    
-    window_ptr = window_get_ptr(window)
-    graphics.window_ids.c_remove(window_ptr.sdl_id)
-    SDL_DestroyWindow(window_ptr.sdl_ptr)
-    graphics.slots.c_delete(window)
-
-cpdef uint16_t window_get_width(Handle window) except *:
-    return window_get_ptr(window).width
-
-cpdef uint16_t window_get_height(Handle window) except *:
-    return window_get_ptr(window).height
-
-cpdef tuple window_get_size(Handle window):
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    return (window_ptr.width, window_ptr.height)
-
-cpdef bytes window_get_title(Handle window):
-    return window_get_ptr(window).title
-
-cpdef uint32_t window_get_flags(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    return SDL_GetWindowFlags(window_ptr.sdl_ptr)
-
-cpdef uint64_t window_get_id(Handle window) except *:
-    return window_get_ptr(window).sdl_id
-
-cpdef bint window_is_fullscreen(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_FULLSCREEN
-
-cpdef bint window_is_fullscreen_desktop(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_FULLSCREEN_DESKTOP
-
-cpdef bint window_is_shown(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_SHOWN
-
-cpdef bint window_is_hidden(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_HIDDEN
-
-cpdef bint window_is_borderless(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_BORDERLESS
-
-cpdef bint window_is_resizable(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_RESIZABLE
-
-cpdef bint window_is_minimized(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_MINIMIZED
-
-cpdef bint window_is_maximized(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_MAXIMIZED
-
-cpdef bint window_is_input_grabbed(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_INPUT_GRABBED
-
-cpdef bint window_is_mouse_captured(Handle window) except *:
-    return window_get_flags(window) & WINDOW_FLAGS_MOUSE_CAPTURED
-
-cpdef void window_set_width(Handle window, uint16_t width) except *:
-    window_get_ptr(window).width = width
-
-cpdef void window_set_height(Handle window, uint16_t height) except *:
-    window_get_ptr(window).height = height
-
-cpdef void window_set_size(Handle window, uint16_t width, uint16_t height) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    window_ptr.width = width
-    window_ptr.height = height
-
-cpdef void window_set_title(Handle window, bytes title) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    window_ptr.title = title
-    window_ptr.title_length = len(title)
-
-cpdef void window_set_flags(Handle window, uint32_t flags) except *:
-    cdef:
-        WindowC *window_ptr
-        bint full_screen
-    window_ptr = window_get_ptr(window)
-    
-    #full_screen
-    full_screen = flags & WINDOW_FLAGS_FULLSCREEN or flags & WINDOW_FLAGS_FULLSCREEN_DESKTOP
-    if full_screen:
-        if flags & WINDOW_FLAGS_FULLSCREEN:
-            SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN)
+        #full_screen
+        full_screen = flags & WINDOW_FLAGS_FULLSCREEN or flags & WINDOW_FLAGS_FULLSCREEN_DESKTOP
+        if full_screen:
+            if flags & WINDOW_FLAGS_FULLSCREEN:
+                SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN)
+            else:
+                SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN_DESKTOP)
         else:
-            SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN_DESKTOP)
-    else:
-        SDL_SetWindowFullscreen(window_ptr.sdl_ptr, 0)
-    
-    #show_or_hide
-    if flags & WINDOW_FLAGS_SHOWN:
+            SDL_SetWindowFullscreen(window_ptr.sdl_ptr, 0)
+        
+        #show_or_hide
+        if flags & WINDOW_FLAGS_SHOWN:
+            SDL_ShowWindow(window_ptr.sdl_ptr)
+        if flags & WINDOW_FLAGS_HIDDEN:
+            SDL_HideWindow(window_ptr.sdl_ptr)
+
+        #borderless
+        if flags & WINDOW_FLAGS_BORDERLESS:
+            SDL_SetWindowBordered(window_ptr.sdl_ptr, False)
+        else:
+            SDL_SetWindowBordered(window_ptr.sdl_ptr, True)
+
+        #resizable
+        if flags & WINDOW_FLAGS_RESIZABLE:
+            SDL_SetWindowResizable(window_ptr.sdl_ptr, True)
+        else:
+            SDL_SetWindowResizable(window_ptr.sdl_ptr, False)
+
+        #min_max_restore
+        if flags & WINDOW_FLAGS_MINIMIZED:
+            SDL_MinimizeWindow(window_ptr.sdl_ptr)
+        elif flags & WINDOW_FLAGS_MAXIMIZED:
+            SDL_MaximizeWindow(window_ptr.sdl_ptr)
+        else:
+            SDL_RestoreWindow(window_ptr.sdl_ptr)
+        
+        if flags & WINDOW_FLAGS_INPUT_GRABBED:
+            SDL_SetWindowGrab(window_ptr.sdl_ptr, True)
+        else:
+            SDL_SetWindowGrab(window_ptr.sdl_ptr, False)
+        
+        #mouse_capture
+        if flags & WINDOW_FLAGS_MOUSE_CAPTURED:
+            SDL_CaptureMouse(True)
+        else:
+            SDL_CaptureMouse(False)
+
+    cpdef void set_fullscreen(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN)
+        
+    cpdef void set_fullscreen_desktop(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN_DESKTOP)
+
+    cpdef void set_shown(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
         SDL_ShowWindow(window_ptr.sdl_ptr)
-    if flags & WINDOW_FLAGS_HIDDEN:
+
+    cpdef void set_hidden(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
         SDL_HideWindow(window_ptr.sdl_ptr)
 
-    #borderless
-    if flags & WINDOW_FLAGS_BORDERLESS:
-        SDL_SetWindowBordered(window_ptr.sdl_ptr, False)
-    else:
-        SDL_SetWindowBordered(window_ptr.sdl_ptr, True)
+    cpdef void set_borderless(self, bint borderless) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        SDL_SetWindowBordered(window_ptr.sdl_ptr, not borderless)
 
-    #resizable
-    if flags & WINDOW_FLAGS_RESIZABLE:
-        SDL_SetWindowResizable(window_ptr.sdl_ptr, True)
-    else:
-        SDL_SetWindowResizable(window_ptr.sdl_ptr, False)
-
-    #min_max_restore
-    if flags & WINDOW_FLAGS_MINIMIZED:
+    cpdef void set_resizable(self, bint resizable) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
+        SDL_SetWindowResizable(window_ptr.sdl_ptr, resizable)
+        
+    cpdef void set_minimized(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
         SDL_MinimizeWindow(window_ptr.sdl_ptr)
-    elif flags & WINDOW_FLAGS_MAXIMIZED:
+
+    cpdef void set_maximized(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
         SDL_MaximizeWindow(window_ptr.sdl_ptr)
-    else:
+
+    cpdef void set_restored(self) except *:
+        cdef:
+            WindowC *window_ptr
+        window_ptr = self.get_ptr()
         SDL_RestoreWindow(window_ptr.sdl_ptr)
-    
-    if flags & WINDOW_FLAGS_INPUT_GRABBED:
-        SDL_SetWindowGrab(window_ptr.sdl_ptr, True)
-    else:
-        SDL_SetWindowGrab(window_ptr.sdl_ptr, False)
-    
-    #mouse_capture
-    if flags & WINDOW_FLAGS_MOUSE_CAPTURED:
-        SDL_CaptureMouse(True)
-    else:
-        SDL_CaptureMouse(False)
 
-cpdef void window_set_fullscreen(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN)
-    
-cpdef void window_set_fullscreen_desktop(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN_DESKTOP)
+    cpdef void toggle_fullscreen(self) except *:
+        cdef:
+            bint is_fullscreen
+        is_fullscreen = self.is_fullscreen()
+        if is_fullscreen: self.set_restored()
+        else: self.set_fullscreen()
 
-cpdef void window_set_shown(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_ShowWindow(window_ptr.sdl_ptr)
+    cpdef void toggle_fullscreen_desktop(self) except *:
+        cdef:
+            bint is_fullscreen_desktop
+        is_fullscreen_desktop = self.is_fullscreen_desktop()
+        if is_fullscreen_desktop: self.set_restored()
+        else: self.set_fullscreen_desktop()
 
-cpdef void window_set_hidden(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_HideWindow(window_ptr.sdl_ptr)
+    cpdef void toggle_shown(self) except *:
+        cdef:
+            bint is_shown
+        is_shown = self.is_shown()
+        if is_shown: self.set_hidden()
+        else: self.set_shown()
 
-cpdef void window_set_borderless(Handle window, bint borderless) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_SetWindowBordered(window_ptr.sdl_ptr, not borderless)
+    cpdef void toggle_hidden(self) except *:
+        cdef:
+            bint is_hidden
+        is_hidden = self.is_hidden()
+        if is_hidden: self.set_shown()
+        else: self.set_hidden()
+        
+    cpdef void toggle_borderless(self) except *:
+        cdef:
+            bint is_borderless
+        is_borderless = self.is_borderless()
+        self.set_borderless(not is_borderless)
+        
+    cpdef void toggle_resizable(self) except *:
+        cdef:
+            bint is_resizable
+        is_resizable = self.is_resizable()
+        self.set_resizable(not is_resizable)
 
-cpdef void window_set_resizable(Handle window, bint resizable) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_SetWindowResizable(window_ptr.sdl_ptr, resizable)
-    
-cpdef void window_set_minimized(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_MinimizeWindow(window_ptr.sdl_ptr)
-
-cpdef void window_set_maximized(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_MaximizeWindow(window_ptr.sdl_ptr)
-
-cpdef void window_set_restored(Handle window) except *:
-    cdef:
-        WindowC *window_ptr
-    window_ptr = window_get_ptr(window)
-    SDL_RestoreWindow(window_ptr.sdl_ptr)
-
-cpdef void window_toggle_fullscreen(Handle window) except *:
-    cdef:
-        bint is_fullscreen
-    is_fullscreen = window_is_fullscreen(window)
-    if is_fullscreen: window_set_restored(window)
-    else: window_set_fullscreen(window)
-
-cpdef void window_toggle_fullscreen_desktop(Handle window) except *:
-    cdef:
-        bint is_fullscreen_desktop
-    is_fullscreen_desktop = window_is_fullscreen_desktop(window)
-    if is_fullscreen_desktop: window_set_restored(window)
-    else: window_set_fullscreen_desktop(window)
-
-cpdef void window_toggle_shown(Handle window) except *:
-    cdef:
-        bint is_shown
-    is_shown = window_is_shown(window)
-    if is_shown: window_set_hidden(window)
-    else: window_set_shown(window)
-
-cpdef void window_toggle_hidden(Handle window) except *:
-    cdef:
-        bint is_hidden
-    is_hidden = window_is_hidden(window)
-    if is_hidden: window_set_shown(window)
-    else: window_set_hidden(window)
-    
-cpdef void window_toggle_borderless(Handle window) except *:
-    cdef:
-        bint is_borderless
-    is_borderless = window_is_borderless(window)
-    window_set_borderless(window, not is_borderless)
-    
-cpdef void window_toggle_resizable(Handle window) except *:
-    cdef:
-        bint is_resizable
-    is_resizable = window_is_resizable(window)
-    window_set_resizable(window, not is_resizable)
-
-cpdef void window_toggle_minimized(Handle window) except *:
-    cdef:
-        bint is_minimized
-    is_minimized = window_is_minimized(window)
-    if is_minimized: window_set_restored(window)
-    else: window_set_minimized(window)
-    
-cpdef void window_toggle_maximized(Handle window) except *:
-    cdef:
-        bint is_maximized
-    is_maximized = window_is_maximized(window)
-    if is_maximized: window_set_restored(window)
-    else: window_set_maximized(window)
+    cpdef void toggle_minimized(self) except *:
+        cdef:
+            bint is_minimized
+        is_minimized = self.is_minimized()
+        if is_minimized: self.set_restored()
+        else: self.set_minimized()
+        
+    cpdef void toggle_maximized(self) except *:
+        cdef:
+            bint is_maximized
+        is_maximized = self.is_maximized()
+        if is_maximized: self.set_restored()
+        else: self.set_maximized()

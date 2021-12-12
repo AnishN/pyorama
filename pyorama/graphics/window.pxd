@@ -35,49 +35,46 @@ cpdef enum WindowFlags:
     #SDL_WINDOW_TOOLTIP (x11 only)
     #SDL_WINDOW_POPUP_MENU (x11 only)
 
-cdef WindowC *window_get_ptr(Handle window) except *
-cpdef Handle window_create(uint16_t width, uint16_t height, bytes title, uint32_t flags=*) except *
-cpdef void window_delete(Handle window) except *
-
-cpdef uint16_t window_get_width(Handle window) except *
-cpdef uint16_t window_get_height(Handle window) except *
-cpdef tuple window_get_size(Handle window)
-cpdef bytes window_get_title(Handle window)
-cpdef uint32_t window_get_flags(Handle window) except *
-cpdef uint64_t window_get_id(Handle window) except *
-
-cpdef bint window_is_fullscreen(Handle window) except *
-cpdef bint window_is_fullscreen_desktop(Handle window) except *
-cpdef bint window_is_shown(Handle window) except *
-cpdef bint window_is_hidden(Handle window) except *
-cpdef bint window_is_borderless(Handle window) except *
-cpdef bint window_is_resizable(Handle window) except *
-cpdef bint window_is_minimized(Handle window) except *
-cpdef bint window_is_maximized(Handle window) except *
-cpdef bint window_is_input_grabbed(Handle window) except *
-cpdef bint window_is_mouse_captured(Handle window) except *
-
-cpdef void window_set_width(Handle window, uint16_t width) except *
-cpdef void window_set_height(Handle window, uint16_t height) except *
-cpdef void window_set_size(Handle window, uint16_t width, uint16_t height) except *
-cpdef void window_set_title(Handle window, bytes title) except *
-cpdef void window_set_flags(Handle window, uint32_t flags) except *
-
-cpdef void window_set_fullscreen(Handle window) except *
-cpdef void window_set_fullscreen_desktop(Handle window) except *
-cpdef void window_set_shown(Handle window) except *
-cpdef void window_set_hidden(Handle window) except *
-cpdef void window_set_borderless(Handle window, bint borderless) except *
-cpdef void window_set_resizable(Handle window, bint resizable) except *
-cpdef void window_set_minimized(Handle window) except *
-cpdef void window_set_maximized(Handle window) except *
-cpdef void window_set_restored(Handle window) except *
-
-cpdef void window_toggle_fullscreen(Handle window) except *
-cpdef void window_toggle_fullscreen_desktop(Handle window) except *
-cpdef void window_toggle_shown(Handle window) except *
-cpdef void window_toggle_hidden(Handle window) except *
-cpdef void window_toggle_borderless(Handle window) except *
-cpdef void window_toggle_resizable(Handle window) except *
-cpdef void window_toggle_minimized(Handle window) except *
-cpdef void window_toggle_maximized(Handle window) except *
+cdef class Window(HandleObject):
+    cdef WindowC *get_ptr(self) except *
+    cpdef void create(self, uint16_t width, uint16_t height, bytes title, uint32_t flags=*) except *
+    cpdef void load_from_id(self, uint32_t id_) except *
+    cpdef void delete(self) except *
+    cpdef uint16_t get_width(self) except *
+    cpdef uint16_t get_height(self) except *
+    cpdef tuple get_size(self)
+    cpdef bytes get_title(self)
+    cpdef uint32_t get_flags(self) except *
+    cpdef uint64_t get_id(self) except *
+    cpdef bint is_fullscreen(self) except *
+    cpdef bint is_fullscreen_desktop(self) except *
+    cpdef bint is_shown(self) except *
+    cpdef bint is_hidden(self) except *
+    cpdef bint is_borderless(self) except *
+    cpdef bint is_resizable(self) except *
+    cpdef bint is_minimized(self) except *
+    cpdef bint is_maximized(self) except *
+    cpdef bint is_input_grabbed(self) except *
+    cpdef bint is_mouse_captured(self) except *
+    cpdef void set_width(self, uint16_t width) except *
+    cpdef void set_height(self, uint16_t height) except *
+    cpdef void set_size(self, uint16_t width, uint16_t height) except *
+    cpdef void set_title(self, bytes title) except *
+    cpdef void set_flags(self, uint32_t flags) except *
+    cpdef void set_fullscreen(self) except *
+    cpdef void set_fullscreen_desktop(self) except *
+    cpdef void set_shown(self) except *
+    cpdef void set_hidden(self) except *
+    cpdef void set_borderless(self, bint borderless) except *
+    cpdef void set_resizable(self, bint resizable) except *
+    cpdef void set_minimized(self) except *
+    cpdef void set_maximized(self) except *
+    cpdef void set_restored(self) except *
+    cpdef void toggle_fullscreen(self) except *
+    cpdef void toggle_fullscreen_desktop(self) except *
+    cpdef void toggle_shown(self) except *
+    cpdef void toggle_hidden(self) except *
+    cpdef void toggle_borderless(self) except *
+    cpdef void toggle_resizable(self) except *
+    cpdef void toggle_minimized(self) except *
+    cpdef void toggle_maximized(self) except *

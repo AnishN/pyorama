@@ -6,6 +6,7 @@ audio = UserSystem("audio")
 event = EventSystem("event")
 physics = UserSystem("physics")
 debug_ui = DebugUISystem("debug_ui")
+asset = AssetSystem("asset")
 
 def init(dict config=None):
     global target_fps, num_frame_times, use_vsync, use_sleep#need global when assigning variable
@@ -40,8 +41,10 @@ def init(dict config=None):
     event.init(config.get("event", None))
     physics.init(config.get("physics", None))
     debug_ui.init(config.get("debug_ui", None))
+    asset.init(config.get("asset", None))
 
 def quit():
+    asset.quit()
     debug_ui.quit()
     physics.quit()
     event.quit()
@@ -104,6 +107,7 @@ def step():
     event.event_type_emit(EVENT_TYPE_ENTER_FRAME)
     event.update(curr_time)
     #physics.update(1.0 / target_fps)
+    asset.update()
     debug_ui.update()
     graphics.update()
     frame_times[frame_index] = frame_time
@@ -129,3 +133,13 @@ cdef double c_get_current_time() nogil:
 
 cdef PlatformOS c_get_platform_os() nogil:
     return platform_os
+
+cpdef AssetSystem get_asset_system():
+    return asset
+
+#cpdef DebugUISystem get_debug_ui_system()
+cpdef EventSystem get_event_system():
+    return event
+
+cpdef GraphicsSystem get_graphics_system():
+    return graphics

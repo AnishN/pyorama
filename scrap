@@ -1,0 +1,37 @@
+"""
+cdef:
+    StrHashMapC a
+    StrHashMapC b
+    bytes k
+    size_t i
+    StrHashMapItemC *item_ptr
+    dict a_dict = {
+        b"hello": 5,
+        b"world": 7,
+        b"apple": 11,
+        b"orange": 4,
+        b"papaya": 0,
+        b"kiwi": 123,
+    }
+    dict b_dict = {
+        b"goodbye": 5,
+        b"world": 7,
+        b"apple": 6,
+        b"grape": 3,
+        b"juice": 321,
+    }
+
+str_hash_map_init(&a)
+for k in a_dict:
+    str_hash_map_insert(&a, k, sizeof(k), a_dict[k])
+
+str_hash_map_init(&b)
+for k in b_dict:
+    str_hash_map_insert(&b, k, sizeof(k), b_dict[k])
+
+str_hash_map_extend(&a, &b)
+for i in range(a.items.max_items):
+    item_ptr = <StrHashMapItemC *>vector_get_ptr_unsafe(&a.items, i)
+    if item_ptr.used:
+        print(i, item_ptr.key, item_ptr.key_len, item_ptr.value)
+"""

@@ -77,7 +77,7 @@ cdef class EventSystem:
         double timestamp
         SlotManager slots
         dict slot_sizes
-        PyObject *listener_handles[MAX_EVENT_TYPES]
+        VectorC listener_handles[MAX_EVENT_TYPES]
         #SlotMap listener_keys
         #PyObject *listeners[65536]
         #bint registered_listeners[65536]

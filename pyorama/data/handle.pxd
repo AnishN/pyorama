@@ -14,3 +14,6 @@ cdef void handle_set_index(Handle *handle, uint32_t index) nogil
 cdef void handle_set_version(Handle *handle, uint32_t version) nogil
 cdef void handle_set_type(Handle *handle, uint8_t type) nogil
 cdef void handle_set_free(Handle *handle, bint free) nogil
+
+cdef class HandleObject:
+    cdef Handle handle

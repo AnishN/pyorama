@@ -1,11 +1,14 @@
-import pyorama
-from pyorama.math import *
-from pyorama.data import *
 import math
+import pyorama
+from pyorama import app
+from pyorama.asset import *
+from pyorama.data import *
+from pyorama.event import *
+from pyorama.graphics import *
+from pyorama.math import *
 
 def on_window_event(event, *args, **kwargs):
     if event["sub_type"] == pyorama.event.WINDOW_EVENT_TYPE_CLOSE:
-        window = event["window"]
         pyorama.app.trigger_quit()
 
 def on_enter_frame_event(event, *args, **kwargs):
@@ -40,31 +43,102 @@ model_mat = Mat4()
 mtx_x = Mat4()
 mtx_y = Mat4()
 
-pyorama.app.init({
-    "use_sleep": False,
-    "graphics": {
-        "renderer_type": pyorama.graphics.GRAPHICS_RENDERER_TYPE_OPENGLES
-    }
-})
+pyorama.app.init()
 
+mesh_name = b"helmet"
+mesh_ext = b".glb"
 base_path = b"./examples/004_mesh/"
-mesh_path =  base_path + b"meshes/cube.obj"
+mesh_path =  base_path + b"meshes/" + mesh_name + mesh_ext
+mesh_2_path = base_path + b"meshes/" + b"box" + mesh_ext
+bin_mesh_path = base_path + b"meshes/" + mesh_name + b".bin"
 vs_source_path = base_path + b"shaders/vs_mesh.sc"
 fs_source_path = base_path + b"shaders/fs_mesh.sc"
-vs_bin_path = base_path + b"shaders/vs_mesh.sc_bin"
-fs_bin_path = base_path + b"shaders/fs_mesh.sc_bin"
 
-mesh = pyorama.graphics.mesh_create_from_file(mesh_path, load_texcoords=False, load_normals=False)
+mesh = Mesh()
+#pyorama.graphics.mesh_utils.mesh_create_from_binary_file(mesh, bin_mesh_path)
+#mesh = Mesh()#; mesh.create_from_file(mesh_path, load_texcoords=False, load_normals=False)
+#mesh.create_from_binary_file(bin_mesh_path)
+#pyorama.asset.queue(ASSET_TYPE_MESH, b"helmet", b"./examples/004_mesh/helmet.glb")
+#pyorama.asset.queue(ASSET_TYPE_TEXTURE, b"helmet_texture",
 
+queue = AssetQueue()
+queue.create()
+queue.add_asset(b"helmet", b"./examples/004_mesh/meshes/helmet.glb", ASSET_TYPE_MESH)
+queue.add_asset(b"box", b"./examples/004_mesh/meshes/box.glb", ASSET_TYPE_MESH)
+queue.add_asset(b"capsule", b"./examples/005_texture/textures/capsule.jpg", ASSET_TYPE_IMAGE)
+queue.add_asset(b"cube", b"./examples/005_texture/textures/cube.png", ASSET_TYPE_IMAGE)
+#queue.add_asset(b"Sphere", b"path/to/sphere.obj", ASSET_TYPE_MESH)
+
+import time
+
+start = time.time()
+queue.load()
+end = time.time()
+print(end - start)
+
+image = Image()
+pyorama.app.get_asset_system().get_asset(b"cube", image)
+print(image.get_width(), image.get_height())
+print(image.get_pixels())
+
+
+pixels = image.get_shaped_pixels()
+start = time.time()
+for i in range(100000):
+    r = pixels[0, 0, 0]
+end = time.time()
+print(end - start)
+
+start = time.time()
+for i in range(100000):
+    pixels[0, 0, 0] = 5
+end = time.time()
+print(end - start)
+
+"""
+queue = AssetQueue()
+#queue.add_asset(
+    type=ASSET_TYPE_MESH, 
+    name=b"helmet", 
+    path=b"./examples/004_mesh/helmet.glb", 
+    options=None,
+)
+#queue.add_assets( list of asset dicts )
+#queue.load() # better be multithreaded (why not?)
+
+def on_asset_queue_item_complete_event(event, *args, **kwargs):
+    queue = event["queue"]
+    item = event["item"]
+
+def on_asset_queue_all_complete_event(event, *args, **kwargs):
+    queue = event["queue"]
+"""
+
+"""
+assets_info = {
+    "assets": [
+        {
+            "type": "mesh",
+            "name": "helmet",
+            "path": "./examples/004_mesh/helmet.glb",
+        },
+
+        (ASSET_TYPE_MESH, b"helmet", b"./examples/004_mesh/helmet.glb"),
+        (ASSET_TYPE_TEXTURE, b"helmet_texture", b"./examples/004_mesh/helmet.png"),
+    ]
+}
+#pyorama.asset.queue_multi(assets_info)
+#pyorama.asset.load()
+"""
+
+"""
 vertex_format = BufferFormat([
     (b"a_position", 3, BUFFER_FIELD_TYPE_F32),
 ])
 vertices = Buffer(vertex_format)
-
-vertex_layout = pyorama.graphics.vertex_layout_create(vertex_format)
+vertex_layout = VertexLayout(); vertex_layout.create(vertex_format)
 pyorama.graphics.mesh_get_vertices(mesh, vertices)
-vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
-
+vertex_buffer = VertexBuffer(); vertex_buffer.create(vertex_layout, vertices)
 
 index_layout = pyorama.graphics.INDEX_LAYOUT_U32
 index_format = BufferFormat([
@@ -72,37 +146,37 @@ index_format = BufferFormat([
 ])
 indices = Buffer(index_format)
 pyorama.graphics.mesh_get_indices(mesh, indices)
-index_buffer = pyorama.graphics.index_buffer_create(index_layout, indices)
+index_buffer = IndexBuffer(); index_buffer.create(index_layout, indices)
 
-pyorama.graphics.utils_runtime_compile_shader(vs_source_path, vs_bin_path, pyorama.graphics.SHADER_TYPE_VERTEX)
-pyorama.graphics.utils_runtime_compile_shader(fs_source_path, fs_bin_path, pyorama.graphics.SHADER_TYPE_FRAGMENT)
-vertex_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_VERTEX, vs_bin_path)
-fragment_shader = pyorama.graphics.shader_create_from_file(pyorama.graphics.SHADER_TYPE_FRAGMENT, fs_bin_path)
-program = pyorama.graphics.program_create(vertex_shader, fragment_shader)
-window = pyorama.graphics.window_create(width, height, title)
-frame_buffer = pyorama.graphics.frame_buffer_create_from_window(window)
-view = pyorama.graphics.view_create()
-on_window_listener = pyorama.event.listener_create(pyorama.event.EVENT_TYPE_WINDOW, on_window_event, None, None)
-on_enter_frame_listener = pyorama.event.listener_create(pyorama.event.EVENT_TYPE_ENTER_FRAME, on_enter_frame_event, None, None)
+vertex_shader = Shader(); vertex_shader.create_from_source_file(pyorama.graphics.SHADER_TYPE_VERTEX, vs_source_path)
+fragment_shader = Shader(); fragment_shader.create_from_source_file(pyorama.graphics.SHADER_TYPE_FRAGMENT, fs_source_path)
+program = Program(); program.create(vertex_shader, fragment_shader)
+window = Window(); window.create(width, height, title)
+frame_buffer = FrameBuffer(); frame_buffer.create_from_window(window)
+view = View(); view.create()
+on_window_listener = Listener(); on_window_listener.create(pyorama.event.EVENT_TYPE_WINDOW, on_window_event, None, None)
+on_enter_frame_listener = Listener(); on_enter_frame_listener.create(pyorama.event.EVENT_TYPE_ENTER_FRAME, on_enter_frame_event, None, None)
 
 clear_flags = pyorama.graphics.VIEW_CLEAR_COLOR | pyorama.graphics.VIEW_CLEAR_DEPTH
-pyorama.graphics.view_set_clear(view, clear_flags, 0x443355FF, 1.0, 0)
-pyorama.graphics.view_set_rect(view, 0, 0, width, height)
-pyorama.graphics.view_set_frame_buffer(view, frame_buffer)
-pyorama.graphics.view_set_vertex_buffer(view, vertex_buffer)
-pyorama.graphics.view_set_index_buffer(view, index_buffer)
-pyorama.graphics.view_set_program(view, program)
+view.set_clear(clear_flags, 0x443355FF, 1.0, 0)
+view.set_rect(0, 0, width, height)
+view.set_frame_buffer(frame_buffer)
+view.set_vertex_buffer(vertex_buffer)
+view.set_index_buffer(index_buffer)
+view.set_program(program)
 pyorama.app.run()
 
-pyorama.event.listener_delete(on_enter_frame_listener)
-pyorama.event.listener_delete(on_window_listener)
-pyorama.graphics.program_delete(program)
-pyorama.graphics.shader_delete(fragment_shader)
-pyorama.graphics.shader_delete(vertex_shader)
-pyorama.graphics.index_buffer_delete(index_buffer)
-pyorama.graphics.vertex_buffer_delete(vertex_buffer)
+on_enter_frame_listener.delete()
+on_window_listener.delete()
+program.delete()
+fragment_shader.delete()
+vertex_shader.delete()
+vertex_buffer.delete(); vertex_layout.delete(); vertices.free()
+index_buffer.delete(); indices.free()
+view.delete()
+frame_buffer.delete()
+window.delete()
+
 pyorama.graphics.mesh_delete(mesh)
-pyorama.graphics.view_delete(view)
-pyorama.graphics.frame_buffer_delete(frame_buffer)
-pyorama.graphics.window_delete(window)
 pyorama.app.quit()
+"""

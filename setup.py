@@ -28,6 +28,8 @@ libraries = {
         "zlib1",
         "freetype-6", "harfbuzz-0",
         "cimgui",
+        #"cgltf",
+        "xxhash",
     ],
 }
 language = "c"
@@ -35,8 +37,12 @@ release_args = ["-w", "-std=c11", "-O3", "-ffast-math", "-march=native"]
 debug_args = ["-w", "-std=c11", "-O0"]
 #args = debug_args
 args = release_args
-macros = [("CIMGUI_DEFINE_ENUMS_AND_STRUCTS", True)]
-
+macros = [
+    ("CIMGUI_DEFINE_ENUMS_AND_STRUCTS", True), 
+    ("CGLTF_IMPLEMENTATION", True), 
+    ("STB_IMAGE_IMPLEMENTATION", True),
+    ("STBI_FAILURE_USERMSG", True),
+]
 include_dirs = ["./pyorama/libs/include"]
 library_dirs = {
     "Linux": ["./pyorama/libs/shared/Linux"],

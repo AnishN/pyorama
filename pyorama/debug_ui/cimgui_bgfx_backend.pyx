@@ -117,15 +117,15 @@ cdef bint ImGui_Implbgfx_CreateDeviceObjects():
         bgfx_renderer_type_t type_
         bytes vs_src_path = b"./pyorama/resources/shaders/debug_ui/vs_debug_ui.sc"
         bytes fs_src_path = b"./pyorama/resources/shaders/debug_ui/fs_debug_ui.sc"
-        bytes vs_bin_path = b"./pyorama/resources/shaders/bin/vs_debug_ui.sc_bin"
-        bytes fs_bin_path = b"./pyorama/resources/shaders/bin/fs_debug_ui.sc_bin"
+        bytes vs_bin_path = b"./pyorama/resources/shaders/bin/vs_debug_ui.bin"
+        bytes fs_bin_path = b"./pyorama/resources/shaders/bin/fs_debug_ui.bin"
         bgfx_shader_handle_t vs
         bgfx_shader_handle_t fs
 
         ImGuiIO *io
         uint8_t *pixels
         int width, height, bpp
-
+    
     global initialized, g_View, g_FontTexture, g_ShaderHandle, g_AttribLocationTex, g_VertexLayout
 
     #create program

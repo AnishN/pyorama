@@ -1,0 +1,37 @@
+from pyorama.asset.asset_system cimport *
+from pyorama.asset.image_loader cimport *
+from pyorama.libs.cgltf cimport *
+from pyorama.libs.curl cimport *
+from pyorama.libs.pthread cimport *
+from pyorama.libs.xxhash cimport *
+
+ctypedef struct AssetQueueC:
+    size_t num_threads
+    pthread_t *threads
+    VectorC assets
+
+ctypedef struct AssetQueueItemC:
+    char *name
+    size_t name_len
+    AssetType type_
+    char *path
+    size_t path_len
+    Handle asset_id
+
+ctypedef struct AssetInfoC:
+    AssetType type_
+    char *path
+    size_t path_len
+    Handle asset_id
+
+cpdef enum AssetType:
+    ASSET_TYPE_IMAGE
+    ASSET_TYPE_MESH
+
+cdef class AssetQueue(HandleObject):
+
+    cdef AssetQueueC *get_ptr(self) except *
+    cpdef void create(self, size_t num_threads=*) except *
+    cpdef void add_asset(self, bytes name, bytes path, AssetType type_, dict options=*) except *
+    cpdef void load(self) except *
+    cpdef void delete(self) except *

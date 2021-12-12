@@ -69,9 +69,9 @@ while running:
     ImGui_ImplSDL2_NewFrame(window)
 
     igNewFrame()
-    igShowDemoWindow(&running)
-    #igBegin(b"Hello, World!", &running, 0)
-    #igEnd()
+    #igShowDemoWindow(&running)
+    igBegin(b"Hello, World!", &running, 0)
+    igEnd()
 
     igRender()
     ImGui_Implbgfx_RenderDrawLists(igGetDrawData())
@@ -82,11 +82,3 @@ while running:
 bgfx_shutdown()
 SDL_DestroyWindow(window)
 SDL_Quit()
-
-"""
-January 2020: 
-If you want to implement multi-viewports in your custom engine, 
-the easiest path is to read the comment around ImGuiPlatformIO 
-along with the bottom sections of e.g. 
-imgui_impl_glfw+imgui_impl_opengl3 to learn from it.
-"""

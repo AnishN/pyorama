@@ -24,6 +24,7 @@ __PYX_EXTERN_C struct __pyx_obj_7pyorama_4core_11user_system_UserSystem *__pyx_v
 __PYX_EXTERN_C struct __pyx_obj_7pyorama_5event_12event_system_EventSystem *__pyx_v_7pyorama_3app_event;
 __PYX_EXTERN_C struct __pyx_obj_7pyorama_4core_11user_system_UserSystem *__pyx_v_7pyorama_3app_physics;
 __PYX_EXTERN_C struct __pyx_obj_7pyorama_8debug_ui_15debug_ui_system_DebugUISystem *__pyx_v_7pyorama_3app_debug_ui;
+__PYX_EXTERN_C struct __pyx_obj_7pyorama_5asset_12asset_system_AssetSystem *__pyx_v_7pyorama_3app_asset;
 
 #endif /* !__PYX_HAVE_API__pyorama__app */
 

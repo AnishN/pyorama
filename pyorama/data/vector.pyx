@@ -1,228 +1,269 @@
-cdef object MEMORY_ERROR = MemoryError("Vector: cannot allocate memory")
-cdef object INVALID_INDEX_ERROR = ValueError("Vector: invalid index")
-cdef object POP_EMPTY_ERROR = ValueError("Vector: cannot pop from empty container")
-cdef object ITEM_NOT_FOUND_ERROR = ValueError("Vector: item not found")
-
 cdef float VECTOR_GROWTH_RATE = 2.0
 cdef float VECTOR_SHRINK_RATE = 0.5
 cdef float VECTOR_SHRINK_THRESHOLD = 0.25
 cdef size_t VECTOR_INITIAL_MAX_ITEMS = 4
 
-cdef class Vector:
+cdef Error vector_init(VectorC *vector, size_t item_size) nogil:
+    vector.max_items = VECTOR_INITIAL_MAX_ITEMS
+    vector.item_size = item_size
+    vector.num_items = 0
+    vector.items = <char *>calloc(vector.max_items, vector.item_size)
+    if vector.items == NULL:
+        return MEMORY_ERROR
 
-    def __cinit__(self):
-        pass
+cdef void vector_free(VectorC *vector) nogil:
+    vector.max_items = 0
+    vector.item_size = 0
+    vector.num_items = 0
+    free(vector.items)
+    vector.items = NULL
+
+cdef Error vector_push_empty(VectorC *vector) nogil:
+    cdef:
+        char *item
+        Error error
     
-    def __dealloc__(self):
-        pass
+    error = vector_grow_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    item = vector.items + (vector.item_size * vector.num_items)
+    memset(item, 0, vector.item_size)
+    vector.num_items += 1
 
-    cdef void c_init(self, size_t item_size) except *:
-        self.max_items = VECTOR_INITIAL_MAX_ITEMS
-        self.item_size = item_size
-        self.num_items = 0
-        self.items = <char *>calloc(self.max_items, self.item_size)
-        if self.items == NULL:
-            raise MEMORY_ERROR
-
-    cdef void c_free(self) except *:
-        self.max_items = 0
-        self.item_size = 0
-        self.num_items = 0
-        free(self.items)
-        self.items = NULL
-
-    cdef void c_push_empty(self) except *:
-        cdef char *item
-        self.c_grow_if_needed()
-        item = self.items + (self.item_size * self.num_items)
-        memset(item, 0, self.item_size)
-        self.num_items += 1
-
-    cdef void c_pop_empty(self) except *:
-        if self.num_items <= 0:
-            raise POP_EMPTY_ERROR
-        self.c_shrink_if_needed()
-        self.num_items -= 1
-
-    cdef void c_push(self, void *item) except *:
-        self.c_grow_if_needed()
-        self.c_set(self.num_items, item)
-        self.num_items += 1
-
-    cdef void c_pop(self, void *item) except *:
-        if self.num_items <= 0:
-            raise POP_EMPTY_ERROR
-        self.c_shrink_if_needed()
-        self.c_get(self.num_items - 1, item)
-        self.num_items -= 1
-
-    cdef void *c_get_ptr_unsafe(self, size_t index) nogil:
-        return self.items + (self.item_size * index)
-
-    cdef void *c_get_ptr(self, size_t index) except *:
-        if 0 <= index < self.max_items: 
-            return self.items + (self.item_size * index)
-        else:
-            raise INVALID_INDEX_ERROR
-
-    cdef void c_get(self, size_t index, void *item) except *:
-        cdef char *src
-        if 0 <= index < self.max_items: 
-            src = self.items + (self.item_size * index)
-            memcpy(item, src, self.item_size)
-        else:
-            raise INVALID_INDEX_ERROR
-
-    cdef void c_set(self, size_t index, void *item) except *:
-        cdef char *dest
-        if 0 <= index < self.max_items: 
-            dest = self.items + (self.item_size * index)
-            memcpy(dest, item, self.item_size)
-        else:
-            raise INVALID_INDEX_ERROR
-
-    cdef void c_clear(self, size_t index) except *:
-        cdef char *dest
-        if 0 <= index < self.max_items:
-            dest = self.items + (self.item_size * index)
-            memset(dest, 0, self.item_size)
-        else:
-            raise INVALID_INDEX_ERROR
-
-    cdef void c_clear_all(self) except *:
-        memset(self.items, 0, self.max_items * self.item_size)
-
-    cdef void c_swap(self, size_t a, size_t b) except *:
-        cdef:
-            char *a_ptr
-            char *b_ptr
-            size_t i
-        if (0 <= a < self.num_items) and (0 <= b < self.num_items):
-            a_ptr = <char *>self.c_get_ptr(a)
-            b_ptr = <char *>self.c_get_ptr(b)
-            for i in range(self.item_size):
-                a_ptr[i], b_ptr[i] = b_ptr[i], a_ptr[i]
-        else:
-            raise INVALID_INDEX_ERROR
-
-    cdef void c_resize(self, size_t new_max_items) except *:
-        cdef:
-            char *new_items
-            char *clear_start
-            size_t clear_size
-        new_items = <char *>realloc(self.items, new_max_items * self.item_size)
-        if new_items == NULL:
-            raise MEMORY_ERROR
-        if new_max_items > self.max_items:
-            clear_start = new_items + (self.item_size * self.max_items)
-            clear_size = (new_max_items - self.max_items) * self.item_size
-            memset(clear_start, 0, clear_size)
-        self.items = new_items
-        self.max_items = new_max_items
-
-    cdef void c_grow_if_needed(self) except *:
-        cdef size_t new_max_items
-        if self.num_items >= self.max_items:
-            new_max_items = <size_t>(self.max_items * VECTOR_GROWTH_RATE)
-            self.c_resize(new_max_items)
-
-    cdef void c_shrink_if_needed(self) except *:
-        cdef size_t new_max_items
-        if self.num_items < self.max_items * VECTOR_SHRINK_THRESHOLD:
-            new_max_items = <size_t>(self.max_items * VECTOR_SHRINK_RATE)
-            self.c_resize(new_max_items)
-
-    cdef void c_insert_empty(self, size_t index) except *:
-        cdef:
-            void *dest
-            void *src
-            size_t size
-            
-        self.c_grow_if_needed()
-        dest = self.c_get_ptr(index + 1)
-        src = self.c_get_ptr(index)
-        size = (self.num_items - index) * self.item_size
-        memmove(dest, src, size)
-        memset(src, 0, self.item_size)
-        self.num_items += 1
-
-    cdef void c_insert(self, size_t index, void *item) except *:
-        cdef:
-            void *dest
-            void *src
-            size_t size
-            
-        self.c_grow_if_needed()
-        dest = self.c_get_ptr(index + 1)
-        src = self.c_get_ptr(index)
-        size = (self.num_items - index) * self.item_size
-        memmove(dest, src, size)
-        memcpy(src, item, self.item_size)
-        self.num_items += 1
+cdef Error vector_pop_empty(VectorC *vector) nogil:
+    cdef:
+        Error error
     
-    cdef void c_remove_empty(self, size_t index) except *:
-        cdef:
-            void *dest
-            void *src
-            size_t size
+    if vector.num_items <= 0:
+        return POP_EMPTY_ERROR
+    error = vector_shrink_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    vector.num_items -= 1
+
+cdef Error vector_push(VectorC *vector, void *item) nogil:
+    cdef:
+        Error error
+    
+    error = vector_grow_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    vector_set(vector, vector.num_items, item)
+    vector.num_items += 1
+
+cdef Error vector_pop(VectorC *vector, void *item) nogil:
+    if vector.num_items <= 0:
+        return POP_EMPTY_ERROR
+    error = vector_shrink_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    vector_get(vector, vector.num_items - 1, item)
+    vector.num_items -= 1
+
+cdef void *vector_get_ptr_unsafe(VectorC *vector, size_t index) nogil:
+    return vector.items + (vector.item_size * index)
+
+cdef Error vector_get_ptr(VectorC *vector, size_t index, void **item_ptr) nogil:
+    if 0 <= index < vector.max_items: 
+        item_ptr[0] = vector.items + (vector.item_size * index)
+    else:
+        return INVALID_INDEX_ERROR
+
+cdef Error vector_get(VectorC *vector, size_t index, void *item) nogil:
+    cdef char *src
+    if 0 <= index < vector.max_items: 
+        src = vector.items + (vector.item_size * index)
+        memcpy(item, src, vector.item_size)
+    else:
+        return INVALID_INDEX_ERROR
+
+cdef Error vector_set(VectorC *vector, size_t index, void *item) nogil:
+    cdef char *dst
+    if 0 <= index < vector.max_items: 
+        dst = vector.items + (vector.item_size * index)
+        memcpy(dst, item, vector.item_size)
+    else:
+        return INVALID_INDEX_ERROR
+
+cdef Error vector_clear(VectorC *vector, size_t index) nogil:
+    cdef char *dst
+    if 0 <= index < vector.max_items:
+        dst = vector.items + (vector.item_size * index)
+        memset(dst, 0, vector.item_size)
+    else:
+        return INVALID_INDEX_ERROR
+
+cdef void vector_clear_all(VectorC *vector) nogil:
+    memset(vector.items, 0, vector.max_items * vector.item_size)
+
+cdef Error vector_swap(VectorC *vector, size_t a, size_t b) nogil:
+    cdef:
+        char *a_ptr
+        char *b_ptr
+        size_t i
+        Error error
+
+    error = vector_get_ptr(vector, a, <void **>&a_ptr)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    error = vector_get_ptr(vector, b, <void **>&b_ptr)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    for i in range(vector.item_size):
+        a_ptr[i], b_ptr[i] = b_ptr[i], a_ptr[i]
+
+cdef Error vector_resize(VectorC *vector, size_t new_max_items) nogil:
+    cdef:
+        char *new_items
+        char *clear_start
+        size_t clear_size
+    
+    new_items = <char *>realloc(vector.items, new_max_items * vector.item_size)
+    if new_items == NULL:
+        return MEMORY_ERROR
+    if new_max_items > vector.max_items:
+        clear_start = new_items + (vector.item_size * vector.max_items)
+        clear_size = (new_max_items - vector.max_items) * vector.item_size
+        memset(clear_start, 0, clear_size)
+    vector.items = new_items
+    vector.max_items = new_max_items
+
+cdef Error vector_grow_if_needed(VectorC *vector) nogil:
+    cdef:
+        size_t new_max_items
+        Error error
+    
+    if vector.num_items >= vector.max_items:
+        new_max_items = <size_t>(vector.max_items * VECTOR_GROWTH_RATE)
+        error = vector_resize(vector, new_max_items)
+        if error == MEMORY_ERROR:
+            return error
+
+cdef Error vector_shrink_if_needed(VectorC *vector) nogil:
+    cdef:
+        size_t new_max_items
+        Error error
+    
+    if vector.num_items < vector.max_items * VECTOR_SHRINK_THRESHOLD:
+        new_max_items = <size_t>(vector.max_items * VECTOR_SHRINK_RATE)
+        error = vector_resize(vector, new_max_items)
+        if error == MEMORY_ERROR:
+            return error
+
+cdef Error vector_insert_empty(VectorC *vector, size_t index) nogil:
+    cdef:
+        void *dst
+        void *src
+        size_t size
+        Error error
+
+    error = vector_grow_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    error = vector_get_ptr(vector, index + 1, &dst)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    error = vector_get_ptr(vector, index, &src)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    size = (vector.num_items - index) * vector.item_size
+    memmove(dst, src, size)
+    memset(src, 0, vector.item_size)
+    vector.num_items += 1
+
+cdef Error vector_insert(VectorC *vector, size_t index, void *item) nogil:
+    cdef:
+        void *dst
+        void *src
+        size_t size
+        Error error
         
-        if self.num_items <= 0:
-            raise POP_EMPTY_ERROR
-        self.c_shrink_if_needed()
-        dest = self.c_get_ptr(index)
-        src = self.c_get_ptr(index + 1)
-        size = (self.num_items - index - 1) * self.item_size
-        memmove(dest, src, size)
-        self.num_items -= 1
-    
-    cdef void c_remove(self, size_t index, void *item) except *:
-        cdef:
-            void *dest
-            void *src
-            size_t size
-        
-        if self.num_items <= 0:
-            raise POP_EMPTY_ERROR
-        self.c_shrink_if_needed()
-        self.c_get(index, item)
-        dest = self.c_get_ptr(index)
-        src = self.c_get_ptr(index + 1)
-        size = (self.num_items - index - 1) * self.item_size
-        memmove(dest, src, size)
-        self.num_items -= 1
+    error = vector_grow_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    error = vector_get_ptr(vector, index + 1, &dst)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    error = vector_get_ptr(vector, index, &src)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    size = (vector.num_items - index) * vector.item_size
+    memmove(dst, src, size)
+    memcpy(src, item, vector.item_size)
+    vector.num_items += 1
 
-    cdef size_t c_find(self, void *item) except *:
-        cdef:
-            size_t i
-            void *test_item
-            int check
-        for i in range(self.num_items):
-            test_item = self.c_get_ptr(i)
-            check = memcmp(test_item, item, self.item_size)
-            if check == 0:
-                return i
-        raise ITEM_NOT_FOUND_ERROR
+cdef Error vector_remove_empty(VectorC *vector, size_t index) nogil:
+    cdef:
+        void *dst
+        void *src
+        size_t size
+        Error error
     
-    cdef bint c_contains(self, void *item) nogil:
-        cdef:
-            size_t i
-            void *test_item
-            int check
-        for i in range(self.num_items):
-            test_item = self.c_get_ptr_unsafe(i)
-            check = memcmp(test_item, item, self.item_size)
-            if check == 0:
-                return True
-        return False
+    if vector.num_items <= 0:
+        return POP_EMPTY_ERROR
+    error = vector_shrink_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    if error == MEMORY_ERROR:
+        return error
+    error = vector_get_ptr(vector, index, &dst)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    error = vector_get_ptr(vector, index + 1, &src)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    size = (vector.num_items - index - 1) * vector.item_size
+    memmove(dst, src, size)
+    vector.num_items -= 1
+
+cdef Error vector_remove(VectorC *vector, size_t index, void *item) nogil:
+    cdef:
+        void *dst
+        void *src
+        size_t size
+        Error error
     
-    """
-    def print(self):
-        cdef:
-            size_t i
-            void *item
-            list items = []
-        for i in range(self.num_items):
-            item = self.c_get_ptr(i)
-            items.append(<int>item)
-        print(items)
-    """
+    if vector.num_items <= 0:
+        return POP_EMPTY_ERROR
+    error = vector_shrink_if_needed(vector)
+    if error == MEMORY_ERROR:
+        return error
+    error = vector_get(vector, index, item)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    error = vector_get_ptr(vector, index, &dst)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    error = vector_get_ptr(vector, index + 1, &src)
+    if error == INVALID_INDEX_ERROR:
+        return error
+    size = (vector.num_items - index - 1) * vector.item_size
+    memmove(dst, src, size)
+    vector.num_items -= 1
+
+cdef Error vector_find(VectorC *vector, void *item, size_t *index) nogil:
+    cdef:
+        size_t i
+        void *test_item
+        int check
+        Error error
+    
+    for i in range(vector.num_items):
+        test_item = vector_get_ptr_unsafe(vector, i)
+        check = memcmp(test_item, item, vector.item_size)
+        if check == 0:
+            index[0] = i
+            return NO_ERROR
+    return ITEM_NOT_FOUND_ERROR
+
+cdef bint vector_contains(VectorC *vector, void *item) nogil:
+    cdef:
+        size_t i
+        void *test_item
+        int check
+    for i in range(vector.num_items):
+        test_item = vector_get_ptr_unsafe(vector, i)
+        check = memcmp(test_item, item, vector.item_size)
+        if check == 0:
+            return True
+    return False

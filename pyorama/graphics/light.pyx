@@ -1,6 +1,17 @@
 cdef LightC *light_get_ptr(Handle light) except *:
     return <LightC *>graphics.slots.c_get_ptr(light)
 
+"""
+DEFAULTS:
+color = 1, 1, 1
+intensity = 1.0
+range = 0? means infinite (per gltf, must be > 0)
+inner_angle = 0 [0, pi/2)
+outer_angle = pi/4 [0, pi/2)
+
+attenuation = max( min( 1.0 - ( current_distance / range )4, 1 ), 0 ) / current_distance2
+"""
+
 cpdef Handle light_create(LightType type_, dict params) except *:
     cdef:
         Handle light

@@ -33,7 +33,7 @@ cpdef Handle texture_create_2d_from_image(Handle image) except *:
     
     texture = graphics.slots.c_create(GRAPHICS_SLOT_TEXTURE)
     texture_ptr = texture_get_ptr(texture)
-    image_ptr = image_get_ptr(image)
+    image_ptr = NULL#image_get_ptr(image)
     num_pixel_bytes = image_ptr.width * image_ptr.height * 4 * sizeof(uint8_t)
     memory_ptr = bgfx_copy(image_ptr.pixels, num_pixel_bytes)
     texture_ptr.bgfx_id = bgfx_create_texture_2d(

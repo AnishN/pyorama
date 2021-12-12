@@ -1,7 +1,94 @@
 import pyorama
 from pyorama.math import *
-from pyorama.data import *
+from pyorama.data import Buffer, BufferFormat
 import math
+
+"""
+pyorama.graphics.ibo_create(
+pyorama.graphics.fbo_create(
+pyorama.graphics.vbo_create(
+
+Stage object??? (this is what phaser uses)
+
+Transform:
+    think using a "linked list" approach to nodes may be useful...
+    parent
+    first_child
+    prev_sibling
+    next_sibling
+
+Definitely need to use MRT (multitexturing?, multiple render targets, whatever)
+Need some way to detect the number of textures that are bound at a single time for a batch (need to use multitexturing)
+
+Attribute:
+    public buffer: number;
+    public size: number;
+    public normalized: boolean;
+    public type: TYPES;
+    public stride: number;
+    public start: number;
+    public instance: boolean;
+
+    constructor(buffer: number, size = 0, normalized = false, type = TYPES.FLOAT, stride?: number, start?: number, instance?: boolean)
+    destroy(): void
+    static from(buffer: number, size?: number, normalized?: boolean, type?: TYPES, stride?: number): Attribute
+
+interface ITypedArray extends IArrayBuffer
+    readonly length: number;
+    [index: number]: number;
+    readonly BYTES_PER_ELEMENT: number;
+
+Buffer:
+    public data: ITypedArray;
+    /**
+     * The type of buffer this is, one of:
+     * + ELEMENT_ARRAY_BUFFER - used as an index buffer
+     * + ARRAY_BUFFER - used as an attribute buffer
+     * + UNIFORM_BUFFER - used as a uniform buffer (if available)
+     */
+    public type: BUFFER_TYPE;
+    public static: boolean;
+    public id: number;
+     disposeRunner: Runner;
+    _glBuffers: {[key: number]: GLBuffer};
+    _updateID: number;
+
+    constructor(data?: IArrayBuffer, _static = true, index = false)
+    update(data?: IArrayBuffer | Array<number>): void
+    dispose(): void
+    destroy(): void
+    set index(value: boolean)
+    get index(): boolean
+    static from(data: IArrayBuffer | number[]): Buffer
+}
+
+Geometry:
+    public buffers: Array<Buffer>;
+    public indexBuffer: Buffer;
+    public attributes: {[key: string]: Attribute};
+    public id: number;
+    public instanced: boolean;
+    public instanceCount: number;
+    glVertexArrayObjects: {[key: number]: {[key: string]: WebGLVertexArrayObject}};
+    disposeRunner: Runner;
+    refCount: number;
+
+    constructor(buffers: Array<Buffer> = [], attributes: {[key: string]: Attribute} = {})
+    addAttribute(id: string, buffer: Buffer|Float32Array|Uint32Array|Array<number>, size = 0, normalized = false,
+            type?: TYPES, stride?: number, start?: number, instance = false): this
+    getAttribute(id: string): Attribute
+    getBuffer(id: string): Buffer
+    addIndex(buffer?: Buffer | IArrayBuffer | number[]): Geometry
+    getIndex(): Buffer
+    interleave(): Geometry
+    getSize(): number
+    dispose()
+    destroy()
+    clone(): Geometry
+    static merge(geometries: Array<Geometry>): Geometry
+
+
+"""
 
 def on_window_event(event, *args, **kwargs):
     if event["sub_type"] == pyorama.event.WINDOW_EVENT_TYPE_CLOSE:
@@ -43,11 +130,21 @@ image_path = base_path + b"textures/cube.png"
 mesh_path =  base_path + b"meshes/cube.obj"
 vs_source_path = base_path + b"shaders/vs_mesh.sc"
 fs_source_path = base_path + b"shaders/fs_mesh.sc"
-vs_bin_path = base_path + b"shaders/vs_mesh.sc_bin"
-fs_bin_path = base_path + b"shaders/fs_mesh.sc_bin"
+vs_bin_path = base_path + b"shaders/vs_mesh.bin"
+fs_bin_path = base_path + b"shaders/fs_mesh.bin"
 
 pyorama.app.init()
 
+
+"""
+ball_sprite = pyorama.graphics.sprite_create(5)
+paddle_sprite = pyorama.graphics.sprite_create(5)
+sprite_batch = pyorama.graphics.sprite_batch_create(
+    [ball_sprite, paddle_sprite],
+)
+"""
+
+"""
 dir_light = pyorama.graphics.light_create(
     pyorama.graphics.LIGHT_TYPE_DIRECTION,
     params={
@@ -57,12 +154,145 @@ dir_light = pyorama.graphics.light_create(
     },
 )
 
+pt_light = pyorama.graphics.light_create(
+    pyorama.graphics.LIGHT_TYPE_POINT,
+    params={
+        "position": Vec3(10, 10, 10),
+        "color": 0xFF0000FF,
+        "intensity": 10.0,
+    },
+)
+"""
+
+"""
+pipeline object
+pipeline_node (needs inputs and outputs)
+
+ctypedef struct ShaderMaterialC:
+    uniforms
+    
+
+ctypedef struct MaterialC:
+    Handle handle
+    Vec4C pbr_base_color
+    Handle pbr_base_texture
+    float pbr_metallic_factor
+    float pbr_roughness_factor
+    Handle pbr_metallic_roughness_texture
+    Handle normal_texture
+    float normal_scale
+    Handle occlusion_texture
+    float occlusion_strength
+    Handle emissive_texture
+    Vec3C emissive_color
+    MaterialAlphaMode alpha_mode (opaque, mask, blend)
+    float alpha_cutoff
+    bint double_sided
+
+ctypedef struct MaterialC:
+    Handle handle
+    Handle shader
+    Handle texture
+    Vec4C albedo
+    float metallic
+    float smoothness
+    bint use_alpha
+
+ctypedef struct ModelC:
+    Handle handle
+    Handle mesh
+    Handle material
+    Handle transform
+    
+ctypedef struct RenderPassC:
+    Handle handle
+    RenderPassType type_
+    Handle *objects
+    size_t num_objects
+    bint dynamic = False
+    Handle vertex_buffer
+    Handle index_buffer
+    uint64_t output_texture_flags
+    Handle *samplers
+    Handle *input_textures
+    Handle *output_textures
+
+ctypedef struct RenderPassC:
+    Handle handle
+    Handle program
+    Handle batch
+    Handle *uniforms
+
+pyorama.graphics.RENDER_PASS_PROGRAM_ANIM_MODEL_BATCH
+pyorama.graphics.RENDER_PASS_PROGRAM_MODEL_BATCH
+pyorama.graphics.RENDER_PASS_PROGRAM_SPRITE_BATCH
+pyorama.graphics.EFFECT_PASS_PROGRAM_TINT
+pyorama.graphics.EFFECT_PASS_PROGRAM_COPY
+pyorama.graphics.EFFECT_PASS_PROGRAM_CLEAR
+
+render_pass = pyorama.graphics.render_pass_create(program, batch, uniforms, outputs)
+effect_pass_1 = pyorama.graphics.effect_pass_create(program, uniforms, inputs, outputs)
+effect_pass_2 = pyorama.graphics.effect_pass_create(program, uniforms, intputs, outputs)
+
+pipeline = pyorama.graphics.pipeline_create()
+pipeline.submit([render_pass, effect_pass_1, effect_pass_2])
+
+pyorama.graphics.render_pass_update()#this is something that needs to be done for dynamic vbos/ibos
+
+uniforms
+inputs
+outputs
+
+#these need to build a vbo basically, right?
+#is this a dynamic thing or a static one?
+#need to define the texture/fbo/mrt outputs as well
+#need to define a camera input
+
+pyorama.graphics.render_pass_create(
+    render_pass_type,
+    render_pass_objects[:],
+)
+pyorama.graphics.pipeline_create(render_passes[:])
+
+pyorama.graphics.render_pass_create_from_sprites()
+pyorama.graphics.render_pass_create_from_models()
+pyorama.graphics.render_pass_create_from_anim_models()
+
+pyorama.graphics.pipeline_set_pass_order()
+
+pyorama.graphics.pipeline_create()
+pyorama.graphics.pipeline_node_create()
+pyorama.graphics.pipeline_node_set_program()
+pyorama.graphics.pipeline_node_set_inputs()
+pyorama.graphics.pipeline_node_set_outputs()
+pyorama.graphics.pipeline_node_delete()
+pyorama.graphics.pipeline_submit()
+pyorama.graphics.pipeline_delete()
+
+types of nodes:
+    - geometry node:
+    - camera node:
+    - animation node:
+    - light node:
+    - 
+
+build_pass_from_dict:
+    - pass
+
+types of passes:
+render pass:
+    - takes a scene, which has a camera, list of meshes, list of lights
+
+effect pass:
+    - takes a series of inputs and converts them to outputs
+"""
+
 sampler = pyorama.graphics.uniform_create(b"s_tex0", pyorama.graphics.UNIFORM_TYPE_SAMPLER)
 
 mesh = pyorama.graphics.mesh_create_from_file(mesh_path, load_normals=False)
 vertex_format = BufferFormat([
-    (b"a_position", 3, BUFFER_FIELD_TYPE_F32),
-    (b"a_texcoord0", 2, BUFFER_FIELD_TYPE_F32),
+    (b"a_position", 3, pyorama.data.BUFFER_FIELD_TYPE_F32),
+    (b"a_texcoord0", 2, pyorama.data.BUFFER_FIELD_TYPE_F32),
 ])
 
 vertices = Buffer(vertex_format)
@@ -72,7 +302,7 @@ vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
 
 index_layout = pyorama.graphics.INDEX_LAYOUT_U32
 index_format = BufferFormat([
-    (b"a_indices", 1, BUFFER_FIELD_TYPE_U32),
+    (b"a_indices", 1, pyorama.data.BUFFER_FIELD_TYPE_U32),
 ])
 indices = Buffer(index_format)
 pyorama.graphics.mesh_get_indices(mesh, indices)

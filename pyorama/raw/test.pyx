@@ -142,10 +142,7 @@ cube_indices = [
     7, 3, 6,
 ]
 
-pyorama.app.init({
-    #"use_sleep": True,
-    "use_sleep": False,
-})
+pyorama.app.init()
 
 bgfx_vertex_layout_begin(&layout, bgfx_get_renderer_type())
 bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_POSITION, 3, BGFX_ATTRIB_TYPE_FLOAT, False, False)
