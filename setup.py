@@ -42,6 +42,8 @@ macros = [
     ("CGLTF_IMPLEMENTATION", True), 
     ("STB_IMAGE_IMPLEMENTATION", True),
     ("STBI_FAILURE_USERMSG", True),
+    ("CGLM_CLIPSPACE_INCLUDE_ALL", True),
+    ("CGLM_ALL_UNALIGNED", True),
 ]
 include_dirs = ["./pyorama/libs/include"]
 library_dirs = {

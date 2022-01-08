@@ -41,6 +41,29 @@ cdef class GraphicsSystem:
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
         int_hash_map_init(&self.window_ids)
+
+        import time
+        cdef:
+            int depth
+            int i
+            bint homogeneous_depth = bgfx_get_caps().homogeneousDepth
+
+        depth = 0
+        start = time.time()
+        for i in range(10000000):
+            #depth += i * homogeneous_depth
+            depth += i * bgfx_get_caps().homogeneousDepth
+        end = time.time()
+        print(end - start, depth)
+
+        print(
+            "bgfx_caps",
+            bgfx_get_renderer_type(),
+            bgfx_get_caps().homogeneousDepth,
+            bgfx_get_caps().originBottomLeft,
+            bgfx_get_caps().vendorId,
+            bgfx_get_caps().deviceId,
+        )
     
     def quit(self):
         int_hash_map_free(&self.window_ids)
@@ -74,6 +97,8 @@ cdef class GraphicsSystem:
         bgfx_set_platform_data(&self.pd)
         bgfx_init_ctor(&self.bgfx_init)
         self.bgfx_init.type = BGFX_RENDERER_TYPE_COUNT
+        #self.bgfx_init.type = BGFX_RENDERER_TYPE_VULKAN
+        #self.bgfx_init.type = BGFX_RENDERER_TYPE_OPENGL
         self.bgfx_init.resolution.reset = BGFX_RESET_VSYNC
         bgfx_init(&self.bgfx_init)
     
