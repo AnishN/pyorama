@@ -5,6 +5,7 @@ from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.libs.sdl2 cimport *
 
+from pyorama.graphics.camera cimport *
 from pyorama.graphics.frame_buffer cimport *
 from pyorama.graphics.image cimport *
 from pyorama.graphics.index_buffer cimport *
@@ -55,6 +56,7 @@ cpdef enum GraphicsSlot:
     GRAPHICS_SLOT_TRANSFORM
     GRAPHICS_SLOT_SPRITE
     GRAPHICS_SLOT_SPRITE_BATCH
+    GRAPHICS_SLOT_CAMERA
 
 cdef class GraphicsSystem:
     cdef:

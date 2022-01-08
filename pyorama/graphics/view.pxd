@@ -71,6 +71,6 @@ cdef class View(HandleObject):
     cpdef void set_vertex_buffer(self, VertexBuffer vertex_buffer) except *
     cpdef void set_index_buffer(self, IndexBuffer index_buffer, int32_t offset=*, int32_t count=*) except *
     cpdef void set_program(self, Program program) except *
-    cpdef void set_texture(self, Handle sampler, Handle texture, uint8_t unit) except *
+    cpdef void set_texture(self, Uniform sampler, Texture texture, uint8_t unit) except *
     cpdef void submit(self) except *
     cpdef void touch(self) except *

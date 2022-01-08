@@ -28,8 +28,8 @@ cdef class Quat:
             self.is_owner = False
         self.data = a
 
-    def __dealloc__(self):
-        memset(self.data, 0, sizeof(QuatC))
+    property data:
+        def __get__(self): return self.data[0]
     
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         buffer.buf = self.data

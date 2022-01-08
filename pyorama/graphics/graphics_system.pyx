@@ -22,6 +22,7 @@ cdef class GraphicsSystem:
             GRAPHICS_SLOT_TRANSFORM: sizeof(TransformC),
             GRAPHICS_SLOT_SPRITE: sizeof(SpriteC),
             GRAPHICS_SLOT_SPRITE_BATCH: sizeof(SpriteBatchC),
+            GRAPHICS_SLOT_CAMERA: sizeof(CameraC),
         }
     
     def __dealloc__(self):

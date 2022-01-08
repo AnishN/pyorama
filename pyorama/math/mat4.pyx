@@ -28,6 +28,9 @@ cdef class Mat4:
             self.is_owner = False
         self.data = a
     
+    property data:
+        def __get__(self): return self.data[0]
+
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         buffer.buf = self.data
         buffer.len = 16
@@ -132,12 +135,16 @@ cdef class Mat4:
         return Mat4.c_nearly_equals(a.data, b.data, epsilon)
 
     @staticmethod
-    def ortho(Mat4 out, float left, float right, float bottom, float top, float near, float far):
-        Mat4.c_ortho(out.data, left, right, bottom, top, near, far)
+    def orthographic(Mat4 out, float x_mag, float y_mag, float z_near, float z_far):
+        Mat4.c_orthographic(out.data, x_mag, y_mag, z_near, z_far)
 
     @staticmethod
-    def perspective(Mat4 out, float fovy, float aspect, float near, float far):
-        Mat4.c_perspective(out.data, fovy, aspect, near, far)
+    def orthographic_alt(Mat4 out, float left, float right, float bottom, float top, float near, float far):
+        Mat4.c_orthographic_alt(out.data, left, right, bottom, top, near, far)
+
+    @staticmethod
+    def perspective(Mat4 out, float aspect_ratio, float y_fov, float z_near, float z_far):
+        Mat4.c_perspective(out.data, aspect_ratio, y_fov, z_near, z_far)
 
     @staticmethod
     def random(Mat4 out):
@@ -655,7 +662,26 @@ cdef class Mat4:
         return True
 
     @staticmethod
-    cdef void c_ortho(Mat4C *out, float left, float right, float bottom, float top, float near, float far) nogil:
+    cdef void c_orthographic(Mat4C *out, float x_mag, float y_mag, float z_near, float z_far) nogil:
+        out.m00 = 1.0/x_mag
+        out.m01 = 0
+        out.m02 = 0
+        out.m03 = 0
+        out.m10 = 0
+        out.m11 = 1.0/y_mag
+        out.m12 = 0
+        out.m13 = 0
+        out.m20 = 0
+        out.m21 = 0
+        out.m22 = 2.0/(z_near - z_far)
+        out.m23 = 0
+        out.m30 = 0
+        out.m31 = 0
+        out.m32 = (z_far + z_near) / (z_near - z_far)
+        out.m33 = 1
+
+    @staticmethod
+    cdef void c_orthographic_alt(Mat4C *out, float left, float right, float bottom, float top, float near, float far) nogil:
         out.m00 = 2.0/(right - left)
         out.m01 = 0
         out.m02 = 0
@@ -666,7 +692,7 @@ cdef class Mat4:
         out.m13 = 0
         out.m20 = 0
         out.m21 = 0
-        out.m22 = -2.0/(far - near)
+        out.m22 = 2.0/(far - near)
         out.m23 = 0
         out.m30 = -(right + left)/(right - left)
         out.m31 = -(top + bottom)/(top - bottom)
@@ -674,9 +700,9 @@ cdef class Mat4:
         out.m33 = 1
 
     @staticmethod
-    cdef void c_perspective(Mat4C *out, float fovy, float aspect, float near, float far) nogil:
-        cdef float f = 1.0/c_math.tan(fovy/2.0)
-        out.m00 = f/aspect
+    cdef void c_perspective(Mat4C *out, float aspect_ratio, float y_fov, float z_near, float z_far) nogil:
+        cdef float f = 1.0/c_math.tan(y_fov/2.0)
+        out.m00 = f/aspect_ratio
         out.m01 = 0
         out.m02 = 0
         out.m03 = 0
@@ -686,11 +712,11 @@ cdef class Mat4:
         out.m13 = 0
         out.m20 = 0
         out.m21 = 0
-        out.m22 = (far+near)/(near-far)
+        out.m22 = (z_far + z_near)/(z_near - z_far)
         out.m23 = -1
         out.m30 = 0
         out.m31 = 0
-        out.m32 = (2*far*near)/(near-far)
+        out.m32 = (2 * z_far * z_near)/(z_near - z_far)
         out.m33 = 1
 
     @staticmethod

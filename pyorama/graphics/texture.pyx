@@ -50,16 +50,12 @@ cdef class Texture(HandleObject):
             image_ptr.width,
             image_ptr.height,
             False,
+            1,
+            BGFX_TEXTURE_FORMAT_RGBA8,
             0,
-            #BGFX_TEXTURE_FORMAT_RGBA8,
-            BGFX_TEXTURE_FORMAT_BGRA8,
-            #BGFX_TEXTURE_FORMAT_ABGR8,
-            0,#BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
             memory_ptr,
         )
-
-    #cpdef void texture_update_2d_from_image(Handle image)
-
+    
     cpdef void delete(self) except *:
         cdef:
             TextureC *texture_ptr

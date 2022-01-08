@@ -22,19 +22,7 @@ cdef class AssetSystem:
         self.slots.c_free()
 
     def update(self):
-        cdef:
-            SlotMapC *queues
-            size_t i
-            AssetQueueC *queue
-            bytes file_path
-            FILE *file_ptr
-            void *file_data
-            size_t file_size
-        
-        queues = self.slots.get_slot_map(ASSET_SLOT_ASSET_QUEUE)
-        for i in range(queues.items.num_items):
-            queue = <AssetQueueC *>vector_get_ptr_unsafe(&queues.items, i)
-            #print(i, <uintptr_t>queue)
+        pass
 
     cpdef void get_asset(self, bytes asset_name, HandleObject asset) except *:
         asset.handle = str_hash_map_get(&self.assets_map, asset_name, len(asset_name))

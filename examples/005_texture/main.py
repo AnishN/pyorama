@@ -1,115 +1,137 @@
+import math
+
 import pyorama
 from pyorama import app
-from pyorama.math import *
+from pyorama.asset import *
 from pyorama.data import *
 from pyorama.event import *
 from pyorama.graphics import *
-import math
+from pyorama.math import *
 
 def on_window_event(event, *args, **kwargs):
     if event["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
         app.trigger_quit()
 
-def on_enter_frame_event(event, *args, **kwargs):
-    global counter
-
-    Vec3.set_data(eye, math.sin(float(counter) / 100) * 8, 2, math.cos(float(counter) / 100) * 8)
-    Mat4.look_at(view_mat, eye, at, up)
-    Mat4.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
-    Mat4.identity(model_mat)
-    Mat4.from_rotation_x(mtx_x, counter * 0.007)
-    Mat4.from_rotation_y(mtx_y, counter * 0.01)
-    Mat4.dot(model_mat, mtx_x, mtx_y)
-    
-    view.set_transform_model(model_mat)
-    view.set_transform_view(view_mat)
-    view.set_transform_projection(proj_mat)
-    view.submit()
-
-    Mat4.from_translation(model_mat, shift)
-    view.set_transform_model(model_mat)
-    view.submit()
-
-    counter += 1
-
 width = 800
 height = 600
 title = b"Cubes"
 
-base_path = b"./examples/002_cubes/"
-vs_source_path = base_path + b"shaders/vs_cubes.sc"
-fs_source_path = base_path + b"shaders/fs_cubes.sc"
+base_path = b"./examples/005_texture/"
+vs_source_path = base_path + b"shaders/vs_mesh.sc"
+fs_source_path = base_path + b"shaders/fs_mesh.sc"
+image_path = base_path + b"textures/capsule.jpg"
 
 counter = 0
 at = Vec3(0.0, 0.0, 0.0)
 eye = Vec3()
 up = Vec3(0.0, 1.0, 0.0)
-shift = Vec3(3.0, 0.0, 0.0)
 view_mat = Mat4()
 proj_mat = Mat4()
 model_mat = Mat4()
-mtx_x = Mat4()
-mtx_y = Mat4()
 
 app.init()
 
 vertex_format = BufferFormat([
     (b"a_position", 3, BUFFER_FIELD_TYPE_F32),
-    (b"a_color0", 4, BUFFER_FIELD_TYPE_U8),
+    (b"a_texcoord0", 2, BUFFER_FIELD_TYPE_F32),
 ])
-vertex_layout = VertexLayout(); vertex_layout.create(
+vertex_layout = VertexLayout.init_create(
     vertex_format, 
     normalize={b"a_color0",},
 )
-
-vertex_layout = VertexLayout.create(
-    vertex_format, 
-    normalize={b"a_color0",},
-)
-
 vertices = Buffer(vertex_format)
 vertices.init_from_list([
-    (-1.0,  1.0,  1.0, 0x00, 0x00, 0x00, 0xff),
-    ( 1.0,  1.0,  1.0, 0xff, 0x00, 0x00, 0xff),
-    (-1.0, -1.0,  1.0, 0x00, 0xff, 0x00, 0xff),
-    ( 1.0, -1.0,  1.0, 0x00, 0x00, 0xff, 0xff),
-    (-1.0,  1.0, -1.0, 0xff, 0xff, 0x00, 0xff),
-    ( 1.0,  1.0, -1.0, 0xff, 0x00, 0xff, 0xff),
-    (-1.0, -1.0, -1.0, 0x00, 0xff, 0xff, 0xff),
-    ( 1.0, -1.0, -1.0, 0xff, 0xff, 0xff, 0xff),
+    (-400, -300, 0.0, 0.0, 0.0),
+    (+400, -300, 0.0, 1.0, 0.0),
+    (+400, +300, 0.0, 1.0, 1.0),
+    (-400, +300, 0.0, 0.0, 1.0),
 ])
-vertex_buffer = VertexBuffer(); vertex_buffer.create(vertex_layout, vertices)
+vertex_buffer = VertexBuffer.init_create(vertex_layout, vertices)
 
 index_format = BufferFormat([
     (b"a_indices", 1, BUFFER_FIELD_TYPE_U16),
 ])
 indices = Buffer(index_format)
 indices.init_from_list([
-    2, 1, 0,
-    2, 3, 1,
-    5, 6, 4,
-    7, 6, 5,
-    4, 2, 0,
-    6, 2, 4,
-    3, 5, 1,
-    3, 7, 5,
-    1, 4, 0,
-    1, 5, 4,
-    6, 3, 2,
-    7, 3, 6,
+    0, 1, 2, 0, 2, 3
 ], is_flat=True)
 index_layout = INDEX_LAYOUT_U16
-index_buffer = IndexBuffer(); index_buffer.create(index_layout, indices)
+index_buffer = IndexBuffer.init_create(index_layout, indices)
 
-vertex_shader = Shader(); vertex_shader.create_from_source_file(SHADER_TYPE_VERTEX, vs_source_path)
-fragment_shader = Shader(); fragment_shader.create_from_source_file(SHADER_TYPE_FRAGMENT, fs_source_path)
-program = Program(); program.create(vertex_shader, fragment_shader)
+queue = AssetQueue.init_create()
+queue.add_asset(ASSET_TYPE_IMAGE, b"capsule", image_path)
+queue.load()
 
-window = Window(); window.create(width, height, title)
-frame_buffer = FrameBuffer(); frame_buffer.create_from_window(window)
-view = View(); view.create()
-on_window_listener = Listener(); on_window_listener.create(EVENT_TYPE_WINDOW, on_window_event, None, None)
-on_enter_frame_listener = Listener(); on_enter_frame_listener.create(EVENT_TYPE_ENTER_FRAME, on_enter_frame_event, None, None)
+asset_manager = app.get_asset_system()
+image = Image()
+asset_manager.get_asset(b"capsule", image)
+texture = Texture.init_create_2d_from_image(image)
+sampler = Uniform.init_create(b"s_tex0", UNIFORM_TYPE_SAMPLER)
+
+vertex_shader = Shader.init_create_from_source_file(SHADER_TYPE_VERTEX, vs_source_path)
+fragment_shader = Shader.init_create_from_source_file(SHADER_TYPE_FRAGMENT, fs_source_path)
+program = Program.init_create(vertex_shader, fragment_shader)
+
+
+window = Window.init_create(width, height, title)
+frame_buffer = FrameBuffer.init_create_from_window(window)
+view = View.init_create()
+on_window_listener = Listener.init_create(EVENT_TYPE_WINDOW, on_window_event, None, None)
+
+
+Vec3.set_data(eye, 0, 0, 1000)
+Mat4.look_at(view_mat, eye, at, up)
+Mat4.orthographic(proj_mat, 1.0/2.0, 1.0/2.0, 0.01, 1000.0)
+
+"""
+void mtxOrtho(float* _result, float _left, float _right, float _bottom, float _top, float _near, float _far, float _offset, bool _homogeneousNdc, Handness::Enum _handness)
+	{
+		const float aa = 2.0f/(_right - _left);
+		const float bb = 2.0f/(_top - _bottom);
+		const float cc = (_homogeneousNdc ? 2.0f : 1.0f) / (_far - _near);
+		const float dd = (_left + _right )/(_left   - _right);
+		const float ee = (_top  + _bottom)/(_bottom - _top  );
+		const float ff = _homogeneousNdc
+			? (_near + _far)/(_near - _far)
+			:  _near        /(_near - _far)
+			;
+
+		memSet(_result, 0, sizeof(float)*16);
+		_result[ 0] = aa;
+		_result[ 5] = bb;
+		_result[10] = cc;
+		_result[12] = dd + _offset;
+		_result[13] = ee;
+		_result[14] = ff;
+		_result[15] = 1.0f;
+	}
+
+@staticmethod
+cdef void c_orthographic(Mat4C *out, float x_mag, float y_mag, float z_near, float z_far) nogil:
+    out.m00 = 1.0/x_mag
+    out.m01 = 0
+    out.m02 = 0
+    out.m03 = 0
+    out.m10 = 0
+    out.m11 = 1.0/y_mag
+    out.m12 = 0
+    out.m13 = 0
+    out.m20 = 0
+    out.m21 = 0
+    out.m22 = 2.0/(z_near - z_far)
+    out.m23 = 0
+    out.m30 = 0
+    out.m31 = 0
+    out.m32 = (z_far + z_near) / (z_near - z_far)
+    out.m33 = 1
+"""
+
+#print(proj_mat.data)
+#Mat4.orthographic_alt(proj_mat, 0, width, 0, height, 0.01, 1000.0)
+#print(proj_mat.data)
+Mat4.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
+print(proj_mat.data)
+#print("")
 
 clear_flags = VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH
 view.set_clear(clear_flags, 0x443355FF, 1.0, 0)
@@ -118,9 +140,14 @@ view.set_frame_buffer(frame_buffer)
 view.set_vertex_buffer(vertex_buffer)
 view.set_index_buffer(index_buffer)
 view.set_program(program)
+view.set_texture(sampler, texture, 0)
+view.set_transform_model(model_mat)
+view.set_transform_view(view_mat)
+view.set_transform_projection(proj_mat)
+view.submit()
+
 app.run()
 
-on_enter_frame_listener.delete()
 on_window_listener.delete()
 program.delete()
 fragment_shader.delete()

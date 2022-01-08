@@ -1,6 +1,7 @@
 ctypedef enum Error:
     NO_ERROR
     MEMORY_ERROR
+    FILE_ERROR
     INVALID_INDEX_ERROR
     ITEM_NOT_FOUND_ERROR
     POP_EMPTY_ERROR

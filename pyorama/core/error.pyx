@@ -3,6 +3,8 @@ cdef void CHECK_ERROR(Error error) except *:
         return
     elif error == MEMORY_ERROR:
         raise MemoryError("Error: out of memory")
+    elif error == FILE_ERROR:
+        raise ValueError("Error: unable to open/parse file")
     elif error == INVALID_INDEX_ERROR:
         raise ValueError("Error: invalid index")
     elif error == ITEM_NOT_FOUND_ERROR:

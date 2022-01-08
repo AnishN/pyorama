@@ -5,6 +5,8 @@ This library has the following dependencies:
 * Graphics: 
     * Bgfx (for cross-platform rendering)
     * SDL2 (for window creation, including sub-dependencies such as SDL2_image, SDL2_mixer, SDL2_net, and SDL2_ttf)
+    * STB nothings (for useful and consistent cross-platform utilities such as image loading)
+    * Cgltf (for gltf and glb mesh loading)
     * Assimp (for 3d mesh/asset loading)
     * Freetype and Harfbuzz (for planned text rendering)
     * Dear ImGUI (cimgui specifically, for debug UI rendering)

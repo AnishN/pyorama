@@ -69,7 +69,7 @@ cdef void ImGui_Implbgfx_RenderDrawLists(ImDrawData *draw_data):
         BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
     )
 
-    Mat4.c_ortho(&ortho, 0.0, io.DisplaySize.x, io.DisplaySize.y, 0.0, 0.0, 1000.0)
+    Mat4.c_orthographic_alt(&ortho, 0.0, io.DisplaySize.x, io.DisplaySize.y, 0.0, 0.0, 1000.0)
     bgfx_set_view_transform(g_View, NULL, <float *>&ortho)
     bgfx_set_view_rect(g_View, 0, 0, <uint16_t>fb_width, <uint16_t>fb_height)
 

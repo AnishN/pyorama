@@ -28,6 +28,9 @@ cdef class Vec2:
             self.is_owner = False
         self.data = a
 
+    property data:
+        def __get__(self): return self.data[0]
+
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         buffer.buf = self.data
         buffer.len = 2

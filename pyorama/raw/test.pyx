@@ -3,6 +3,7 @@ from pyorama.libs.bgfx cimport *
 from pyorama.libs.sdl2 cimport *
 from pyorama.math cimport *
 from pyorama.data.handle cimport *
+from pyorama.asset.shader_loader cimport *
 import pyorama
 from pyorama.app cimport *
 import math
@@ -59,12 +60,12 @@ def on_enter_frame_event(event, *args, **kwargs):
     counter += 1
 
 def runtime_compile_shaders():
-    pyorama.graphics.utils_runtime_compile_shader(
+    utils_runtime_compile_shader(
         in_file_path=b"./resources/shaders/vs_cubes.sc",
         out_file_path=b"./resources/shaders/vs_cubes.glsl",
         shader_type=pyorama.graphics.SHADER_TYPE_VERTEX,
     )
-    pyorama.graphics.utils_runtime_compile_shader(
+    utils_runtime_compile_shader(
         in_file_path=b"./resources/shaders/fs_cubes.sc",
         out_file_path=b"./resources/shaders/fs_cubes.glsl",
         shader_type=pyorama.graphics.SHADER_TYPE_FRAGMENT,

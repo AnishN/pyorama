@@ -35,3 +35,15 @@ for i in range(a.items.max_items):
     if item_ptr.used:
         print(i, item_ptr.key, item_ptr.key_len, item_ptr.value)
 """
+
+ctypedef struct TextureGrid:
+    Handle handle
+    Handle texture
+    size_t num_rows
+    size_t num_cols
+
+cdef class TextureGrid(HandleObject):
+
+    cpdef void create(self, Texture texture, size_t num_rows, size_t num_cols) except *
+    cpdef void delete(self) except *
+    cpdef void get_box(self, row, col, Box2 box) except *

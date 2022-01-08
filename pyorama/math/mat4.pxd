@@ -57,9 +57,11 @@ cdef class Mat4:
     @staticmethod
     cdef bint c_nearly_equals(Mat4C *a, Mat4C *b, float epsilon=*) nogil
     @staticmethod
-    cdef void c_ortho(Mat4C *out, float left, float right, float bottom, float top, float near, float far) nogil
+    cdef void c_orthographic(Mat4C *out, float x_mag, float y_mag, float z_near, float z_far) nogil
     @staticmethod
-    cdef void c_perspective(Mat4C *out, float fovy, float aspect, float near, float far) nogil
+    cdef void c_orthographic_alt(Mat4C *out, float left, float right, float bottom, float top, float near, float far) nogil
+    @staticmethod
+    cdef void c_perspective(Mat4C *out, float aspect_ratio, float y_fov, float z_near, float z_far) nogil
     @staticmethod
     cdef void c_random(Mat4C *out) nogil
     @staticmethod

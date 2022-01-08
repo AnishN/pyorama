@@ -116,12 +116,12 @@ cdef class View(HandleObject):
         view_ptr = self.get_ptr()
         view_ptr.program = program.handle
 
-    cpdef void set_texture(self, Handle sampler, Handle texture, uint8_t unit) except *:
+    cpdef void set_texture(self, Uniform sampler, Texture texture, uint8_t unit) except *:
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        view_ptr.samplers[unit] = sampler
-        view_ptr.textures[unit] = texture
+        view_ptr.samplers[unit] = sampler.handle
+        view_ptr.textures[unit] = texture.handle
 
     cpdef void submit(self) except *:
         cdef:
