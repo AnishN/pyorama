@@ -1,3 +1,4 @@
+"""
 from pyorama.math cimport *
 
 cdef:
@@ -174,3 +175,4 @@ cdef void ImGui_Implbgfx_InvalidateDeviceObjects():
     bgfx_destroy_program(g_ShaderHandle)
     bgfx_destroy_texture(g_FontTexture)
     igGetIO().Fonts.TexID = <ImTextureID>0
+"""

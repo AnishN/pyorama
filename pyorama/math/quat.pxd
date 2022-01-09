@@ -1,66 +1,61 @@
 from pyorama.libs.c cimport *
-from pyorama.math.common cimport *
-from pyorama.math.mat3 cimport *
-from pyorama.math.vec3 cimport *
+from pyorama.libs.cglm cimport *
 
 cdef class Quat:
     cdef:
-        QuatC *data
-        readonly bint is_owner
-    
-    @staticmethod
-    cdef Quat c_from_ptr(QuatC *a)
-    cdef void c_set_ptr(self, QuatC *a) nogil
+        float[4] data
 
     @staticmethod
-    cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil
+    cdef Quat c_from_data(quat q)
     @staticmethod
-    cdef void c_calculate_w(QuatC *out, QuatC *a) nogil
+    cdef void c_identity(quat out) nogil
     @staticmethod
-    cdef void c_conjugate(QuatC *out, QuatC *a) nogil
+    cdef void c_init(quat out, float x, float y, float z, float w) nogil
     @staticmethod
-    cdef void c_copy(QuatC *out, QuatC *a) nogil
+    cdef void c_from_angle_axis(quat out, float angle, vec3 axis) nogil
     @staticmethod
-    cdef float c_dot(QuatC *a, QuatC *b) nogil
+    cdef void c_copy(quat out, quat q) nogil
     @staticmethod
-    cdef bint c_equals(QuatC *a, QuatC *b) nogil
+    cdef void c_from_vecs(quat out, vec3 a, vec3 b) nogil
     @staticmethod
-    cdef void c_from_euler(QuatC *out, float x, float y, float z) nogil
+    cdef float c_mag(quat q) nogil
     @staticmethod
-    cdef void c_from_mat3(QuatC *out, Mat3C *a) nogil
+    cdef void c_normalize(quat out) nogil
     @staticmethod
-    cdef float c_get_axis_angle(Vec3C *out, QuatC *a) nogil
+    cdef void c_normalize_to(quat out, quat q) nogil
     @staticmethod
-    cdef void c_identity(QuatC *out) nogil
+    cdef float c_dot(quat a, quat b) nogil
     @staticmethod
-    cdef void c_inv(QuatC *out, QuatC *a) nogil
+    cdef void c_conjugate(quat out, quat q) nogil
     @staticmethod
-    cdef float c_length(QuatC *a) nogil
+    cdef void c_inv(quat out, quat q) nogil
     @staticmethod
-    cdef void c_lerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil
+    cdef void c_add(quat out, quat a, quat b) nogil
     @staticmethod
-    cdef void c_mul(QuatC *out, QuatC *a, QuatC *b) nogil
+    cdef void c_sub(quat out, quat a, quat b) nogil
     @staticmethod
-    cdef bint c_nearly_equals(QuatC *a, QuatC *b, float epsilon=*) nogil
+    cdef float c_real(quat q) nogil
     @staticmethod
-    cdef void c_norm(QuatC *out, QuatC *a) nogil
+    cdef void c_imag(quat q, vec3 imag) nogil
     @staticmethod
-    cdef void c_rotate_x(QuatC *out, QuatC *a, float radians) nogil
+    cdef void c_imag_normalize(quat q, vec3 imag) nogil
     @staticmethod
-    cdef void c_rotate_y(QuatC *out, QuatC *a, float radians) nogil
+    cdef float c_imag_mag(quat q) nogil
     @staticmethod
-    cdef void c_rotate_z(QuatC *out, QuatC *a, float radians) nogil
+    cdef float c_angle(quat q) nogil
     @staticmethod
-    cdef void c_rotation_to(QuatC *out, Vec3C *a, Vec3C *b) nogil
+    cdef void c_axis(quat q, vec3 axis) nogil
     @staticmethod
-    cdef void c_scale_add(QuatC *out, QuatC *a, float scale=*, float add=*) nogil
+    cdef void c_mul(quat out, quat a, quat b) nogil
     @staticmethod
-    cdef void c_set_axes(QuatC *out, Vec3C *view, Vec3C *right, Vec3C *up) nogil
+    cdef void c_lerp(quat out, quat a, quat b, float t) nogil
     @staticmethod
-    cdef void c_set_axis_angle(QuatC *out, Vec3C *axis, float radians) nogil
+    cdef void c_slerp(quat out, quat a, quat b, float t) nogil
     @staticmethod
-    cdef void c_set_data(QuatC *out, float x=*, float y=*, float z=*, float w=*) nogil
+    cdef void c_nlerp(quat out, quat a, quat b, float t) nogil
     @staticmethod
-    cdef void c_slerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil
+    cdef void c_look(quat out, vec3 dir_, vec3 up) nogil
     @staticmethod
-    cdef float c_sqr_length(QuatC *a) nogil
+    cdef void c_look_from_pos(quat out, vec3 a, vec3 b, vec3 up) nogil
+    @staticmethod
+    cdef void c_from_mat4(quat out, mat4 a) nogil

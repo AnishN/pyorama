@@ -71,19 +71,19 @@ cdef class View(HandleObject):
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        view_ptr.transform.model = transform_model.data[0]
+        #view_ptr.transform.model = transform_model.data[0]
 
     cpdef void set_transform_view(self, Mat4 transform_view) except *:
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        view_ptr.transform.view = transform_view.data[0]
+        #view_ptr.transform.view = transform_view.data[0]
 
     cpdef void set_transform_projection(self, Mat4 transform_projection) except *:
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        view_ptr.transform.projection = transform_projection.data[0]
+        #view_ptr.transform.projection = transform_projection.data[0]
 
     cpdef void set_frame_buffer(self, FrameBuffer frame_buffer) except *:
         cdef:

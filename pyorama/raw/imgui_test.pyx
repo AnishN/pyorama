@@ -1,3 +1,4 @@
+"""
 from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.libs.sdl2 cimport *
@@ -82,3 +83,4 @@ while running:
 bgfx_shutdown()
 SDL_DestroyWindow(window)
 SDL_Quit()
+"""

@@ -1,3 +1,4 @@
+"""
 DEF ImGuiMouseCursor_COUNT = 8
 
 cdef:
@@ -274,3 +275,4 @@ cdef void ImGui_ImplSDL2_UpdateGamepads():
     memset(io.NavInputs, 0, sizeof(io.NavInputs))
     if (io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) == 0:
         return
+"""

@@ -1,3 +1,4 @@
+"""
 from pyorama.app cimport *
 from pyorama.asset.shader_loader cimport *
 from pyorama.data.buffer cimport *
@@ -28,3 +29,4 @@ cdef class DebugUISystem:
         Buffer index_buffer_data
         Handle vertex_layout, vertex_buffer, index_buffer
         IndexLayout index_layout
+"""

@@ -7,22 +7,37 @@ cdef extern from "cglm/cglm.h" nogil:
     ctypedef int ivec3[3]
     ctypedef float vec4[4]
     ctypedef vec4 versor
-    ctypedef vec3 mat3[3]
+    ctypedef versor quat#this is NOT in cglm, but a custom addition. versor = unit quat by the way
     ctypedef vec2 mat2[2]
+    ctypedef vec3 mat3[3]
     ctypedef vec4 mat4[4]
-    float GLM_E
-    float GLM_LOG2E
-    float GLM_LOG10E
-    float GLM_LN2
-    float GLM_LN10
-    float GLM_PI
-    float GLM_PI_2
-    float GLM_PI_4
-    float GLM_1_PI
-    float GLM_2_PI
-    float GLM_2_SQRTPI
-    float GLM_SQRT2
-    float GLM_SQRT1_2
+    double GLM_E
+    double GLM_LOG2E
+    double GLM_LOG10E
+    double GLM_LN2
+    double GLM_LN10
+    double GLM_PI
+    double GLM_PI_2
+    double GLM_PI_4
+    double GLM_1_PI
+    double GLM_2_PI
+    double GLM_2_SQRTPI
+    double GLM_SQRT2
+    double GLM_SQRT1_2
+
+    float GLM_Ef
+    float GLM_LOG2Ef
+    float GLM_LOG10Ef
+    float GLM_LN2f
+    float GLM_LN10f
+    float GLM_PIf
+    float GLM_PI_2f
+    float GLM_PI_4f
+    float GLM_1_PIf
+    float GLM_2_PIf
+    float GLM_2_SQRTPIf
+    float GLM_SQRT2f
+    float GLM_SQRT1_2f
     
     #cglm_affine_mat_h
     void glm_mul(mat4 m1, mat4 m2, mat4 dest)
@@ -279,7 +294,8 @@ cdef extern from "cglm/cglm.h" nogil:
     void glm_mat4_mul(mat4 m1, mat4 m2, mat4 dest)
     void glm_mat4_mulN(mat4 *matrices[], int len, mat4 dest)
     void glm_mat4_mulv(mat4 m, vec4 v, vec4 dest)
-    void glm_mat4_mulv3(mat4 m, vec3 v, vec3 dest)
+    #void glm_mat4_mulv3(mat4 m, vec3 v, vec3 dest)
+    void glm_mat4_mulv3(mat4 m, vec3 v, float last, vec3 dest)
     float glm_mat4_trace(mat4 m)
     float glm_mat4_trace3(mat4 m)
     void glm_mat4_quat(mat4 m, versor dest) 
@@ -336,8 +352,8 @@ cdef extern from "cglm/cglm.h" nogil:
     void glm_quat_slerp(versor q, versor r, float t, versor dest)
     void glm_quat_nlerp(versor q, versor r, float t, versor dest)
     void glm_quat_look(vec3 eye, versor ori, mat4 dest)
-    void glm_quat_for(vec3 dir_, vec3 fwd, vec3 up, versor dest)
-    void glm_quat_forp(vec3 from_, vec3 to, vec3 fwd, vec3 up, versor dest)
+    void glm_quat_for(vec3 dir_, vec3 up, versor dest)
+    void glm_quat_forp(vec3 from_, vec3 to, vec3 up, versor dest)
     void glm_quat_rotatev(versor q, vec3 v, vec3 dest)
     void glm_quat_rotate(mat4 m, versor q, mat4 dest)
 
@@ -537,6 +553,8 @@ cdef extern from "cglm/cglm.h" nogil:
     void glm_vec4_copy3(vec4 a, vec3 dest)
     void glm_vec4_copy(vec4 v, vec4 dest)
     void glm_vec4_ucopy(vec4 v, vec4 dest)
+    void glm_vec4_zero(vec4 v)
+    void glm_vec4_one(vec4 v)
     float glm_vec4_dot(vec4 a, vec4 b)
     float glm_vec4_norm2(vec4 v)
     float glm_vec4_norm(vec4 v)

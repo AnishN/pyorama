@@ -2,6 +2,25 @@ from pyorama.libs.c cimport *
 from pyorama.math.common cimport *
 from pyorama.math.vec3 cimport *
 
+"""
+#cglm_box_h
+    void glm_aabb_transform(vec3 box[2], mat4 m, vec3 dest[2])
+    void glm_aabb_merge(vec3 box1[2], vec3 box2[2], vec3 dest[2])
+    void glm_aabb_crop(vec3 box[2], vec3 cropBox[2], vec3 dest[2])
+    void glm_aabb_crop_until(vec3 box[2], vec3 cropBox[2], vec3 clampBox[2], vec3 dest[2])
+    bint glm_aabb_frustum(vec3 box[2], vec4 planes[6])
+    void glm_aabb_invalidate(vec3 box[2])
+    bint glm_aabb_isvalid(vec3 box[2])
+    float glm_aabb_size(vec3 box[2])
+    float glm_aabb_radius(vec3 box[2])
+    void glm_aabb_center(vec3 box[2], vec3 dest)
+    bint glm_aabb_aabb(vec3 box[2], vec3 other[2])
+    bint glm_aabb_sphere(vec3 box[2], vec4 s)
+    bint glm_aabb_point(vec3 box[2], vec3 point)
+    bint glm_aabb_contains(vec3 box[2], vec3 other[2])
+"""
+
+"""
 cdef class Box3:
     cdef:
         Box3C *data
@@ -67,3 +86,4 @@ cdef class Box3:
     cdef void c_union(Box3C *out, Box3C *a, Box3C *b) nogil
     @staticmethod
     cdef float c_volume(Box3C *a) nogil
+"""

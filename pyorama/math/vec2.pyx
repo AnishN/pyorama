@@ -1,336 +1,188 @@
 cdef class Vec2:
-    
-    def __init__(self, float x=0.0, float y=0.0):#NOT __cinit__ so that __new__ does not call this!
-        if self.data == NULL:
-            self.data = <Vec2C *>calloc(1, sizeof(Vec2C))
-            if self.data == NULL:
-                raise MemoryError("Vec2: failed to allocate data")
-            self.is_owner = True
-        Vec2.c_set_data(self.data, x, y)
-    
-    def __dealloc__(self):
-        if self.is_owner:
-            free(self.data)
-            self.data = NULL
-            self.is_owner = False
-    
+
     @staticmethod
-    cdef Vec2 c_from_ptr(Vec2C *a):
+    cdef Vec2 c_from_data(vec2 v):
         cdef Vec2 out = Vec2.__new__(Vec2)
-        out.data = a
-        out.is_owner = False
-        return out
-
-    cdef void c_set_ptr(self, Vec2C *a) nogil:
-        if self.is_owner:
-            free(self.data)
-            self.data = NULL
-            self.is_owner = False
-        self.data = a
-
-    property data:
-        def __get__(self): return self.data[0]
-
-    def __getbuffer__(self, Py_buffer *buffer, int flags):
-        buffer.buf = self.data
-        buffer.len = 2
-        buffer.readonly = 0
-        buffer.format = "f"
-        buffer.ndim = 1
-        buffer.shape = <Py_ssize_t *>buffer.len
-        buffer.strides = NULL
-        buffer.suboffsets = NULL
-        buffer.itemsize = sizeof(float)
-        buffer.internal = NULL
-
-    def __releasebuffer__(self, Py_buffer *buffer):
-        pass
-    
-    property x:
-        def __get__(self): return self.data.x
-        def __set__(self, float new_x): self.data.x = new_x
-    
-    property y:
-        def __get__(self): return self.data.y
-        def __set__(self, float new_y): self.data.y = new_y
-    
-    @staticmethod
-    def add(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_add(out.data, a.data, b.data)
-
-    @staticmethod
-    def ceil(Vec2 out, Vec2 a):
-        Vec2.c_ceil(out.data, a.data)
-
-    @staticmethod
-    def copy(Vec2 out, Vec2 a):
-        Vec2.c_copy(out.data, a.data)
-
-    @staticmethod
-    def cross(Vec3 out, Vec2 a, Vec2 b):
-        Vec2.c_cross(out.data, a.data, b.data)
-
-    @staticmethod
-    def dist(Vec2 a, Vec2 b):
-        return Vec2.c_dist(a.data, b.data)
-
-    @staticmethod
-    def div(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_div(out.data, a.data, b.data)
-
-    @staticmethod
-    def dot(Vec2 a, Vec2 b):
-        return Vec2.c_dot(a.data, b.data)
-
-    @staticmethod
-    def equals(Vec2 a, Vec2 b):
-        return Vec2.c_equals(a.data, b.data)
-
-    @staticmethod
-    def floor(Vec2 out, Vec2 a):
-        Vec2.c_floor(out.data, a.data)
-
-    @staticmethod
-    def inv(Vec2 out, Vec2 a):
-        Vec2.c_inv(out.data, a.data)
-
-    @staticmethod
-    def length(Vec2 a):
-        Vec2.c_length(a.data)
-
-    @staticmethod
-    def lerp(Vec2 out, Vec2 a, Vec2 b, float t):
-        Vec2.c_lerp(out.data, a.data, b.data, t)
-
-    @staticmethod
-    def max_comps(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_max_comps(out.data, a.data, b.data)
-
-    @staticmethod
-    def min_comps(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_min_comps(out.data, a.data, b.data)
-
-    @staticmethod
-    def mul(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_mul(out.data, a.data, b.data)
-
-    @staticmethod
-    def nearly_equals(Vec2 a, Vec2 b, float epsilon=0.000001):
-        return Vec2.c_nearly_equals(a.data, b.data, epsilon)
-
-    @staticmethod
-    def negate(Vec2 out, Vec2 a):
-        Vec2.c_negate(out.data, a.data)
-
-    @staticmethod
-    def norm(Vec2 out, Vec2 a):
-        Vec2.c_norm(out.data, a.data)
-
-    @staticmethod
-    def random(Vec2 out):
-        Vec2.c_random(out.data)
-
-    @staticmethod
-    def rotate(Vec2 out, Vec2 a, Vec2 b, float radians):
-        Vec2.c_rotate(out.data, a.data, b.data, radians)
-
-    @staticmethod
-    def round(Vec2 out, Vec2 a):
-        Vec2.c_round(out.data, a.data)
-
-    @staticmethod
-    def scale_add(Vec2 out, Vec2 a, float scale=1.0, float add=0.0):
-        Vec2.c_scale_add(out.data, a.data, scale, add)
-
-    @staticmethod
-    def set_data(Vec2 out, float x=0.0, float y=0.0):
-        Vec2.c_set_data(out.data, x, y)
-
-    @staticmethod
-    def sqr_dist(Vec2 a, Vec2 b):
-        return Vec2.c_sqr_dist(a.data, b.data)
-
-    @staticmethod
-    def sqr_length(Vec2 a):
-        return Vec2.c_sqr_length(a.data)
-
-    @staticmethod
-    def sub(Vec2 out, Vec2 a, Vec2 b):
-        Vec2.c_sub(out.data, a.data, b.data)
-
-    @staticmethod
-    def transform_mat2(Vec2 out, Vec2 a, Mat2 m):
-        Vec2.c_transform_mat2(out.data, a.data, m.data)
-
-    @staticmethod
-    def transform_mat3(Vec2 out, Vec2 a, Mat3 m):
-        Vec2.c_transform_mat3(out.data, a.data, m.data)
-
-    @staticmethod
-    def transform_mat4(Vec2 out, Vec2 a, Mat4 m):
-        Vec2.c_transform_mat4(out.data, a.data, m.data)
-
-    @staticmethod
-    cdef void c_add(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = a.x + b.x
-        out.y = a.y + b.y
-
-    @staticmethod
-    cdef void c_ceil(Vec2C *out, Vec2C *a) nogil:
-        out.x = c_math.ceil(a.x)
-        out.y = c_math.ceil(a.y)
-
-    @staticmethod
-    cdef void c_copy(Vec2C *out, Vec2C *a) nogil:
-        out.x = a.x
-        out.y = a.y
-
-    @staticmethod
-    cdef void c_cross(Vec3C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = 0
-        out.y = 0
-        out.z = a.x * b.y - a.y * b.x
-
-    @staticmethod
-    cdef float c_dist(Vec2C *a, Vec2C *b) nogil:
-        cdef float out = c_math.sqrt(Vec2.c_sqr_dist(a, b))
+        out.data = v
         return out
 
     @staticmethod
-    cdef void c_div(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = a.x / b.x
-        out.y = a.y / b.y
+    cdef void c_set(vec2 v, float x, float y) nogil:
+        v[0] = x
+        v[1] = y
 
     @staticmethod
-    cdef float c_dot(Vec2C *a, Vec2C *b) nogil:
-        cdef float out = 0.0
-        out += a.x * b.x
-        out += a.y * b.y
-        return out
+    cdef void c_copy(vec2 out, vec2 v) nogil:
+        glm_vec2_copy(v, out)
 
     @staticmethod
-    cdef bint c_equals(Vec2C *a, Vec2C *b) nogil:
-        if (
-            (a.x != b.x) or 
-            (a.y != b.y)
-        ): 
-            return False
-        return True
+    cdef void c_zero(vec2 out) nogil:
+        glm_vec2_zero(out)
 
     @staticmethod
-    cdef void c_floor(Vec2C *out, Vec2C *a) nogil:
-        out.x = c_math.floor(a.x)
-        out.y = c_math.floor(a.y)
+    cdef void c_one(vec2 out) nogil:
+        glm_vec2_one(out)
 
     @staticmethod
-    cdef void c_inv(Vec2C *out, Vec2C *a) nogil:
-        out.x = 1.0 / a.x
-        out.y = 1.0 / a.y
+    cdef float c_dot(vec2 a, vec2 b) nogil:
+        return glm_vec2_dot(a, b)
 
     @staticmethod
-    cdef float c_length(Vec2C *a) nogil:
-        cdef float out = c_math.sqrt(Vec2.c_sqr_length(a))
-        return out
+    cdef float c_cross(vec2 a, vec2 b) nogil:
+        return glm_vec2_cross(a, b)
 
     @staticmethod
-    cdef void c_lerp(Vec2C *out, Vec2C *a, Vec2C *b, float t) nogil:
-        out.x = a.x + t * (b.x - a.x)
-        out.y = a.y + t * (b.y - a.y)
+    cdef float c_sqr_mag(vec2 v) nogil:
+        return glm_vec2_norm2(v)
 
     @staticmethod
-    cdef void c_max_comps(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = max(a.x, b.x)
-        out.y = max(a.y, b.y)
+    cdef float c_mag(vec2 v) nogil:
+        return glm_vec2_norm(v)
 
     @staticmethod
-    cdef void c_min_comps(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = min(a.x, b.x)
-        out.y = min(a.y, b.y)
+    cdef void c_add(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_add(a, b, out)
 
     @staticmethod
-    cdef void c_mul(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = a.x * b.x
-        out.y = a.y * b.y
+    cdef void c_add_scalar(vec2 out, vec2 v, float scalar) nogil:
+        glm_vec2_adds(v, scalar, out)
 
     @staticmethod
-    cdef bint c_nearly_equals(Vec2C *a, Vec2C *b, float epsilon=0.000001) nogil:
-        if (
-            c_math.fabs(a.x - b.x) > epsilon * max(1.0, c_math.fabs(a.x), c_math.fabs(b.x)) or
-            c_math.fabs(a.y - b.y) > epsilon * max(1.0, c_math.fabs(a.y), c_math.fabs(b.y))
-        ): 
-            return False
-        return True
+    cdef void c_sub(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_sub(a, b, out)
 
     @staticmethod
-    cdef void c_negate(Vec2C *out, Vec2C *a) nogil:
-        out.x = -a.x
-        out.y = -a.y
+    cdef void c_sub_scalar(vec2 out, vec2 v, float scalar) nogil:
+        glm_vec2_subs(v, scalar, out)
 
     @staticmethod
-    cdef void c_norm(Vec2C *out, Vec2C *a) nogil:
-        cdef float mag = Vec2.c_length(a)
-        Vec2.c_scale_add(out, a, scale=1.0/mag)
+    cdef void c_mul(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_mul(a, b, out)
 
     @staticmethod
-    cdef void c_random(Vec2C *out) nogil:
-        out.x = rand() / <float>RAND_MAX
-        out.y = rand() / <float>RAND_MAX
+    cdef void c_mul_scalar(vec2 out, vec2 v, float scalar) nogil:
+        glm_vec2_scale(v, scalar, out)
 
     @staticmethod
-    cdef void c_rotate(Vec2C *out, Vec2C *a, Vec2C *b, float radians) nogil:
-        cdef:
-            float dx = a.x - b.x
-            float dy = a.y - b.y
-            float s = c_math.sin(radians)
-            float c = c_math.cos(radians)
-        out.x = (dx * c) - (dy * s) + b.x
-        out.y = (dx * s) + (dy * c) + b.y
+    cdef void c_mul_unit_scalar(vec2 out, vec2 v, float scalar) nogil:
+        glm_vec2_scale_as(v, scalar, out)
 
     @staticmethod
-    cdef void c_round(Vec2C *out, Vec2C *a) nogil:
-        out.x = c_math.round(a.x)
-        out.y = c_math.round(a.y)
+    cdef void c_div(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_div(a, b, out)
 
     @staticmethod
-    cdef void c_scale_add(Vec2C *out, Vec2C *a, float scale=1.0, float add=0.0) nogil:
-        out.x = scale * a.x + add
-        out.y = scale * a.y + add
+    cdef void c_div_scalar(vec2 out, vec2 v, float scalar) nogil:
+        glm_vec2_divs(v, scalar, out)
 
     @staticmethod
-    cdef void c_set_data(Vec2C *out, float x=0.0, float y=0.0) nogil:
-        out.x = x
-        out.y = y
+    cdef void c_sum_add(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_addadd(a, b, out)
 
     @staticmethod
-    cdef float c_sqr_dist(Vec2C *a, Vec2C *b) nogil:
-        cdef float out = 0.0
-        out += (b.x - a.x) * (b.x - a.x)
-        out += (b.y - a.y) * (b.y - a.y)
-        return out
+    cdef void c_sum_sub(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_subadd(a, b, out)
 
     @staticmethod
-    cdef float c_sqr_length(Vec2C *a) nogil:
-        cdef float out = 0.0
-        out += a.x * a.x
-        out += a.y * a.y
-        return out
+    cdef void c_sum_mul(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_muladd(a, b, out)
 
     @staticmethod
-    cdef void c_sub(Vec2C *out, Vec2C *a, Vec2C *b) nogil:
-        out.x = a.x - b.x
-        out.y = a.y - b.y
+    cdef void c_sum_mul_scalar(vec2 out, vec2 v, float scalar) nogil:
+        glm_vec2_muladds(v, scalar, out)
 
     @staticmethod
-    cdef void c_transform_mat2(Vec2C *out, Vec2C *a, Mat2C *m) nogil:
-        out.x = m.m00 * a.x + m.m10 * a.y
-        out.y = m.m01 * a.x + m.m11 * a.y
+    cdef void c_max_add(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_maxadd(a, b, out)
 
     @staticmethod
-    cdef void c_transform_mat3(Vec2C *out, Vec2C *a, Mat3C *m) nogil:
-        out.x = m.m00 * a.x + m.m10 * a.y + m.m20
-        out.y = m.m01 * a.x + m.m11 * a.y + m.m21
+    cdef void c_min_add(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_minadd(a, b, out)
 
     @staticmethod
-    cdef void c_transform_mat4(Vec2C *out, Vec2C *a, Mat4C *m) nogil:
-        out.x = m.m00 * a.x + m.m10 * a.y + m.m20
-        out.y = m.m01 * a.x + m.m11 * a.y + m.m21
+    cdef void c_negate_to(vec2 out, vec2 v) nogil:
+        glm_vec2_negate_to(v, out)
+
+    @staticmethod
+    cdef void c_negate(vec2 out) nogil:
+        glm_vec2_negate(out)
+
+    @staticmethod
+    cdef void c_normalize(vec2 out) nogil:
+        glm_vec2_normalize(out)
+
+    @staticmethod
+    cdef void c_normalize_to(vec2 out, vec2 v) nogil:
+        glm_vec2_normalize_to(v, out)
+
+    @staticmethod
+    cdef void c_rotate(vec2 out, vec2 v, float angle) nogil:
+        glm_vec2_rotate(v, angle, out)
+
+    @staticmethod
+    cdef float c_sqr_dist(vec2 a, vec2 b) nogil:
+        return glm_vec2_distance2(a, b)
+
+    @staticmethod
+    cdef float c_dist(vec2 a, vec2 b) nogil:
+        return glm_vec2_distance(a, b)
+
+    @staticmethod
+    cdef void c_max_comps(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_maxv(a, b, out)
+
+    @staticmethod
+    cdef void c_min_comps(vec2 out, vec2 a, vec2 b) nogil:
+        glm_vec2_minv(a, b, out)
+
+    @staticmethod
+    cdef void c_clamp(vec2 out, float min_, float max_) nogil:
+        glm_vec2_clamp(out, min_, max_)
+
+    @staticmethod
+    cdef void c_lerp(vec2 out, vec2 a, vec2 b, float t) nogil:
+        glm_vec2_lerp(a, b, t, out)
+
+    @staticmethod
+    cdef void c_fill(vec2 out, float value) nogil:
+        glm_vec2_fill(out, value)
+
+    @staticmethod
+    cdef bint c_equal_value(vec2 v, float value) nogil:
+        return glm_vec2_eq(v, value)
+
+    @staticmethod
+    cdef bint c_nearly_equal_value(vec2 v, float value) nogil:
+        return glm_vec2_eq_eps(v, value)
+
+    @staticmethod
+    cdef bint c_equal_comps(vec2 v) nogil:
+        return glm_vec2_eq_all(v)
+
+    @staticmethod
+    cdef bint c_equal(vec2 a, vec2 b) nogil:
+        return glm_vec2_eqv(a, b)
+
+    @staticmethod
+    cdef bint c_nearly_equal(vec2 a, vec2 b) nogil:
+        return glm_vec2_eqv_eps(a, b)
+
+    @staticmethod
+    cdef float c_max_comp(vec2 v) nogil:
+        return glm_vec2_max(v)
+
+    @staticmethod
+    cdef float c_min_comp(vec2 v) nogil:
+        return glm_vec2_min(v)
+
+    @staticmethod
+    cdef void c_sign(vec2 out, vec2 v) nogil:
+        glm_vec2_sign(v, out)
+
+    @staticmethod
+    cdef void c_sqrt(vec2 out, vec2 v) nogil:
+        glm_vec2_sqrt(v, out)
+
+    @staticmethod
+    cdef void c_transform_mat2(vec2 out, mat2 m, vec2 v) nogil:
+        glm_mat2_mulv(m, v, out)

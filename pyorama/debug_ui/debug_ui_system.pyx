@@ -1,3 +1,4 @@
+"""
 cdef class DebugUISystem:
 
     def __cinit__(self, str name):
@@ -24,7 +25,6 @@ cdef class DebugUISystem:
             Buffer v_data_buf, i_data_buf
             Handle v_layout
 
-        """
         self.window = window_create(width, height, b"GUI window")
         self.frame_buffer = frame_buffer_create_from_window(self.window)
         self.view = view_create()
@@ -80,11 +80,8 @@ cdef class DebugUISystem:
         self.font_texture = texture_create_2d_from_image(self.font_image)
         self.font_sampler = uniform_create(b"s_tex", UNIFORM_TYPE_SAMPLER)
         image_write_to_file(self.font_image, b"test.png", IMAGE_FILE_TYPE_PNG)
-        """
-    
+
     def quit(self):
-        pass
-        """
         program_delete(self.program)
         shader_delete(self.fragment_shader)
         shader_delete(self.vertex_shader)
@@ -92,11 +89,8 @@ cdef class DebugUISystem:
         ImFontAtlas_destroy(self.font_atlas)
         ImFontConfig_destroy(self.font_config)
         igDestroyContext(self.context)
-        """
 
     def update(self):
-        pass
-        """
         cdef:
             size_t i, j
             ImDrawData *draw_data
@@ -192,4 +186,4 @@ cdef class DebugUISystem:
             index_buffer_delete(ibo)
         self.vertex_buffer_data.free()
         self.index_buffer_data.free()
-    """
+"""

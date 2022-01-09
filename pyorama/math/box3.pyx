@@ -1,3 +1,4 @@
+"""
 from pyorama.libs.c cimport *
 from pyorama.math.common cimport *
 from pyorama.math.vec3 cimport *
@@ -308,3 +309,4 @@ cdef class Box3:
     @staticmethod
     cdef float c_volume(Box3C *a) nogil:
         return (a.max.x - a.min.x) * (a.max.y - a.min.y) * (a.max.z - a.min.z)
+"""

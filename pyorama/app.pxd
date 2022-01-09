@@ -16,7 +16,7 @@ cdef:
     public UserSystem audio
     public EventSystem event
     public UserSystem physics
-    public DebugUISystem debug_ui
+    #public DebugUISystem debug_ui
     public AssetSystem asset
 
 cdef:

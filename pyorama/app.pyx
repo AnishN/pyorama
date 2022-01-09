@@ -5,7 +5,7 @@ graphics = GraphicsSystem("graphics")
 audio = UserSystem("audio")
 event = EventSystem("event")
 physics = UserSystem("physics")
-debug_ui = DebugUISystem("debug_ui")
+#debug_ui = DebugUISystem("debug_ui")
 asset = AssetSystem("asset")
 
 def init(dict config=None):
@@ -40,12 +40,12 @@ def init(dict config=None):
     audio.init(config.get("audio", None))
     event.init(config.get("event", None))
     physics.init(config.get("physics", None))
-    debug_ui.init(config.get("debug_ui", None))
+    #debug_ui.init(config.get("debug_ui", None))
     asset.init(config.get("asset", None))
 
 def quit():
     asset.quit()
-    debug_ui.quit()
+    #debug_ui.quit()
     physics.quit()
     event.quit()
     audio.quit()
@@ -108,7 +108,7 @@ def step():
     event.update(curr_time)
     #physics.update(1.0 / target_fps)
     asset.update()
-    debug_ui.update()
+    #debug_ui.update()
     graphics.update()
     frame_times[frame_index] = frame_time
     frame_count += 1

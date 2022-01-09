@@ -1,77 +1,57 @@
+"""
+#cglm_affine3d_h
+    void glm_translate3d(mat3 m, vec3 v)
+    void glm_translate3d_to(mat3 m, vec3 v, mat3 dest)
+    void glm_translate3d_x(mat3 m, float x)
+    void glm_translate3d_y(mat3 m, float y)
+    void glm_translate3d_make(mat3 m, vec3 v)
+    void glm_scale3d_to(mat3 m, vec3 v, mat3 dest)
+    void glm_scale3d_make(mat3 m, vec3 v)
+    void glm_scale3d(mat3 m, vec3 v)
+    void glm_scale3d_uni(mat3 m, float s)
+    void glm_rotate3d_make(mat3 m, float angle)
+    void glm_rotate3d(mat3 m, float angle)
+    void glm_rotate3d_to(mat3 m, float angle, mat3 dest)
+
+@staticmethod
+void glm_quat_mat3(versor q, mat3 dest)
+
+@staticmethod
+void glm_quat_mat3t(versor q, mat3 dest)
+"""
+
 from pyorama.libs.c cimport *
-from pyorama.math.common cimport *
-from pyorama.math.mat4 cimport *
-from pyorama.math.quat cimport *
-from pyorama.math.vec2 cimport *
+from pyorama.libs.cglm cimport *
 
 cdef class Mat3:
     cdef:
-        Mat3C *data
-        readonly bint is_owner
-    
-    @staticmethod
-    cdef Mat3 c_from_ptr(Mat3C *a)
-    cdef void c_set_ptr(self, Mat3C *a) nogil
+        float[3][3] data
 
     @staticmethod
-    cdef void c_add(Mat3C *out, Mat3C *a, Mat3C *b) nogil
+    cdef Mat3 c_from_data(mat3 m)
     @staticmethod
-    cdef void c_copy(Mat3C *out, Mat3C *a) nogil
+    cdef void c_copy(mat3 out, mat3 m) nogil
     @staticmethod
-    cdef float c_det(Mat3C *a) nogil
+    cdef void c_identity(mat3 out) nogil
     @staticmethod
-    cdef void c_div(Mat3C *out, Mat3C *a, Mat3C *b) nogil
+    cdef void c_zero(mat3 out) nogil
     @staticmethod
-    cdef void c_dot(Mat3C *out, Mat3C *a, Mat3C *b) nogil
+    cdef void c_mul(mat3 out, mat3 a, mat3 b) nogil
     @staticmethod
-    cdef bint c_equals(Mat3C *a, Mat3C *b) nogil
+    cdef void c_transpose_to(mat3 out, mat3 m) nogil
     @staticmethod
-    cdef void c_from_mat4(Mat3C *out, Mat4C *a) nogil
+    cdef void c_transpose(mat3 out) nogil
     @staticmethod
-    cdef void c_from_quat(Mat3C *out, QuatC *a) nogil
+    cdef float c_trace(mat3 m) nogil
     @staticmethod
-    cdef void c_from_rotation(Mat3C *out, float radians) nogil
+    cdef void c_scale(mat3 out, float scale) nogil
     @staticmethod
-    cdef void c_from_scaling(Mat3C *out, Vec2C *scale) nogil
+    cdef float c_det(mat3 m) nogil
     @staticmethod
-    cdef void c_from_skewing(Mat3C *out, Vec2C *factor) nogil
+    cdef void c_inv(mat3 out, mat3 m) nogil
     @staticmethod
-    cdef void c_from_skewing_x(Mat3C *out, float radians) nogil
+    cdef void c_swap_col(mat3 m, size_t col_1, size_t col_2) nogil
     @staticmethod
-    cdef void c_from_skewing_y(Mat3C *out, float radians) nogil
+    cdef void c_swap_row(mat3 m, size_t row_1, size_t row_2) nogil
     @staticmethod
-    cdef void c_from_translation(Mat3C *out, Vec2C *shift) nogil
-    @staticmethod
-    cdef void c_identity(Mat3C *out) nogil
-    @staticmethod
-    cdef void c_inv(Mat3C *out, Mat3C *a) nogil
-    @staticmethod
-    cdef void c_mul(Mat3C *out, Mat3C *a, Mat3C *b) nogil
-    @staticmethod
-    cdef bint c_nearly_equals(Mat3C *a, Mat3C *b, float epsilon=*) nogil
-    @staticmethod
-    cdef void c_normal_from_mat4(Mat3C *out, Mat4C *a) nogil
-    @staticmethod
-    cdef void c_random(Mat3C *out) nogil
-    @staticmethod
-    cdef void c_rotate(Mat3C *out, Mat3C *a, float radians) nogil
-    @staticmethod
-    cdef void c_scale(Mat3C *out, Mat3C *a, Vec2C *factor) nogil
-    @staticmethod
-    cdef void c_scale_add(Mat3C *out, Mat3C *a, float scale=*, float add=*) nogil
-    @staticmethod
-    cdef void c_set_data(Mat3C *out, float m00=*, float m01=*, float m02=*,
-            float m10=*, float m11=*, float m12=*,
-            float m20=*, float m21=*, float m22=*) nogil
-    @staticmethod
-    cdef void c_skew(Mat3C *out, Mat3C *a, Vec2C *factor) nogil
-    @staticmethod
-    cdef void c_skew_x(Mat3C *out, Mat3C *a, float radians) nogil
-    @staticmethod
-    cdef void c_skew_y(Mat3C *out, Mat3C *a, float radians) nogil
-    @staticmethod
-    cdef void c_sub(Mat3C *out, Mat3C *a, Mat3C *b) nogil
-    @staticmethod
-    cdef void c_transpose(Mat3C *out, Mat3C *a) nogil
-    @staticmethod
-    cdef void c_translate(Mat3C *out, Mat3C *a, Vec2C *shift) nogil
+    cdef float c_row_mat_col(vec3 r, mat3 m, vec3 c) nogil

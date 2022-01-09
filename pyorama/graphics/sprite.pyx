@@ -33,7 +33,7 @@ cdef class Sprite(HandleObject):
             for i in range(4):
                 sprite_ptr.texcoords[i] = (<Vec2C *>texcoords[i].data)[0]
             sprite_ptr.texcoords = texcoords
-        sprite_ptr.tint = tint.data[0]
+        #sprite_ptr.tint = tint.data[0]
         sprite_ptr.alpha = alpha
 
     cpdef void delete(self) except *:
