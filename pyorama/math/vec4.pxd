@@ -1,97 +1,98 @@
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
+from pyorama.math.common cimport *
 
 cdef class Vec4:
     cdef:
-        float[3] data
+        Vec4C data
 
     @staticmethod
-    cdef Vec4 c_from_data(vec4 v)
+    cdef Vec4 c_from_data(Vec4C v)
     @staticmethod
-    cdef void c_set(vec4 v, float x, float y, float z, float w) nogil
+    cdef void c_set(Vec4C v, float x, float y, float z, float w) nogil
     @staticmethod
-    cdef void c_copy(vec4 out, vec4 v) nogil
+    cdef void c_copy(Vec4C out, Vec4C v) nogil
     @staticmethod
-    cdef void c_zero(vec4 out) nogil
+    cdef void c_zero(Vec4C out) nogil
     @staticmethod
-    cdef void c_one(vec4 out) nogil
+    cdef void c_one(Vec4C out) nogil
     @staticmethod
-    cdef float c_dot(vec4 a, vec4 b) nogil
+    cdef float c_dot(Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef float c_sqr_mag(vec4 v) nogil
+    cdef float c_sqr_mag(Vec4C v) nogil
     @staticmethod
-    cdef float c_mag(vec4 v) nogil
+    cdef float c_mag(Vec4C v) nogil
     @staticmethod
-    cdef void c_add(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_add(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_add_scalar(vec4 out, vec4 v, float scalar) nogil
+    cdef void c_add_scalar(Vec4C out, Vec4C v, float scalar) nogil
     @staticmethod
-    cdef void c_sub(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_sub(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_sub_scalar(vec4 out, vec4 v, float scalar) nogil
+    cdef void c_sub_scalar(Vec4C out, Vec4C v, float scalar) nogil
     @staticmethod
-    cdef void c_mul(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_mul(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_mul_scalar(vec4 out, vec4 v, float scalar) nogil
+    cdef void c_mul_scalar(Vec4C out, Vec4C v, float scalar) nogil
     @staticmethod
-    cdef void c_mul_unit_scalar(vec4 out, vec4 v, float scalar) nogil
+    cdef void c_mul_unit_scalar(Vec4C out, Vec4C v, float scalar) nogil
     @staticmethod
-    cdef void c_div(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_div(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_div_scalar(vec4 out, vec4 v, float scalar) nogil
+    cdef void c_div_scalar(Vec4C out, Vec4C v, float scalar) nogil
     @staticmethod
-    cdef void c_sum_add(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_sum_add(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_sum_sub(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_sum_sub(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_sum_mul(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_sum_mul(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_sum_mul_scalar(vec4 out, vec4 v, float scalar) nogil
+    cdef void c_sum_mul_scalar(Vec4C out, Vec4C v, float scalar) nogil
     @staticmethod
-    cdef void c_max_add(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_max_add(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_min_add(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_min_add(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_negate(vec4 out) nogil
+    cdef void c_negate(Vec4C out) nogil
     @staticmethod
-    cdef void c_inv(vec4 out) nogil
+    cdef void c_inv(Vec4C out) nogil
     @staticmethod
-    cdef void c_inv_to(vec4 out, vec4 v) nogil
+    cdef void c_inv_to(Vec4C out, Vec4C v) nogil
     @staticmethod
-    cdef void c_normalize(vec4 out) nogil
+    cdef void c_normalize(Vec4C out) nogil
     @staticmethod
-    cdef void c_normalize_to(vec4 out, vec4 v) nogil
+    cdef void c_normalize_to(Vec4C out, Vec4C v) nogil
     @staticmethod
-    cdef float c_sqr_dist(vec4 a, vec4 b) nogil
+    cdef float c_sqr_dist(Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef float c_dist(vec4 a, vec4 b) nogil
+    cdef float c_dist(Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_max_comps(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_max_comps(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_min_comps(vec4 out, vec4 a, vec4 b) nogil
+    cdef void c_min_comps(Vec4C out, Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef void c_clamp(vec4 out, float min_, float max_) nogil
+    cdef void c_clamp(Vec4C out, float min_, float max_) nogil
     @staticmethod
-    cdef void c_lerp(vec4 out, vec4 a, vec4 b, float t) nogil
+    cdef void c_lerp(Vec4C out, Vec4C a, Vec4C b, float t) nogil
     @staticmethod
-    cdef void c_fill(vec4 out, float value) nogil
+    cdef void c_fill(Vec4C out, float value) nogil
     @staticmethod
-    cdef bint c_equal_value(vec4 v, float value) nogil
+    cdef bint c_equal_value(Vec4C v, float value) nogil
     @staticmethod
-    cdef bint c_nearly_equal_value(vec4 v, float value) nogil
+    cdef bint c_nearly_equal_value(Vec4C v, float value) nogil
     @staticmethod
-    cdef bint c_equal_comps(vec4 v) nogil
+    cdef bint c_equal_comps(Vec4C v) nogil
     @staticmethod
-    cdef bint c_equal(vec4 a, vec4 b) nogil
+    cdef bint c_equal(Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef bint c_nearly_equal(vec4 a, vec4 b) nogil
+    cdef bint c_nearly_equal(Vec4C a, Vec4C b) nogil
     @staticmethod
-    cdef float c_max_comp(vec4 v) nogil
+    cdef float c_max_comp(Vec4C v) nogil
     @staticmethod
-    cdef float c_min_comp(vec4 v) nogil
+    cdef float c_min_comp(Vec4C v) nogil
     @staticmethod
-    cdef void c_sign(vec4 out, vec4 v) nogil
+    cdef void c_sign(Vec4C out, Vec4C v) nogil
     @staticmethod
-    cdef void c_sqrt(vec4 out, vec4 v) nogil
+    cdef void c_sqrt(Vec4C out, Vec4C v) nogil
     @staticmethod
-    cdef void c_transform_mat4(vec4 out, mat4 m, vec4 v) nogil
+    cdef void c_transform_mat4(Vec4C out, Mat4C m, Vec4C v) nogil

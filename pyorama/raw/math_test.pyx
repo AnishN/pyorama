@@ -19,9 +19,11 @@ cdef:
     float height = 600
     float near = 0
     float far = 1
-    mat2 m = [[1, 0], [0, 1]]
+    Mat2C m
     Mat2 a
     Mat2 b
+
+Mat2.c_identity(m)
 
 """
 glm_ortho(0, width, 0, height, near, far, proj)
@@ -38,8 +40,11 @@ print("rh_zo", proj)
 print(testing())
 """
 
+"""
 a = Mat2.c_from_data(m)
 b = Mat2()
 print(a.data, b.data)
-Mat2.copy(b, a)
+Mat2.c_copy(b.data, a.data)
+#Mat2.copy(b, a)
 print(a.data, b.data)
+"""

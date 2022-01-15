@@ -2,15 +2,14 @@ from pyorama.libs.c cimport *
 
 cdef extern from "cglm/cglm.h" nogil:
     #cglm_types_h
-    ctypedef float vec2[2]
-    ctypedef float vec3[3]
-    ctypedef int ivec3[3]
-    ctypedef float vec4[4]
+    ctypedef float[2] vec2
+    ctypedef float[3] vec3
+    ctypedef int[3] ivec3
+    ctypedef float[4] vec4
     ctypedef vec4 versor
-    ctypedef versor quat#this is NOT in cglm, but a custom addition. versor = unit quat by the way
-    ctypedef vec2 mat2[2]
-    ctypedef vec3 mat3[3]
-    ctypedef vec4 mat4[4]
+    ctypedef vec2[2] mat2
+    ctypedef vec3[3] mat3
+    ctypedef vec4[4] mat4
     double GLM_E
     double GLM_LOG2E
     double GLM_LOG10E
@@ -318,6 +317,13 @@ cdef extern from "cglm/cglm.h" nogil:
     void glm_unproject(vec3 pos, mat4 m, vec4 vp, vec3 dest)
     void glm_project(vec3 pos, mat4 m, vec4 vp, vec3 dest)
     void glm_pickmatrix(vec3 center, vec2 size, vec4 vp, mat4 dest)
+
+    void glm_project_no(vec3 pos, mat4 m, vec4 vp, vec3 dest)
+    void glm_project_zo(vec3 pos, mat4 m, vec4 vp, vec3 dest)
+    #void glm_unproject_no(vec3 pos, mat4 m, vec4 vp, vec3 dest)
+    #void glm_unproject_zo(vec3 pos, mat4 m, vec4 vp, vec3 dest)
+    void glm_unprojecti_no(vec3 pos, mat4 invMat, vec4 vp, vec3 dest)
+    void glm_unprojecti_zo(vec3 pos, mat4 invMat, vec4 vp, vec3 dest)
 
     #cglm_quat_h
     versor GLM_QUAT_IDENTITY_INIT
