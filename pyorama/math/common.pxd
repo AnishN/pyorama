@@ -29,6 +29,24 @@ cdef:
     double C_MATH_D_SQRT2
     double C_MATH_D_SQRT1_2
 
+cpdef enum FrustumCorner:
+    FRUSTUM_CORNER_LBN = GLM_LBN
+    FRUSTUM_CORNER_LTN = GLM_LTN
+    FRUSTUM_CORNER_RTN = GLM_RTN
+    FRUSTUM_CORNER_RBN = GLM_RBN
+    FRUSTUM_CORNER_LBF = GLM_LBF
+    FRUSTUM_CORNER_LTF = GLM_LTF
+    FRUSTUM_CORNER_RTF = GLM_RTF
+    FRUSTUM_CORNER_RBF = GLM_RBF
+
+cpdef enum FrustumPlane:
+    FRUSTUM_PLANE_LEFT = GLM_LEFT
+    FRUSTUM_PLANE_RIGHT = GLM_RIGHT
+    FRUSTUM_PLANE_BOTTOM = GLM_BOTTOM
+    FRUSTUM_PLANE_TOP = GLM_TOP
+    FRUSTUM_PLANE_NEAR = GLM_NEAR
+    FRUSTUM_PLANE_FAR = GLM_FAR
+
 ctypedef struct Vec2C:
     float x
     float y
@@ -66,9 +84,28 @@ ctypedef struct QuatC:
     float w
 
 ctypedef struct Box2C:
-    Vec2C min
-    Vec2C max
+    Vec2C min_
+    Vec2C max_
 
 ctypedef struct Box3C:
-    Vec3C min
-    Vec3C max
+    Vec3C min_
+    Vec3C max_
+
+ctypedef struct RayC:
+    Vec3C origin
+    Vec3C dir_
+
+ctypedef struct SphereC:
+    Vec3C center
+    float radius
+
+ctypedef struct PlaneC:
+    float a
+    float b
+    float c
+    float d
+
+ctypedef struct TriangleC:
+    Vec3C a
+    Vec3C b
+    Vec3C c

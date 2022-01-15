@@ -1,6 +1,7 @@
 from pyorama.libs.cglm cimport *
 from pyorama.app cimport *
 from pyorama.math.mat2 cimport *
+from pyorama.math.sphere cimport *
 
 print("math_test") 
 #print(GLM_BEZIER_MAT)
@@ -11,19 +12,31 @@ cdef int testing(int renderer_type=graphics.renderer_type) nogil:
     return renderer_type
 
 cdef:
-    vec3 eye = [0, 0, 1000]
-    vec3 at = GLM_VEC3_ZERO
-    vec3 up = [0, 1, 0]
+    Vec3C eye = [0, 0, 1000]
+    Vec3C at = [0, 0, 0]
+    Vec3C up = [0, 1, 0]
     mat4 proj
     float width = 800
     float height = 600
     float near = 0
     float far = 1
     Mat2C m
+    Mat2 m_obj
     Mat2 a
     Mat2 b
+    SphereC s = [[1, 2, 3], 10]
+    float r
 
-Mat2.c_identity(m)
+Mat2.c_identity(&m)
+m_obj = Mat2.c_from_data(&m)
+print(m)
+print(m_obj.data)
+
+r = Sphere.c_get_radius(&s)
+print(s)
+print(r)
+print("eye", Sphere.c_intersects_point(&s, &eye))
+print("up", Sphere.c_intersects_point(&s, &up))
 
 """
 glm_ortho(0, width, 0, height, near, far, proj)
