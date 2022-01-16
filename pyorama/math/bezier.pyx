@@ -1,13 +1,25 @@
 cdef class Bezier:
 
     @staticmethod
-    cdef float bezier(float s, float p_0, float c_0, float c_1, float p_1) nogil:
-        return glm_bezier(s, p_0, c_0, c_1, p_1)
+    cdef float c_bezier(float s, float p0, float c0, float c1, float p1) nogil:
+        return glm_bezier(s, p0, c0, c1, p1)
 
     @staticmethod
-    cdef float hermite(float s, float p_0, float t_0, float t_1, float p_1) nogil:
-        return glm_hermite(s, p_0, t_0, t_1, p_1)
+    def bezier(float s, float p0, float c0, float c1, float p1):
+        return Bezier.c_bezier(s, p0, c0, c1, p1)
 
     @staticmethod
-    cdef float decasteljau(float prm, float p_0, float c_0, float c_1, float p_1) nogil:
-        return glm_decasteljau(prm, p_0, c_0, c_1, p_1)
+    cdef float c_decasteljau(float prm, float p0, float c0, float c1, float p1) nogil:
+        return glm_decasteljau(prm, p0, c0, c1, p1)
+
+    @staticmethod
+    def decasteljau(float prm, float p0, float c0, float c1, float p1):
+        return Bezier.c_decasteljau(prm, p0, c0, c1, p1)
+    
+    @staticmethod
+    cdef float c_hermite(float s, float p0, float t0, float t1, float p1) nogil:
+        return glm_hermite(s, p0, t0, t1, p1)
+
+    @staticmethod
+    def hermite(float s, float p0, float t0, float t1, float p1):
+        return Bezier.c_hermite(s, p0, t0, t1, p1)

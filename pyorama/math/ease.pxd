@@ -60,8 +60,8 @@ cdef class Ease:
     @staticmethod
     cdef float c_elast_in_out(float t) nogil
     @staticmethod
-    cdef float c_bounce_out(float t) nogil
-    @staticmethod
     cdef float c_bounce_in(float t) nogil
+    @staticmethod
+    cdef float c_bounce_out(float t) nogil
     @staticmethod
     cdef float c_bounce_in_out(float t) nogil
