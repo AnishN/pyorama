@@ -9,6 +9,18 @@ cdef class Mat2:
         return out
     
     @staticmethod
+    def set_data(Mat2 out, list data):
+        cdef:
+            size_t n = 2
+            size_t i, j, k
+            mat2 d = <mat2>&out.data
+        
+        for i in range(n):
+            for j in range(n):
+                k = n * i + j
+                d[i][j] = <float>data[k]
+
+    @staticmethod
     cdef void c_copy(Mat2C *out, Mat2C *m) nogil:
         glm_mat2_copy(<mat2>m, <mat2>out)
     

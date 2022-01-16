@@ -10,6 +10,18 @@ cdef class Mat4:
         return out
     
     @staticmethod
+    def set_data(Mat4 out, list data):
+        cdef:
+            size_t n = 4
+            size_t i, j, k
+            mat4 d = <mat4>&out.data
+        
+        for i in range(n):
+            for j in range(n):
+                k = n * i + j
+                d[i][j] = <float>data[k]
+
+    @staticmethod
     cdef void c_copy(Mat4C *out, Mat4C *m) nogil:
         glm_mat4_copy(<mat4>m, <mat4>out)
     

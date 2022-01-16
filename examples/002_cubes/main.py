@@ -14,12 +14,11 @@ def on_enter_frame_event(event, *args, **kwargs):
     global counter
 
     Vec3.set_data(eye, math.sin(float(counter) / 100) * 8, 2, math.cos(float(counter) / 100) * 8)
-    Mat4.look_at(view_mat, eye, at, up)
-    Mat4.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
+    CameraUtils.look_at(view_mat, eye, at, up)
+    CameraUtils.perspective(proj_mat, math.radians(60.0), float(width) / float(height), 0.01, 1000.0)
     Mat4.identity(model_mat)
-    Mat4.from_rotation_x(mtx_x, counter * 0.007)
-    Mat4.from_rotation_y(mtx_y, counter * 0.01)
-    Mat4.dot(model_mat, mtx_x, mtx_y)
+    Mat4.rotate_x(model_mat, model_mat, counter * 0.007)
+    Mat4.rotate_y(model_mat, model_mat, counter * 0.01)
     
     view.set_transform_model(model_mat)
     view.set_transform_view(view_mat)
@@ -44,7 +43,7 @@ counter = 0
 at = Vec3(0.0, 0.0, 0.0)
 eye = Vec3()
 up = Vec3(0.0, 1.0, 0.0)
-shift = Vec3(3.0, 0.0, 0.0)
+shift = Vec4(3.0, 0.0, 0.0, 0.0)
 view_mat = Mat4()
 proj_mat = Mat4()
 model_mat = Mat4()

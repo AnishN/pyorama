@@ -35,6 +35,7 @@ print(m_obj.data)
 r = Sphere.c_get_radius(&s)
 print(s)
 print(r)
+s = [[5, 6, 7], 8]
 print("eye", Sphere.c_intersects_point(&s, &eye))
 print("up", Sphere.c_intersects_point(&s, &up))
 

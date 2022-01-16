@@ -1,7 +1,9 @@
+cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
 
+@cython.final
 cdef class Mat2:
     cdef:
         Mat2C data

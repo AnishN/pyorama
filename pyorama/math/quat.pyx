@@ -10,12 +10,8 @@ cdef class Quat:
         return out
     
     @staticmethod
-    cdef void c_init(QuatC *out, float x, float y, float z, float w) nogil:
-        glm_quat_init(<versor>out, x, y, z, w)
-
-    @staticmethod
-    def init(Quat out, float x, float y, float z, float w):
-        Quat.c_init(&out.data, x, y, z, w)
+    def set_data(Quat out, float x, float y, float z, float w):
+        glm_quat_init(<versor>&out.data, x, y, z, w)
     
     @staticmethod
     cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil:
@@ -162,20 +158,20 @@ cdef class Quat:
         Quat.c_nlerp(&out.data, &a.data, &b.data, t)
     
     @staticmethod
-    cdef void c_normalize(QuatC *out) nogil:
+    cdef void c_norm(QuatC *out) nogil:
         glm_quat_normalize(<versor>out)
 
     @staticmethod
-    def normalize(Quat out):
-        Quat.c_normalize(&out.data)
+    def norm(Quat out):
+        Quat.c_norm(&out.data)
     
     @staticmethod
-    cdef void c_normalize_to(QuatC *out, QuatC *q) nogil:
+    cdef void c_norm_to(QuatC *out, QuatC *q) nogil:
         glm_quat_normalize_to(<versor>q, <versor>out)
 
     @staticmethod
-    def normalize_to(Quat out, Quat q):
-        Quat.c_normalize_to(&out.data, &q.data)
+    def norm_to(Quat out, Quat q):
+        Quat.c_norm_to(&out.data, &q.data)
     
     @staticmethod
     cdef float c_real(QuatC *q) nogil:

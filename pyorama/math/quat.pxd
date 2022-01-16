@@ -1,15 +1,15 @@
+cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
 
+@cython.final
 cdef class Quat:
     cdef:
         QuatC data
 
     @staticmethod
     cdef Quat c_from_data(QuatC *q)
-    @staticmethod
-    cdef void c_init(QuatC *out, float x, float y, float z, float w) nogil
     @staticmethod
     cdef void c_add(QuatC *out, QuatC *a, QuatC *b) nogil
     @staticmethod
@@ -47,9 +47,9 @@ cdef class Quat:
     @staticmethod
     cdef void c_nlerp(QuatC *out, QuatC *a, QuatC *b, float t) nogil
     @staticmethod
-    cdef void c_normalize(QuatC *out) nogil
+    cdef void c_norm(QuatC *out) nogil
     @staticmethod
-    cdef void c_normalize_to(QuatC *out, QuatC *q) nogil
+    cdef void c_norm_to(QuatC *out, QuatC *q) nogil
     @staticmethod
     cdef float c_real(QuatC *q) nogil
     @staticmethod
