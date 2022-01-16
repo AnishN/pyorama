@@ -32,7 +32,7 @@ cdef class Camera(HandleObject):
         proj_info.y_mag = y_mag
         proj_info.z_near = z_near
         proj_info.z_far = z_far
-        #Mat4.c_orthographic(&camera_ptr.proj_mat, x_mag, y_mag, z_near, z_far)
+        #CameraUtils.c_orthographic(&camera_ptr.proj_mat, x_mag, y_mag, z_near, z_far)
 
     cpdef void create_perspective(self, float aspect_ratio, float y_fov, float z_near, float z_far) except *:
         cdef:
@@ -47,7 +47,7 @@ cdef class Camera(HandleObject):
         proj_info.y_fov = y_fov
         proj_info.z_near = z_near
         proj_info.z_far = z_far
-        #Mat4.c_perspective(&camera_ptr.proj_mat, aspect_ratio, y_fov, z_near, z_far)
+        #CameraUtils.c_perspective(&camera_ptr.proj_mat, aspect_ratio, y_fov, z_near, z_far)
 
     cpdef void delete(self) except *:
         graphics.slots.c_delete(self.handle)
@@ -58,4 +58,4 @@ cdef class Camera(HandleObject):
             CameraC *camera_ptr
         
         camera_ptr = self.get_ptr()
-        #Mat4.c_copy(proj_mat.data, &camera_ptr.proj_mat)
+        Mat4.c_copy(&proj_mat.data, &camera_ptr.proj_mat)

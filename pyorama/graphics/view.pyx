@@ -71,19 +71,19 @@ cdef class View(HandleObject):
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        #view_ptr.transform.model = transform_model.data[0]
+        view_ptr.transform.model = transform_model.data
 
     cpdef void set_transform_view(self, Mat4 transform_view) except *:
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        #view_ptr.transform.view = transform_view.data[0]
+        view_ptr.transform.view = transform_view.data
 
     cpdef void set_transform_projection(self, Mat4 transform_projection) except *:
         cdef:
             ViewC *view_ptr
         view_ptr = self.get_ptr()
-        #view_ptr.transform.projection = transform_projection.data[0]
+        view_ptr.transform.projection = transform_projection.data
 
     cpdef void set_frame_buffer(self, FrameBuffer frame_buffer) except *:
         cdef:
@@ -160,6 +160,34 @@ cdef class View(HandleObject):
                 texture_ptr = <TextureC *>graphics.slots.c_get_ptr(texture)
                 sampler_ptr = <UniformC *>graphics.slots.c_get_ptr(sampler)
                 bgfx_set_texture(i, sampler_ptr.bgfx_id, texture_ptr.bgfx_id, 0)
+
+        #cdef uint64_t state = BGFX_STATE_DEFAULT
+        cdef uint64_t state = (0
+            | BGFX_STATE_WRITE_RGB
+            | BGFX_STATE_WRITE_A
+            | BGFX_STATE_WRITE_Z
+            | BGFX_STATE_DEPTH_TEST_LESS
+            #| BGFX_STATE_CULL_CW
+            | BGFX_STATE_MSAA
+        )
+        print(
+            "pieces", 
+            BGFX_STATE_WRITE_RGB, 
+            BGFX_STATE_WRITE_A, 
+            BGFX_STATE_WRITE_Z, 
+            BGFX_STATE_DEPTH_TEST_LESS, 
+            BGFX_STATE_CULL_CW, 
+            BGFX_STATE_MSAA,
+        )
+        print("default", BGFX_STATE_DEFAULT)
+        #print("my_default", state)
+        #state &= ~(<uint64_t>1 <<  BGFX_STATE_CULL_CW)
+        #print("flipped_state", state)
+        #print("cw_state", BGFX_STATE_CULL_CW)
+        bgfx_set_state(state, 0)
+        #bgfx_set_state(BGFX_STATE_DEFAULT, 0)
+        #bgfx_set_state(BGFX_STATE_DEFAULT | BGFX_STATE_CULL_CCW, 0)
+
         bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_BINDINGS | BGFX_DISCARD_ALL)
 
     cpdef void touch(self) except *:

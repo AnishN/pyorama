@@ -6,7 +6,7 @@ from pyorama.math.common cimport *
 @cython.final
 cdef class Mat3:
     cdef:
-        Mat3C data
+        readonly Mat3C data
 
     @staticmethod
     cdef Mat3 c_from_data(Mat3C *m)

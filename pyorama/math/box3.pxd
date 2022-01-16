@@ -7,7 +7,7 @@ from pyorama.math.common cimport *
 cdef class Box3:
 
     cdef:
-        Box3C data
+        readonly Box3C data
 
     @staticmethod
     cdef bint c_contains_box(Box3C *a, Box3C *b) nogil

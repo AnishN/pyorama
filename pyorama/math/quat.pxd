@@ -6,7 +6,7 @@ from pyorama.math.common cimport *
 @cython.final
 cdef class Quat:
     cdef:
-        QuatC data
+        readonly QuatC data
 
     @staticmethod
     cdef Quat c_from_data(QuatC *q)

@@ -74,12 +74,9 @@ cdef class GraphicsSystem:
         bgfx_set_platform_data(&self.pd)
         bgfx_init_ctor(&self.bgfx_init)
         self.bgfx_init.type = BGFX_RENDERER_TYPE_COUNT
-        #self.bgfx_init.type = BGFX_RENDERER_TYPE_VULKAN
         #self.bgfx_init.type = BGFX_RENDERER_TYPE_OPENGL
         self.bgfx_init.resolution.reset = BGFX_RESET_VSYNC
         bgfx_init(&self.bgfx_init)
-        self.right_handed = bgfx_get_caps().originBottomLeft
-        self.homogeneous_depth = bgfx_get_caps().homogeneousDepth
     
     cdef void c_quit_bgfx(self) except *:
         bgfx_shutdown()

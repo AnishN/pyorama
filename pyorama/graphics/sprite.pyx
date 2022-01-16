@@ -24,17 +24,16 @@ cdef class Sprite(HandleObject):
         sprite_ptr.transform = transform.handle
         if texcoords == None:
             sprite_ptr.texcoords = [
-                [0.0, 0.0],
-                [1.0, 0.0],
-                [0.0, 1.0],
-                [1.0, 1.0],
+                Vec2C(0.0, 0.0),
+                Vec2C(1.0, 0.0),
+                Vec2C(0.0, 1.0),
+                Vec2C(1.0, 1.0),
             ]
-            pass
         else:
             for i in range(4):
-                sprite_ptr.texcoords[i] = texcoords[i].data
-            #sprite_ptr.texcoords = texcoords
-        #sprite_ptr.tint = tint.data[0]
+                sprite_ptr.texcoords[i] = (<Vec2C *>texcoords[i].data)[0]
+            sprite_ptr.texcoords = texcoords
+        sprite_ptr.tint = tint.data
         sprite_ptr.alpha = alpha
 
     cpdef void delete(self) except *:

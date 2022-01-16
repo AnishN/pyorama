@@ -3,6 +3,10 @@ from pyorama.math.vec4 cimport *
 
 cdef class Mat4:
 
+    def __init__(self, bint identity=True):
+        if identity:
+            Mat4.c_identity(&self.data)
+
     @staticmethod
     cdef Mat4 c_from_data(Mat4C *m):
         cdef Mat4 out = Mat4.__new__(Mat4)

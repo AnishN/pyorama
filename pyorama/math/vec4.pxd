@@ -6,7 +6,7 @@ from pyorama.math.common cimport *
 @cython.final
 cdef class Vec4:
     cdef:
-        Vec4C data
+        readonly Vec4C data
 
     @staticmethod
     cdef Vec4 c_from_data(Vec4C *v)

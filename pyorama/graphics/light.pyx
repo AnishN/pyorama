@@ -54,7 +54,7 @@ cpdef Handle light_create_point(Vec3 position, float range_, uint32_t color, flo
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
     light_ptr = light_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_POINT
-    #light_ptr.data.point.position = position.data[0]
+    light_ptr.data.point.position = position.data
     light_ptr.data.point.range_ = range_
     light_ptr.data.point.color = color
     light_ptr.data.point.intensity = intensity
@@ -68,8 +68,8 @@ cpdef Handle light_create_spot(Vec3 position, Vec3 direction, float outer_angle,
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
     light_ptr = light_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_SPOT
-    #light_ptr.data.spot.position = position.data[0]
-    #light_ptr.data.spot.direction = direction.data[0]
+    light_ptr.data.spot.position = position.data
+    light_ptr.data.spot.direction = direction.data
     light_ptr.data.spot.outer_angle = outer_angle
     light_ptr.data.spot.inner_angle = inner_angle
     light_ptr.data.spot.range_ = range_
@@ -85,7 +85,7 @@ cpdef Handle light_create_direction(Vec3 direction, uint32_t color, float intens
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
     light_ptr = light_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_DIRECTION
-    #light_ptr.data.direction.direction = direction.data[0]
+    light_ptr.data.direction.direction = direction.data
     light_ptr.data.direction.color = color
     light_ptr.data.direction.intensity = intensity
     return light

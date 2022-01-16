@@ -2,6 +2,10 @@ from pyorama.math.vec2 cimport *
 
 cdef class Mat2:
 
+    def __init__(self, bint identity=True):
+        if identity:
+            Mat2.c_identity(&self.data)
+
     @staticmethod
     cdef Mat2 c_from_data(Mat2C *m):
         cdef Mat2 out = Mat2.__new__(Mat2)

@@ -15,7 +15,7 @@ def on_enter_frame_event(event, *args, **kwargs):
 
     Vec3.set_data(eye, math.sin(float(counter) / 100) * 8, 2, math.cos(float(counter) / 100) * 8)
     CameraUtils.look_at(view_mat, eye, at, up)
-    CameraUtils.perspective(proj_mat, math.radians(60.0), float(width) / float(height), 0.01, 1000.0)
+    CameraUtils.perspective(proj_mat, math.radians(60.0), float(width) / float(height),  0.01, 1000.0)
     Mat4.identity(model_mat)
     Mat4.rotate_x(model_mat, model_mat, counter * 0.007)
     Mat4.rotate_y(model_mat, model_mat, counter * 0.01)
@@ -24,6 +24,11 @@ def on_enter_frame_event(event, *args, **kwargs):
     view.set_transform_view(view_mat)
     view.set_transform_projection(proj_mat)
     view.submit()
+
+    #print(model_mat.data)
+    #print(view_mat.data)
+    #print(proj_mat.data)
+    #print("")
 
     Mat4.from_translation(model_mat, shift)
     view.set_transform_model(model_mat)
@@ -43,7 +48,7 @@ counter = 0
 at = Vec3(0.0, 0.0, 0.0)
 eye = Vec3()
 up = Vec3(0.0, 1.0, 0.0)
-shift = Vec4(3.0, 0.0, 0.0, 0.0)
+shift = Vec4(3.0, 0.0, 0.0, 1.0)
 view_mat = Mat4()
 proj_mat = Mat4()
 model_mat = Mat4()

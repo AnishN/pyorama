@@ -6,7 +6,7 @@ from pyorama.math.common cimport *
 @cython.final
 cdef class Vec2:
     cdef:
-        Vec2C data
+        readonly Vec2C data
     
     @staticmethod
     cdef void c_add(Vec2C *out, Vec2C *a, Vec2C *b) nogil

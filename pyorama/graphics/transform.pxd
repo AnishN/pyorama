@@ -18,7 +18,7 @@ cdef class Transform(HandleObject):
     cpdef void transform_set_rotation(self, Quat rotation=*) except *
     cpdef void transform_set_scale(self, Vec3 scale=*) except *
     cpdef void transform_set_offset(self, Vec3 offset=*) except *
-    cpdef void transform_get_translation(self, Vec3 translation, bint copy=*) except *
-    cpdef void transform_get_rotation(self, Quat rotation, bint copy=*) except *
-    cpdef void transform_get_scale(self, Vec3 scale, bint copy=*) except *
-    cpdef void transform_get_offset(self, Vec3 offset, bint copy=*) except *
+    cpdef void transform_get_translation(self, Vec3 translation) except *
+    cpdef void transform_get_rotation(self, Quat rotation) except *
+    cpdef void transform_get_scale(self, Vec3 scale) except *
+    cpdef void transform_get_offset(self, Vec3 offset) except *

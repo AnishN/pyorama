@@ -7,7 +7,7 @@ from pyorama.math.common cimport *
 cdef class Sphere:
 
     cdef:
-        SphereC data
+        readonly SphereC data
 
     @staticmethod
     cdef float c_get_radius(SphereC *s) nogil

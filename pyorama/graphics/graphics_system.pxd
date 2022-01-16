@@ -60,8 +60,8 @@ cpdef enum GraphicsSlot:
 
 cdef class GraphicsSystem:
     cdef:
-        readonly str name
-        readonly GraphicsRendererType renderer_type
+        str name
+        GraphicsRendererType renderer_type
         SlotManager slots
         dict slot_sizes
         SDL_SysWMinfo *wmi
@@ -72,8 +72,8 @@ cdef class GraphicsSystem:
         uint16_t[GRAPHICS_MAX_VIEWS] free_views
         size_t free_view_index
         IntHashMapC window_ids
-        readonly bint right_handed
-        readonly bint homogeneous_depth
+        bint right_handed
+        bint homogeneous_depth
 
     cdef void c_init_sdl2(self) except *
     cdef void c_quit_sdl2(self) except *
