@@ -5,6 +5,11 @@ from pyorama.math.vec4 cimport *
 
 cdef class Vec3:
 
+    def __init__(self, float x=0, float y=0, float z=0):
+        self.data.x = x
+        self.data.y = y
+        self.data.z = z
+
     @staticmethod
     cdef Vec3 c_from_data(Vec3C *v):
         cdef Vec3 out = Vec3.__new__(Vec3)

@@ -2,6 +2,10 @@ from pyorama.math.mat2 cimport *
 
 cdef class Vec2:
 
+    def __init__(self, float x=0, float y=0):
+        self.data.x = x
+        self.data.y = y
+
     @staticmethod
     cdef Vec2 c_from_data(Vec2C *v):
         cdef Vec2 out = Vec2.__new__(Vec2)

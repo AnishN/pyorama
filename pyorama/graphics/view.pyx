@@ -18,10 +18,11 @@ cdef class View(HandleObject):
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VIEW)
         view_ptr = self.get_ptr()
         view_ptr.index = graphics.c_get_next_view_index()
-        view_ptr.write_state = VIEW_WRITE_STATE_RGBAZ
-        view_ptr.depth_state = VIEW_DEPTH_STATE_LESS
         view_ptr.msaa = True
         view_ptr.blend = False
+        view_ptr.write_state = VIEW_WRITE_STATE_RGBAZ
+        view_ptr.depth_state = VIEW_DEPTH_STATE_LESS
+        view_ptr.cull_state = VIEW_CULL_STATE_NONE
         view_ptr.blend_state = [
             VIEW_BLEND_FUNCTION_ONE,#rgb_src
             VIEW_BLEND_FUNCTION_ZERO,#rgb_dst
@@ -243,6 +244,7 @@ cdef class View(HandleObject):
         state = 0
         state |= view_ptr.write_state
         state |= view_ptr.depth_state
+        state |= view_ptr.cull_state
         state |= BGFX_STATE_MSAA if view_ptr.msaa else 0
         if view_ptr.blend:
             blend_state = view_ptr.blend_state

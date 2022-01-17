@@ -5,7 +5,7 @@ from pyorama.data import *
 from pyorama.event import *
 from pyorama.graphics import *
 
-def on_window_event(event, *args, **kwargs):
+def on_window_event(event):
     if event["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
         app.trigger_quit()
 

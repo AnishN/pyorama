@@ -2,6 +2,12 @@ from pyorama.math.mat4 cimport *
 
 cdef class Vec4:
 
+    def __init__(self, float x=0, float y=0, float z=0, float w=0):
+        self.data.x = x
+        self.data.y = y
+        self.data.z = z
+        self.data.w = w
+
     @staticmethod
     cdef Vec4 c_from_data(Vec4C *v):
         cdef Vec4 out = Vec4.__new__(Vec4)
