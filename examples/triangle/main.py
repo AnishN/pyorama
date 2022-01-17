@@ -30,7 +30,7 @@ on_window_listener = Listener.init_create(EVENT_TYPE_WINDOW, on_window_event)
 vertex_format = BufferFormat([(b"a_position", 3, BUFFER_FIELD_TYPE_F32)])
 vertex_layout = VertexLayout.init_create(vertex_format, normalize={b"a_color0"})
 vertices = Buffer(vertex_format)
-#vertices.init_from_list([(-1, -1, 0), (1, -1, 0), (0, 1, 0)])
+vertices.init_from_list([(-1, -1, 0), (1, -1, 0), (0, 1, 0)])
 #vertices.init_from_list([(-1, -1, 0), (0, 1, 0), (1, -1, 0)])
 vertex_buffer = VertexBuffer.init_create(vertex_layout, vertices)
 

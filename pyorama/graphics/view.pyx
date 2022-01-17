@@ -18,6 +18,18 @@ cdef class View(HandleObject):
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VIEW)
         view_ptr = self.get_ptr()
         view_ptr.index = graphics.c_get_next_view_index()
+        view_ptr.write_state = VIEW_WRITE_STATE_RGBAZ
+        view_ptr.depth_state = VIEW_DEPTH_STATE_LESS
+        view_ptr.msaa = True
+        view_ptr.blend = False
+        view_ptr.blend_state = [
+            VIEW_BLEND_FUNCTION_ONE,#rgb_src
+            VIEW_BLEND_FUNCTION_ZERO,#rgb_dst
+            VIEW_BLEND_EQUATION_ADD,#rgb_eq
+            VIEW_BLEND_FUNCTION_ONE,#alpha_src
+            VIEW_BLEND_FUNCTION_ZERO,#alpha_dst
+            VIEW_BLEND_EQUATION_ADD,#alpha_eq
+        ]
 
     cpdef void delete(self) except *:
         cdef:
@@ -123,6 +135,71 @@ cdef class View(HandleObject):
         view_ptr.samplers[unit] = sampler.handle
         view_ptr.textures[unit] = texture.handle
 
+    cpdef void set_write_state(self, ViewWriteState state) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.write_state = state
+
+    cpdef void set_depth_state(self, ViewDepthState state) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.depth_state = state
+
+    cpdef void set_cull_state(self, ViewCullState state) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.cull_state = state
+
+    cpdef void set_msaa(self, bint state) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.msaa = state
+
+    cpdef void set_blend(self, bint state) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.blend = state
+
+    cpdef void set_blend_rgb_state(self, ViewBlendFunction src, ViewBlendFunction dst, ViewBlendEquation eq=VIEW_BLEND_EQUATION_ADD) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.blend_state.rgb_src = src
+        view_ptr.blend_state.rgb_dst = dst
+        view_ptr.blend_state.rgb_eq = eq
+
+    cpdef void set_blend_alpha_state(self, ViewBlendFunction src, ViewBlendFunction dst, ViewBlendEquation eq=VIEW_BLEND_EQUATION_ADD) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.blend_state.alpha_src = src
+        view_ptr.blend_state.alpha_dst = dst
+        view_ptr.blend_state.alpha_eq = eq
+
+    cpdef void set_blend_rgba_state(self, ViewBlendFunction src, ViewBlendFunction dst, ViewBlendEquation eq=VIEW_BLEND_EQUATION_ADD) except *:
+        cdef:
+            ViewC *view_ptr
+        
+        view_ptr = self.get_ptr()
+        view_ptr.blend_state.rgb_src = src
+        view_ptr.blend_state.rgb_dst = dst
+        view_ptr.blend_state.rgb_eq = eq
+        view_ptr.blend_state.alpha_src = src
+        view_ptr.blend_state.alpha_dst = dst
+        view_ptr.blend_state.alpha_eq = eq
+
     cpdef void submit(self) except *:
         cdef:
             size_t i
@@ -135,6 +212,8 @@ cdef class View(HandleObject):
             VertexBufferC *vertex_buffer_ptr
             IndexBufferC *index_buffer_ptr
             ProgramC *program_ptr
+            cdef uint64_t state
+            ViewBlendStateC blend_state
         
         view_ptr = self.get_ptr()
         frame_buffer_ptr = <FrameBufferC *>graphics.slots.c_get_ptr(view_ptr.frame_buffer)
@@ -161,33 +240,24 @@ cdef class View(HandleObject):
                 sampler_ptr = <UniformC *>graphics.slots.c_get_ptr(sampler)
                 bgfx_set_texture(i, sampler_ptr.bgfx_id, texture_ptr.bgfx_id, 0)
 
-        #cdef uint64_t state = BGFX_STATE_DEFAULT
-        cdef uint64_t state = (0
-            | BGFX_STATE_WRITE_RGB
-            | BGFX_STATE_WRITE_A
-            | BGFX_STATE_WRITE_Z
-            | BGFX_STATE_DEPTH_TEST_LESS
-            #| BGFX_STATE_CULL_CW
-            | BGFX_STATE_MSAA
-        )
-        print(
-            "pieces", 
-            BGFX_STATE_WRITE_RGB, 
-            BGFX_STATE_WRITE_A, 
-            BGFX_STATE_WRITE_Z, 
-            BGFX_STATE_DEPTH_TEST_LESS, 
-            BGFX_STATE_CULL_CW, 
-            BGFX_STATE_MSAA,
-        )
-        print("default", BGFX_STATE_DEFAULT)
-        #print("my_default", state)
-        #state &= ~(<uint64_t>1 <<  BGFX_STATE_CULL_CW)
-        #print("flipped_state", state)
-        #print("cw_state", BGFX_STATE_CULL_CW)
+        state = 0
+        state |= view_ptr.write_state
+        state |= view_ptr.depth_state
+        state |= BGFX_STATE_MSAA if view_ptr.msaa else 0
+        if view_ptr.blend:
+            blend_state = view_ptr.blend_state
+            state |= BGFX_STATE_BLEND_FUNC_SEPARATE(
+                blend_state.rgb_src, 
+                blend_state.rgb_dst, 
+                blend_state.alpha_src, 
+                blend_state.alpha_dst,
+            )
+            state |= BGFX_STATE_BLEND_EQUATION_SEPARATE(
+                blend_state.rgb_eq, 
+                blend_state.alpha_eq,
+            )
+        
         bgfx_set_state(state, 0)
-        #bgfx_set_state(BGFX_STATE_DEFAULT, 0)
-        #bgfx_set_state(BGFX_STATE_DEFAULT | BGFX_STATE_CULL_CCW, 0)
-
         bgfx_submit(view_ptr.index, program_ptr.bgfx_id, 0, BGFX_DISCARD_BINDINGS | BGFX_DISCARD_ALL)
 
     cpdef void touch(self) except *:
