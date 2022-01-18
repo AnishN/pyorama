@@ -2,6 +2,7 @@ from cpython.ref cimport PyObject, Py_INCREF, Py_DECREF, Py_XINCREF, Py_XDECREF
 from pyorama.core.slot_manager cimport *
 from pyorama.data.vector cimport *
 from pyorama.event.listener cimport *
+from pyorama.event.input_events cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.sdl2 cimport *
 
@@ -71,6 +72,8 @@ cpdef enum WindowEventType:
     WINDOW_EVENT_TYPE_TAKE_FOCUS = SDL_WINDOWEVENT_TAKE_FOCUS
     WINDOW_EVENT_TYPE_HIT_TEST = SDL_WINDOWEVENT_HIT_TEST
 
+ctypedef void (*EventFuncC)(uint16_t, SDL_Event *, PyObject *)
+
 cdef class EventSystem:
     cdef:
         str name
@@ -82,24 +85,19 @@ cdef class EventSystem:
         #PyObject *listeners[65536]
         #bint registered_listeners[65536]
         SDL_Joystick *joysticks[65536]
+        IntHashMapC c_event_funcs
+        dict py_event_funcs
     
     #cpdef uint16_t event_type_register(self) except *#cannot unregister event types
     #cpdef bint event_type_check_registered_listeners(self, uint16_t event_type) except *
+
+    cpdef uint16_t event_type_register(self) except *
+    cpdef void py_event_type_bind(self, uint16_t event_type, object func_obj) except *
+    cdef void c_event_type_bind(self, uint16_t event_type, EventFuncC func_ptr) except *
+    #cdef event_type_register_bind(self, object parse_func) except *
+
     cpdef void event_type_emit(self, uint16_t event_type, dict event_data=*) except *
     
     #cdef ListenerKeyC *key_c_get_ptr(self, Handle listener) except *
     #cdef ListenerC *listener_c_get_ptr(self, Handle listener) except *
-
-    cdef dict parse_joystick_axis_event(self, SDL_JoyAxisEvent event)
-    cdef dict parse_joystick_ball_event(self, SDL_JoyBallEvent event)
-    cdef dict parse_joystick_hat_event(self, SDL_JoyHatEvent event)
-    cdef dict parse_joystick_button_event(self, SDL_JoyButtonEvent event)
-    cdef dict parse_joystick_device_event(self, SDL_JoyDeviceEvent event)
-    cdef dict parse_keyboard_event(self, SDL_KeyboardEvent event)
-    cdef dict parse_mouse_button_event(self, SDL_MouseButtonEvent event)
-    cdef dict parse_mouse_motion_event(self, SDL_MouseMotionEvent event)
-    cdef dict parse_mouse_wheel_event(self, SDL_MouseWheelEvent event)
-    cdef dict parse_user_event(self, SDL_UserEvent event)
-    cdef dict parse_window_event(self, SDL_WindowEvent event)
-
     cpdef void update(self, double timestamp) except *

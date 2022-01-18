@@ -1,3 +1,5 @@
+from pyorama.app cimport *
+
 cdef size_t GRAPHICS_MAX_VIEWS = 2**16
 
 cdef class GraphicsSystem:
@@ -55,6 +57,12 @@ cdef class GraphicsSystem:
     def update(self):
         pass
         bgfx_frame(False)
+
+    def bind_events(self):
+        app.event.c_event_type_bind(EVENT_TYPE_WINDOW, <EventFuncC>c_window_event)
+
+        #EVENT_TYPE_ENTER_FRAME = app.event.c_register_event()
+        app.event.c_event_type_bind(EVENT_TYPE_ENTER_FRAME, <EventFuncC>c_enter_frame_event)
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)

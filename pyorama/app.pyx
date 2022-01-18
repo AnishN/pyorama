@@ -43,6 +43,9 @@ def init(dict config=None):
     #debug_ui.init(config.get("debug_ui", None))
     asset.init(config.get("asset", None))
 
+    graphics.bind_events()
+    event.bind_events()
+
 def quit():
     asset.quit()
     #debug_ui.quit()

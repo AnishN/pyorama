@@ -47,7 +47,7 @@ pyorama.app.init()
 
 mesh_name = b"helmet"
 mesh_ext = b".glb"
-base_path = b"./examples/004_mesh/"
+base_path = b"./examples/mesh/"
 mesh_path =  base_path + b"meshes/" + mesh_name + mesh_ext
 mesh_2_path = base_path + b"meshes/" + b"box" + mesh_ext
 bin_mesh_path = base_path + b"meshes/" + mesh_name + b".bin"
