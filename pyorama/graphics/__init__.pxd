@@ -1,4 +1,5 @@
 from pyorama.graphics.graphics_system cimport *
+from pyorama.graphics.graphics_events cimport *
 from pyorama.graphics.mesh_utils cimport *
 from pyorama.graphics.camera cimport *
 from pyorama.graphics.frame_buffer cimport *

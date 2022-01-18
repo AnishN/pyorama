@@ -1,3 +1,5 @@
+from pyorama.event.event_type import EventType
+
 cdef class EventSystem:
 
     def __cinit__(self, str name):
@@ -43,19 +45,33 @@ cdef class EventSystem:
         SDL_QuitSubSystem(SDL_INIT_EVENTS)
 
     def bind_events(self):
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_AXIS, <EventFuncC>c_joystick_axis_event)
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_BALL, <EventFuncC>c_joystick_ball_event)
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_HAT, <EventFuncC>c_joystick_hat_event)
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_BUTTON_DOWN, <EventFuncC>c_joystick_button_event)
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_BUTTON_UP, <EventFuncC>c_joystick_button_event)
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_ADDED, <EventFuncC>c_joystick_device_event)
-        self.c_event_type_bind(EVENT_TYPE_JOYSTICK_REMOVED, <EventFuncC>c_joystick_device_event)
-        self.c_event_type_bind(EVENT_TYPE_KEY_DOWN, <EventFuncC>c_keyboard_event)
-        self.c_event_type_bind(EVENT_TYPE_KEY_UP, <EventFuncC>c_keyboard_event)
-        self.c_event_type_bind(EVENT_TYPE_MOUSE_BUTTON_DOWN, <EventFuncC>c_mouse_button_event)
-        self.c_event_type_bind(EVENT_TYPE_MOUSE_BUTTON_UP, <EventFuncC>c_mouse_button_event)
-        self.c_event_type_bind(EVENT_TYPE_MOUSE_MOTION, <EventFuncC>c_mouse_motion_event)
-        self.c_event_type_bind(EVENT_TYPE_MOUSE_WHEEL, <EventFuncC>c_mouse_wheel_event)
+        EventType.KEY_DOWN = SDL_KEYDOWN
+        EventType.KEY_UP = SDL_KEYUP
+        EventType.MOUSE_MOTION = SDL_MOUSEMOTION
+        EventType.MOUSE_BUTTON_DOWN = SDL_MOUSEBUTTONDOWN
+        EventType.MOUSE_BUTTON_UP = SDL_MOUSEBUTTONUP
+        EventType.MOUSE_WHEEL = SDL_MOUSEWHEEL
+        EventType.JOYSTICK_AXIS = SDL_JOYAXISMOTION
+        EventType.JOYSTICK_BALL = SDL_JOYBALLMOTION
+        EventType.JOYSTICK_HAT = SDL_JOYHATMOTION
+        EventType.JOYSTICK_BUTTON_DOWN = SDL_JOYBUTTONDOWN
+        EventType.JOYSTICK_BUTTON_UP = SDL_JOYBUTTONUP
+        EventType.JOYSTICK_ADDED = SDL_JOYDEVICEADDED
+        EventType.JOYSTICK_REMOVED = SDL_JOYDEVICEREMOVED
+
+        self.c_event_type_bind(EventType.JOYSTICK_AXIS, <EventFuncC>c_joystick_axis_event)
+        self.c_event_type_bind(EventType.JOYSTICK_BALL, <EventFuncC>c_joystick_ball_event)
+        self.c_event_type_bind(EventType.JOYSTICK_HAT, <EventFuncC>c_joystick_hat_event)
+        self.c_event_type_bind(EventType.JOYSTICK_BUTTON_DOWN, <EventFuncC>c_joystick_button_event)
+        self.c_event_type_bind(EventType.JOYSTICK_BUTTON_UP, <EventFuncC>c_joystick_button_event)
+        self.c_event_type_bind(EventType.JOYSTICK_ADDED, <EventFuncC>c_joystick_device_event)
+        self.c_event_type_bind(EventType.JOYSTICK_REMOVED, <EventFuncC>c_joystick_device_event)
+        self.c_event_type_bind(EventType.KEY_DOWN, <EventFuncC>c_keyboard_event)
+        self.c_event_type_bind(EventType.KEY_UP, <EventFuncC>c_keyboard_event)
+        self.c_event_type_bind(EventType.MOUSE_BUTTON_DOWN, <EventFuncC>c_mouse_button_event)
+        self.c_event_type_bind(EventType.MOUSE_BUTTON_UP, <EventFuncC>c_mouse_button_event)
+        self.c_event_type_bind(EventType.MOUSE_MOTION, <EventFuncC>c_mouse_motion_event)
+        self.c_event_type_bind(EventType.MOUSE_WHEEL, <EventFuncC>c_mouse_wheel_event)
 
     cpdef uint16_t event_type_register(self) except *:
         cdef:

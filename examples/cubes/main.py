@@ -53,8 +53,9 @@ app.init()
 window = Window.init_create(width, height, title)
 frame_buffer = FrameBuffer.init_create_from_window(window)
 view = View.init_create()
-on_window_listener = Listener.init_create(EVENT_TYPE_WINDOW, on_window_event)
-on_enter_frame_listener = Listener.init_create(EVENT_TYPE_ENTER_FRAME, on_enter_frame_event)
+
+on_window_listener = Listener.init_create(EventType.WINDOW, on_window_event)
+on_enter_frame_listener = Listener.init_create(EventType.ENTER_FRAME, on_enter_frame_event)
 
 vertex_format = BufferFormat([
     (b"a_position", 3, BUFFER_FIELD_TYPE_F32),

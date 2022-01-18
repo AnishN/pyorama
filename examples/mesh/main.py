@@ -153,8 +153,8 @@ program = Program(); program.create(vertex_shader, fragment_shader)
 window = Window(); window.create(width, height, title)
 frame_buffer = FrameBuffer(); frame_buffer.create_from_window(window)
 view = View(); view.create()
-on_window_listener = Listener(); on_window_listener.create(pyorama.event.EVENT_TYPE_WINDOW, on_window_event, None, None)
-on_enter_frame_listener = Listener(); on_enter_frame_listener.create(pyorama.event.EVENT_TYPE_ENTER_FRAME, on_enter_frame_event, None, None)
+on_window_listener = Listener(); on_window_listener.create(pyorama.event.EventType._WINDOW, on_window_event, None, None)
+on_enter_frame_listener = Listener(); on_enter_frame_listener.create(pyorama.event.EventType._ENTER_FRAME, on_enter_frame_event, None, None)
 
 clear_flags = pyorama.graphics.VIEW_CLEAR_COLOR | pyorama.graphics.VIEW_CLEAR_DEPTH
 view.set_clear(clear_flags, 0x443355FF, 1.0, 0)

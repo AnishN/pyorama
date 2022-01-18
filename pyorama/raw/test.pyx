@@ -169,12 +169,12 @@ view = pyorama.graphics.view_create()
 #print("loop time!")
 
 on_window_listener = pyorama.event.listener_create(
-    pyorama.event.EVENT_TYPE_WINDOW, 
+    pyorama.event.EventType._WINDOW, 
     on_window_event, None, None,
 )
 
 on_enter_frame_listener = pyorama.event.listener_create(
-    pyorama.event.EVENT_TYPE_ENTER_FRAME, 
+    pyorama.event.EventType._ENTER_FRAME, 
     on_enter_frame_event, None, None,
 )
 

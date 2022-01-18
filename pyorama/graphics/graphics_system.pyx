@@ -1,4 +1,5 @@
 from pyorama.app cimport *
+from pyorama.event.event_type import EventType
 
 cdef size_t GRAPHICS_MAX_VIEWS = 2**16
 
@@ -59,10 +60,10 @@ cdef class GraphicsSystem:
         bgfx_frame(False)
 
     def bind_events(self):
-        app.event.c_event_type_bind(EVENT_TYPE_WINDOW, <EventFuncC>c_window_event)
-
-        #EVENT_TYPE_ENTER_FRAME = app.event.c_register_event()
-        app.event.c_event_type_bind(EVENT_TYPE_ENTER_FRAME, <EventFuncC>c_enter_frame_event)
+        EventType.WINDOW = SDL_WINDOWEVENT
+        EventType.ENTER_FRAME = app.event.event_type_register()
+        app.event.c_event_type_bind(EventType.WINDOW, <EventFuncC>c_window_event)
+        app.event.c_event_type_bind(EventType.ENTER_FRAME, <EventFuncC>c_enter_frame_event)
 
     cdef void c_init_sdl2(self) except *:
         SDL_InitSubSystem(SDL_INIT_VIDEO)

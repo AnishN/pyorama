@@ -26,7 +26,7 @@ view.set_rect(0, 0, width, height)
 view.set_frame_buffer(frame_buffer)
 view.touch()
 
-on_window_listener = Listener.init_create(EVENT_TYPE_WINDOW, on_window_event)
+on_window_listener = Listener.init_create(EventType.WINDOW, on_window_event)
 
 app.run()
 
