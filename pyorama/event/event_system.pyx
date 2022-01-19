@@ -1,5 +1,3 @@
-from pyorama.event.event_type import EventType
-
 cdef class EventSystem:
 
     def __cinit__(self, str name):
@@ -29,6 +27,7 @@ cdef class EventSystem:
             vector_init(handles_ptr, sizeof(Handle))
         self.py_event_funcs = {}
         int_hash_map_init(&self.c_event_funcs)
+        str_hash_map_init(&self.event_type_names_map)
 
     def quit(self):
         cdef:
@@ -36,6 +35,7 @@ cdef class EventSystem:
             VectorC *handles_ptr
         
         self.py_event_funcs = {}
+        str_hash_map_free(&self.event_type_names_map)
         int_hash_map_free(&self.c_event_funcs)
         for i in range(MAX_EVENT_TYPES):
             handles_ptr = &self.listener_handles[i]
@@ -45,71 +45,88 @@ cdef class EventSystem:
         SDL_QuitSubSystem(SDL_INIT_EVENTS)
 
     def bind_events(self):
-        EventType.KEY_DOWN = SDL_KEYDOWN
-        EventType.KEY_UP = SDL_KEYUP
-        EventType.MOUSE_MOTION = SDL_MOUSEMOTION
-        EventType.MOUSE_BUTTON_DOWN = SDL_MOUSEBUTTONDOWN
-        EventType.MOUSE_BUTTON_UP = SDL_MOUSEBUTTONUP
-        EventType.MOUSE_WHEEL = SDL_MOUSEWHEEL
-        EventType.JOYSTICK_AXIS = SDL_JOYAXISMOTION
-        EventType.JOYSTICK_BALL = SDL_JOYBALLMOTION
-        EventType.JOYSTICK_HAT = SDL_JOYHATMOTION
-        EventType.JOYSTICK_BUTTON_DOWN = SDL_JOYBUTTONDOWN
-        EventType.JOYSTICK_BUTTON_UP = SDL_JOYBUTTONUP
-        EventType.JOYSTICK_ADDED = SDL_JOYDEVICEADDED
-        EventType.JOYSTICK_REMOVED = SDL_JOYDEVICEREMOVED
+        self.event_type_register(b"key_down", SDL_KEYDOWN)
+        self.event_type_register(b"key_up", SDL_KEYUP)
+        self.event_type_register(b"mouse_button_down", SDL_MOUSEBUTTONDOWN)
+        self.event_type_register(b"mouse_button_up", SDL_MOUSEBUTTONUP)
+        self.event_type_register(b"mouse_motion", SDL_MOUSEMOTION)
+        self.event_type_register(b"mouse_wheel", SDL_MOUSEWHEEL)
+        self.event_type_register(b"joystick_axis", SDL_JOYAXISMOTION)
+        self.event_type_register(b"joystick_ball", SDL_JOYBALLMOTION)
+        self.event_type_register(b"joystick_hat", SDL_JOYHATMOTION)
+        self.event_type_register(b"joystick_button_down", SDL_JOYBUTTONDOWN)
+        self.event_type_register(b"joystick_button_up", SDL_JOYBUTTONUP)
+        self.event_type_register(b"joystick_added", SDL_JOYDEVICEADDED)
+        self.event_type_register(b"joystick_removed", SDL_JOYDEVICEREMOVED)
 
-        self.c_event_type_bind(EventType.JOYSTICK_AXIS, <EventFuncC>c_joystick_axis_event)
-        self.c_event_type_bind(EventType.JOYSTICK_BALL, <EventFuncC>c_joystick_ball_event)
-        self.c_event_type_bind(EventType.JOYSTICK_HAT, <EventFuncC>c_joystick_hat_event)
-        self.c_event_type_bind(EventType.JOYSTICK_BUTTON_DOWN, <EventFuncC>c_joystick_button_event)
-        self.c_event_type_bind(EventType.JOYSTICK_BUTTON_UP, <EventFuncC>c_joystick_button_event)
-        self.c_event_type_bind(EventType.JOYSTICK_ADDED, <EventFuncC>c_joystick_device_event)
-        self.c_event_type_bind(EventType.JOYSTICK_REMOVED, <EventFuncC>c_joystick_device_event)
-        self.c_event_type_bind(EventType.KEY_DOWN, <EventFuncC>c_keyboard_event)
-        self.c_event_type_bind(EventType.KEY_UP, <EventFuncC>c_keyboard_event)
-        self.c_event_type_bind(EventType.MOUSE_BUTTON_DOWN, <EventFuncC>c_mouse_button_event)
-        self.c_event_type_bind(EventType.MOUSE_BUTTON_UP, <EventFuncC>c_mouse_button_event)
-        self.c_event_type_bind(EventType.MOUSE_MOTION, <EventFuncC>c_mouse_motion_event)
-        self.c_event_type_bind(EventType.MOUSE_WHEEL, <EventFuncC>c_mouse_wheel_event)
+        self.c_event_type_bind(b"key_down", <EventFuncC>c_keyboard_event)
+        self.c_event_type_bind(b"key_up", <EventFuncC>c_keyboard_event)
+        self.c_event_type_bind(b"mouse_button_down", <EventFuncC>c_mouse_button_event)
+        self.c_event_type_bind(b"mouse_button_up", <EventFuncC>c_mouse_button_event)
+        self.c_event_type_bind(b"mouse_motion", <EventFuncC>c_mouse_motion_event)
+        self.c_event_type_bind(b"mouse_wheel", <EventFuncC>c_mouse_wheel_event)
+        self.c_event_type_bind(b"joystick_axis", <EventFuncC>c_joystick_axis_event)
+        self.c_event_type_bind(b"joystick_ball", <EventFuncC>c_joystick_ball_event)
+        self.c_event_type_bind(b"joystick_hat", <EventFuncC>c_joystick_hat_event)
+        self.c_event_type_bind(b"joystick_button_down", <EventFuncC>c_joystick_button_event)
+        self.c_event_type_bind(b"joystick_button_up", <EventFuncC>c_joystick_button_event)
+        self.c_event_type_bind(b"joystick_added", <EventFuncC>c_joystick_device_event)
+        self.c_event_type_bind(b"joystick_removed", <EventFuncC>c_joystick_device_event)
 
-    cpdef uint16_t event_type_register(self) except *:
+    cpdef void event_type_register(self, bytes name, uint16_t event_type=0) except *:
         cdef:
             uint32_t sdl_event_type
+            size_t name_len
+            char *name_ptr
         
-        sdl_event_type = SDL_RegisterEvents(1)
-        if sdl_event_type >= MAX_EVENT_TYPES:
-            raise ValueError("EventSystem: cannot register additional event types")
+        if event_type == 0:
+            sdl_event_type = SDL_RegisterEvents(1)
+            if sdl_event_type >= MAX_EVENT_TYPES:
+                raise ValueError("EventSystem: cannot register additional event types")
+            event_type = <uint16_t>sdl_event_type
+        
+        name_len = <size_t>len(name)
+        name_ptr = <char *>calloc(name_len + 1, sizeof(char))
+        if name_ptr == NULL:
+            raise MemoryError()
+        memcpy(name_ptr, <char *>name, name_len)
+        self.event_type_names[event_type] = name_ptr
+        str_hash_map_insert(&self.event_type_names_map, name_ptr, name_len, event_type)
     
-    cpdef void py_event_type_bind(self, uint16_t event_type, object func_obj) except *:
-        self.py_event_funcs[event_type] = func_obj
+    cpdef uint16_t event_type_get_id(self, bytes name) except *:
+        cdef:
+            size_t name_len
+            char *name_ptr
+            bint is_valid
+            uint16_t event_type
+        
+        name_len = len(name)
+        name_ptr = <char *>name
+        is_valid = str_hash_map_contains(&self.event_type_names_map, name_ptr, name_len)
+        if not is_valid:
+            raise ValueError("EventSystem: Invalid event type name")
+        event_type = <uint16_t>str_hash_map_get(&self.event_type_names_map, name_ptr, name_len)
+        return event_type
 
-    cdef void c_event_type_bind(self, uint16_t event_type, EventFuncC func_ptr) except *:
+    cpdef void py_event_type_bind(self, bytes name, object func_obj) except *:
+        self.py_event_funcs[name] = func_obj
+
+    cdef void c_event_type_bind(self, bytes name, EventFuncC func_ptr) except *:
         cdef:
             uint64_t key
             uint64_t value
         
-        key = <uint64_t>event_type
+        key = self.event_type_get_id(name)
         value = <uint64_t>func_ptr
         int_hash_map_insert(&self.c_event_funcs, key, value)
 
-    """
-    cpdef void event_type_bind(self, uint16_t event_type, object parse_func) except *:
-        self.parse_funcs[event_type] = parse_func
-
-    cpdef uint16_t event_type_register_bind(self, object parse_func) except *:
+    cpdef void event_type_emit(self, bytes name, dict event_data={}) except *:
         cdef:
             uint16_t event_type
-
-        event_type = self.event_type_register()
-        self.event_type_bind(event_type, parse_func)
-        return event_type
-    """
-
-    cpdef void event_type_emit(self, uint16_t event_type, dict event_data={}) except *:
-        cdef:
             SDL_Event event
             PyObject *event_data_ptr
+        
+        event_type = self.event_type_get_id(name)
         event_data_ptr = <PyObject *>event_data
         Py_XINCREF(event_data_ptr)
         memset(&event, 0, sizeof(event))

@@ -78,7 +78,7 @@ program = Program.init_create(vertex_shader, fragment_shader)
 window = Window.init_create(width, height, title)
 frame_buffer = FrameBuffer.init_create_from_window(window)
 view = View.init_create()
-on_window_listener = Listener.init_create(EventType._WINDOW, on_window_event, None, None)
+on_window_listener = Listener.init_create(b"window", on_window_event, None, None)
 
 camera = Camera.init_create_orthographic(width/2.0, height/2.0, 0, 1000)
 proj_mat = Mat4()

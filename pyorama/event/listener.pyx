@@ -4,19 +4,21 @@ cdef class Listener(HandleObject):
         return <ListenerC *>event.slots.c_get_ptr(self.handle)
 
     @staticmethod
-    def init_create(uint16_t event_type, object callback, list args=None, dict kwargs=None):
+    def init_create(bytes event_type_name, object callback, list args=None, dict kwargs=None):
         cdef:
             Listener listener
 
         listener = Listener.__new__(Listener)
-        listener.create(event_type, callback, args, kwargs)
+        listener.create(event_type_name, callback, args, kwargs)
         return listener
 
-    cpdef void create(self, uint16_t event_type, object callback, list args=None, dict kwargs=None) except *:
+    cpdef void create(self, bytes event_type_name, object callback, list args=None, dict kwargs=None) except *:
         cdef:
+            uint16_t event_type
             ListenerC *listener_ptr
             VectorC *handles_ptr
         
+        event_type = app.event.event_type_get_id(event_type_name)
         if args == None: args = []
         if kwargs == None: kwargs = {}
         self.handle = event.slots.c_create(EVENT_SLOT_LISTENER)

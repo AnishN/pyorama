@@ -50,8 +50,8 @@ for i in range(num_windows):
     frame_buffers.append(frame_buffer)
     views.append(view)
 
-on_enter_frame_listener = Listener.init_create(EventType._ENTER_FRAME, on_enter_frame_event)
-on_window_listener = Listener.init_create(EventType._WINDOW, on_window_event)
+on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_event)
+on_window_listener = Listener.init_create(b"window", on_window_event)
 
 app.run()
 

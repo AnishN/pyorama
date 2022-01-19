@@ -17,5 +17,5 @@ ctypedef struct ListenerC:
 
 cdef class Listener(HandleObject):
     cdef ListenerC *get_ptr(self) except *
-    cpdef void create(self, uint16_t event_type, object callback, list args=*, dict kwargs=*) except *
+    cpdef void create(self, bytes event_type_name, object callback, list args=*, dict kwargs=*) except *
     cpdef void delete(self) except *

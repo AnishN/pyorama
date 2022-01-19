@@ -1,6 +1,5 @@
 import platform
 import time
-from pyorama.event.event_type import EventType
 
 graphics = GraphicsSystem("graphics")
 audio = UserSystem("audio")
@@ -108,7 +107,7 @@ def step():
     frame_index = frame_count % num_frame_times
     frame_time = curr_time - prev_time
     PyErr_CheckSignals()
-    event.event_type_emit(EventType.ENTER_FRAME)
+    event.event_type_emit(b"enter_frame")
     event.update(curr_time)
     #physics.update(1.0 / target_fps)
     asset.update()
