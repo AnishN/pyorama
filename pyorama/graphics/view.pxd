@@ -120,8 +120,6 @@ ctypedef struct ViewC:
     Handle frame_buffer
     Handle vertex_buffer
     Handle index_buffer
-    int32_t index_offset
-    int32_t index_count
     Handle program
     Handle textures[256]
     Handle samplers[256]

@@ -21,5 +21,5 @@ ctypedef struct TextureC:
 cdef class Texture(HandleObject):
 
     cdef TextureC *get_ptr(self) except *
-    cpdef void create_2d_from_image(self, Image image) except *
+    cpdef void create_from_image(self, Image image) except *
     cpdef void delete(self) except *

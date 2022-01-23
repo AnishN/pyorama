@@ -117,11 +117,11 @@ cdef class View(HandleObject):
             IndexBufferC *index_buffer_ptr
         view_ptr = self.get_ptr()
         view_ptr.index_buffer = index_buffer.handle
-        view_ptr.index_offset = offset
+        #view_ptr.index_offset = offset
         if count == -1:
             index_buffer_ptr = index_buffer.get_ptr()
             count = index_buffer_ptr.num_indices
-        view_ptr.index_count = count
+        #view_ptr.index_count = count
 
     cpdef void set_program(self, Program program) except *:
         cdef:
@@ -231,8 +231,21 @@ cdef class View(HandleObject):
         bgfx_set_transform(&view_ptr.transform.model, 1)#TODO: support multiple model transforms!
         bgfx_set_view_transform(view_ptr.index, &view_ptr.transform.view, &view_ptr.transform.projection)
         bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
-        bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id, 0, vertex_buffer_ptr.num_vertices)
-        bgfx_set_index_buffer(index_buffer_ptr.bgfx_id, view_ptr.index_offset, view_ptr.index_count)#0, index_buffer_ptr.num_indices)
+        
+        if vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_STATIC:
+            bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id.static, 0, vertex_buffer_ptr.num_vertices)
+        elif vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_DYNAMIC:
+            raise NotImplementedError()
+        elif vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_TRANSIENT:
+            raise NotImplementedError()
+        
+        if index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_STATIC:
+            bgfx_set_index_buffer(index_buffer_ptr.bgfx_id.static, 0, index_buffer_ptr.num_indices)
+        elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_DYNAMIC:
+            raise NotImplementedError()
+        elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_TRANSIENT:
+            raise NotImplementedError()
+
         for i in range(256):
             texture = view_ptr.textures[i]
             sampler = view_ptr.samplers[i]

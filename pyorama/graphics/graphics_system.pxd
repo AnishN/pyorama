@@ -93,6 +93,7 @@ cdef class GraphicsSystem:
         IntHashMapC window_ids
         bint right_handed
         bint homogeneous_depth
+        VertexLayout sprite_vertex_layout
 
     cdef void c_init_sdl2(self) except *
     cdef void c_quit_sdl2(self) except *

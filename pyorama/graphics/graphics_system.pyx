@@ -43,8 +43,13 @@ cdef class GraphicsSystem:
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))
         self.free_view_index = 0
         int_hash_map_init(&self.window_ids)
+        self.sprite_vertex_layout = VertexLayout.init_create([
+            (ATTRIBUTE_POSITION, ATTRIBUTE_TYPE_F32, 3, False, False),
+            (ATTRIBUTE_COLOR0, ATTRIBUTE_TYPE_U8, 4, True, False),
+        ])
     
     def quit(self):
+        self.sprite_vertex_layout.delete()
         int_hash_map_free(&self.window_ids)
         memset(&self.used_views, False, sizeof(GRAPHICS_MAX_VIEWS * sizeof(bint)))
         memset(&self.free_views, 0, sizeof(GRAPHICS_MAX_VIEWS * sizeof(uint16_t)))

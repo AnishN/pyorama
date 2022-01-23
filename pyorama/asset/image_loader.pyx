@@ -24,5 +24,5 @@ cdef Error load_image(Handle image, char *file_path, size_t file_path_len, size_
         image_ptr.pixels = <uint8_t *>pixels
         image_ptr.width = width
         image_ptr.height = height
-        image_ptr.bytes_per_pixel = num_channels
+        image_ptr.num_channels = num_channels
         free(stbi_pixels)

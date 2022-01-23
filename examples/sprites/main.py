@@ -50,51 +50,60 @@ proj_mat = Mat4()
 model_mat = Mat4()
 
 app.init()
-window = Window.init_create(width, height, title)
-frame_buffer = FrameBuffer.init_create_from_window(window)
-view = View.init_create()
+#window = Window.init_create(width, height, title)
+#frame_buffer = FrameBuffer.init_create_from_window(window)
+#view = View.init_create()
 
-on_window_listener = Listener.init_create(b"window", on_window_event)
-on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_event)
+#on_window_listener = Listener.init_create(b"window", on_window_event)
+#on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_event)
 
-vertex_layout = VertexLayout.init_create([
-    (ATTRIBUTE_POSITION, ATTRIBUTE_TYPE_F32, 3, False, False),
-    (ATTRIBUTE_COLOR0, ATTRIBUTE_TYPE_U8, 4, True, False),
+base_path = b"./examples/sprites/"
+image_path = base_path + b"images/python-powered-h-140x182.png"
+
+image = Image.init_create_from_file(image_path)
+texture = Texture.init_create_from_image(image)
+sprite = Sprite.init_create(texture)
+sprite_batch = SpriteBatch.init_create([sprite])
+
+"""
+vertex_format = VertexFormat([
+    (b"a_position", 3, ATTRIBUTE_TYPE_FLOAT, False, False)
+    (b"color", 4, ATTRIBUTE_TYPE_UINT8, False, False),
 ])
-vertex_buffer = VertexBuffer.init_create_static(
-    vertex_layout, 
-    [
-        (-1.0,  1.0,  1.0, 0x00, 0x00, 0x00, 0xff),
-        ( 1.0,  1.0,  1.0, 0xff, 0x00, 0x00, 0xff),
-        (-1.0, -1.0,  1.0, 0x00, 0xff, 0x00, 0xff),
-        ( 1.0, -1.0,  1.0, 0x00, 0x00, 0xff, 0xff),
-        (-1.0,  1.0, -1.0, 0xff, 0xff, 0x00, 0xff),
-        ( 1.0,  1.0, -1.0, 0xff, 0x00, 0xff, 0xff),
-        (-1.0, -1.0, -1.0, 0x00, 0xff, 0xff, 0xff),
-        ( 1.0, -1.0, -1.0, 0xff, 0xff, 0xff, 0xff),
-    ],
-)
 
-index_layout = INDEX_LAYOUT_U16
-index_buffer = IndexBuffer.init_create_static(
-    index_layout,
-    [
-        2, 1, 0,
-        2, 3, 1,
-        5, 6, 4,
-        7, 6, 5,
-        4, 2, 0,
-        6, 2, 4,
-        3, 5, 1,
-        3, 7, 5,
-        1, 4, 0,
-        1, 5, 4,
-        6, 3, 2,
-        7, 3, 6,
-    ],
-)
+#static
+vertex_buffer = VertexBuffer.create_static(vertex_format, vertices)
 
-base_path = b"./examples/cubes/"
+#dynamic
+vertex_buffer = VertexBuffer.create_dynamic(vertex_format, max_vertices=0)
+
+#if dynamic and resizable, use add_vertex and set_vertex
+vertex_buffer.add_vertices()
+vertex_buffer.add_vertex(1, 2, 3, 4, 0xFF)
+vertex_buffer.add_vertex()
+vertex_buffer.add_vertex()
+vertex_buffer.add_vertex()
+vertex_buffer.set_vertex()
+#vertex_buffer.c_get_vertex_ptr(i)
+
+#if dynamic and not resizable, use just set_vertex (the memory has already been allocated
+vertex_buffer.set_vertex()
+vertex_buffer.set_vertices([vertices], offset)
+vertex_buffer.update()
+
+vertex_buffer = VertexBuffer.create_transient(vertex_format)
+#if transient, just add vertex, should not need to set, since the data is just going to be cleared next frame
+#here, add should not allocate more memory, but the ptr should just rollover
+
+vertex_buffer.set_data(
+vertex_buffer.set_data(
+vertex_buffer.update(
+"""
+
+#vertex_buffer = sprite_batch.get_vertex_buffer()
+#index_buffer = sprite_batch.get_index_buffer()
+
+"""
 vs_source_path = base_path + b"shaders/vs_cubes.sc"
 fs_source_path = base_path + b"shaders/fs_cubes.sc"
 vertex_shader = Shader.init_create_from_source_file(SHADER_TYPE_VERTEX, vs_source_path)
@@ -108,6 +117,7 @@ view.set_vertex_buffer(vertex_buffer)
 view.set_index_buffer(index_buffer)
 view.set_program(program)
 view.submit()
+"""
 
 app.run()
 
@@ -116,8 +126,8 @@ on_window_listener.delete()
 program.delete()
 fragment_shader.delete()
 vertex_shader.delete()
-vertex_buffer.delete(); vertex_layout.delete()
-index_buffer.delete()
+vertex_buffer.delete(); vertex_layout.delete(); vertices.free()
+index_buffer.delete(); indices.free()
 view.delete()
 frame_buffer.delete()
 window.delete()

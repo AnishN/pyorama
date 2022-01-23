@@ -8,12 +8,21 @@ ctypedef struct SpriteC:
     Handle handle
     Handle color_texture
     Handle normal_texture
-    Handle transform
+    Vec3C position
+    float rotation
+    Vec2C scale
+    Vec2C size
     Vec2C[4] texcoords
+    Vec2C offset
     Vec3C tint
     float alpha
 
 cdef class Sprite(HandleObject):
     cdef SpriteC *get_ptr(self) except *
-    cpdef void create(self, Texture color_texture, Texture normal_texture=*, Transform transform=*, list texcoords=*, Vec3 tint=*, float alpha=*) except *
+    cpdef void create(self, 
+            Texture color_texture, Texture normal_texture=*, 
+            Vec3 position=*, float rotation=*, Vec2 scale=*, 
+            Vec2 size=*, list texcoords=*, Vec2 offset=*,
+            Vec3 tint=*, float alpha=*,
+    ) except *
     cpdef void delete(self) except *

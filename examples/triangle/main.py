@@ -27,18 +27,20 @@ frame_buffer = FrameBuffer.init_create_from_window(window)
 view = View.init_create()
 on_window_listener = Listener.init_create(b"window", on_window_event)
 
-vertex_format = BufferFormat([(b"a_position", 3, BUFFER_FIELD_TYPE_F32)])
-vertex_layout = VertexLayout.init_create(vertex_format, normalize={b"a_color0"})
-vertices = Buffer(vertex_format)
-vertices.init_from_list([(-1, -1, 0), (1, -1, 0), (0, 1, 0)])
-#vertices.init_from_list([(-1, -1, 0), (0, 1, 0), (1, -1, 0)])
-vertex_buffer = VertexBuffer.init_create(vertex_layout, vertices)
 
-index_format = BufferFormat([(b"a_indices", 1, BUFFER_FIELD_TYPE_U16)])
-indices = Buffer(index_format)
-indices.init_from_list([0, 1, 2], is_flat=True)
+vertex_layout = VertexLayout.init_create([
+    (ATTRIBUTE_POSITION, ATTRIBUTE_TYPE_F32, 3, False, False),
+])
+vertex_buffer = VertexBuffer.init_create_static(
+    vertex_layout, 
+    [(-1, -1, 0), (1, -1, 0), (0, 1, 0)],
+)
+
 index_layout = INDEX_LAYOUT_U16
-index_buffer = IndexBuffer.init_create(index_layout, indices)
+index_buffer = IndexBuffer.init_create_static(
+    index_layout,
+    [0, 1, 2],
+)
 
 base_path = b"./examples/triangle/"
 vs_source_path = base_path + b"shaders/vs_triangle.sc"
@@ -64,8 +66,8 @@ on_window_listener.delete()
 program.delete()
 fragment_shader.delete()
 vertex_shader.delete()
-vertex_buffer.delete(); vertex_layout.delete(); vertices.free()
-index_buffer.delete(); indices.free()
+vertex_buffer.delete(); vertex_layout.delete()
+index_buffer.delete()
 view.delete()
 frame_buffer.delete()
 window.delete()

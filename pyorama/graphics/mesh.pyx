@@ -148,6 +148,7 @@ cdef class Mesh(HandleObject):
                 print(i, j)
                 print(ai_face.mIndices[j])
 
+    """
     cpdef void get_vertices(self, Buffer vertices) except *:
         cdef MeshC *mesh_ptr
         mesh_ptr = self.get_ptr()
@@ -157,6 +158,7 @@ cdef class Mesh(HandleObject):
         cdef MeshC *mesh_ptr
         mesh_ptr = self.get_ptr()
         indices.c_init_from_ptr(mesh_ptr.indices, mesh_ptr.num_indices)
+    """
 
     cpdef void mesh_delete(self) except *:
         cdef:

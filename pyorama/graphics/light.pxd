@@ -1,5 +1,4 @@
 from pyorama.data.handle cimport *
-from pyorama.data.buffer cimport *
 from pyorama.math cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.sdl2 cimport *

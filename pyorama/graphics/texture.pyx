@@ -1,7 +1,7 @@
 """
 bgfx_texture_handle_t bgfx_create_texture(const bgfx_memory_t* _mem, uint64_t _flags, uint8_t _skip, bgfx_texture_info_t* _info)
 bgfx_texture_handle_t bgfx_create_texture_2d(uint16_t _width, uint16_t _height, bint _hasMips, uint16_t _numLayers, bgfx_texture_format_t _format, uint64_t _flags, const bgfx_memory_t* _mem)
-bgfx_texture_handle_t bgfx_create_texture_2d_scaled(bgfx_backbuffer_ratio_t _ratio, bint _hasMips, uint16_t _numLayers, bgfx_texture_format_t _format, uint64_t _flags)
+bgfx_texture_handle_t bgfx_create_texture_scaled(bgfx_backbuffer_ratio_t _ratio, bint _hasMips, uint16_t _numLayers, bgfx_texture_format_t _format, uint64_t _flags)
 bgfx_texture_handle_t bgfx_create_texture_3d(uint16_t _width, uint16_t _height, uint16_t _depth, bint _hasMips, bgfx_texture_format_t _format, uint64_t _flags, const bgfx_memory_t* _mem)
 bgfx_texture_handle_t bgfx_create_texture_cube(uint16_t _size, bint _hasMips, uint16_t _numLayers, bgfx_texture_format_t _format, uint64_t _flags, const bgfx_memory_t* _mem)
 
@@ -26,15 +26,15 @@ cdef class Texture(HandleObject):
         return <TextureC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
-    def init_create_2d_from_image(Image image):
+    def init_create_from_image(Image image):
         cdef:
             Texture texture
 
         texture = Texture.__new__(Texture)
-        texture.create_2d_from_image(image)
+        texture.create_from_image(image)
         return texture
 
-    cpdef void create_2d_from_image(self, Image image) except *:
+    cpdef void create_from_image(self, Image image) except *:
         cdef:
             TextureC *texture_ptr
             ImageC *image_ptr
@@ -44,7 +44,7 @@ cdef class Texture(HandleObject):
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_TEXTURE)
         texture_ptr = self.get_ptr()
         image_ptr = image.get_ptr()
-        num_pixel_bytes = image_ptr.width * image_ptr.height * image_ptr.bytes_per_pixel
+        num_pixel_bytes = image_ptr.width * image_ptr.height * image_ptr.num_channels
         memory_ptr = bgfx_copy(image_ptr.pixels, num_pixel_bytes)
         texture_ptr.bgfx_id = bgfx_create_texture_2d(
             image_ptr.width,

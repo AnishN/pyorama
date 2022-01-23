@@ -1,5 +1,4 @@
 from pyorama.data.handle cimport *
-from pyorama.data.buffer cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.graphics.mesh_utils cimport *
 from pyorama.libs.assimp cimport *
@@ -22,6 +21,6 @@ cdef class Mesh(HandleObject):
     cpdef void create_from_source_file(self, bytes file_path) except *
     cdef void _process_node(self, aiNode *ai_node, aiScene *ai_scene)
     cdef void _process_mesh(self, aiMesh *ai_mesh, aiScene *ai_scene)
-    cpdef void get_vertices(self, Buffer vertices) except * 
-    cpdef void get_indices(self, Buffer indices) except *
+    #cpdef void get_vertices(self, Buffer vertices) except * 
+    #cpdef void get_indices(self, Buffer indices) except *
     cpdef void mesh_delete(self) except *
