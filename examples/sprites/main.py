@@ -44,15 +44,11 @@ on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_ev
 
 image = Image.init_create_from_file(image_path)
 texture = Texture.init_create_from_image(image)
-sprite_1 = Sprite.init_create(texture, position=Vec3(50, 100, 0), rotation=math.radians(45), scale=Vec2(1, 1), size=Vec2(32, 32))
-sprite_2 = Sprite.init_create(texture, position=Vec3(400, 300, 0), scale=Vec2(2, 0.5), size=Vec2(32, 32))
+sprite_1 = Sprite.init_create(texture, position=Vec3(50, 100, 0), rotation=math.radians(45), scale=Vec2(1, 1), size=Vec2(64, 64))
+sprite_2 = Sprite.init_create(texture, position=Vec3(400, 300, 0), scale=Vec2(6, 4), size=Vec2(32, 32))
 sprite_batch = SpriteBatch.init_create([sprite_1, sprite_2])
 vertex_buffer = VertexBuffer(); sprite_batch.get_vertex_buffer(vertex_buffer)
 index_buffer = IndexBuffer(); sprite_batch.get_index_buffer(index_buffer)
-
-import numpy as np
-print(np.array(vertex_buffer.get_view_array()))
-print(np.array(index_buffer.get_view_array()))
 
 vertex_shader = Shader.init_create_from_source_file(SHADER_TYPE_VERTEX, vs_source_path)
 fragment_shader = Shader.init_create_from_source_file(SHADER_TYPE_FRAGMENT, fs_source_path)
@@ -60,16 +56,18 @@ program = Program.init_create(vertex_shader, fragment_shader)
 
 CameraUtils.orthographic(proj_mat, 0, width, 0, height, -1, 1)
 
+sampler = Uniform.init_create(b"s_color", UNIFORM_TYPE_SAMPLER)
+
 view.set_clear(clear_flags, clear_color, clear_depth, clear_stencil)
 view.set_rect(0, 0, width, height)
 view.set_frame_buffer(frame_buffer)
 view.set_vertex_buffer(vertex_buffer)
 view.set_index_buffer(index_buffer)
 view.set_program(program)
-#view.set_cull_state(VIEW_CULL_STATE_NONE)
 view.set_transform_model(model_mat)
 view.set_transform_view(view_mat)
 view.set_transform_projection(proj_mat)
+view.set_texture(sampler, texture, 0)
 view.submit()
 
 app.run()
