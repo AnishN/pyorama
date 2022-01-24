@@ -2,6 +2,7 @@ from pyorama.data.handle cimport *
 from pyorama.graphics.vertex_layout cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.c cimport *
+from cython cimport view as cy_view
 
 cdef union bgfx_generic_vertex_buffer_handle_t:
     bgfx_vertex_buffer_handle_t static
@@ -29,5 +30,8 @@ ctypedef union VertexValueC:
 cdef class VertexBuffer(HandleObject):
     cdef VertexBufferC *get_ptr(self) except *
     cpdef void create_static(self, VertexLayout layout, list vertices) except *
+    cpdef void create_static_from_array(self, VertexLayout layout, uint8_t[::1] vertices, bint copy=*) except *
     cpdef void delete(self) except *
     cpdef void update(self) except *
+    cpdef cy_view.array get_view_array(self)
+    cpdef uint8_t[::1] get_raw_view_array(self) except *

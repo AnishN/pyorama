@@ -50,7 +50,7 @@ cdef class VertexLayout(HandleObject):
 
         num_attributes = len(attributes)
         if num_attributes > 16:
-            raise ValueError("Vertex Layout: more than 16 attributes not supported")
+            raise ValueError("VertexLayout: more than 16 attributes not supported")
         vertex_layout_ptr.num_attributes = num_attributes
 
         vertex_layout_ptr.vertex_size = 0
@@ -60,6 +60,9 @@ cdef class VertexLayout(HandleObject):
             a_ptr.name = <AttributeName>a[0]
             a_ptr.type_ = <AttributeType>a[1]
             a_ptr.count = <size_t>a[2]
+            if a_ptr.count < 1 or a_ptr.count > 4:
+                raise ValueError("VertexLayout: attribute count outside of range [1, 4]")
+            itoa(a_ptr.count, &vertex_layout_ptr.format_[2 * i], 10)
             a_ptr.normalize = <bint>a[3]
             a_ptr.cast_to_int = <bint>a[4]
             bgfx_vertex_layout_add(
@@ -72,17 +75,14 @@ cdef class VertexLayout(HandleObject):
             )
             if a_ptr.type_ == ATTRIBUTE_TYPE_U8: 
                 a_size = sizeof(uint8_t) * a_ptr.count
+                vertex_layout_ptr.format_[2 * i + 1] = b"B"
             elif a_ptr.type_ == ATTRIBUTE_TYPE_I16:
                 a_size = sizeof(int16_t) * a_ptr.count
+                vertex_layout_ptr.format_[2 * i + 1] = b"h"
             elif a_ptr.type_ == ATTRIBUTE_TYPE_F32:
                 a_size = sizeof(float) * a_ptr.count
-
-            if a_ptr.type_ == ATTRIBUTE_TYPE_U8: 
-                a_size = sizeof(uint8_t) * a_ptr.count
-            elif a_ptr.type_ == ATTRIBUTE_TYPE_I16:
-                a_size = sizeof(int16_t) * a_ptr.count
-            elif a_ptr.type_ == ATTRIBUTE_TYPE_F32:
-                a_size = sizeof(float) * a_ptr.count
+                vertex_layout_ptr.format_[2 * i + 1] = b"f"
+            
             vertex_layout_ptr.vertex_size += a_size
         bgfx_vertex_layout_end(layout_ptr)
 

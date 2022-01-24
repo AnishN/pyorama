@@ -44,8 +44,10 @@ cdef class GraphicsSystem:
         self.free_view_index = 0
         int_hash_map_init(&self.window_ids)
         self.sprite_vertex_layout = VertexLayout.init_create([
-            (ATTRIBUTE_POSITION, ATTRIBUTE_TYPE_F32, 3, False, False),
-            (ATTRIBUTE_COLOR0, ATTRIBUTE_TYPE_U8, 4, True, False),
+            (ATTRIBUTE_POSITION, ATTRIBUTE_TYPE_F32, 4, False, False),#Vec3 position + float rotation
+            (ATTRIBUTE_NORMAL, ATTRIBUTE_TYPE_F32, 4, False, False),#Vec2 scale + Vec2 size
+            (ATTRIBUTE_TEXCOORD0, ATTRIBUTE_TYPE_F32, 4, False, False),#Vec2 texcoord + Vec2 offset
+            (ATTRIBUTE_COLOR0, ATTRIBUTE_TYPE_U8, 4, True, False),#Vec3 tint + float alpha
         ])
     
     def quit(self):

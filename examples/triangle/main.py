@@ -9,6 +9,9 @@ def on_window_event(event):
     if event["sub_type"] == WINDOW_EVENT_TYPE_CLOSE:
         app.trigger_quit()
 
+def on_enter_frame_event(event):
+    view.submit()
+
 width = 800
 height = 600
 title = b"Triangle"
@@ -20,12 +23,14 @@ clear_stencil = 0
 model_mat = Mat4()
 view_mat = Mat4()
 proj_mat = Mat4()
+CameraUtils.orthographic(proj_mat, 0, width, 0, height, -1, 1)
 
 app.init()
 window = Window.init_create(width, height, title)
 frame_buffer = FrameBuffer.init_create_from_window(window)
 view = View.init_create()
 on_window_listener = Listener.init_create(b"window", on_window_event)
+on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_event)
 
 
 vertex_layout = VertexLayout.init_create([
@@ -33,7 +38,8 @@ vertex_layout = VertexLayout.init_create([
 ])
 vertex_buffer = VertexBuffer.init_create_static(
     vertex_layout, 
-    [(-1, -1, 0), (1, -1, 0), (0, 1, 0)],
+    #[(-1, -1, 0), (1, -1, 0), (0, 1, 0)],
+    [(0, 0, 0), (400, 600, 0), (800, 0, 0)],
 )
 
 index_layout = INDEX_LAYOUT_U16
@@ -62,6 +68,7 @@ view.submit()
 
 app.run()
 
+on_enter_frame_listener.delete()
 on_window_listener.delete()
 program.delete()
 fragment_shader.delete()

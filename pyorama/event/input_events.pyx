@@ -74,7 +74,7 @@ cdef void c_keyboard_event(uint16_t event_type, SDL_Event *event_ptr, PyObject *
     event_data["type"] = event.type
     #event_data["timestamp"] = self.timestamp
     event_data["window_id"] = event.windowID
-    event_data["which"] = event.which
+    #event_data["which"] = event.which
     event_data["state"] = event.state
     event_data["repeat"] = event.repeat
     event_data["scancode"] = event.keysym.scancode

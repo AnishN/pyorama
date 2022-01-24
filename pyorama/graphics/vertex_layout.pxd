@@ -45,6 +45,7 @@ ctypedef struct VertexLayoutC:
     size_t num_attributes
     size_t vertex_size
     bgfx_vertex_layout_t bgfx_id
+    char[MAX_ATTRIBUTES * 2 + 1] format_
 
 cdef class VertexLayout(HandleObject):
 

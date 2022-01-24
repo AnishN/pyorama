@@ -36,7 +36,7 @@ cdef class Sprite(HandleObject):
         sprite_ptr.scale = scale.data
         sprite_ptr.size = size.data
         if texcoords == None:
-            sprite_ptr.texcoords = [[0, 0], [1, 0], [0, 1], [1, 1]]
+            sprite_ptr.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
         else:
             for i in range(4):
                 sprite_ptr.texcoords[i] = <Vec2C>texcoords[i].data
