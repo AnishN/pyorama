@@ -108,6 +108,22 @@ cdef class Mat3:
         Mat3.c_mul_scalar(&out.data, scalar)
 
     @staticmethod
+    cdef void c_random(Mat3C *out) nogil:
+        out.m00 = random_get_float()
+        out.m01 = random_get_float()
+        out.m02 = random_get_float()
+        out.m10 = random_get_float()
+        out.m11 = random_get_float()
+        out.m12 = random_get_float()
+        out.m20 = random_get_float()
+        out.m21 = random_get_float()
+        out.m22 = random_get_float()
+
+    @staticmethod
+    def random(Mat3 out):
+        Mat3.c_random(&out.data)
+
+    @staticmethod
     cdef void c_rotate(Mat3C *out, float angle) nogil:
         glm_rotate2d(<mat3>out, angle)
     

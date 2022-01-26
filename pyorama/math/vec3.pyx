@@ -10,6 +10,24 @@ cdef class Vec3:
         self.data.y = y
         self.data.z = z
 
+    property x:
+        def __get__(self):
+            return self.data.x
+        def __set__(self, float value):
+            self.data.x = value
+
+    property y:
+        def __get__(self):
+            return self.data.y
+        def __set__(self, float value):
+            self.data.y = value
+    
+    property z:
+        def __get__(self):
+            return self.data.z
+        def __set__(self, float value):
+            self.data.z = value
+
     @staticmethod
     cdef Vec3 c_from_data(Vec3C *v):
         cdef Vec3 out = Vec3.__new__(Vec3)
@@ -357,6 +375,16 @@ cdef class Vec3:
     @staticmethod
     def project(Vec3 out, Vec3 a, Vec3 b):
         Vec3.c_project(&out.data, &a.data, &b.data)
+
+    @staticmethod
+    cdef void c_random(Vec3C *out) nogil:
+        out.x = random_get_float()
+        out.y = random_get_float()
+        out.z = random_get_float()
+
+    @staticmethod
+    def random(Vec3 out):
+        Vec3.c_random(&out.data)
 
     @staticmethod
     cdef void c_rotate_angle_axis(Vec3C *out, float angle, Vec3C *axis) nogil:

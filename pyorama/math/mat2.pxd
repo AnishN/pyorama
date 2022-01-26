@@ -2,6 +2,7 @@ cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
+from pyorama.math.utils cimport *
 
 @cython.final
 cdef class Mat2:
@@ -23,6 +24,8 @@ cdef class Mat2:
     cdef void c_mul(Mat2C *out, Mat2C *a, Mat2C *b) nogil
     @staticmethod
     cdef void c_mul_scalar(Mat2C *out, float scalar) nogil
+    @staticmethod
+    cdef void c_random(Mat2C *out) nogil
     @staticmethod
     cdef float c_row_mat_col(Vec2C *r, Mat2C *m, Vec2C *c) nogil
     @staticmethod

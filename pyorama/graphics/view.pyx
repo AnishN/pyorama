@@ -114,13 +114,11 @@ cdef class View(HandleObject):
     cpdef void set_index_buffer(self, IndexBuffer index_buffer, int32_t offset=0, int32_t count=-1) except *:
         cdef:
             ViewC *view_ptr
-            IndexBufferC *index_buffer_ptr
         view_ptr = self.get_ptr()
         view_ptr.index_buffer = index_buffer.handle
         #view_ptr.index_offset = offset
         if count == -1:
-            index_buffer_ptr = index_buffer.get_ptr()
-            count = index_buffer_ptr.num_indices
+            count = index_buffer.get_num_indices()
         #view_ptr.index_count = count
 
     cpdef void set_program(self, Program program) except *:
@@ -233,16 +231,28 @@ cdef class View(HandleObject):
         bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
         
         if vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_STATIC:
-            bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id.static, 0, vertex_buffer_ptr.num_vertices)
+            if vertex_buffer_ptr.resizable:
+                raise ValueError("View: static vertex buffer cannot be resizable")
+            else:
+                bgfx_set_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id.static, 0, vertex_buffer_ptr.data.fixed.max_items)
         elif vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_DYNAMIC:
-            raise NotImplementedError()
+            if vertex_buffer_ptr.resizable:
+                bgfx_set_dynamic_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id.dynamic, 0, vertex_buffer_ptr.data.resizable.num_items)
+            else:
+                bgfx_set_dynamic_vertex_buffer(view_ptr.index, vertex_buffer_ptr.bgfx_id.dynamic, 0, vertex_buffer_ptr.data.fixed.max_items)
         elif vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_TRANSIENT:
             raise NotImplementedError()
         
         if index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_STATIC:
-            bgfx_set_index_buffer(index_buffer_ptr.bgfx_id.static, 0, index_buffer_ptr.num_indices)
+            if index_buffer_ptr.resizable:
+                raise ValueError("View: static index buffer cannot be resizable")
+            else:
+                bgfx_set_index_buffer(index_buffer_ptr.bgfx_id.static, 0, index_buffer_ptr.data.fixed.max_items)
         elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_DYNAMIC:
-            raise NotImplementedError()
+            if index_buffer_ptr.resizable:
+                bgfx_set_dynamic_index_buffer(index_buffer_ptr.bgfx_id.dynamic, 0, index_buffer_ptr.data.resizable.num_items)
+            else:
+                bgfx_set_dynamic_index_buffer(index_buffer_ptr.bgfx_id.dynamic, 0, index_buffer_ptr.data.fixed.max_items)
         elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_TRANSIENT:
             raise NotImplementedError()
 
@@ -253,6 +263,17 @@ cdef class View(HandleObject):
                 texture_ptr = <TextureC *>graphics.slots.c_get_ptr(texture)
                 sampler_ptr = <UniformC *>graphics.slots.c_get_ptr(sampler)
                 bgfx_set_texture(i, sampler_ptr.bgfx_id, texture_ptr.bgfx_id, 0)
+
+        """
+        bgfx_dynamic_index_buffer_handle_t bgfx_create_dynamic_index_buffer(uint32_t _num, uint16_t _flags)
+        bgfx_dynamic_index_buffer_handle_t bgfx_create_dynamic_index_buffer_mem(const bgfx_memory_t* _mem, uint16_t _flags)
+        void bgfx_update_dynamic_index_buffer(bgfx_dynamic_index_buffer_handle_t _handle, uint32_t _startIndex, const bgfx_memory_t* _mem)
+        void bgfx_destroy_dynamic_index_buffer(bgfx_dynamic_index_buffer_handle_t _handle)
+        bgfx_dynamic_vertex_buffer_handle_t bgfx_create_dynamic_vertex_buffer(uint32_t _num, const bgfx_vertex_layout_t* _layout, uint16_t _flags)
+        bgfx_dynamic_vertex_buffer_handle_t bgfx_create_dynamic_vertex_buffer_mem(const bgfx_memory_t* _mem, const bgfx_vertex_layout_t* _layout, uint16_t _flags)
+        void bgfx_update_dynamic_vertex_buffer(bgfx_dynamic_vertex_buffer_handle_t _handle, uint32_t _startVertex, const bgfx_memory_t* _mem)
+        void bgfx_destroy_dynamic_vertex_buffer(bgfx_dynamic_vertex_buffer_handle_t _handle)
+        """
 
         state = 0
         state |= view_ptr.write_state

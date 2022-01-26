@@ -2,6 +2,7 @@ cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
+from pyorama.math.utils cimport *
 
 @cython.final
 cdef class Quat:
@@ -50,6 +51,8 @@ cdef class Quat:
     cdef void c_norm(QuatC *out) nogil
     @staticmethod
     cdef void c_norm_to(QuatC *out, QuatC *q) nogil
+    @staticmethod
+    cdef void c_random(QuatC *out) nogil
     @staticmethod
     cdef float c_real(QuatC *q) nogil
     @staticmethod

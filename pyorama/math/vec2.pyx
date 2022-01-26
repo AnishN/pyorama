@@ -6,6 +6,18 @@ cdef class Vec2:
         self.data.x = x
         self.data.y = y
 
+    property x:
+        def __get__(self):
+            return self.data.x
+        def __set__(self, float value):
+            self.data.x = value
+
+    property y:
+        def __get__(self):
+            return self.data.y
+        def __set__(self, float value):
+            self.data.y = value
+
     @staticmethod
     cdef Vec2 c_from_data(Vec2C *v):
         cdef Vec2 out = Vec2.__new__(Vec2)
@@ -265,6 +277,15 @@ cdef class Vec2:
     def one(Vec2 out):
         Vec2.c_one(&out.data)
     
+    @staticmethod
+    cdef void c_random(Vec2C *out) nogil:
+        out.x = random_get_float()
+        out.y = random_get_float()
+
+    @staticmethod
+    def random(Vec2 out):
+        Vec2.c_random(&out.data)
+
     @staticmethod
     cdef void c_rotate(Vec2C *out, Vec2C *v, float angle) nogil:
         glm_vec2_rotate(<vec2>v, angle, <vec2>out)

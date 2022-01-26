@@ -26,3 +26,25 @@ cdef class Sprite(HandleObject):
             Vec3 tint=*, float alpha=*,
     ) except *
     cpdef void delete(self) except *
+
+    cpdef void get_color_texture(self, Texture color_texture) except *
+    cpdef void get_normal_texture(self, Texture normal_texture) except *
+    cpdef void get_position(self, Vec3 position) except *
+    cpdef float get_rotation(self) except *
+    cpdef void get_scale(self, Vec2 scale) except *
+    cpdef void get_size(self, Vec2 size) except *
+    cpdef list get_texcoords(self)
+    cpdef void get_offset(self, Vec2 offset) except *
+    cpdef void get_tint(self, Vec3 tint) except *
+    cpdef float get_alpha(self) except *
+
+    cpdef void set_color_texture(self, Texture color_texture) except *
+    cpdef void set_normal_texture(self, Texture normal_texture) except *
+    cpdef void set_position(self, Vec3 position) except *
+    cpdef void set_rotation(self, float rotation) except *
+    cpdef void set_scale(self, Vec2 scale) except *
+    cpdef void set_size(self, Vec2 size) except *
+    cpdef void set_texcoords(self, list texcoords) except *
+    cpdef void set_offset(self, Vec2 offset) except *
+    cpdef void set_tint(self, Vec3 tint) except *
+    cpdef void set_alpha(self, float alpha) except *

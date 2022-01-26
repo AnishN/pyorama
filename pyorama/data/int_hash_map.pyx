@@ -153,5 +153,5 @@ cdef Error int_hash_map_resize(IntHashMapC *hash_map, size_t new_max_items) nogi
                     break
 
     free(hash_map.items.items)
-    hash_map.items.items = <char *>new_items
+    hash_map.items.items = <uint8_t *>new_items
     hash_map.items.max_items = new_max_items

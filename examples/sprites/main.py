@@ -1,4 +1,7 @@
 import math
+import random
+import time
+
 import pyorama
 from pyorama import app
 from pyorama.math import *
@@ -11,6 +14,12 @@ def on_window_event(event):
         app.trigger_quit()
 
 def on_enter_frame_event(event):
+    for i in range(num_sprites):
+        sprite = sprites[i]
+        rotation = sprite.get_rotation()
+        rotation += rotation_speed
+        sprite.set_rotation(rotation)
+    sprite_batch.update()
     view.submit()
 
 width = 800
@@ -44,9 +53,36 @@ on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_ev
 
 image = Image.init_create_from_file(image_path)
 texture = Texture.init_create_from_image(image)
-sprite_1 = Sprite.init_create(texture, position=Vec3(50, 100, 0), rotation=math.radians(45), scale=Vec2(1, 1), size=Vec2(64, 64))
-sprite_2 = Sprite.init_create(texture, position=Vec3(400, 300, 0), scale=Vec2(6, 4), size=Vec2(32, 32))
-sprite_batch = SpriteBatch.init_create([sprite_1, sprite_2])
+
+sprites = []
+num_sprites = 100
+random_position = Vec3()
+random_rotation = 0
+rotation_speed = 0.1
+random_scale = Vec2()
+sprite_size = Vec2(32, 32)
+sprite_center = Vec2(0.5, 0.5)
+
+for i in range(num_sprites):
+    random_position.x = random.random() * width
+    random_position.y = random.random() * height
+    random_rotation = random.random() * 2 * MATH_PI
+    random_scale.x = random.random() + 0.5
+    random_scale.y = random.random() + 0.5
+
+    sprite = Sprite.init_create(
+        texture, 
+        position=random_position, 
+        rotation=random_rotation,
+        scale=random_scale,
+        size=sprite_size,
+        offset=sprite_center,
+    )
+    sprites.append(sprite)
+
+sprite_batch = SpriteBatch.init_create()
+sprite_batch.set_sprites(sprites)
+
 vertex_buffer = VertexBuffer(); sprite_batch.get_vertex_buffer(vertex_buffer)
 index_buffer = IndexBuffer(); sprite_batch.get_index_buffer(index_buffer)
 

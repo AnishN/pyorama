@@ -36,6 +36,11 @@ def init(dict config=None):
     frequency = SDL_GetPerformanceFrequency()
     start_time = c_get_current_time()
 
+    if "random_seed" in config:
+        random_set_seed(<uint64_t>config["random_seed"])
+    else:
+        random_set_seed_from_time()
+
     graphics.init(config.get("graphics", None))
     audio.init(config.get("audio", None))
     event.init(config.get("event", None))

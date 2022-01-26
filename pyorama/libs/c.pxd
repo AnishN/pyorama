@@ -21,3 +21,7 @@ cdef extern from "math.h" nogil:
     double d_round "round" (double x)
     float f_round "roundf" (float x)
     long double l_round "roundl" (long double x)
+
+cdef extern from "time.h" nogil:
+    ctypedef int64_t time_t
+    time_t c_time "time" (time_t *timer)

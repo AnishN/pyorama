@@ -7,7 +7,7 @@ cdef Error vector_init(VectorC *vector, size_t item_size) nogil:
     vector.max_items = VECTOR_INITIAL_MAX_ITEMS
     vector.item_size = item_size
     vector.num_items = 0
-    vector.items = <char *>calloc(vector.max_items, vector.item_size)
+    vector.items = <uint8_t *>calloc(vector.max_items, vector.item_size)
     if vector.items == NULL:
         return MEMORY_ERROR
 
@@ -20,7 +20,7 @@ cdef void vector_free(VectorC *vector) nogil:
 
 cdef Error vector_push_empty(VectorC *vector) nogil:
     cdef:
-        char *item
+        uint8_t *item
         Error error
     
     error = vector_grow_if_needed(vector)
@@ -70,7 +70,7 @@ cdef Error vector_get_ptr(VectorC *vector, size_t index, void **item_ptr) nogil:
         return INVALID_INDEX_ERROR
 
 cdef Error vector_get(VectorC *vector, size_t index, void *item) nogil:
-    cdef char *src
+    cdef uint8_t *src
     if 0 <= index < vector.max_items: 
         src = vector.items + (vector.item_size * index)
         memcpy(item, src, vector.item_size)
@@ -78,7 +78,7 @@ cdef Error vector_get(VectorC *vector, size_t index, void *item) nogil:
         return INVALID_INDEX_ERROR
 
 cdef Error vector_set(VectorC *vector, size_t index, void *item) nogil:
-    cdef char *dst
+    cdef uint8_t *dst
     if 0 <= index < vector.max_items: 
         dst = vector.items + (vector.item_size * index)
         memcpy(dst, item, vector.item_size)
@@ -86,7 +86,7 @@ cdef Error vector_set(VectorC *vector, size_t index, void *item) nogil:
         return INVALID_INDEX_ERROR
 
 cdef Error vector_clear(VectorC *vector, size_t index) nogil:
-    cdef char *dst
+    cdef uint8_t *dst
     if 0 <= index < vector.max_items:
         dst = vector.items + (vector.item_size * index)
         memset(dst, 0, vector.item_size)
@@ -98,8 +98,8 @@ cdef void vector_clear_all(VectorC *vector) nogil:
 
 cdef Error vector_swap(VectorC *vector, size_t a, size_t b) nogil:
     cdef:
-        char *a_ptr
-        char *b_ptr
+        uint8_t *a_ptr
+        uint8_t *b_ptr
         size_t i
         Error error
 
@@ -114,11 +114,11 @@ cdef Error vector_swap(VectorC *vector, size_t a, size_t b) nogil:
 
 cdef Error vector_resize(VectorC *vector, size_t new_max_items) nogil:
     cdef:
-        char *new_items
-        char *clear_start
+        uint8_t *new_items
+        uint8_t *clear_start
         size_t clear_size
     
-    new_items = <char *>realloc(vector.items, new_max_items * vector.item_size)
+    new_items = <uint8_t *>realloc(vector.items, new_max_items * vector.item_size)
     if new_items == NULL:
         return MEMORY_ERROR
     if new_max_items > vector.max_items:

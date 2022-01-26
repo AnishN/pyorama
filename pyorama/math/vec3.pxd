@@ -2,6 +2,7 @@ cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
+from pyorama.math.utils cimport *
 
 @cython.final
 cdef class Vec3:
@@ -95,6 +96,8 @@ cdef class Vec3:
     cdef void c_orthogonal(Vec3C *out, Vec3C *v) nogil
     @staticmethod
     cdef void c_project(Vec3C *out, Vec3C *a, Vec3C *b) nogil
+    @staticmethod
+    cdef void c_random(Vec3C *out) nogil
     @staticmethod
     cdef void c_rotate_angle_axis(Vec3C *out, float angle, Vec3C *axis) nogil
     @staticmethod

@@ -73,6 +73,17 @@ cdef class Mat2:
         Mat2.c_mul_scalar(&out.data, scalar)
 
     @staticmethod
+    cdef void c_random(Mat2C *out) nogil:
+        out.m00 = random_get_float()
+        out.m01 = random_get_float()
+        out.m10 = random_get_float()
+        out.m11 = random_get_float()
+
+    @staticmethod
+    def random(Mat2 out):
+        Mat2.c_random(&out.data)
+
+    @staticmethod
     cdef float c_row_mat_col(Vec2C *r, Mat2C *m, Vec2C *c) nogil:
         return glm_mat2_rmc(<vec2>r, <mat2>m, <vec2>c)
     

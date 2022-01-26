@@ -151,7 +151,7 @@ cdef Error str_hash_map_resize(StrHashMapC *hash_map, size_t new_max_items) nogi
                     break
 
     free(hash_map.items.items)
-    hash_map.items.items = <char *>new_items
+    hash_map.items.items = <uint8_t *>new_items
     hash_map.items.max_items = new_max_items
 
 cdef Error str_hash_map_extend(StrHashMapC *hash_map_a, StrHashMapC *hash_map_b, bint overwrite=True) nogil:

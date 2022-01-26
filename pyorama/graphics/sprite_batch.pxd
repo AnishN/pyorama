@@ -10,7 +10,6 @@ ctypedef struct SpriteBatchC:
     VectorC sprites
     Handle vertex_buffer
     Handle index_buffer
-    VectorC vertices
     VectorC indices
 
 ctypedef struct SpriteVertexC:
@@ -26,8 +25,9 @@ ctypedef struct SpriteVertexC:
 cdef class SpriteBatch(HandleObject):
 
     cdef SpriteBatchC *get_ptr(self) except *
-    cpdef void create(self, list sprites) except *
+    cpdef void create(self) except *
     cpdef void delete(self) except *
+    cpdef void set_sprites(self, list sprites) except *
     cpdef void get_vertex_buffer(self, VertexBuffer buffer) except *
     cpdef void get_index_buffer(self, IndexBuffer buffer) except *
     cpdef void update(self) except *

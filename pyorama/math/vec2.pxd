@@ -2,6 +2,7 @@ cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
+from pyorama.math.utils cimport *
 
 @cython.final
 cdef class Vec2:
@@ -72,6 +73,8 @@ cdef class Vec2:
     cdef void c_norm_to(Vec2C *out, Vec2C *v) nogil
     @staticmethod
     cdef void c_one(Vec2C *out) nogil
+    @staticmethod
+    cdef void c_random(Vec2C *out) nogil
     @staticmethod
     cdef void c_rotate(Vec2C *out, Vec2C *v, float angle) nogil
     @staticmethod

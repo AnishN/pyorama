@@ -9,6 +9,30 @@ cdef class Quat:
         out.data = q[0]
         return out
     
+    property x:
+        def __get__(self):
+            return self.data.x
+        def __set__(self, float value):
+            self.data.x = value
+
+    property y:
+        def __get__(self):
+            return self.data.y
+        def __set__(self, float value):
+            self.data.y = value
+    
+    property z:
+        def __get__(self):
+            return self.data.z
+        def __set__(self, float value):
+            self.data.z = value
+
+    property w:
+        def __get__(self):
+            return self.data.w
+        def __set__(self, float value):
+            self.data.w = value
+
     @staticmethod
     def set_data(Quat out, float x, float y, float z, float w):
         glm_quat_init(<versor>&out.data, x, y, z, w)
@@ -173,6 +197,17 @@ cdef class Quat:
     def norm_to(Quat out, Quat q):
         Quat.c_norm_to(&out.data, &q.data)
     
+    @staticmethod
+    cdef void c_random(QuatC *out) nogil:
+        out.x = random_get_float()
+        out.y = random_get_float()
+        out.z = random_get_float()
+        out.w = random_get_float()
+
+    @staticmethod
+    def random(Quat out):
+        Quat.c_random(&out.data)
+
     @staticmethod
     cdef float c_real(QuatC *q) nogil:
         return glm_quat_real(<versor>q)

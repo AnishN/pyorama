@@ -8,6 +8,7 @@ $output v_color0, v_texcoord0
 #define size a_normal.zw
 #define vertex a_texcoord0.xy
 #define texcoord a_texcoord0.xy
+#define offset a_texcoord0.zw
 
 void main()
 {
@@ -30,7 +31,7 @@ void main()
         vec4(0, 0, 0, 1)
     );
 
-    gl_Position = mul(u_modelViewProj, mul(t_mat, mul(r_mat, mul(s_mat, vec4(vertex, 0, 1)))));
+    gl_Position = mul(u_modelViewProj, mul(t_mat, mul(r_mat, mul(s_mat, vec4(vertex - offset, 0, 1)))));
     v_color0 = a_color0;
     v_texcoord0 = a_texcoord0;
 }

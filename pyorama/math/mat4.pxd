@@ -2,6 +2,7 @@ cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
+from pyorama.math.utils cimport *
 
 @cython.final
 cdef class Mat4:
@@ -42,6 +43,8 @@ cdef class Mat4:
     cdef void c_mul(Mat4C *out, Mat4C *a, Mat4C *b) nogil
     @staticmethod
     cdef void c_mul_scalar(Mat4C *out, float scalar) nogil
+    @staticmethod
+    cdef void c_random(Mat4C *out) nogil
     @staticmethod
     cdef void c_rotate(Mat4C *out, float angle, Vec4C *axis) nogil
     @staticmethod

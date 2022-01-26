@@ -2,7 +2,7 @@ from pyorama.libs.c cimport *
 from pyorama.core.error cimport *
 
 ctypedef struct VectorC:
-    char *items
+    uint8_t *items
     size_t max_items
     size_t item_size
     size_t num_items
