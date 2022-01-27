@@ -1,5 +1,5 @@
 from pyorama.math cimport *
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_system cimport *
 
 cpdef enum UniformType:
@@ -15,8 +15,9 @@ ctypedef struct UniformC:
     bgfx_uniform_handle_t bgfx_id
 
 cdef class Uniform(HandleObject):
-
-    cdef UniformC *get_ptr(self) except *
+    @staticmethod
+    cdef Uniform c_from_handle(Handle handle)
+    cdef UniformC *c_get_ptr(self) except *
     cpdef void create(self, bytes name, UniformType type_) except *
     cpdef void delete(self) except *
     cpdef void set_sampler(self, uint32_t value) except *

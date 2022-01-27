@@ -13,8 +13,8 @@ cdef Error vector_push_empty(VectorC *vector) nogil
 cdef Error vector_pop_empty(VectorC *vector) nogil
 cdef Error vector_push(VectorC *vector, void *item) nogil
 cdef Error vector_pop(VectorC *vector, void *item) nogil
-cdef void *vector_get_ptr_unsafe(VectorC *vector, size_t index) nogil
-cdef Error vector_get_ptr(VectorC *vector, size_t index, void **item_ptr) nogil
+cdef void *vector_c_get_ptr_unsafe(VectorC *vector, size_t index) nogil
+cdef Error vector_c_get_ptr(VectorC *vector, size_t index, void **item_ptr) nogil
 cdef Error vector_get(VectorC *vector, size_t index, void *item) nogil
 cdef Error vector_set(VectorC *vector, size_t index, void *item) nogil
 cdef Error vector_clear(VectorC *vector, size_t index) nogil

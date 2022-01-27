@@ -31,7 +31,7 @@ for k in b_dict:
 
 str_hash_map_extend(&a, &b)
 for i in range(a.items.max_items):
-    item_ptr = <StrHashMapItemC *>vector_get_ptr_unsafe(&a.items, i)
+    item_ptr = <StrHashMapItemC *>vector_c_get_ptr_unsafe(&a.items, i)
     if item_ptr.used:
         print(i, item_ptr.key, item_ptr.key_len, item_ptr.value)
 """

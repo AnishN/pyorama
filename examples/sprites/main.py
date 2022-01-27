@@ -5,7 +5,7 @@ import time
 import pyorama
 from pyorama import app
 from pyorama.math import *
-from pyorama.data import *
+from pyorama.core import *
 from pyorama.event import *
 from pyorama.graphics import *
 
@@ -14,11 +14,57 @@ def on_window_event(event):
         app.trigger_quit()
 
 def on_enter_frame_event(event):
+    start = time.time()
+
+    """
     for i in range(num_sprites):
         sprite = sprites[i]
         rotation = sprite.get_rotation()
         rotation += rotation_speed
         sprite.set_rotation(rotation)
+    end = time.time()
+    get_set_delta = end - start
+
+    start = time.time()
+    for i in range(num_sprites):
+        sprite = sprites[i]
+        sprite.rotation -= rotation_speed
+    end = time.time()
+    property_delta = end - start
+    print("rotation", get_set_delta, property_delta)
+
+    start = time.time()
+    p = Vec3()
+    for i in range(num_sprites):
+        sprite = sprites[i]
+        sprite.get_position(p)
+        p.x += 10
+        sprite.set_position(p)
+    end = time.time()
+    get_set_delta = end - start
+
+    start = time.time()
+    for i in range(num_sprites):
+        sprite = sprites[i]
+        p = sprite.position
+        p.x -= 10
+        sprite.position = p
+    end = time.time()
+    property_delta = end - start
+    print("position", get_set_delta, property_delta)
+    """
+
+    """
+    for i in range(num_sprites):
+        sprite = sprites[i]
+        t = sprite.color_texture
+        print(t, t.handle)
+    """
+
+    #surprised that property syntax is 2x faster despite "avoiding allocations" with getter/setter
+    #python "overhead" in cython annotations sure are misleading
+    #the syntax is also nicer to boot and almost mirrors the cython struct accessors
+    
     sprite_batch.update()
     view.submit()
 
@@ -55,13 +101,13 @@ image = Image.init_create_from_file(image_path)
 texture = Texture.init_create_from_image(image)
 
 sprites = []
-num_sprites = 100
+num_sprites = 100000
 random_position = Vec3()
 random_rotation = 0
 rotation_speed = 0.1
 random_scale = Vec2()
 sprite_size = Vec2(32, 32)
-sprite_center = Vec2(0.5, 0.5)
+sprite_offset = Vec2(0.5, 0.5)
 
 for i in range(num_sprites):
     random_position.x = random.random() * width
@@ -76,7 +122,7 @@ for i in range(num_sprites):
         rotation=random_rotation,
         scale=random_scale,
         size=sprite_size,
-        offset=sprite_center,
+        offset=sprite_offset,
     )
     sprites.append(sprite)
 

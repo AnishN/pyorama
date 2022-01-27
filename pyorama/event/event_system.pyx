@@ -157,7 +157,7 @@ cdef class EventSystem:
                 event_func_ptr(event.type, &event, <PyObject *>event_data)
                 listeners = &self.slots.get_slot_map(EVENT_SLOT_LISTENER).items
                 for i in range(listeners.num_items):
-                    listener_ptr = <ListenerC *>vector_get_ptr_unsafe(listeners, i)
+                    listener_ptr = <ListenerC *>vector_c_get_ptr_unsafe(listeners, i)
                     if listener_ptr.event_type == event.type:
                         callback = <object>listener_ptr.callback
                         args = <list>listener_ptr.args

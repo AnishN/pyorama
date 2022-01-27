@@ -1,8 +1,8 @@
 from pyorama cimport app
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.core.slot_manager cimport *
-from pyorama.data.str_hash_map cimport *
-from pyorama.data.vector cimport *
+from pyorama.core.str_hash_map cimport *
+from pyorama.core.vector cimport *
 from pyorama.libs.c cimport *
 
 from pyorama.asset.asset_queue cimport *

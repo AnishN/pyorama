@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.sdl2 cimport *
@@ -16,8 +16,9 @@ ctypedef struct ImageC:
     size_t num_channels
 
 cdef class Image(HandleObject):
-
-    cdef ImageC *get_ptr(self) except *
+    @staticmethod
+    cdef Image c_from_handle(Handle handle)
+    cdef ImageC *c_get_ptr(self) except *
     cpdef void create_from_data(self, uint8_t[::1] pixels, uint16_t width, uint16_t height, size_t num_channels=*) except *
     cpdef void create_from_file(self, bytes file_path, size_t num_channels=*) except *
     cpdef void delete(self) except *

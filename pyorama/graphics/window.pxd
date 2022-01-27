@@ -1,5 +1,5 @@
 from pyorama.app cimport *
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.libs.sdl2 cimport *
 from pyorama.graphics.graphics_system cimport *
 
@@ -36,7 +36,9 @@ cpdef enum WindowFlags:
     #SDL_WINDOW_POPUP_MENU (x11 only)
 
 cdef class Window(HandleObject):
-    cdef WindowC *get_ptr(self) except *
+    @staticmethod
+    cdef Window c_from_handle(Handle handle)
+    cdef WindowC *c_get_ptr(self) except *
     cpdef void create(self, uint16_t width, uint16_t height, bytes title, uint32_t flags=*) except *
     cpdef void load_from_id(self, uint32_t id_) except *
     cpdef void delete(self) except *

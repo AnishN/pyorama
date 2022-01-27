@@ -2,7 +2,7 @@ import math
 import pyorama
 from pyorama import app
 from pyorama.asset import *
-from pyorama.data import *
+from pyorama.core import *
 from pyorama.event import *
 from pyorama.graphics import *
 from pyorama.math import *

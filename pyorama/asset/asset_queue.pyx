@@ -2,7 +2,16 @@ cdef size_t ASSET_QUEUE_DEFAULT_NUM_THREADS = 4
 
 cdef class AssetQueue(HandleObject):
 
-    cdef AssetQueueC *get_ptr(self) except *:
+    @staticmethod
+    cdef AssetQueue c_from_handle(Handle handle):
+        cdef AssetQueue obj
+        if handle == 0:
+            raise ValueError("AssetQueue: invalid handle")
+        obj = AssetQueue.__new__(AssetQueue)
+        obj.handle = handle
+        return obj
+
+    cdef AssetQueueC *c_get_ptr(self) except *:
         return <AssetQueueC *>app.asset.slots.c_get_ptr(self.handle)
     
     @staticmethod
@@ -19,7 +28,7 @@ cdef class AssetQueue(HandleObject):
             AssetQueueC *queue_ptr
 
         self.handle = app.asset.slots.c_create(ASSET_SLOT_ASSET_QUEUE)
-        queue_ptr = self.get_ptr()
+        queue_ptr = self.c_get_ptr()
         queue_ptr.num_threads = num_threads
         queue_ptr.threads = <pthread_t *>calloc(num_threads, sizeof(pthread_t))
         CHECK_ERROR(vector_init(&queue_ptr.assets, sizeof(AssetQueueItemC)))
@@ -53,7 +62,7 @@ cdef class AssetQueue(HandleObject):
         elif item.type_ in (ASSET_TYPE_BINARY_SHADER, ASSET_TYPE_SOURCE_SHADER):
             item.asset_id = app.graphics.slots.c_create(GRAPHICS_SLOT_SHADER)
 
-        queue_ptr = self.get_ptr()
+        queue_ptr = self.c_get_ptr()
         CHECK_ERROR(vector_push(&queue_ptr.assets, &item))
 
     cpdef void load(self) except *:
@@ -68,10 +77,10 @@ cdef class AssetQueue(HandleObject):
             cgltf_result result
             #ImageC *image_ptr
         
-        queue_ptr = self.get_ptr()
+        queue_ptr = self.c_get_ptr()
         num_assets = queue_ptr.assets.num_items
         for i in range(num_assets):
-            item_ptr = <AssetQueueItemC *>vector_get_ptr_unsafe(&queue_ptr.assets, i)
+            item_ptr = <AssetQueueItemC *>vector_c_get_ptr_unsafe(&queue_ptr.assets, i)
             exists = str_hash_map_contains(&app.asset.assets_map, item_ptr.name, item_ptr.name_len)
             print(i, num_assets, item_ptr.name, item_ptr.path, item_ptr.type_, item_ptr.asset_id, exists)
             if exists:
@@ -101,10 +110,10 @@ cdef class AssetQueue(HandleObject):
             size_t num_assets
             AssetInfoC *asset_ptr
 
-        queue_ptr = self.get_ptr()
+        queue_ptr = self.c_get_ptr()
         num_assets = queue_ptr.assets.num_items
         for i in range(num_assets):
-            asset_ptr = <AssetInfoC *>vector_get_ptr_unsafe(&queue_ptr.assets, i)
+            asset_ptr = <AssetInfoC *>vector_c_get_ptr_unsafe(&queue_ptr.assets, i)
             free(asset_ptr.path)
         vector_free(&queue_ptr.assets)
         free(queue_ptr.threads)

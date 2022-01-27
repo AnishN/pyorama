@@ -1,6 +1,15 @@
 cdef class Image(HandleObject):
 
-    cdef ImageC *get_ptr(self) except *:
+    @staticmethod
+    cdef Image c_from_handle(Handle handle):
+        cdef Image obj
+        if handle == 0:
+            raise ValueError("Image: invalid handle")
+        obj = Image.__new__(Image)
+        obj.handle = handle
+        return obj
+
+    cdef ImageC *c_get_ptr(self) except *:
         return <ImageC *>graphics.slots.c_get_ptr(self.handle)
     
     @staticmethod
@@ -21,7 +30,7 @@ cdef class Image(HandleObject):
             raise ValueError("Image: pixels does not match width * height * num_channels")
         
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_IMAGE)
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         image_ptr.pixels = <uint8_t *>calloc(num_pixel_bytes, sizeof(uint8_t))
         if image_ptr.pixels == NULL:
             raise MemoryError("Image: cannot allocate pixels")
@@ -64,7 +73,7 @@ cdef class Image(HandleObject):
         cdef:
             ImageC *image_ptr
 
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         free(image_ptr.pixels); image_ptr.pixels = NULL
         image_ptr.width = 0
         image_ptr.height = 0
@@ -78,7 +87,7 @@ cdef class Image(HandleObject):
             uint16_t h
             uint16_t w
             size_t c
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         h = image_ptr.height
         w = image_ptr.width
         c = image_ptr.num_channels
@@ -90,14 +99,14 @@ cdef class Image(HandleObject):
             uint16_t h
             uint16_t w
             size_t b
-        image_ptr = self.get_ptr()
+        image_ptr = self.c_get_ptr()
         h = image_ptr.height
         w = image_ptr.width
         c = image_ptr.num_channels
         return <uint8_t[:h, :w, :c]>image_ptr.pixels
 
     cpdef uint16_t get_width(self) except *:
-        return self.get_ptr().width
+        return self.c_get_ptr().width
     
     cpdef uint16_t get_height(self) except *:
-        return self.get_ptr().height
+        return self.c_get_ptr().height

@@ -1,6 +1,6 @@
-from pyorama.data.handle cimport *
-from pyorama.data.vector cimport *
-from pyorama.data.array cimport *
+from pyorama.core.handle cimport *
+from pyorama.core.vector cimport *
+from pyorama.core.array cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.c cimport *
 from cython cimport view as cy_view
@@ -38,7 +38,9 @@ ctypedef union IndexValueC:
     uint32_t u32
 
 cdef class IndexBuffer(HandleObject):
-    cdef IndexBufferC *get_ptr(self) except *
+    @staticmethod
+    cdef IndexBuffer c_from_handle(Handle handle)
+    cdef IndexBufferC *c_get_ptr(self) except *
     cpdef void create_static(self, IndexLayout layout, list indices) except *
     cpdef void create_static_from_array(self, IndexLayout layout, uint8_t[::1] indices, bint copy=*) except *
     cpdef void create_dynamic_fixed(self, IndexLayout layout, size_t num_indices) except *

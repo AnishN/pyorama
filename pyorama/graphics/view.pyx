@@ -1,6 +1,15 @@
 cdef class View(HandleObject):
     
-    cdef ViewC *get_ptr(self) except *:
+    @staticmethod
+    cdef View c_from_handle(Handle handle):
+        cdef View obj
+        if handle == 0:
+            raise ValueError("View: invalid handle")
+        obj = View.__new__(View)
+        obj.handle = handle
+        return obj
+
+    cdef ViewC *c_get_ptr(self) except *:
         return <ViewC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -16,7 +25,7 @@ cdef class View(HandleObject):
         cdef:
             ViewC *view_ptr
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VIEW)
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.index = graphics.c_get_next_view_index()
         view_ptr.msaa = True
         view_ptr.blend = False
@@ -35,7 +44,7 @@ cdef class View(HandleObject):
     cpdef void delete(self) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.index = 0
         graphics.slots.c_delete(self.handle)
         self.handle = 0
@@ -43,20 +52,20 @@ cdef class View(HandleObject):
     cpdef void set_name(self, bytes name) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.name = name
         view_ptr.name_length = len(name)
 
     cpdef void set_mode(self, ViewMode mode) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.mode = mode
 
     cpdef void set_rect(self, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.rect.x = x
         view_ptr.rect.y = y
         view_ptr.rect.width = width
@@ -65,7 +74,7 @@ cdef class View(HandleObject):
     cpdef void set_scissor(self, uint16_t x, uint16_t y, uint16_t width, uint16_t height) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.scissor.x = x
         view_ptr.scissor.y = y
         view_ptr.scissor.width = width
@@ -74,7 +83,7 @@ cdef class View(HandleObject):
     cpdef void set_clear(self, uint16_t flags, uint32_t color, float depth, uint8_t stencil) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.clear.flags = flags
         view_ptr.clear.color = color
         view_ptr.clear.depth = depth
@@ -83,38 +92,38 @@ cdef class View(HandleObject):
     cpdef void set_transform_model(self, Mat4 transform_model) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.transform.model = transform_model.data
 
     cpdef void set_transform_view(self, Mat4 transform_view) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.transform.view = transform_view.data
 
     cpdef void set_transform_projection(self, Mat4 transform_projection) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.transform.projection = transform_projection.data
 
     cpdef void set_frame_buffer(self, FrameBuffer frame_buffer) except *:
         cdef:
             ViewC *view_ptr
             FrameBufferC *frame_buffer_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.frame_buffer = frame_buffer.handle
 
     cpdef void set_vertex_buffer(self, VertexBuffer vertex_buffer) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.vertex_buffer = vertex_buffer.handle
 
     cpdef void set_index_buffer(self, IndexBuffer index_buffer, int32_t offset=0, int32_t count=-1) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.index_buffer = index_buffer.handle
         #view_ptr.index_offset = offset
         if count == -1:
@@ -124,13 +133,13 @@ cdef class View(HandleObject):
     cpdef void set_program(self, Program program) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.program = program.handle
 
     cpdef void set_texture(self, Uniform sampler, Texture texture, uint8_t unit) except *:
         cdef:
             ViewC *view_ptr
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.samplers[unit] = sampler.handle
         view_ptr.textures[unit] = texture.handle
 
@@ -138,42 +147,42 @@ cdef class View(HandleObject):
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.write_state = state
 
     cpdef void set_depth_state(self, ViewDepthState state) except *:
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.depth_state = state
 
     cpdef void set_cull_state(self, ViewCullState state) except *:
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.cull_state = state
 
     cpdef void set_msaa(self, bint state) except *:
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.msaa = state
 
     cpdef void set_blend(self, bint state) except *:
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.blend = state
 
     cpdef void set_blend_rgb_state(self, ViewBlendFunction src, ViewBlendFunction dst, ViewBlendEquation eq=VIEW_BLEND_EQUATION_ADD) except *:
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.blend_state.rgb_src = src
         view_ptr.blend_state.rgb_dst = dst
         view_ptr.blend_state.rgb_eq = eq
@@ -182,7 +191,7 @@ cdef class View(HandleObject):
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.blend_state.alpha_src = src
         view_ptr.blend_state.alpha_dst = dst
         view_ptr.blend_state.alpha_eq = eq
@@ -191,7 +200,7 @@ cdef class View(HandleObject):
         cdef:
             ViewC *view_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         view_ptr.blend_state.rgb_src = src
         view_ptr.blend_state.rgb_dst = dst
         view_ptr.blend_state.rgb_eq = eq
@@ -214,7 +223,7 @@ cdef class View(HandleObject):
             cdef uint64_t state
             ViewBlendStateC blend_state
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         frame_buffer_ptr = <FrameBufferC *>graphics.slots.c_get_ptr(view_ptr.frame_buffer)
         vertex_buffer_ptr = <VertexBufferC *>graphics.slots.c_get_ptr(view_ptr.vertex_buffer)
         index_buffer_ptr = <IndexBufferC *>graphics.slots.c_get_ptr(view_ptr.index_buffer)
@@ -301,7 +310,7 @@ cdef class View(HandleObject):
             ViewC *view_ptr
             FrameBufferC *frame_buffer_ptr
         
-        view_ptr = self.get_ptr()
+        view_ptr = self.c_get_ptr()
         if view_ptr.name_length != 0:
             bgfx_set_view_name(view_ptr.index, view_ptr.name)
         if view_ptr.frame_buffer != 0:

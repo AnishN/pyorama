@@ -21,7 +21,16 @@ cdef dict vertex_attribute_map = {
 
 cdef class VertexLayout(HandleObject):
 
-    cdef VertexLayoutC *get_ptr(self) except *:
+    @staticmethod
+    cdef VertexLayout c_from_handle(Handle handle):
+        cdef VertexLayout obj
+        if handle == 0:
+            raise ValueError("VertexLayout: invalid handle")
+        obj = VertexLayout.__new__(VertexLayout)
+        obj.handle = handle
+        return obj
+
+    cdef VertexLayoutC *c_get_ptr(self) except *:
         return <VertexLayoutC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -44,7 +53,7 @@ cdef class VertexLayout(HandleObject):
             bgfx_vertex_layout_t *layout_ptr
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VERTEX_LAYOUT)
-        vertex_layout_ptr = self.get_ptr()
+        vertex_layout_ptr = self.c_get_ptr()
         layout_ptr = &vertex_layout_ptr.bgfx_id
         bgfx_vertex_layout_begin(layout_ptr, bgfx_get_renderer_type())
 

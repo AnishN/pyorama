@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.graphics.image cimport *
 from pyorama.libs.c cimport *
@@ -19,7 +19,8 @@ ctypedef struct TextureC:
     #TextureSamplerFlags sampler_flags
 
 cdef class Texture(HandleObject):
-
-    cdef TextureC *get_ptr(self) except *
+    @staticmethod
+    cdef Texture c_from_handle(Handle handle)
+    cdef TextureC *c_get_ptr(self) except *
     cpdef void create_from_image(self, Image image) except *
     cpdef void delete(self) except *

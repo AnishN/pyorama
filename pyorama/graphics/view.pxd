@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.graphics.frame_buffer cimport *
@@ -131,8 +131,9 @@ ctypedef struct ViewC:
     ViewBlendStateC blend_state
 
 cdef class View(HandleObject):
-    
-    cdef ViewC *get_ptr(self) except *
+    @staticmethod
+    cdef View c_from_handle(Handle handle)
+    cdef ViewC *c_get_ptr(self) except *
     cpdef void create(self) except *
     cpdef void delete(self) except *
     cpdef void set_name(self, bytes name) except *

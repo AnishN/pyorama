@@ -1,5 +1,5 @@
 from pyorama.app cimport *
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.math cimport *
 
 cpdef enum CameraProjType:
@@ -29,8 +29,9 @@ ctypedef struct CameraC:
     Mat4C proj_mat
 
 cdef class Camera(HandleObject):
-
-    cdef CameraC *get_ptr(self) except *
+    @staticmethod
+    cdef Camera c_from_handle(Handle handle)
+    cdef CameraC *c_get_ptr(self) except *
     cpdef void create_orthographic(self, float x_mag, float y_mag, float z_near, float z_far) except *
     cpdef void create_perspective(self, float aspect_ratio, float y_fov, float z_near, float z_far) except *
     cpdef void delete(self) except *

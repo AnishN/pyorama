@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.math cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.sdl2 cimport *
@@ -46,7 +46,7 @@ ctypedef struct LightC:
     LightType type_
     LightDataC data
 
-cdef LightC *light_get_ptr(Handle light) except *
+cdef LightC *light_c_get_ptr(Handle light) except *
 cpdef Handle light_create(LightType type_, dict params) except *
 cpdef Handle light_create_point(Vec3 position, float range_, uint32_t color, float intensity) except *
 cpdef Handle light_create_spot(Vec3 position, Vec3 direction, float outer_angle, float inner_angle, float range_, uint32_t color, float intensity) except *

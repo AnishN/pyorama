@@ -1,5 +1,5 @@
 from pyorama.core.error cimport *
-from pyorama.data.vector cimport *
+from pyorama.core.vector cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.xxhash cimport *
 

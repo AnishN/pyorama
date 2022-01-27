@@ -1,7 +1,7 @@
 from cpython.ref cimport PyObject, Py_INCREF, Py_DECREF, Py_XINCREF, Py_XDECREF 
 from pyorama.app cimport *
-from pyorama.data.handle cimport *
-from pyorama.data.vector cimport *
+from pyorama.core.handle cimport *
+from pyorama.core.vector cimport *
 
 ctypedef struct ListenerKeyC:
     Handle handle
@@ -16,6 +16,8 @@ ctypedef struct ListenerC:
     PyObject *kwargs
 
 cdef class Listener(HandleObject):
-    cdef ListenerC *get_ptr(self) except *
+    @staticmethod
+    cdef Listener c_from_handle(Handle handle)
+    cdef ListenerC *c_get_ptr(self) except *
     cpdef void create(self, bytes event_type_name, object callback, list args=*, dict kwargs=*) except *
     cpdef void delete(self) except *

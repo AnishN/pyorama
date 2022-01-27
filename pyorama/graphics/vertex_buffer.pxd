@@ -1,6 +1,6 @@
-from pyorama.data.handle cimport *
-from pyorama.data.vector cimport *
-from pyorama.data.array cimport *
+from pyorama.core.handle cimport *
+from pyorama.core.vector cimport *
+from pyorama.core.array cimport *
 from pyorama.graphics.vertex_layout cimport *
 from pyorama.graphics.graphics_system cimport *
 from pyorama.libs.c cimport *
@@ -35,7 +35,9 @@ ctypedef union VertexValueC:
     float f32
 
 cdef class VertexBuffer(HandleObject):
-    cdef VertexBufferC *get_ptr(self) except *
+    @staticmethod
+    cdef VertexBuffer c_from_handle(Handle handle)
+    cdef VertexBufferC *c_get_ptr(self) except *
     cpdef void create_static(self, VertexLayout layout, list vertices) except *
     cpdef void create_static_from_array(self, VertexLayout layout, uint8_t[::1] vertices, bint copy=*) except *
     cpdef void create_dynamic_fixed(self, VertexLayout layout, size_t num_vertices) except *

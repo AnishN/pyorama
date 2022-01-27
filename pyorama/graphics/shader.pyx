@@ -2,7 +2,16 @@ import os
 
 cdef class Shader(HandleObject):
 
-    cdef ShaderC *get_ptr(self) except *:
+    @staticmethod
+    cdef Shader c_from_handle(Handle handle):
+        cdef Shader obj
+        if handle == 0:
+            raise ValueError("Shader: invalid handle")
+        obj = Shader.__new__(Shader)
+        obj.handle = handle
+        return obj
+
+    cdef ShaderC *c_get_ptr(self) except *:
         return <ShaderC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -23,7 +32,7 @@ cdef class Shader(HandleObject):
             bgfx_memory_t *file_memory
         
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SHADER)
-        shader_ptr = self.get_ptr()
+        shader_ptr = self.c_get_ptr()
         shader_ptr.type_ = type_
         in_file = open(file_path, "rb")
         file_data = in_file.read()
@@ -53,7 +62,7 @@ cdef class Shader(HandleObject):
         bin_file_path = os.path.splitext(file_path)[0] + b".bin"
         utils_runtime_compile_shader(file_path, bin_file_path, type_)
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SHADER)
-        shader_ptr = self.get_ptr()
+        shader_ptr = self.c_get_ptr()
         shader_ptr.type_ = type_
         in_file = open(bin_file_path, "rb")
         file_data = in_file.read()
@@ -66,11 +75,11 @@ cdef class Shader(HandleObject):
         cdef:
             ShaderC *shader_ptr
         
-        shader_ptr = self.get_ptr()
+        shader_ptr = self.c_get_ptr()
         #note: file_memory freed by bgfx internally
         bgfx_destroy_shader(shader_ptr.bgfx_id)
         graphics.slots.c_delete(self.handle)
         self.handle = 0
 
     cpdef ShaderType get_type(self) except *:
-        return self.get_ptr().type_
+        return self.c_get_ptr().type_

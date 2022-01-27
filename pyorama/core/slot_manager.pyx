@@ -61,7 +61,7 @@ cdef class SlotManager:
         slot_type = handle_get_type(&handle)
         self.c_check_slot_type(slot_type)
         slot_map = &self.slot_maps[slot_type]
-        error = slot_map_get_ptr(slot_map, handle, &item_ptr)
+        error = slot_map_c_get_ptr(slot_map, handle, &item_ptr)
         CHECK_ERROR(error)
         return item_ptr
 
@@ -71,7 +71,7 @@ cdef class SlotManager:
             void *item_ptr
         
         slot_map = &self.slot_maps[slot_type]
-        error = vector_get_ptr(&slot_map.items, index, &item_ptr)
+        error = vector_c_get_ptr(&slot_map.items, index, &item_ptr)
         CHECK_ERROR(error)
         return item_ptr
 
@@ -84,7 +84,7 @@ cdef class SlotManager:
         slot_type = handle_get_type(&handle)
         if self.registered_maps[slot_type]:
             slot_map = &self.slot_maps[slot_type]
-            item_ptr = slot_map_get_ptr_unsafe(slot_map, handle)
+            item_ptr = slot_map_c_get_ptr_unsafe(slot_map, handle)
             return item_ptr
 
     cdef SlotMapC *get_slot_map(self, uint8_t slot_type) except *:

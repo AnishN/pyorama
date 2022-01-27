@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.graphics.window cimport *
 
@@ -13,7 +13,8 @@ ctypedef struct FrameBufferC:
     size_t name_length
 
 cdef class FrameBuffer(HandleObject):
-
-    cdef FrameBufferC *get_ptr(self) except *
+    @staticmethod
+    cdef FrameBuffer c_from_handle(Handle handle)
+    cdef FrameBufferC *c_get_ptr(self) except *
     cpdef void create_from_window(self, Window window) except *
     cpdef void delete(self) except *

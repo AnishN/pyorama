@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_system cimport *
 
 cpdef enum AttributeName:
@@ -48,7 +48,8 @@ ctypedef struct VertexLayoutC:
     char[MAX_ATTRIBUTES * 2 + 1] format_
 
 cdef class VertexLayout(HandleObject):
-
-    cdef VertexLayoutC *get_ptr(self) except *
+    @staticmethod
+    cdef VertexLayout c_from_handle(Handle handle)
+    cdef VertexLayoutC *c_get_ptr(self) except *
     cpdef void create(self, list attributes) except *
     cpdef void delete(self) except *

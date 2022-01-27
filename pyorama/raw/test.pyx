@@ -2,7 +2,7 @@ from pyorama.libs.c cimport *
 from pyorama.libs.bgfx cimport *
 from pyorama.libs.sdl2 cimport *
 from pyorama.math cimport *
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.asset.shader_loader cimport *
 import pyorama
 from pyorama.app cimport *

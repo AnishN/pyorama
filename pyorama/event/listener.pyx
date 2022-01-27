@@ -1,6 +1,15 @@
 cdef class Listener(HandleObject):
 
-    cdef ListenerC *get_ptr(self) except *:
+    @staticmethod
+    cdef Listener c_from_handle(Handle handle):
+        cdef Listener obj
+        if handle == 0:
+            raise ValueError("Listener: invalid handle")
+        obj = Listener.__new__(Listener)
+        obj.handle = handle
+        return obj
+
+    cdef ListenerC *c_get_ptr(self) except *:
         return <ListenerC *>event.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -22,7 +31,7 @@ cdef class Listener(HandleObject):
         if args == None: args = []
         if kwargs == None: kwargs = {}
         self.handle = event.slots.c_create(EVENT_SLOT_LISTENER)
-        listener_ptr = self.get_ptr()
+        listener_ptr = self.c_get_ptr()
         listener_ptr.event_type = event_type
         listener_ptr.callback = <PyObject *>callback
         listener_ptr.args = <PyObject *>args
@@ -39,7 +48,7 @@ cdef class Listener(HandleObject):
             VectorC *handles_ptr
             size_t handle_index
         
-        listener_ptr = self.get_ptr()
+        listener_ptr = self.c_get_ptr()
         handles_ptr = &event.listener_handles[listener_ptr.event_type]
         vector_find(handles_ptr, &self.handle, &handle_index)
         vector_remove_empty(handles_ptr, handle_index)

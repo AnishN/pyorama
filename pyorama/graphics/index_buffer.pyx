@@ -1,6 +1,15 @@
 cdef class IndexBuffer(HandleObject):
 
-    cdef IndexBufferC *get_ptr(self) except *:
+    @staticmethod
+    cdef IndexBuffer c_from_handle(Handle handle):
+        cdef IndexBuffer obj
+        if handle == 0:
+            raise ValueError("IndexBuffer: invalid handle")
+        obj = IndexBuffer.__new__(IndexBuffer)
+        obj.handle = handle
+        return obj
+
+    cdef IndexBufferC *c_get_ptr(self) except *:
         return <IndexBufferC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -64,7 +73,7 @@ cdef class IndexBuffer(HandleObject):
             char[2] format_
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_INDEX_BUFFER)
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if layout == INDEX_LAYOUT_U16:
             index_size = sizeof(uint16_t)
             flags = BGFX_BUFFER_NONE
@@ -112,7 +121,7 @@ cdef class IndexBuffer(HandleObject):
             char[2] format_
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_INDEX_BUFFER)
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if layout == INDEX_LAYOUT_U16:
             index_size = sizeof(uint16_t)
             flags = BGFX_BUFFER_NONE
@@ -153,7 +162,7 @@ cdef class IndexBuffer(HandleObject):
             char[2] format_
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_INDEX_BUFFER)
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if layout == INDEX_LAYOUT_U16:
             index_size = sizeof(uint16_t)
             flags = BGFX_BUFFER_NONE | BGFX_BUFFER_ALLOW_RESIZE
@@ -179,7 +188,7 @@ cdef class IndexBuffer(HandleObject):
     cpdef void delete(self) except *:
         cdef:
             IndexBufferC *index_buffer_ptr
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_STATIC:
             bgfx_destroy_index_buffer(index_buffer_ptr.bgfx_id.static)
         elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_DYNAMIC:
@@ -194,7 +203,7 @@ cdef class IndexBuffer(HandleObject):
             IndexBufferC *index_buffer_ptr
             bgfx_memory_t *memory_ptr
         
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_STATIC:
             raise ValueError("IndexBuffer: cannot update static buffer contents")
         elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_DYNAMIC:
@@ -211,7 +220,7 @@ cdef class IndexBuffer(HandleObject):
         cdef:
             IndexBufferC *index_buffer_ptr
         
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if index_buffer_ptr.resizable:
             return index_buffer_ptr.data.resizable.num_items
         else:
@@ -222,7 +231,7 @@ cdef class IndexBuffer(HandleObject):
             IndexBufferC *index_buffer_ptr
             IndexLayout layout
         
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         layout = index_buffer_ptr.layout
         if layout == INDEX_LAYOUT_U16:
             return sizeof(uint16_t)
@@ -234,7 +243,7 @@ cdef class IndexBuffer(HandleObject):
     cdef char *c_get_index_format(self) except *:
         cdef:
             IndexBufferC *index_buffer_ptr
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         return index_buffer_ptr.format_
 
     cpdef bytes get_index_format(self):
@@ -244,7 +253,7 @@ cdef class IndexBuffer(HandleObject):
         cdef:
             IndexBufferC *index_buffer_ptr
         
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         if index_buffer_ptr.resizable:
             return index_buffer_ptr.data.resizable.items
         else:
@@ -259,7 +268,7 @@ cdef class IndexBuffer(HandleObject):
             uint8_t *get_indices
             cdef cy_view.array out
 
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         num_indices = self.get_num_indices()
         index_size = self.get_index_size()
         index_format = self.c_get_index_format()
@@ -281,7 +290,7 @@ cdef class IndexBuffer(HandleObject):
             uint8_t *indices
             cdef uint8_t[::1] out
 
-        index_buffer_ptr = self.get_ptr()
+        index_buffer_ptr = self.c_get_ptr()
         num_indices = self.get_num_indices()
         index_size = self.get_index_size()
         indices = self.c_get_indices()

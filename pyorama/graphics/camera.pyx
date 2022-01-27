@@ -1,6 +1,15 @@
 cdef class Camera(HandleObject):
 
-    cdef CameraC *get_ptr(self) except *:
+    @staticmethod
+    cdef Camera c_from_handle(Handle handle):
+        cdef Camera obj
+        if handle == 0:
+            raise ValueError("Camera: invalid handle")
+        obj = Camera.__new__(Camera)
+        obj.handle = handle
+        return obj
+
+    cdef CameraC *c_get_ptr(self) except *:
         return <CameraC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -25,7 +34,7 @@ cdef class Camera(HandleObject):
             CameraProjInfoOrthographicC *proj_info
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_CAMERA)
-        camera_ptr = self.get_ptr()
+        camera_ptr = self.c_get_ptr()
         proj_info = &camera_ptr.proj_info.orthographic
         camera_ptr.proj_type = CAMERA_PROJ_TYPE_ORTHOGRAPHIC
         proj_info.x_mag = x_mag
@@ -40,7 +49,7 @@ cdef class Camera(HandleObject):
             CameraProjInfoPerspectiveC *proj_info
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_CAMERA)
-        camera_ptr = self.get_ptr()
+        camera_ptr = self.c_get_ptr()
         camera_ptr.proj_type = CAMERA_PROJ_TYPE_PERSPECTIVE
         proj_info = &camera_ptr.proj_info.perspective
         proj_info.aspect_ratio = aspect_ratio
@@ -57,5 +66,5 @@ cdef class Camera(HandleObject):
         cdef:
             CameraC *camera_ptr
         
-        camera_ptr = self.get_ptr()
+        camera_ptr = self.c_get_ptr()
         Mat4.c_copy(&proj_mat.data, &camera_ptr.proj_mat)

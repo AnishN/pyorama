@@ -1,6 +1,6 @@
 import pyorama
 from pyorama.math import *
-from pyorama.data import *
+from pyorama.core import *
 import math
 
 """

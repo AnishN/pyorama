@@ -1,4 +1,4 @@
-cdef LightC *light_get_ptr(Handle light) except *:
+cdef LightC *light_c_get_ptr(Handle light) except *:
     return <LightC *>graphics.slots.c_get_ptr(light)
 
 """
@@ -52,7 +52,7 @@ cpdef Handle light_create_point(Vec3 position, float range_, uint32_t color, flo
         LightC *light_ptr
     
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
-    light_ptr = light_get_ptr(light)
+    light_ptr = light_c_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_POINT
     light_ptr.data.point.position = position.data
     light_ptr.data.point.range_ = range_
@@ -66,7 +66,7 @@ cpdef Handle light_create_spot(Vec3 position, Vec3 direction, float outer_angle,
         LightC *light_ptr
     
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
-    light_ptr = light_get_ptr(light)
+    light_ptr = light_c_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_SPOT
     light_ptr.data.spot.position = position.data
     light_ptr.data.spot.direction = direction.data
@@ -83,7 +83,7 @@ cpdef Handle light_create_direction(Vec3 direction, uint32_t color, float intens
         LightC *light_ptr
     
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
-    light_ptr = light_get_ptr(light)
+    light_ptr = light_c_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_DIRECTION
     light_ptr.data.direction.direction = direction.data
     light_ptr.data.direction.color = color
@@ -96,7 +96,7 @@ cpdef Handle light_create_ambient(uint32_t color, float intensity) except *:
         LightC *light_ptr
     
     light = graphics.slots.c_create(GRAPHICS_SLOT_LIGHT)
-    light_ptr = light_get_ptr(light)
+    light_ptr = light_c_get_ptr(light)
     light_ptr.type_ = LIGHT_TYPE_AMBIENT
     light_ptr.data.ambient.color = color
     light_ptr.data.ambient.intensity = intensity
@@ -106,5 +106,5 @@ cpdef void light_delete(Handle light) except *:
     cdef:
         LightC *light_ptr
     
-    light_ptr = light_get_ptr(light)
+    light_ptr = light_c_get_ptr(light)
     graphics.slots.c_delete(light)

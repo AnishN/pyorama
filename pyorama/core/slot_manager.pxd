@@ -1,7 +1,7 @@
 from cpython.object cimport *
 from cpython.ref cimport *
-from pyorama.data.handle cimport *
-from pyorama.data.slot_map cimport *
+from pyorama.core.handle cimport *
+from pyorama.core.slot_map cimport *
 
 DEF MAX_ITEM_TYPES = 256
 

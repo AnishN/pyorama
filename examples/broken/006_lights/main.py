@@ -1,6 +1,6 @@
 import pyorama
 from pyorama.math import *
-from pyorama.data import Buffer, BufferFormat
+from pyorama.core import Buffer, BufferFormat
 import math
 
 """
@@ -291,8 +291,8 @@ sampler = pyorama.graphics.uniform_create(b"s_tex0", pyorama.graphics.UNIFORM_TY
 
 mesh = pyorama.graphics.mesh_create_from_file(mesh_path, load_normals=False)
 vertex_format = BufferFormat([
-    (b"a_position", 3, pyorama.data.BUFFER_FIELD_TYPE_F32),
-    (b"a_texcoord0", 2, pyorama.data.BUFFER_FIELD_TYPE_F32),
+    (b"a_position", 3, pyorama.core.BUFFER_FIELD_TYPE_F32),
+    (b"a_texcoord0", 2, pyorama.core.BUFFER_FIELD_TYPE_F32),
 ])
 
 vertices = Buffer(vertex_format)
@@ -302,7 +302,7 @@ vertex_buffer = pyorama.graphics.vertex_buffer_create(vertex_layout, vertices)
 
 index_layout = pyorama.graphics.INDEX_LAYOUT_U32
 index_format = BufferFormat([
-    (b"a_indices", 1, pyorama.data.BUFFER_FIELD_TYPE_U32),
+    (b"a_indices", 1, pyorama.core.BUFFER_FIELD_TYPE_U32),
 ])
 indices = Buffer(index_format)
 pyorama.graphics.mesh_get_indices(mesh, indices)

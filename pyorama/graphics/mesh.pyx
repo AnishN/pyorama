@@ -1,6 +1,15 @@
 cdef class Mesh(HandleObject):
 
-    cdef MeshC *get_ptr(self) except *:
+    @staticmethod
+    cdef Mesh c_from_handle(Handle handle):
+        cdef Mesh obj
+        if handle == 0:
+            raise ValueError("Mesh: invalid handle")
+        obj = Mesh.__new__(Mesh)
+        obj.handle = handle
+        return obj
+
+    cdef MeshC *c_get_ptr(self) except *:
         return <MeshC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -112,7 +121,7 @@ cdef class Mesh(HandleObject):
         aiReleaseImport(ai_scene)
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_MESH)
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
         mesh_ptr.vertices = vertices
         mesh_ptr.num_vertices = num_vertices
         mesh_ptr.vertex_size = vertex_size
@@ -151,12 +160,12 @@ cdef class Mesh(HandleObject):
     """
     cpdef void get_vertices(self, Buffer vertices) except *:
         cdef MeshC *mesh_ptr
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
         vertices.c_init_from_ptr(mesh_ptr.vertices, mesh_ptr.num_vertices)
         
     cpdef void get_indices(self, Buffer indices) except *:
         cdef MeshC *mesh_ptr
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
         indices.c_init_from_ptr(mesh_ptr.indices, mesh_ptr.num_indices)
     """
 
@@ -164,7 +173,7 @@ cdef class Mesh(HandleObject):
         cdef:
             MeshC *mesh_ptr
         
-        mesh_ptr = self.get_ptr()
+        mesh_ptr = self.c_get_ptr()
         free(mesh_ptr.vertices); mesh_ptr.vertices = NULL
         mesh_ptr.num_vertices = 0
         mesh_ptr.vertex_size = 0

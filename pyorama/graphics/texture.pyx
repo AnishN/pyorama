@@ -22,7 +22,16 @@ bgfx_texture_handle_t bgfx_create_texture_cube(uint16_t _size, bint _hasMips, ui
 
 cdef class Texture(HandleObject):
 
-    cdef TextureC *get_ptr(self) except *:
+    @staticmethod
+    cdef Texture c_from_handle(Handle handle):
+        cdef Texture obj
+        if handle == 0:
+            raise ValueError("Texture: invalid handle")
+        obj = Texture.__new__(Texture)
+        obj.handle = handle
+        return obj
+
+    cdef TextureC *c_get_ptr(self) except *:
         return <TextureC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -42,8 +51,8 @@ cdef class Texture(HandleObject):
             bgfx_memory_t *memory_ptr
         
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_TEXTURE)
-        texture_ptr = self.get_ptr()
-        image_ptr = image.get_ptr()
+        texture_ptr = self.c_get_ptr()
+        image_ptr = image.c_get_ptr()
         num_pixel_bytes = image_ptr.width * image_ptr.height * image_ptr.num_channels
         memory_ptr = bgfx_copy(image_ptr.pixels, num_pixel_bytes)
         texture_ptr.bgfx_id = bgfx_create_texture_2d(
@@ -59,7 +68,7 @@ cdef class Texture(HandleObject):
     cpdef void delete(self) except *:
         cdef:
             TextureC *texture_ptr
-        texture_ptr = self.get_ptr()
+        texture_ptr = self.c_get_ptr()
         bgfx_destroy_texture(texture_ptr.bgfx_id)
         graphics.slots.c_delete(self.handle)
         self.handle = 0

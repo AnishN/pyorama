@@ -1,5 +1,5 @@
-from pyorama.data.handle cimport *
-from pyorama.data.vector cimport *
+from pyorama.core.handle cimport *
+from pyorama.core.vector cimport *
 from pyorama.math cimport *
 from pyorama.graphics.vertex_buffer cimport *
 from pyorama.graphics.index_buffer cimport *
@@ -23,8 +23,9 @@ ctypedef struct SpriteVertexC:
     uint8_t alpha
 
 cdef class SpriteBatch(HandleObject):
-
-    cdef SpriteBatchC *get_ptr(self) except *
+    @staticmethod
+    cdef SpriteBatch c_from_handle(Handle handle)
+    cdef SpriteBatchC *c_get_ptr(self) except *
     cpdef void create(self) except *
     cpdef void delete(self) except *
     cpdef void set_sprites(self, list sprites) except *

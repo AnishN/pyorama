@@ -1,6 +1,6 @@
 from pyorama.asset.asset_system cimport *
 from pyorama.asset.image_loader cimport *
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.libs.cgltf cimport *
 from pyorama.libs.curl cimport *
 from pyorama.libs.pthread cimport *
@@ -34,8 +34,9 @@ cpdef enum AssetType:
     ASSET_TYPE_SOURCE_SHADER
 
 cdef class AssetQueue(HandleObject):
-
-    cdef AssetQueueC *get_ptr(self) except *
+    @staticmethod
+    cdef AssetQueue c_from_handle(Handle handle)
+    cdef AssetQueueC *c_get_ptr(self) except *
     cpdef void create(self, size_t num_threads=*) except *
     cpdef void add_asset(self, AssetType type_, bytes name, bytes path, dict options=*) except *
     #cpdef void add_image(self, bytes name, bytes path, bint flip_y=*) except *

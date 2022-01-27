@@ -1,6 +1,15 @@
 cdef class Window(HandleObject):
 
-    cdef WindowC *get_ptr(self) except *:
+    @staticmethod
+    cdef Window c_from_handle(Handle handle):
+        cdef Window obj
+        if handle == 0:
+            raise ValueError("Window: invalid handle")
+        obj = Window.__new__(Window)
+        obj.handle = handle
+        return obj
+
+    cdef WindowC *c_get_ptr(self) except *:
         return <WindowC *>graphics.slots.c_get_ptr(self.handle)
     
     @staticmethod
@@ -22,7 +31,7 @@ cdef class Window(HandleObject):
             uint32_t reset = BGFX_RESET_VSYNC
             
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_WINDOW)
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         window_ptr.sdl_ptr = SDL_CreateWindow(
             title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
             width, height, flags,
@@ -40,32 +49,32 @@ cdef class Window(HandleObject):
     cpdef void delete(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         int_hash_map_remove(&graphics.window_ids, window_ptr.sdl_id)
         SDL_DestroyWindow(window_ptr.sdl_ptr)
         graphics.slots.c_delete(self.handle)
         self.handle = 0
 
     cpdef uint16_t get_width(self) except *:
-        return self.get_ptr().width
+        return self.c_get_ptr().width
 
     cpdef uint16_t get_height(self) except *:
-        return self.get_ptr().height
+        return self.c_get_ptr().height
 
     cpdef tuple get_size(self):
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         return (window_ptr.width, window_ptr.height)
 
     cpdef bytes get_title(self):
-        return self.get_ptr().title
+        return self.c_get_ptr().title
 
     cpdef uint32_t get_flags(self) except *:
-        return SDL_GetWindowFlags(self.get_ptr().sdl_ptr)
+        return SDL_GetWindowFlags(self.c_get_ptr().sdl_ptr)
 
     cpdef uint64_t get_id(self) except *:
-        return self.get_ptr().sdl_id
+        return self.c_get_ptr().sdl_id
 
     cpdef bint is_fullscreen(self) except *:
         return self.get_flags() & WINDOW_FLAGS_FULLSCREEN
@@ -98,22 +107,22 @@ cdef class Window(HandleObject):
         return self.get_flags() & WINDOW_FLAGS_MOUSE_CAPTURED
 
     cpdef void set_width(self, uint16_t width) except *:
-        self.get_ptr().width = width
+        self.c_get_ptr().width = width
 
     cpdef void set_height(self, uint16_t height) except *:
-        self.get_ptr().height = height
+        self.c_get_ptr().height = height
 
     cpdef void set_size(self, uint16_t width, uint16_t height) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         window_ptr.width = width
         window_ptr.height = height
 
     cpdef void set_title(self, bytes title) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         window_ptr.title = title
         window_ptr.title_length = len(title)
 
@@ -121,7 +130,7 @@ cdef class Window(HandleObject):
         cdef:
             WindowC *window_ptr
             bint full_screen
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         
         #full_screen
         full_screen = flags & WINDOW_FLAGS_FULLSCREEN or flags & WINDOW_FLAGS_FULLSCREEN_DESKTOP
@@ -173,55 +182,55 @@ cdef class Window(HandleObject):
     cpdef void set_fullscreen(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN)
         
     cpdef void set_fullscreen_desktop(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_SetWindowFullscreen(window_ptr.sdl_ptr, WINDOW_FLAGS_FULLSCREEN_DESKTOP)
 
     cpdef void set_shown(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_ShowWindow(window_ptr.sdl_ptr)
 
     cpdef void set_hidden(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_HideWindow(window_ptr.sdl_ptr)
 
     cpdef void set_borderless(self, bint borderless) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_SetWindowBordered(window_ptr.sdl_ptr, not borderless)
 
     cpdef void set_resizable(self, bint resizable) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_SetWindowResizable(window_ptr.sdl_ptr, resizable)
         
     cpdef void set_minimized(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_MinimizeWindow(window_ptr.sdl_ptr)
 
     cpdef void set_maximized(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_MaximizeWindow(window_ptr.sdl_ptr)
 
     cpdef void set_restored(self) except *:
         cdef:
             WindowC *window_ptr
-        window_ptr = self.get_ptr()
+        window_ptr = self.c_get_ptr()
         SDL_RestoreWindow(window_ptr.sdl_ptr)
 
     cpdef void toggle_fullscreen(self) except *:

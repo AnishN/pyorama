@@ -1,6 +1,15 @@
 cdef class Sprite(HandleObject):
 
-    cdef SpriteC *get_ptr(self) except *:
+    @staticmethod
+    cdef Sprite c_from_handle(Handle handle):
+        cdef Sprite obj
+        if handle == 0:
+            raise ValueError("Sprite: invalid handle")
+        obj = Sprite.__new__(Sprite)
+        obj.handle = handle
+        return obj
+
+    cdef SpriteC *c_get_ptr(self) except *:
         return <SpriteC *>graphics.slots.c_get_ptr(self.handle)
 
     @staticmethod
@@ -28,7 +37,7 @@ cdef class Sprite(HandleObject):
             size_t i
 
         self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SPRITE)
-        sprite_ptr = self.get_ptr()
+        sprite_ptr = self.c_get_ptr()
         sprite_ptr.color_texture = color_texture.handle
         sprite_ptr.normal_texture = normal_texture.handle
         sprite_ptr.position = position.data
@@ -49,52 +58,83 @@ cdef class Sprite(HandleObject):
         graphics.slots.c_delete(self.handle)
         self.handle = 0
 
-    cpdef void get_color_texture(self, Texture color_texture) except *:
-        color_texture.handle = self.get_ptr().color_texture
+    property color_texture:
+        def __get__(self):
+            return Texture.c_from_handle(self.c_get_ptr().color_texture)
+        def __set__(self, Texture color_texture):
+            self.c_get_ptr().color_texture = color_texture.handle
 
-    cpdef void get_normal_texture(self, Texture normal_texture) except *:
-        normal_texture.handle = self.get_ptr().normal_texture
+    property normal_texture:
+        def __get__(self):
+            return Texture.c_from_handle(self.c_get_ptr().normal_texture)
+        def __set__(self, Texture normal_texture):
+            self.c_get_ptr().normal_texture = normal_texture.handle
 
-    cpdef void get_position(self, Vec3 position) except *:
-        position.data = self.get_ptr().position
+    property position:
+        def __get__(self):
+            return Vec3.c_from_data(&self.c_get_ptr().position)
+        def __set__(self, Vec3 value):
+            self.c_get_ptr().position = value.data
 
-    cpdef float get_rotation(self) except *:
-        return self.get_ptr().rotation
+    property rotation:
+        def __get__(self):
+            return self.c_get_ptr().rotation
+        def __set__(self, float value):
+            self.c_get_ptr().rotation = value
 
-    cpdef void get_scale(self, Vec2 scale) except *:
-        scale.data = self.get_ptr().scale
+    property scale:
+        def __get__(self):
+            return Vec2.c_from_data(&self.c_get_ptr().scale)
+        def __set__(self, Vec2 value):
+            self.c_get_ptr().scale = value.data
 
-    cpdef void get_size(self, Vec2 size) except *:
-        size.data = self.get_ptr().size
+    property size:
+        def __get__(self):
+            return Vec2.c_from_data(&self.c_get_ptr().size)
+        def __set__(self, Vec2 value):
+            self.c_get_ptr().size = value.data
+
+    property texcoords:
+        def __get__(self):
+            cdef:
+                size_t i
+                size_t n = 4
+                SpriteC *sprite_ptr
+                Vec2 v
+                list obj = []
+            
+            sprite_ptr = self.c_get_ptr()
+            for i in range(n):
+                v = Vec2.c_from_data(&sprite_ptr.texcoords[i])
+                obj.append(v)
+            return v
+            
+        def __set__(self, list value):
+            cdef:
+                size_t i
+                size_t n = 4
+                SpriteC *sprite_ptr
+                Vec2 v
+            
+            sprite_ptr = self.c_get_ptr()
+            for i in range(n):
+                v = <Vec2>value[i]
+                sprite_ptr.texcoords[i] = v.data
+
+    property offset:
+        def __get__(self):
+            return Vec2.c_from_data(&self.c_get_ptr().offset)
+        def __set__(self, Vec2 value):
+            self.c_get_ptr().offset = value.data
     
-    cpdef list get_texcoords(self):
-        cdef:
-            SpriteC *sprite_ptr
-            list texcoords = []
-            Vec2 tc
-            size_t i
-        
-        sprite_ptr = self.get_ptr()
-        for i in range(4):
-            tc = Vec2.__new__(Vec2) 
-            tc.data = sprite_ptr.texcoords[i]
-            texcoords.append(tc)
-        return texcoords
+    property tint:
+        def __get__(self):
+            return Vec3.c_from_data(&self.c_get_ptr().tint)
+        def __set__(self, Vec3 value):
+            self.c_get_ptr().tint = value.data
 
-    cpdef void get_offset(self, Vec2 offset) except *: pass
-    cpdef void get_tint(self, Vec3 tint) except *: pass
-    cpdef float get_alpha(self) except *: pass
-
-    cpdef void set_color_texture(self, Texture color_texture) except *: pass
-    cpdef void set_normal_texture(self, Texture normal_texture) except *: pass
-    cpdef void set_position(self, Vec3 position) except *: pass
-
-    cpdef void set_rotation(self, float rotation) except *:
-        self.get_ptr().rotation = rotation
-    
-    cpdef void set_scale(self, Vec2 scale) except *: pass
-    cpdef void set_size(self, Vec2 size) except *: pass
-    cpdef void set_texcoords(self, list texcoords) except *: pass
-    cpdef void set_offset(self, Vec2 offset) except *: pass
-    cpdef void set_tint(self, Vec3 tint) except *: pass
-    cpdef void set_alpha(self, float alpha) except *: pass
+    property alpha:
+        def __get__(self):
+            return self.c_get_ptr().alpha
+        def __set__(self, float value):
+            self.c_get_ptr().alpha = value

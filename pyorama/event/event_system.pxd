@@ -1,7 +1,7 @@
 from cpython.ref cimport PyObject, Py_INCREF, Py_DECREF, Py_XINCREF, Py_XDECREF 
 from pyorama.core.slot_manager cimport *
-from pyorama.data.vector cimport *
-from pyorama.data.str_hash_map cimport *
+from pyorama.core.vector cimport *
+from pyorama.core.str_hash_map cimport *
 from pyorama.event.listener cimport *
 from pyorama.event.input_events cimport *
 from pyorama.graphics.graphics_system cimport *

@@ -1,7 +1,7 @@
 """
 from pyorama.app cimport *
 from pyorama.asset.shader_loader cimport *
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.graphics.image cimport *
 from pyorama.graphics.program cimport *
 from pyorama.graphics.shader cimport *

@@ -1,4 +1,4 @@
-from pyorama.data.handle cimport *
+from pyorama.core.handle cimport *
 from pyorama.math cimport *
 from pyorama.graphics.graphics_system cimport *
 
@@ -10,8 +10,9 @@ ctypedef struct TransformC:
     Vec3C offset
 
 cdef class Transform(HandleObject):
-
-    cdef TransformC *get_ptr(self) except *
+    @staticmethod
+    cdef Transform c_from_handle(Handle handle)
+    cdef TransformC *c_get_ptr(self) except *
     cpdef void create(self, Vec3 translation=*, Quat rotation=*, Vec3 scale=*, Vec3 offset=*) except *
     cpdef void delete(self) except *
     cpdef void set_translation(self, Vec3 translation=*) except *
