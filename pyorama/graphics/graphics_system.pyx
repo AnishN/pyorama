@@ -47,7 +47,7 @@ cdef class GraphicsSystem:
             (ATTRIBUTE_POSITION, ATTRIBUTE_TYPE_F32, 4, False, False),#Vec3 position + float rotation
             (ATTRIBUTE_NORMAL, ATTRIBUTE_TYPE_F32, 4, False, False),#Vec2 scale + Vec2 size
             (ATTRIBUTE_TEXCOORD0, ATTRIBUTE_TYPE_F32, 4, False, False),#Vec2 texcoord + Vec2 offset
-            (ATTRIBUTE_COLOR0, ATTRIBUTE_TYPE_U8, 4, True, False),#Vec3 tint + float alpha
+            (ATTRIBUTE_COLOR0, ATTRIBUTE_TYPE_F32, 1, False, False),#tint + alpha crammed in uint32_t, then Vec2 vertex, then extra
         ])
     
     def quit(self):

@@ -27,6 +27,7 @@ cdef class SpriteBatch(HandleObject):
         cdef:
             SpriteBatchC *sprite_batch_ptr
             VectorC *sprites_ptr
+            VectorC *sorted_sprites_ptr
             VertexLayout v_layout
             VertexBuffer v_buffer
             IndexLayout i_layout
@@ -36,6 +37,9 @@ cdef class SpriteBatch(HandleObject):
         sprite_batch_ptr = self.c_get_ptr()
         sprites_ptr = &sprite_batch_ptr.sprites
         CHECK_ERROR(vector_init(sprites_ptr, sizeof(Handle)))
+        sorted_sprites_ptr = &sprite_batch_ptr.sorted_sprites
+        CHECK_ERROR(vector_init(sorted_sprites_ptr, sizeof(Handle)))
+
         v_layout = graphics.sprite_vertex_layout
         v_buffer = VertexBuffer.init_create_dynamic_resizable(v_layout)
         sprite_batch_ptr.vertex_buffer = v_buffer.handle
@@ -44,6 +48,12 @@ cdef class SpriteBatch(HandleObject):
         sprite_batch_ptr.index_buffer = i_buffer.handle
 
     cpdef void delete(self) except *:
+        cdef:
+            SpriteBatchC *sprite_batch_ptr
+        
+        sprite_batch_ptr = self.c_get_ptr()
+        vector_free(&sprite_batch_ptr.sprites)
+        vector_free(&sprite_batch_ptr.sorted_sprites)
         graphics.slots.c_delete(self.handle)
         self.handle = 0
     
@@ -52,6 +62,7 @@ cdef class SpriteBatch(HandleObject):
             SpriteBatchC *sprite_batch_ptr
             size_t num_sprites
             VectorC *sprites_ptr
+            VectorC *sorted_sprites_ptr
             VertexBuffer v_buffer = VertexBuffer.__new__(VertexBuffer)
             VertexBufferC *v_buffer_ptr
             VectorC *vertices_ptr
@@ -64,11 +75,13 @@ cdef class SpriteBatch(HandleObject):
             SpriteC *sprite_ptr
             SpriteVertexC *v_ptr
             uint32_t index
-            size_t[6] texcoord_indices = [0, 1, 2, 0, 2, 3]
+            Vec2C[4] quad_vertices = [[0, 0], [1, 0], [1, 1], [0, 1]]
+            size_t[6] quad_indices = [0, 1, 2, 0, 2, 3]
         
         sprite_batch_ptr = self.c_get_ptr()
         num_sprites = len(sprites)
         sprites_ptr = &sprite_batch_ptr.sprites
+        sorted_sprites_ptr = &sprite_batch_ptr.sorted_sprites
         v_buffer.handle = sprite_batch_ptr.vertex_buffer
         v_buffer_ptr = v_buffer.c_get_ptr()
         vertices_ptr = &v_buffer_ptr.data.resizable
@@ -79,25 +92,15 @@ cdef class SpriteBatch(HandleObject):
         for i in range(num_sprites):
             sprite = <Sprite>sprites[i]
             CHECK_ERROR(vector_push(sprites_ptr, <void *>&sprite.handle))
+            CHECK_ERROR(vector_push(sorted_sprites_ptr, <void *>&sprite.handle))
             sprite_ptr = sprite.c_get_ptr()
             for j in range(4):
                 index = 4 * i + j
                 CHECK_ERROR(vector_push_empty(vertices_ptr))
-                v_ptr = <SpriteVertexC *>vector_c_get_ptr_unsafe(vertices_ptr, index)
-                v_ptr.position = sprite_ptr.position
-                v_ptr.rotation = sprite_ptr.rotation
-                v_ptr.scale = sprite_ptr.scale
-                v_ptr.size = sprite_ptr.size
-                v_ptr.texcoord = sprite_ptr.texcoords[j]
-                v_ptr.offset = sprite_ptr.offset
-                v_ptr.tint[0] = <uint8_t>f_round(255 * sprite_ptr.tint.x)
-                v_ptr.tint[1] = <uint8_t>f_round(255 * sprite_ptr.tint.y)
-                v_ptr.tint[2] = <uint8_t>f_round(255 * sprite_ptr.tint.z)
-                v_ptr.alpha = <uint8_t>f_round(255 * sprite_ptr.alpha)
 
         for i in range(num_sprites):
             for j in range(6):
-                index = i * 4 + texcoord_indices[j]
+                index = i * 4 + quad_indices[j]
                 CHECK_ERROR(vector_push(indices_ptr, &index))
         
         v_buffer.update()
@@ -134,8 +137,14 @@ cdef class SpriteBatch(HandleObject):
             SpriteC *sprite_ptr
             SpriteVertexC *v_ptr
             uint32_t *index_ptr
-            size_t[6] texcoord_indices = [0, 1, 2, 0, 2, 3]
+            size_t[6] quad_indices = [0, 1, 2, 0, 2, 3]
+            uint8_t[4] tint_alpha_rgba
+            uint8_t r, g, b, a
+            uint32_t ta_val
+            Vec4C unpacked
+            Vec3C padding = [1.0, 1.0, 1.0]
         
+        self.c_sort_back_to_front()
         sprite_batch_ptr = self.c_get_ptr()
         num_sprites = sprite_batch_ptr.sprites.num_items
         sprites_ptr = &sprite_batch_ptr.sprites
@@ -158,15 +167,51 @@ cdef class SpriteBatch(HandleObject):
                 v_ptr.size = sprite_ptr.size
                 v_ptr.texcoord = sprite_ptr.texcoords[j]
                 v_ptr.offset = sprite_ptr.offset
-                v_ptr.tint[0] = <uint8_t>f_round(255 * sprite_ptr.tint.x)
-                v_ptr.tint[1] = <uint8_t>f_round(255 * sprite_ptr.tint.y)
-                v_ptr.tint[2] = <uint8_t>f_round(255 * sprite_ptr.tint.z)
-                v_ptr.alpha = <uint8_t>f_round(255 * sprite_ptr.alpha)
+
+                tint_alpha_rgba[0] = <uint8_t>f_round(256 * sprite_ptr.tint.x)
+                tint_alpha_rgba[1] = <uint8_t>f_round(256 * sprite_ptr.tint.y)
+                tint_alpha_rgba[2] = <uint8_t>f_round(256 * sprite_ptr.tint.z)
+                tint_alpha_rgba[3] = <uint8_t>f_round(256 * sprite_ptr.alpha)
+                memcpy(&v_ptr.tint_alpha, &tint_alpha_rgba, sizeof(float))
+                #v_ptr.tint_alpha = (<float *>tint_alpha_rgba)[0]
+                v_ptr.padding = padding
+                memcpy(&ta_val, &tint_alpha_rgba, sizeof(uint32_t))
+
+                a = ta_val / 16777216
+                b = (ta_val - (16777216 * a)) / 65536
+                g = (ta_val - (65536 * r)) / 256
+                r = (ta_val - (256 * g))
+                """
+                print(
+                    (
+                        256 * sprite_ptr.tint.x, 
+                        256 * sprite_ptr.tint.y,
+                        256 * sprite_ptr.tint.z,
+                        256 * sprite_ptr.alpha, 
+                    ),
+                    ta_val, 
+                    (r, g, b, a),
+                )
+                """
 
         for i in range(num_sprites):
             for j in range(6):
                 index_ptr = <uint32_t *>vector_c_get_ptr_unsafe(indices_ptr, 6 * i + j)
-                index_ptr[0] = i * 4 + texcoord_indices[j]
+                index_ptr[0] = i * 4 + quad_indices[j]
         
         v_buffer.update()
         i_buffer.update()
+
+    cdef void c_sort_back_to_front(self) except *:
+        cdef:
+            SpriteBatchC *sprite_batch_ptr
+            VectorC *sprites_ptr
+            VectorC *sorted_sprites_ptr
+            size_t num_sprites
+            size_t i
+
+        sprite_batch_ptr = self.c_get_ptr()
+        sprites_ptr = &sprite_batch_ptr.sprites
+        sorted_sprites_ptr = &sprite_batch_ptr.sorted_sprites
+        num_sprites = sprite_batch_ptr.sprites.num_items
+        

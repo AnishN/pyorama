@@ -49,7 +49,7 @@ cdef class Sprite(HandleObject):
         else:
             for i in range(4):
                 sprite_ptr.texcoords[i] = <Vec2C>texcoords[i].data
-            sprite_ptr.texcoords = texcoords
+            #sprite_ptr.texcoords = texcoords
         sprite_ptr.offset = offset.data
         sprite_ptr.tint = tint.data
         sprite_ptr.alpha = alpha

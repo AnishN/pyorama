@@ -16,6 +16,8 @@ cdef extern from "stdarg.h":
 
 cdef extern from "stdlib.h" nogil:
     char *itoa(int value, char *str_, int base)
+    ctypedef int (*compare_func_t)(void *, void *)
+    void qsort(void *ptr, size_t count, size_t size, compare_func_t compare)
 
 cdef extern from "math.h" nogil:
     double d_round "round" (double x)

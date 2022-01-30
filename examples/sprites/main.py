@@ -14,57 +14,9 @@ def on_window_event(event):
         app.trigger_quit()
 
 def on_enter_frame_event(event):
-    start = time.time()
-
-    """
-    for i in range(num_sprites):
-        sprite = sprites[i]
-        rotation = sprite.get_rotation()
-        rotation += rotation_speed
-        sprite.set_rotation(rotation)
-    end = time.time()
-    get_set_delta = end - start
-
-    start = time.time()
     for i in range(num_sprites):
         sprite = sprites[i]
         sprite.rotation -= rotation_speed
-    end = time.time()
-    property_delta = end - start
-    print("rotation", get_set_delta, property_delta)
-
-    start = time.time()
-    p = Vec3()
-    for i in range(num_sprites):
-        sprite = sprites[i]
-        sprite.get_position(p)
-        p.x += 10
-        sprite.set_position(p)
-    end = time.time()
-    get_set_delta = end - start
-
-    start = time.time()
-    for i in range(num_sprites):
-        sprite = sprites[i]
-        p = sprite.position
-        p.x -= 10
-        sprite.position = p
-    end = time.time()
-    property_delta = end - start
-    print("position", get_set_delta, property_delta)
-    """
-
-    """
-    for i in range(num_sprites):
-        sprite = sprites[i]
-        t = sprite.color_texture
-        print(t, t.handle)
-    """
-
-    #surprised that property syntax is 2x faster despite "avoiding allocations" with getter/setter
-    #python "overhead" in cython annotations sure are misleading
-    #the syntax is also nicer to boot and almost mirrors the cython struct accessors
-    
     sprite_batch.update()
     view.submit()
 
@@ -101,12 +53,14 @@ image = Image.init_create_from_file(image_path)
 texture = Texture.init_create_from_image(image)
 
 sprites = []
-num_sprites = 100000
+num_sprites = 100
 random_position = Vec3()
 random_rotation = 0
 rotation_speed = 0.1
 random_scale = Vec2()
+random_tint = Vec3(1.0, 1.0, 1.0)
 sprite_size = Vec2(32, 32)
+#sprite_size = Vec2(100, 100)
 sprite_offset = Vec2(0.5, 0.5)
 
 for i in range(num_sprites):
@@ -115,6 +69,10 @@ for i in range(num_sprites):
     random_rotation = random.random() * 2 * MATH_PI
     random_scale.x = random.random() + 0.5
     random_scale.y = random.random() + 0.5
+    random_tint.x = random.random()
+    random_tint.y = random.random()
+    random_tint.z = random.random()
+    random_alpha = random.random()
 
     sprite = Sprite.init_create(
         texture, 
@@ -123,6 +81,9 @@ for i in range(num_sprites):
         scale=random_scale,
         size=sprite_size,
         offset=sprite_offset,
+        tint=random_tint,
+        alpha=random_alpha,
+        #texcoords=[Vec2(0, 0), Vec2(0.5, 0), Vec2(0.5, 0.5), Vec2(0, 0.5)]
     )
     sprites.append(sprite)
 
@@ -150,6 +111,12 @@ view.set_transform_model(model_mat)
 view.set_transform_view(view_mat)
 view.set_transform_projection(proj_mat)
 view.set_texture(sampler, texture, 0)
+view.set_depth_state(VIEW_DEPTH_STATE_NONE)
+view.set_blend(True)
+view.set_blend_rgba_state(
+    src=VIEW_BLEND_FUNCTION_ONE,
+    dst=VIEW_BLEND_FUNCTION_INV_SRC_ALPHA,
+)
 view.submit()
 
 app.run()

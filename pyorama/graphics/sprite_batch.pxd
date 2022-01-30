@@ -8,19 +8,21 @@ from pyorama.graphics.graphics_system cimport *
 ctypedef struct SpriteBatchC:
     Handle handle
     VectorC sprites
+    VectorC sorted_sprites
+    size_t first_alpha_index
     Handle vertex_buffer
     Handle index_buffer
     VectorC indices
 
-ctypedef struct SpriteVertexC:
+ctypedef packed struct SpriteVertexC:
     Vec3C position
     float rotation
     Vec2C scale
     Vec2C size
     Vec2C texcoord
     Vec2C offset
-    uint8_t[3] tint
-    uint8_t alpha
+    float tint_alpha#packing 4x uint8
+    Vec3C padding
 
 cdef class SpriteBatch(HandleObject):
     @staticmethod
@@ -32,3 +34,4 @@ cdef class SpriteBatch(HandleObject):
     cpdef void get_vertex_buffer(self, VertexBuffer buffer) except *
     cpdef void get_index_buffer(self, IndexBuffer buffer) except *
     cpdef void update(self) except *
+    cdef void c_sort_back_to_front(self) except *
