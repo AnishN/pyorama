@@ -52,6 +52,7 @@ on_enter_frame_listener = Listener.init_create(b"enter_frame", on_enter_frame_ev
 image = Image.init_create_from_file(image_path)
 texture = Texture.init_create_from_image(image)
 
+window_size = Vec3(width, height, 0.0)
 sprites = []
 num_sprites = 100
 random_position = Vec3()
@@ -62,16 +63,15 @@ random_tint = Vec3(1.0, 1.0, 1.0)
 sprite_size = Vec2(32, 32)
 #sprite_size = Vec2(100, 100)
 sprite_offset = Vec2(0.5, 0.5)
+min_scale = Vec2(0.5, 0.5)
 
 for i in range(num_sprites):
-    random_position.x = random.random() * width
-    random_position.y = random.random() * height
+    Vec3.random(random_position)
+    Vec3.mul(random_position, random_position, window_size)
     random_rotation = random.random() * 2 * MATH_PI
-    random_scale.x = random.random() + 0.5
-    random_scale.y = random.random() + 0.5
-    random_tint.x = random.random()
-    random_tint.y = random.random()
-    random_tint.z = random.random()
+    Vec2.random(random_scale)
+    Vec2.add(random_scale, random_scale, min_scale)
+    Vec3.random(random_tint)
     random_alpha = random.random()
 
     sprite = Sprite.init_create(
