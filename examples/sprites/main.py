@@ -57,7 +57,7 @@ sprites = []
 num_sprites = 100
 random_position = Vec3()
 random_rotation = 0
-rotation_speed = 0.1
+rotation_speed = 0.0
 random_scale = Vec2()
 random_tint = Vec3(1.0, 1.0, 1.0)
 sprite_size = Vec2(32, 32)
@@ -83,7 +83,7 @@ for i in range(num_sprites):
         offset=sprite_offset,
         tint=random_tint,
         alpha=random_alpha,
-        #texcoords=[Vec2(0, 0), Vec2(0.5, 0), Vec2(0.5, 0.5), Vec2(0, 0.5)]
+        texcoord_xywh=Vec4(0, 0, 0.5, 0.5),
     )
     sprites.append(sprite)
 

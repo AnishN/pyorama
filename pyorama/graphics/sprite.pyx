@@ -16,20 +16,20 @@ cdef class Sprite(HandleObject):
     def init_create(
             Texture color_texture, Texture normal_texture=None, 
             Vec3 position=Vec3(0, 0, 0), float rotation=0, Vec2 scale=Vec2(1, 1), 
-            Vec2 size=Vec2(1, 1), list texcoords=None, Vec2 offset=Vec2(0, 0),
+            Vec2 size=Vec2(1, 1), Vec4 texcoord_xywh=Vec4(0, 0, 1, 1), Vec2 offset=Vec2(0, 0),
             Vec3 tint=Vec3(1, 1, 1), float alpha=1,
     ):
         cdef:
             Sprite sprite
 
         sprite = Sprite.__new__(Sprite)
-        sprite.create(color_texture, normal_texture, position, rotation, scale, size, texcoords, offset, tint, alpha)
+        sprite.create(color_texture, normal_texture, position, rotation, scale, size, texcoord_xywh, offset, tint, alpha)
         return sprite
 
     cpdef void create(self, 
             Texture color_texture, Texture normal_texture=None, 
             Vec3 position=Vec3(0, 0, 0), float rotation=0, Vec2 scale=Vec2(1, 1), 
-            Vec2 size=Vec2(1, 1), list texcoords=None, Vec2 offset=Vec2(0, 0),
+            Vec2 size=Vec2(1, 1), Vec4 texcoord_xywh=Vec4(0, 0, 1, 1), Vec2 offset=Vec2(0, 0),
             Vec3 tint=Vec3(1, 1, 1), float alpha=1,
     ) except *:
         cdef:
@@ -44,12 +44,7 @@ cdef class Sprite(HandleObject):
         sprite_ptr.rotation = rotation
         sprite_ptr.scale = scale.data
         sprite_ptr.size = size.data
-        if texcoords == None:
-            sprite_ptr.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
-        else:
-            for i in range(4):
-                sprite_ptr.texcoords[i] = <Vec2C>texcoords[i].data
-            #sprite_ptr.texcoords = texcoords
+        sprite_ptr.texcoord_xywh = texcoord_xywh.data
         sprite_ptr.offset = offset.data
         sprite_ptr.tint = tint.data
         sprite_ptr.alpha = alpha
@@ -94,32 +89,12 @@ cdef class Sprite(HandleObject):
         def __set__(self, Vec2 value):
             self.c_get_ptr().size = value.data
 
-    property texcoords:
+    property texcoord_xywh:
         def __get__(self):
-            cdef:
-                size_t i
-                size_t n = 4
-                SpriteC *sprite_ptr
-                Vec2 v
-                list obj = []
+            return Vec4.c_from_data(&self.c_get_ptr().texcoord_xywh)
             
-            sprite_ptr = self.c_get_ptr()
-            for i in range(n):
-                v = Vec2.c_from_data(&sprite_ptr.texcoords[i])
-                obj.append(v)
-            return v
-            
-        def __set__(self, list value):
-            cdef:
-                size_t i
-                size_t n = 4
-                SpriteC *sprite_ptr
-                Vec2 v
-            
-            sprite_ptr = self.c_get_ptr()
-            for i in range(n):
-                v = <Vec2>value[i]
-                sprite_ptr.texcoords[i] = v.data
+        def __set__(self, Vec4 value):
+            self.c_get_ptr().texcoord_xywh = value.data
 
     property offset:
         def __get__(self):

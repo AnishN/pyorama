@@ -137,11 +137,10 @@ cdef class SpriteBatch(HandleObject):
             SpriteC *sprite_ptr
             SpriteVertexC *v_ptr
             uint32_t *index_ptr
+            Vec4C t
+            Vec2C[4] texcoords
             size_t[6] quad_indices = [0, 1, 2, 0, 2, 3]
             uint8_t[4] tint_alpha_rgba
-            uint8_t r, g, b, a
-            uint32_t ta_val
-            Vec4C unpacked
             Vec3C padding = [1.0, 1.0, 1.0]
         
         self.c_sort_back_to_front()
@@ -158,14 +157,22 @@ cdef class SpriteBatch(HandleObject):
         for i in range(num_sprites):
             sprite.handle = (<Handle *>vector_c_get_ptr_unsafe(sprites_ptr, i))[0]
             sprite_ptr = sprite.c_get_ptr()
+            t = sprite_ptr.texcoord_xywh
+            texcoords = [
+                [t.x, t.y],
+                [t.x + t.z, t.y],
+                [t.x + t.z, t.y + t.w],
+                [t.x, t.y + t.w],
+            ]
             for j in range(4):
                 index = 4 * i + j
                 v_ptr = <SpriteVertexC *>vector_c_get_ptr_unsafe(vertices_ptr, index)
                 v_ptr.position = sprite_ptr.position
                 v_ptr.rotation = sprite_ptr.rotation
                 v_ptr.scale = sprite_ptr.scale
-                v_ptr.size = sprite_ptr.size
-                v_ptr.texcoord = sprite_ptr.texcoords[j]
+                v_ptr.size.x = sprite_ptr.size.x * 1.0 / t.z
+                v_ptr.size.y = sprite_ptr.size.y * 1.0 / t.w
+                v_ptr.texcoord = texcoords[j]
                 v_ptr.offset = sprite_ptr.offset
 
                 tint_alpha_rgba[0] = <uint8_t>f_round(256 * sprite_ptr.tint.x)
@@ -173,26 +180,7 @@ cdef class SpriteBatch(HandleObject):
                 tint_alpha_rgba[2] = <uint8_t>f_round(256 * sprite_ptr.tint.z)
                 tint_alpha_rgba[3] = <uint8_t>f_round(256 * sprite_ptr.alpha)
                 memcpy(&v_ptr.tint_alpha, &tint_alpha_rgba, sizeof(float))
-                #v_ptr.tint_alpha = (<float *>tint_alpha_rgba)[0]
                 v_ptr.padding = padding
-                memcpy(&ta_val, &tint_alpha_rgba, sizeof(uint32_t))
-
-                a = ta_val / 16777216
-                b = (ta_val - (16777216 * a)) / 65536
-                g = (ta_val - (65536 * r)) / 256
-                r = (ta_val - (256 * g))
-                """
-                print(
-                    (
-                        256 * sprite_ptr.tint.x, 
-                        256 * sprite_ptr.tint.y,
-                        256 * sprite_ptr.tint.z,
-                        256 * sprite_ptr.alpha, 
-                    ),
-                    ta_val, 
-                    (r, g, b, a),
-                )
-                """
 
         for i in range(num_sprites):
             for j in range(6):
