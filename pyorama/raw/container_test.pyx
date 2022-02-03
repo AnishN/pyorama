@@ -67,13 +67,10 @@ def int_hash_map_test():
 
     CHECK_ERROR(int_hash_map_init(&data))
     CHECK_ERROR(int_hash_map_insert(&data, k, v))
-    print(k, v, a, int_hash_map_hash(k))
     CHECK_ERROR(int_hash_map_get_index(&data, k, &i))
-    print(i)
-    vector_get(&data.items, i, &item)
-    print(item)
+    CHECK_ERROR(vector_get(&data.items, i, &item))
     CHECK_ERROR(int_hash_map_get(&data, k, &a))
-    print(k, v, a, int_hash_map_hash(k))
+    print(k, v, a, int_hash_map_hash(k), i, item)
     int_hash_map_free(&data)
 
 def str_hash_map_test():
