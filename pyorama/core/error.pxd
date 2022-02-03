@@ -8,5 +8,6 @@ ctypedef enum Error:
     INVALID_HANDLE_ERROR
     INVALID_KEY_ERROR
     NOT_IMPLEMENTED_ERROR
+    REGISTER_ERROR
 
 cdef void CHECK_ERROR(Error error) except *

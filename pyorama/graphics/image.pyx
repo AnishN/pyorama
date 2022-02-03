@@ -1,3 +1,18 @@
+cdef ImageC *c_image_get_ptr(Handle handle) except *:
+    cdef:
+        ImageC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.images, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_image_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.images, &handle))
+    return handle
+
+cdef void c_image_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.images, handle)
+
 cdef class Image(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Image(HandleObject):
         return obj
 
     cdef ImageC *c_get_ptr(self) except *:
-        return <ImageC *>graphics.slots.c_get_ptr(self.handle)
+        return c_image_get_ptr(self.handle)
     
     @staticmethod
     def init_create_from_data(uint8_t[::1] pixels, uint16_t width, uint16_t height):
@@ -29,7 +44,7 @@ cdef class Image(HandleObject):
         if num_pixel_bytes != pixels.shape[0]:
             raise ValueError("Image: pixels does not match width * height * num_channels")
         
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_IMAGE)
+        self.handle = c_image_create()
         image_ptr = self.c_get_ptr()
         image_ptr.pixels = <uint8_t *>calloc(num_pixel_bytes, sizeof(uint8_t))
         if image_ptr.pixels == NULL:
@@ -78,7 +93,7 @@ cdef class Image(HandleObject):
         image_ptr.width = 0
         image_ptr.height = 0
         image_ptr.num_channels = 0
-        graphics.slots.c_delete(self.handle)
+        c_image_delete(self.handle)
         self.handle = 0
 
     cpdef uint8_t[::1] get_pixels(self):

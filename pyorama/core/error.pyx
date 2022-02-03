@@ -17,3 +17,5 @@ cdef void CHECK_ERROR(Error error) except *:
         raise ValueError("Error: invalid key")
     elif error == NOT_IMPLEMENTED_ERROR:
         raise NotImplementedError("Error: feature not implemented")
+    elif error == REGISTER_ERROR:
+        raise ValueError("Error: type already registered or pending registration")

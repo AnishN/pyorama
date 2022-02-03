@@ -26,12 +26,6 @@ cdef uint64_t mask_range(uint64_t n, uint64_t r) nogil:
     mask = a ^ b
     return mask
 
-cdef uint64_t NUM_ITEM_TYPES = 0
-cdef uint8_t handle_create_slot_type() nogil:
-    global NUM_ITEM_TYPES
-    NUM_ITEM_TYPES += 1
-    return <uint8_t>NUM_ITEM_TYPES
-
 cdef uint32_t handle_get_index(Handle *handle) nogil:
     return <uint32_t>((handle[0] & INDEX_MASK) >> INDEX_BIT)
     

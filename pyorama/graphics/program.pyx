@@ -1,3 +1,18 @@
+cdef ProgramC *c_program_get_ptr(Handle handle) except *:
+    cdef:
+        ProgramC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.programs, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_program_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.programs, &handle))
+    return handle
+
+cdef void c_program_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.programs, handle)
+
 cdef class Program(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Program(HandleObject):
         return obj
 
     cdef ProgramC *c_get_ptr(self) except *:
-        return <ProgramC *>graphics.slots.c_get_ptr(self.handle)
+        return c_program_get_ptr(self.handle)
 
     @staticmethod
     def init_create(Shader vertex_shader, Shader fragment_shader):
@@ -28,7 +43,7 @@ cdef class Program(HandleObject):
             ShaderC *vertex_shader_ptr
             ShaderC *fragment_shader_ptr
         
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_PROGRAM)
+        self.handle = c_program_create()
         program_ptr = self.c_get_ptr()
         program_ptr.vertex_shader = vertex_shader.handle
         program_ptr.fragment_shader = fragment_shader.handle
@@ -49,5 +64,5 @@ cdef class Program(HandleObject):
         program_ptr.fragment_shader = 0
         program_ptr.compute_shader = 0
         bgfx_destroy_program(program_ptr.bgfx_id)
-        graphics.slots.c_delete(self.handle)
+        c_program_delete(self.handle)
         self.handle = 0

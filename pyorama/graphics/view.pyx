@@ -1,3 +1,18 @@
+cdef ViewC *c_view_get_ptr(Handle handle) except *:
+    cdef:
+        ViewC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.views, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_view_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.views, &handle))
+    return handle
+
+cdef void c_view_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.views, handle)
+
 cdef class View(HandleObject):
     
     @staticmethod
@@ -10,7 +25,7 @@ cdef class View(HandleObject):
         return obj
 
     cdef ViewC *c_get_ptr(self) except *:
-        return <ViewC *>graphics.slots.c_get_ptr(self.handle)
+        return c_view_get_ptr(self.handle)
 
     @staticmethod
     def init_create():
@@ -24,9 +39,9 @@ cdef class View(HandleObject):
     cpdef void create(self) except *:
         cdef:
             ViewC *view_ptr
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VIEW)
+        self.handle = c_view_create()
         view_ptr = self.c_get_ptr()
-        view_ptr.index = graphics.c_get_next_view_index()
+        view_ptr.index = graphics_system.c_get_next_view_index()
         view_ptr.msaa = True
         view_ptr.blend = False
         view_ptr.write_state = VIEW_WRITE_STATE_RGBAZ
@@ -46,7 +61,7 @@ cdef class View(HandleObject):
             ViewC *view_ptr
         view_ptr = self.c_get_ptr()
         view_ptr.index = 0
-        graphics.slots.c_delete(self.handle)
+        c_view_delete(self.handle)
         self.handle = 0
 
     cpdef void set_name(self, bytes name) except *:
@@ -213,21 +228,21 @@ cdef class View(HandleObject):
             size_t i
             Handle texture
             Handle sampler
-            TextureC *texture_ptr
-            UniformC *sampler_ptr
+            TextureC *texture_ptr = NULL
+            UniformC *sampler_ptr = NULL
             ViewC *view_ptr
-            FrameBufferC *frame_buffer_ptr
-            VertexBufferC *vertex_buffer_ptr
-            IndexBufferC *index_buffer_ptr
-            ProgramC *program_ptr
+            FrameBufferC *frame_buffer_ptr = NULL
+            VertexBufferC *vertex_buffer_ptr = NULL
+            IndexBufferC *index_buffer_ptr = NULL
+            ProgramC *program_ptr = NULL
             cdef uint64_t state
             ViewBlendStateC blend_state
         
         view_ptr = self.c_get_ptr()
-        frame_buffer_ptr = <FrameBufferC *>graphics.slots.c_get_ptr(view_ptr.frame_buffer)
-        vertex_buffer_ptr = <VertexBufferC *>graphics.slots.c_get_ptr(view_ptr.vertex_buffer)
-        index_buffer_ptr = <IndexBufferC *>graphics.slots.c_get_ptr(view_ptr.index_buffer)
-        program_ptr = <ProgramC *>graphics.slots.c_get_ptr(view_ptr.program)
+        frame_buffer_ptr = c_frame_buffer_get_ptr(view_ptr.frame_buffer)
+        vertex_buffer_ptr = c_vertex_buffer_get_ptr(view_ptr.vertex_buffer)
+        index_buffer_ptr = c_index_buffer_get_ptr(view_ptr.index_buffer)
+        program_ptr = c_program_get_ptr(view_ptr.program)
 
         if view_ptr.name_length != 0:
             bgfx_set_view_name(view_ptr.index, view_ptr.name)
@@ -269,8 +284,8 @@ cdef class View(HandleObject):
             texture = view_ptr.textures[i]
             sampler = view_ptr.samplers[i]
             if texture != 0 and sampler != 0:
-                texture_ptr = <TextureC *>graphics.slots.c_get_ptr(texture)
-                sampler_ptr = <UniformC *>graphics.slots.c_get_ptr(sampler)
+                texture_ptr = c_texture_get_ptr(texture)
+                sampler_ptr = c_uniform_get_ptr(sampler)
                 bgfx_set_texture(i, sampler_ptr.bgfx_id, texture_ptr.bgfx_id, 0)
 
         """
@@ -308,13 +323,13 @@ cdef class View(HandleObject):
     cpdef void touch(self) except *:
         cdef:
             ViewC *view_ptr
-            FrameBufferC *frame_buffer_ptr
+            FrameBufferC *frame_buffer_ptr = NULL
         
         view_ptr = self.c_get_ptr()
         if view_ptr.name_length != 0:
             bgfx_set_view_name(view_ptr.index, view_ptr.name)
         if view_ptr.frame_buffer != 0:
-            frame_buffer_ptr = <FrameBufferC *>graphics.slots.c_get_ptr(view_ptr.frame_buffer)
+            frame_buffer_ptr = c_frame_buffer_get_ptr(view_ptr.frame_buffer)
             bgfx_set_view_frame_buffer(view_ptr.index, frame_buffer_ptr.bgfx_id)
         bgfx_set_view_rect(view_ptr.index, view_ptr.rect.x, view_ptr.rect.y, view_ptr.rect.width, view_ptr.rect.height)
         bgfx_set_view_clear(view_ptr.index, view_ptr.clear.flags, view_ptr.clear.color, view_ptr.clear.depth, view_ptr.clear.stencil)

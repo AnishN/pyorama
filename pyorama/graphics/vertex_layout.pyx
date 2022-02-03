@@ -19,6 +19,21 @@ cdef dict vertex_attribute_map = {
     b"a_texcoord7": ATTRIBUTE_TEXCOORD7,
 }
 
+cdef VertexLayoutC *c_vertex_layout_get_ptr(Handle handle) except *:
+    cdef:
+        VertexLayoutC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.vertex_layouts, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_vertex_layout_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.vertex_layouts, &handle))
+    return handle
+
+cdef void c_vertex_layout_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.vertex_layouts, handle)
+
 cdef class VertexLayout(HandleObject):
 
     @staticmethod
@@ -31,7 +46,7 @@ cdef class VertexLayout(HandleObject):
         return obj
 
     cdef VertexLayoutC *c_get_ptr(self) except *:
-        return <VertexLayoutC *>graphics.slots.c_get_ptr(self.handle)
+        return c_vertex_layout_get_ptr(self.handle)
 
     @staticmethod
     def init_create(list attributes):
@@ -52,7 +67,7 @@ cdef class VertexLayout(HandleObject):
             AttributeC *a_ptr
             bgfx_vertex_layout_t *layout_ptr
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VERTEX_LAYOUT)
+        self.handle = c_vertex_layout_create()
         vertex_layout_ptr = self.c_get_ptr()
         layout_ptr = &vertex_layout_ptr.bgfx_id
         bgfx_vertex_layout_begin(layout_ptr, bgfx_get_renderer_type())
@@ -96,5 +111,5 @@ cdef class VertexLayout(HandleObject):
         bgfx_vertex_layout_end(layout_ptr)
 
     cpdef void delete(self) except *:
-        graphics.slots.c_delete(self.handle)
+        c_vertex_layout_delete(self.handle)
         self.handle = 0

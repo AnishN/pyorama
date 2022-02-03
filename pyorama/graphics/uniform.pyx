@@ -1,3 +1,18 @@
+cdef UniformC *c_uniform_get_ptr(Handle handle) except *:
+    cdef:
+        UniformC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.uniforms, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_uniform_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.uniforms, &handle))
+    return handle
+
+cdef void c_uniform_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.uniforms, handle)
+
 cdef class Uniform(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Uniform(HandleObject):
         return obj
 
     cdef UniformC *c_get_ptr(self) except *:
-        return <UniformC *>graphics.slots.c_get_ptr(self.handle)
+        return c_uniform_get_ptr(self.handle)
 
     @staticmethod
     def init_create(bytes name, UniformType type_):
@@ -25,7 +40,7 @@ cdef class Uniform(HandleObject):
         cdef:
             UniformC *uniform_ptr
         
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_UNIFORM)
+        self.handle = c_uniform_create()
         uniform_ptr = self.c_get_ptr()
         uniform_ptr.bgfx_id = bgfx_create_uniform(
             _name=name, 
@@ -39,7 +54,7 @@ cdef class Uniform(HandleObject):
         
         uniform_ptr = self.c_get_ptr()
         bgfx_destroy_uniform(uniform_ptr.bgfx_id)
-        graphics.slots.c_delete(self.handle)
+        c_uniform_delete(self.handle)
         self.handle = 0
 
     cpdef void set_sampler(self, uint32_t value) except *:

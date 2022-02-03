@@ -8,6 +8,7 @@ from pyorama.graphics.index_buffer import *
 from pyorama.graphics.light import *
 from pyorama.graphics.mesh import *
 from pyorama.graphics.program import *
+from pyorama.graphics.scene2d import *
 from pyorama.graphics.shader import *
 from pyorama.graphics.sprite import *
 from pyorama.graphics.sprite_batch import *

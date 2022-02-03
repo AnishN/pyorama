@@ -1,27 +1,20 @@
 cdef class EventSystem:
 
-    def __cinit__(self, str name):
-        self.name = name
-        self.slots = SlotManager()
-        self.slot_sizes = {
-            EVENT_SLOT_LISTENER: sizeof(ListenerC),
-        }
+    def __cinit__(self):
+        slot_map_init(&self.listeners, EVENT_SLOT_LISTENER, sizeof(ListenerC))
     
     def __dealloc__(self):
-        self.slot_sizes = None
-        self.slots = None
+        slot_map_free(&self.listeners)
 
     def init(self, dict config=None):
         cdef:
             size_t i
             VectorC *handles_ptr
         
-        #print(self.name, "init")
         SDL_InitSubSystem(SDL_INIT_EVENTS)
         SDL_InitSubSystem(SDL_INIT_JOYSTICK)
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1")
         self.timestamp = 0.0
-        self.slots.c_init(self.slot_sizes)
         for i in range(MAX_EVENT_TYPES):
             handles_ptr = &self.listener_handles[i]
             vector_init(handles_ptr, sizeof(Handle))
@@ -40,7 +33,6 @@ cdef class EventSystem:
         for i in range(MAX_EVENT_TYPES):
             handles_ptr = &self.listener_handles[i]
             vector_free(handles_ptr)
-        self.slots.c_free()
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "0")
         SDL_QuitSubSystem(SDL_INIT_EVENTS)
 
@@ -142,7 +134,7 @@ cdef class EventSystem:
             bint is_registered
             EventFuncC event_func_ptr
             dict event_data
-            VectorC *listeners
+            VectorC *listeners_ptr
             size_t i
             ListenerC *listener_ptr
             object callback
@@ -153,11 +145,11 @@ cdef class EventSystem:
             is_registered = int_hash_map_contains(&self.c_event_funcs, event.type)
             if is_registered:
                 event_data = {}
-                event_func_ptr = <EventFuncC>int_hash_map_get(&self.c_event_funcs, event.type)
+                CHECK_ERROR(int_hash_map_get(&self.c_event_funcs, event.type, <uint64_t *>&event_func_ptr))
                 event_func_ptr(event.type, &event, <PyObject *>event_data)
-                listeners = &self.slots.get_slot_map(EVENT_SLOT_LISTENER).items
-                for i in range(listeners.num_items):
-                    listener_ptr = <ListenerC *>vector_c_get_ptr_unsafe(listeners, i)
+                listeners_ptr = &self.listeners.items
+                for i in range(listeners_ptr.num_items):
+                    listener_ptr = <ListenerC *>vector_get_ptr_unsafe(listeners_ptr, i)
                     if listener_ptr.event_type == event.type:
                         callback = <object>listener_ptr.callback
                         args = <list>listener_ptr.args

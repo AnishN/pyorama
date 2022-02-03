@@ -15,6 +15,10 @@ ctypedef struct ListenerC:
     PyObject *args
     PyObject *kwargs
 
+cdef ListenerC *c_listener_get_ptr(Handle handle) except *
+cdef Handle c_listener_create() except *
+cdef void c_listener_delete(Handle handle) except *
+
 cdef class Listener(HandleObject):
     @staticmethod
     cdef Listener c_from_handle(Handle handle)

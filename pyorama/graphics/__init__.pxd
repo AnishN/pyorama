@@ -8,6 +8,7 @@ from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.light cimport *
 from pyorama.graphics.mesh cimport *
 from pyorama.graphics.program cimport *
+from pyorama.graphics.scene2d cimport *
 from pyorama.graphics.shader cimport *
 from pyorama.graphics.sprite cimport *
 from pyorama.graphics.sprite_batch cimport *

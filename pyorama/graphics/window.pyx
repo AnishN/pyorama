@@ -1,3 +1,18 @@
+cdef WindowC *c_window_get_ptr(Handle handle) except *:
+    cdef:
+        WindowC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.windows, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_window_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.windows, &handle))
+    return handle
+
+cdef void c_window_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.windows, handle)
+
 cdef class Window(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Window(HandleObject):
         return obj
 
     cdef WindowC *c_get_ptr(self) except *:
-        return <WindowC *>graphics.slots.c_get_ptr(self.handle)
+        return c_window_get_ptr(self.handle)
     
     @staticmethod
     def init_create(uint16_t width, uint16_t height, bytes title, uint32_t flags=WINDOW_FLAGS_SHOWN | WINDOW_FLAGS_RESIZABLE):
@@ -30,29 +45,29 @@ cdef class Window(HandleObject):
             uint32_t debug = BGFX_DEBUG_TEXT
             uint32_t reset = BGFX_RESET_VSYNC
             
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_WINDOW)
+        self.handle = c_window_create()
         window_ptr = self.c_get_ptr()
         window_ptr.sdl_ptr = SDL_CreateWindow(
             title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
             width, height, flags,
         )
         window_ptr.sdl_id = SDL_GetWindowID(window_ptr.sdl_ptr)
-        int_hash_map_insert(&graphics.window_ids, window_ptr.sdl_id, self.handle)
+        int_hash_map_insert(&graphics_system.window_ids, window_ptr.sdl_id, self.handle)
         window_ptr.width = width
         window_ptr.height = height
         window_ptr.title = <char *>title
         window_ptr.title_length = len(title)
 
     cpdef void load_from_id(self, uint32_t id_) except *:
-        self.handle = int_hash_map_get(&graphics.window_ids, id_)
+        CHECK_ERROR(int_hash_map_get(&graphics_system.window_ids, id_, &self.handle))
 
     cpdef void delete(self) except *:
         cdef:
             WindowC *window_ptr
         window_ptr = self.c_get_ptr()
-        int_hash_map_remove(&graphics.window_ids, window_ptr.sdl_id)
+        int_hash_map_remove(&graphics_system.window_ids, window_ptr.sdl_id)
         SDL_DestroyWindow(window_ptr.sdl_ptr)
-        graphics.slots.c_delete(self.handle)
+        c_window_delete(self.handle)
         self.handle = 0
 
     cpdef uint16_t get_width(self) except *:

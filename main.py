@@ -1,2 +1,1 @@
-#import pyorama.raw.math_test
-import pyorama.raw.gltf_test
+import pyorama.raw.container_test

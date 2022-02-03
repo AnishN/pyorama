@@ -1,6 +1,7 @@
 from pyorama.asset.asset_system cimport *
 from pyorama.asset.image_loader cimport *
 from pyorama.core.handle cimport *
+from pyorama.graphics.shader cimport *
 from pyorama.libs.cgltf cimport *
 from pyorama.libs.curl cimport *
 from pyorama.libs.pthread cimport *
@@ -32,6 +33,10 @@ cpdef enum AssetType:
     ASSET_TYPE_MESH
     ASSET_TYPE_BINARY_SHADER
     ASSET_TYPE_SOURCE_SHADER
+
+cdef AssetQueueC *c_asset_queue_get_ptr(Handle handle) except *
+cdef Handle c_asset_queue_create() except *
+cdef void c_asset_queue_delete(Handle handle) except *
 
 cdef class AssetQueue(HandleObject):
     @staticmethod

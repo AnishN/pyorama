@@ -37,6 +37,10 @@ ctypedef union IndexValueC:
     uint16_t u16
     uint32_t u32
 
+cdef IndexBufferC *c_index_buffer_get_ptr(Handle handle) except *
+cdef Handle c_index_buffer_create() except *
+cdef void c_index_buffer_delete(Handle handle) except *
+
 cdef class IndexBuffer(HandleObject):
     @staticmethod
     cdef IndexBuffer c_from_handle(Handle handle)

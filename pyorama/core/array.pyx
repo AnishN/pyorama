@@ -11,17 +11,19 @@ cdef void array_free(ArrayC *array) nogil:
     free(array.items)
     array.items = NULL
 
-cdef void *array_c_get_ptr_unsafe(ArrayC *array, size_t index) nogil:
+cdef void *array_get_ptr_unsafe(ArrayC *array, size_t index) nogil:
     return array.items + (array.item_size * index)
 
-cdef Error array_c_get_ptr(ArrayC *array, size_t index, void **item_ptr) nogil:
+cdef Error array_get_ptr(ArrayC *array, size_t index, void **item_ptr) nogil:
     if 0 <= index < array.max_items: 
         item_ptr[0] = array.items + (array.item_size * index)
     else:
         return INVALID_INDEX_ERROR
 
 cdef Error array_get(ArrayC *array, size_t index, void *item) nogil:
-    cdef uint8_t *src
+    cdef:
+        uint8_t *src
+    
     if 0 <= index < array.max_items: 
         src = array.items + (array.item_size * index)
         memcpy(item, src, array.item_size)
@@ -29,7 +31,9 @@ cdef Error array_get(ArrayC *array, size_t index, void *item) nogil:
         return INVALID_INDEX_ERROR
 
 cdef Error array_set(ArrayC *array, size_t index, void *item) nogil:
-    cdef uint8_t *dst
+    cdef:
+        uint8_t *dst
+    
     if 0 <= index < array.max_items: 
         dst = array.items + (array.item_size * index)
         memcpy(dst, item, array.item_size)
@@ -37,7 +41,9 @@ cdef Error array_set(ArrayC *array, size_t index, void *item) nogil:
         return INVALID_INDEX_ERROR
 
 cdef Error array_clear(ArrayC *array, size_t index) nogil:
-    cdef uint8_t *dst
+    cdef:
+        uint8_t *dst
+    
     if 0 <= index < array.max_items:
         dst = array.items + (array.item_size * index)
         memset(dst, 0, array.item_size)
@@ -54,10 +60,10 @@ cdef Error array_swap(ArrayC *array, size_t a, size_t b) nogil:
         size_t i
         Error error
 
-    error = array_c_get_ptr(array, a, <void **>&a_ptr)
+    error = array_get_ptr(array, a, <void **>&a_ptr)
     if error == INVALID_INDEX_ERROR:
         return error
-    error = array_c_get_ptr(array, b, <void **>&b_ptr)
+    error = array_get_ptr(array, b, <void **>&b_ptr)
     if error == INVALID_INDEX_ERROR:
         return error
     for i in range(array.item_size):
@@ -71,7 +77,7 @@ cdef Error array_find(ArrayC *array, void *item, size_t *index) nogil:
         Error error
     
     for i in range(array.max_items):
-        test_item = array_c_get_ptr_unsafe(array, i)
+        test_item = array_get_ptr_unsafe(array, i)
         check = memcmp(test_item, item, array.item_size)
         if check == 0:
             index[0] = i
@@ -84,7 +90,7 @@ cdef bint array_contains(ArrayC *array, void *item) nogil:
         void *test_item
         int check
     for i in range(array.max_items):
-        test_item = array_c_get_ptr_unsafe(array, i)
+        test_item = array_get_ptr_unsafe(array, i)
         check = memcmp(test_item, item, array.item_size)
         if check == 0:
             return True

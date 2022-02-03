@@ -13,6 +13,10 @@ ctypedef struct MeshC:
     size_t index_size
     size_t num_indices
 
+cdef MeshC *c_mesh_get_ptr(Handle handle) except *
+cdef Handle c_mesh_create() except *
+cdef void c_mesh_delete(Handle handle) except *
+
 cdef class Mesh(HandleObject):
     @staticmethod
     cdef Mesh c_from_handle(Handle handle)

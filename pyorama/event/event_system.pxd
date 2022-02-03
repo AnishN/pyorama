@@ -1,7 +1,7 @@
 from cpython.ref cimport PyObject, Py_INCREF, Py_DECREF, Py_XINCREF, Py_XDECREF 
-from pyorama.core.slot_manager cimport *
-from pyorama.core.vector cimport *
+from pyorama.core.slot_map cimport *
 from pyorama.core.str_hash_map cimport *
+from pyorama.core.vector cimport *
 from pyorama.event.listener cimport *
 from pyorama.event.input_events cimport *
 from pyorama.graphics.graphics_system cimport *
@@ -20,10 +20,8 @@ ctypedef void (*EventFuncC)(uint16_t, SDL_Event *, PyObject *)
 
 cdef class EventSystem:
     cdef:
-        str name
         double timestamp
-        SlotManager slots
-        dict slot_sizes
+        SlotMapC listeners
         VectorC listener_handles[MAX_EVENT_TYPES]
         char *event_type_names[MAX_EVENT_TYPES]
         StrHashMapC event_type_names_map

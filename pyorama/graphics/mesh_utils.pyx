@@ -271,7 +271,7 @@ cdef void mesh_create_from_binary_file(Mesh mesh, bytes file_path) except *:
     rewind(file_ptr)
     print(file_size)
 
-    mesh.handle = app.graphics.slots.c_create(GRAPHICS_SLOT_MESH)
+    mesh.handle = c_mesh_create()
 
     while fread(&chunk, sizeof(uint32_t), 1, file_ptr) != 0:
         if chunk == MAGIC_VBO:

@@ -54,16 +54,16 @@ texture = Texture.init_create_from_image(image)
 
 window_size = Vec3(width, height, 0.0)
 sprites = []
-num_sprites = 100
+num_sprites = 100000
 random_position = Vec3()
 random_rotation = 0
-rotation_speed = 0.0
+rotation_speed = 0.1
 random_scale = Vec2()
 random_tint = Vec3(1.0, 1.0, 1.0)
 sprite_size = Vec2(32, 32)
-#sprite_size = Vec2(100, 100)
 sprite_offset = Vec2(0.5, 0.5)
 min_scale = Vec2(0.5, 0.5)
+texcoord_xywh = Vec4(0, 0, 0.5, 0.5)
 
 for i in range(num_sprites):
     Vec3.random(random_position)
@@ -82,11 +82,27 @@ for i in range(num_sprites):
         size=sprite_size,
         offset=sprite_offset,
         tint=random_tint,
-        alpha=random_alpha,
-        texcoord_xywh=Vec4(0, 0, 0.5, 0.5),
+        #alpha=random_alpha,
+        texcoord_xywh=texcoord_xywh,
     )
+
+    if random.random() > 0.5:
+        sprite.alpha = random_alpha
+
     sprites.append(sprite)
 
+scene = Scene2D()
+scene.create()
+for sprite in sprites:
+    scene.add_sprite(sprite)
+
+for i in range(10):
+    start = time.time()
+    scene.update()
+    end = time.time()
+    print(i, end - start)
+
+"""
 sprite_batch = SpriteBatch.init_create()
 sprite_batch.set_sprites(sprites)
 
@@ -121,6 +137,7 @@ view.submit()
 
 app.run()
 
+
 on_enter_frame_listener.delete()
 on_window_listener.delete()
 program.delete()
@@ -132,3 +149,79 @@ view.delete()
 frame_buffer.delete()
 window.delete()
 app.quit()
+"""
+
+"""
+#what is easier?
+sampler = Uniform.init_create(b"s_color", UNIFORM_TYPE_SAMPLER)
+sampler.delete()
+#or
+sampler = Uniform(b"s_color", UNIFORM_TYPE_SAMPLER)
+#automagical deletion later...
+
+scene_2d = Scene2D.init_create()
+scene_2d.add_sprite(sprite)
+scene_2d.add_sprites([list of sprites])
+scene_2d.add_sprite_group([])
+
+RenderGroup.init_create(GROUP_TYPE, [items])
+#TODO: should there be a specific group per item type or not?
+
+scene_2d.add_group(group)
+
+cpdef enum FillType:
+    FILL_TYPE_NONE
+    FILL_TYPE_SOLID
+    FILL_TYPE_LINEAR
+    FILL_TYPE_RADIAL
+    FILL_TYPE_TEXTURE
+
+cpdef enum LineType:
+    LINE_TYPE_NONE
+    LINE_TYPE_SOLID
+    LINE_TYPE_DASHED
+
+ctypedef struct FillStyleC:
+    Handle handle
+    Vec4C color
+
+ctypedef struct StrokeStyleC:
+    Handle handle
+    Vec4C color
+
+ctypedef struct GraphicsCircleC:
+    Handle handle
+    CircleC data
+    Handle fill
+    Handle stroke
+
+ctypedef struct GraphicsLineC:
+    Handle handle
+    LineC data
+    Handle fill
+    Handle stroke
+
+scene = Scene2D.init_create()
+scene.add_sprite()
+scene.add_line()
+scene.add_rectangle()
+scene.add_circle()
+scene.add_ellipse()
+scene.add_polygon()
+scene.update()
+
+scene.remove_sprite()
+scene.remove_line()
+scene.remove_rectangle()
+scene.remove_circle()
+scene.remove_ellipse()
+scene.remove_polygon()
+
+scene.update()
+
+Group2D:
+    position
+    rotation
+    scale
+    list of objects, which can also be groups???
+"""

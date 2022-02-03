@@ -9,6 +9,10 @@ ctypedef struct ProgramC:
     Handle fragment_shader
     Handle compute_shader
 
+cdef ProgramC *c_program_get_ptr(Handle handle) except *
+cdef Handle c_program_create() except *
+cdef void c_program_delete(Handle handle) except *
+
 cdef class Program(HandleObject):
     @staticmethod
     cdef Program c_from_handle(Handle handle)

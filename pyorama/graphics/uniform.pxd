@@ -14,6 +14,10 @@ ctypedef struct UniformC:
     Handle handle
     bgfx_uniform_handle_t bgfx_id
 
+cdef UniformC *c_uniform_get_ptr(Handle handle) except *
+cdef Handle c_uniform_create() except *
+cdef void c_uniform_delete(Handle handle) except *
+
 cdef class Uniform(HandleObject):
     @staticmethod
     cdef Uniform c_from_handle(Handle handle)

@@ -1,7 +1,7 @@
-cdef float HASH_MAP_GROWTH_RATE = 2.0#same as vector
-cdef float HASH_MAP_SHRINK_RATE = 0.5#same as vector
-cdef float HASH_MAP_LOAD_FACTOR = 0.7
-cdef float HASH_MAP_UNLOAD_FACTOR = 0.1
+DEF HASH_MAP_GROWTH_RATE = 2.0#same as vector
+DEF HASH_MAP_SHRINK_RATE = 0.5#same as vector
+DEF HASH_MAP_LOAD_FACTOR = 0.7
+DEF HASH_MAP_UNLOAD_FACTOR = 0.1
 
 #internal convenience function
 cdef bint item_match(StrHashMapItemC *item_ptr, char *key, size_t key_len, uint64_t hashed_key) nogil:
@@ -85,6 +85,7 @@ cdef Error str_hash_map_get_index(StrHashMapC *hash_map, char *key, size_t key_l
         if item_ptr.used:
             if item_match(item_ptr, key, key_len, hashed_key):
                 index_ptr[0] = index
+                return NO_ERROR
     return INVALID_KEY_ERROR
 
 cdef uint64_t str_hash_map_hash(char *key, size_t key_len) nogil:

@@ -34,6 +34,10 @@ ctypedef union VertexValueC:
     int16_t i16
     float f32
 
+cdef VertexBufferC *c_vertex_buffer_get_ptr(Handle handle) except *
+cdef Handle c_vertex_buffer_create() except *
+cdef void c_vertex_buffer_delete(Handle handle) except *
+
 cdef class VertexBuffer(HandleObject):
     @staticmethod
     cdef VertexBuffer c_from_handle(Handle handle)

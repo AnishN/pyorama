@@ -1,9 +1,7 @@
-from pyorama.core.slot_manager cimport *
+from pyorama.core.handle cimport *
 from pyorama.core.int_hash_map cimport *
+from pyorama.core.slot_map cimport *
 from pyorama.core.vector cimport *
-from pyorama.libs.c cimport *
-from pyorama.libs.bgfx cimport *
-from pyorama.libs.sdl2 cimport *
 
 from pyorama.graphics.camera cimport *
 from pyorama.graphics.frame_buffer cimport *
@@ -13,6 +11,7 @@ from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.light cimport *
 from pyorama.graphics.mesh cimport *
 from pyorama.graphics.program cimport *
+from pyorama.graphics.scene2d cimport *
 from pyorama.graphics.shader cimport *
 from pyorama.graphics.sprite cimport *
 from pyorama.graphics.sprite_batch cimport *
@@ -23,6 +22,10 @@ from pyorama.graphics.vertex_buffer cimport *
 from pyorama.graphics.vertex_layout cimport *
 from pyorama.graphics.view cimport *
 from pyorama.graphics.window cimport *
+
+from pyorama.libs.c cimport *
+from pyorama.libs.bgfx cimport *
+from pyorama.libs.sdl2 cimport *
 
 DEF GRAPHICS_MAX_VIEWS = 2**16
 
@@ -58,6 +61,7 @@ cpdef enum GraphicsSlot:
     GRAPHICS_SLOT_SPRITE
     GRAPHICS_SLOT_SPRITE_BATCH
     GRAPHICS_SLOT_CAMERA
+    GRAPHICS_SLOT_SCENE2D
 
 cpdef enum WindowEventType:
     WINDOW_EVENT_TYPE_SHOWN = SDL_WINDOWEVENT_SHOWN
@@ -79,10 +83,26 @@ cpdef enum WindowEventType:
 
 cdef class GraphicsSystem:
     cdef:
-        str name
+        SlotMapC windows
+        SlotMapC frame_buffers
+        SlotMapC views
+        SlotMapC shaders
+        SlotMapC programs
+        SlotMapC vertex_layouts
+        SlotMapC vertex_buffers
+        SlotMapC index_buffers
+        SlotMapC meshes
+        SlotMapC images
+        SlotMapC textures
+        SlotMapC uniforms
+        SlotMapC lights
+        SlotMapC transforms
+        SlotMapC sprites
+        SlotMapC sprite_batches
+        SlotMapC cameras
+        SlotMapC scene2ds
+
         GraphicsRendererType renderer_type
-        SlotManager slots
-        dict slot_sizes
         SDL_SysWMinfo *wmi
         SDL_Window *root_window
         bgfx_platform_data_t pd

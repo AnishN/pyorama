@@ -1,3 +1,18 @@
+cdef MeshC *c_mesh_get_ptr(Handle handle) except *:
+    cdef:
+        MeshC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.meshes, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_mesh_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.meshes, &handle))
+    return handle
+
+cdef void c_mesh_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.meshes, handle)
+
 cdef class Mesh(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Mesh(HandleObject):
         return obj
 
     cdef MeshC *c_get_ptr(self) except *:
-        return <MeshC *>graphics.slots.c_get_ptr(self.handle)
+        return c_mesh_get_ptr(self.handle)
 
     @staticmethod
     def init_create_from_file(self, bytes file_path, bint load_texcoords=True, bint load_normals=True):
@@ -120,7 +135,7 @@ cdef class Mesh(HandleObject):
 
         aiReleaseImport(ai_scene)
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_MESH)
+        self.handle = c_mesh_create()
         mesh_ptr = self.c_get_ptr()
         mesh_ptr.vertices = vertices
         mesh_ptr.num_vertices = num_vertices
@@ -180,7 +195,7 @@ cdef class Mesh(HandleObject):
         free(mesh_ptr.indices); mesh_ptr.indices = NULL
         mesh_ptr.num_indices = 0
         mesh_ptr.index_size = 0
-        graphics.slots.c_delete(self.handle)
+        c_mesh_delete(self.handle)
         self.handle = 0
 
     cpdef void create_from_binary_file(self, bytes file_path) except *:

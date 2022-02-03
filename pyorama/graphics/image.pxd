@@ -15,6 +15,10 @@ ctypedef struct ImageC:
     uint16_t height
     size_t num_channels
 
+cdef ImageC *c_image_get_ptr(Handle handle) except *
+cdef Handle c_image_create() except *
+cdef void c_image_delete(Handle handle) except *
+
 cdef class Image(HandleObject):
     @staticmethod
     cdef Image c_from_handle(Handle handle)

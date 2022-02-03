@@ -1,3 +1,18 @@
+cdef SpriteC *c_sprite_get_ptr(Handle handle) except *:
+    cdef:
+        SpriteC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.sprites, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_sprite_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.sprites, &handle))
+    return handle
+
+cdef void c_sprite_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.sprites, handle)
+
 cdef class Sprite(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Sprite(HandleObject):
         return obj
 
     cdef SpriteC *c_get_ptr(self) except *:
-        return <SpriteC *>graphics.slots.c_get_ptr(self.handle)
+        return c_sprite_get_ptr(self.handle)
 
     @staticmethod
     def init_create(
@@ -36,7 +51,7 @@ cdef class Sprite(HandleObject):
             SpriteC *sprite_ptr
             size_t i
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SPRITE)
+        self.handle = c_sprite_create()
         sprite_ptr = self.c_get_ptr()
         sprite_ptr.color_texture = color_texture.handle
         sprite_ptr.normal_texture = normal_texture.handle
@@ -50,7 +65,7 @@ cdef class Sprite(HandleObject):
         sprite_ptr.alpha = alpha
 
     cpdef void delete(self) except *:
-        graphics.slots.c_delete(self.handle)
+        c_sprite_delete(self.handle)
         self.handle = 0
 
     property color_texture:

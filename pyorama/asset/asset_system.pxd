@@ -1,6 +1,6 @@
 from pyorama cimport app
 from pyorama.core.handle cimport *
-from pyorama.core.slot_manager cimport *
+from pyorama.core.slot_map cimport *
 from pyorama.core.str_hash_map cimport *
 from pyorama.core.vector cimport *
 from pyorama.libs.c cimport *
@@ -16,9 +16,8 @@ cpdef enum AssetSlot:
 
 cdef class AssetSystem:
     cdef:
-        str name
-        SlotManager slots
-        dict slot_sizes
+        SlotMapC asset_queues
+        SlotMapC asset_infos
         StrHashMapC assets_map
         VectorC assets_info
 

@@ -9,6 +9,10 @@ ctypedef struct TransformC:
     Vec3C scale
     Vec3C offset
 
+cdef TransformC *c_transform_get_ptr(Handle handle) except *
+cdef Handle c_transform_create() except *
+cdef void c_transform_delete(Handle handle) except *
+
 cdef class Transform(HandleObject):
     @staticmethod
     cdef Transform c_from_handle(Handle handle)

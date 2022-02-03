@@ -7,8 +7,10 @@ cdef Error load_image(Handle image, char *file_path, size_t file_path_len, size_
         size_t num_pixel_bytes
         int width
         int height
-
-    image_ptr = <ImageC *>app.graphics.slots.c_get_ptr_unsafe(image)
+    
+    error = slot_map_get_ptr(&graphics_system.images, image, <void **>&image_ptr)
+    if error != NO_ERROR:
+        return error
     stbi_set_flip_vertically_on_load(True)#TODO: move this line elsewhere
     stbi_pixels = stbi_load(<char *>file_path, &width, &height, &num_channels_in_file, num_channels)
     if stbi_pixels == NULL:

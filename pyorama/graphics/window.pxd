@@ -35,6 +35,10 @@ cpdef enum WindowFlags:
     #SDL_WINDOW_TOOLTIP (x11 only)
     #SDL_WINDOW_POPUP_MENU (x11 only)
 
+cdef WindowC *c_window_get_ptr(Handle handle) except *
+cdef Handle c_window_create() except *
+cdef void c_window_delete(Handle handle) except *
+
 cdef class Window(HandleObject):
     @staticmethod
     cdef Window c_from_handle(Handle handle)

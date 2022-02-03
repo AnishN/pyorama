@@ -130,6 +130,10 @@ ctypedef struct ViewC:
     bint blend
     ViewBlendStateC blend_state
 
+cdef ViewC *c_view_get_ptr(Handle handle) except *
+cdef Handle c_view_create() except *
+cdef void c_view_delete(Handle handle) except *
+
 cdef class View(HandleObject):
     @staticmethod
     cdef View c_from_handle(Handle handle)

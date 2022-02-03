@@ -1,5 +1,20 @@
 import os
 
+cdef ShaderC *c_shader_get_ptr(Handle handle) except *:
+    cdef:
+        ShaderC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.shaders, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_shader_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.shaders, &handle))
+    return handle
+
+cdef void c_shader_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.shaders, handle)
+
 cdef class Shader(HandleObject):
 
     @staticmethod
@@ -12,7 +27,7 @@ cdef class Shader(HandleObject):
         return obj
 
     cdef ShaderC *c_get_ptr(self) except *:
-        return <ShaderC *>graphics.slots.c_get_ptr(self.handle)
+        return c_shader_get_ptr(self.handle)
 
     @staticmethod
     def init_create_from_binary_file(ShaderType type_, bytes file_path):
@@ -31,7 +46,7 @@ cdef class Shader(HandleObject):
             size_t file_size
             bgfx_memory_t *file_memory
         
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SHADER)
+        self.handle = c_shader_create()
         shader_ptr = self.c_get_ptr()
         shader_ptr.type_ = type_
         in_file = open(file_path, "rb")
@@ -61,7 +76,7 @@ cdef class Shader(HandleObject):
 
         bin_file_path = os.path.splitext(file_path)[0] + b".bin"
         utils_runtime_compile_shader(file_path, bin_file_path, type_)
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SHADER)
+        self.handle = c_shader_create()
         shader_ptr = self.c_get_ptr()
         shader_ptr.type_ = type_
         in_file = open(bin_file_path, "rb")
@@ -78,7 +93,7 @@ cdef class Shader(HandleObject):
         shader_ptr = self.c_get_ptr()
         #note: file_memory freed by bgfx internally
         bgfx_destroy_shader(shader_ptr.bgfx_id)
-        graphics.slots.c_delete(self.handle)
+        c_shader_delete(self.handle)
         self.handle = 0
 
     cpdef ShaderType get_type(self) except *:

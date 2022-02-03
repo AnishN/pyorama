@@ -58,13 +58,14 @@ cdef Error slot_map_create(SlotMapC *slot_map, Handle *handle_ptr) nogil:
     error = vector_push_empty(&slot_map.items)
     if error != NO_ERROR:
         return error
-    error = vector_c_get_ptr(&slot_map.items, slot_map.items.num_items - 1, <void **>&item_ptr)
+    error = vector_get_ptr(&slot_map.items, slot_map.items.num_items - 1, <void **>&item_ptr)
     item_ptr[0] = outer_id
     outer_index = handle_get_index(&outer_id)
     error = vector_push(&slot_map.erase, &outer_index)
     if error != NO_ERROR:
         return error
     handle_ptr[0] = outer_id
+    #printf(b"sm_create %d %d %d %lld\n", outer_id, inner_id, outer_index, handle_ptr[0])
 
 cdef Error slot_map_delete(SlotMapC *slot_map, Handle handle) nogil:
     cdef:
@@ -78,7 +79,7 @@ cdef Error slot_map_delete(SlotMapC *slot_map, Handle handle) nogil:
     if not slot_map_is_handle_valid(slot_map, handle):
         return INVALID_HANDLE_ERROR
     
-    inner_id = (<Handle *>vector_c_get_ptr_unsafe(&slot_map.indices, handle_get_index(&handle)))[0]
+    inner_id = (<Handle *>vector_get_ptr_unsafe(&slot_map.indices, handle_get_index(&handle)))[0]
 
     inner_index = handle_get_index(&inner_id)
     handle_set_free(&inner_id, True)
@@ -90,7 +91,7 @@ cdef Error slot_map_delete(SlotMapC *slot_map, Handle handle) nogil:
         slot_map.free_list_front = handle_get_index(&handle)
         slot_map.free_list_back = slot_map.free_list_front
     else:
-        free_id = (<Handle *>vector_c_get_ptr_unsafe(&slot_map.indices, slot_map.free_list_back))[0]
+        free_id = (<Handle *>vector_get_ptr_unsafe(&slot_map.indices, slot_map.free_list_back))[0]
         handle_set_index(&free_id, handle_get_index(&handle))
         vector_set(&slot_map.indices, slot_map.free_list_back, &free_id)
         slot_map.free_list_back = handle_get_index(&handle)
@@ -106,23 +107,23 @@ cdef Error slot_map_delete(SlotMapC *slot_map, Handle handle) nogil:
     vector_pop_empty(&slot_map.items)
     vector_pop_empty(&slot_map.erase)
 
-cdef void *slot_map_c_get_ptr_unsafe(SlotMapC *slot_map, Handle handle) nogil:
+cdef void *slot_map_get_ptr_unsafe(SlotMapC *slot_map, Handle handle) nogil:
     cdef:
         Handle *inner_id
         void *item_ptr
 
-    inner_id = <Handle *>vector_c_get_ptr_unsafe(&slot_map.indices, handle_get_index(&handle))
-    item_ptr = vector_c_get_ptr_unsafe(&slot_map.items, handle_get_index(inner_id))
+    inner_id = <Handle *>vector_get_ptr_unsafe(&slot_map.indices, handle_get_index(&handle))
+    item_ptr = vector_get_ptr_unsafe(&slot_map.items, handle_get_index(inner_id))
     return item_ptr
 
-cdef Error slot_map_c_get_ptr(SlotMapC *slot_map, Handle handle, void **item_ptr) nogil:
+cdef Error slot_map_get_ptr(SlotMapC *slot_map, Handle handle, void **item_ptr) nogil:
     #cdef:
     #    Handle inner_id
     #    Error error
     if not slot_map_is_handle_valid(slot_map, handle):
         return INVALID_HANDLE_ERROR
     else:
-        item_ptr[0] = slot_map_c_get_ptr_unsafe(slot_map, handle)
+        item_ptr[0] = slot_map_get_ptr_unsafe(slot_map, handle)
         #slot_map.indices.c_get(handle_get_index(&handle), &inner_id)
         #item_ptr[0] = slot_map.items.c_get_ptr(handle_get_index(&inner_id))
 

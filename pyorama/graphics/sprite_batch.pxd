@@ -1,6 +1,8 @@
+from cython cimport view
 from pyorama.core.handle cimport *
 from pyorama.core.vector cimport *
 from pyorama.math cimport *
+from pyorama.graphics.sprite cimport *
 from pyorama.graphics.vertex_buffer cimport *
 from pyorama.graphics.index_buffer cimport *
 from pyorama.graphics.graphics_system cimport *
@@ -23,6 +25,10 @@ ctypedef packed struct SpriteVertexC:
     Vec2C offset
     float tint_alpha#packing 4x uint8
     Vec3C padding
+
+cdef SpriteBatchC *c_sprite_batch_get_ptr(Handle handle) except *
+cdef Handle c_sprite_batch_create() except *
+cdef void c_sprite_batch_delete(Handle handle) except *
 
 cdef class SpriteBatch(HandleObject):
     @staticmethod

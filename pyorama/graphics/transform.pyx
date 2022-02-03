@@ -1,3 +1,18 @@
+cdef TransformC *c_transform_get_ptr(Handle handle) except *:
+    cdef:
+        TransformC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.transforms, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_transform_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.transforms, &handle))
+    return handle
+
+cdef void c_transform_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.transforms, handle)
+
 cdef class Transform(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Transform(HandleObject):
         return obj
 
     cdef TransformC *c_get_ptr(self) except *:
-        return <TransformC *>graphics.slots.c_get_ptr(self.handle)
+        return c_transform_get_ptr(self.handle)
 
     @staticmethod
     def init_create(Vec3 translation=Vec3(), Quat rotation=Quat(), Vec3 scale=Vec3(1, 1, 1), Vec3 offset=Vec3()):
@@ -25,7 +40,7 @@ cdef class Transform(HandleObject):
         cdef:
             TransformC *transform_ptr
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_TRANSFORM)
+        self.handle = c_transform_create()
         transform_ptr = self.c_get_ptr()
         transform_ptr.translation = translation.data
         transform_ptr.rotation = rotation.data
@@ -33,7 +48,7 @@ cdef class Transform(HandleObject):
         transform_ptr.offset = offset.data
 
     cpdef void delete(self) except *:
-        graphics.slots.c_delete(self.handle)
+        c_transform_delete(self.handle)
         self.handle = 0
 
     cpdef void set_translation(self, Vec3 translation=Vec3()) except *:

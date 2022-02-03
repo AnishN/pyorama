@@ -55,16 +55,16 @@ cdef void c_joystick_device_event(uint16_t event_type, SDL_Event *event_ptr, PyO
     #event_data["timestamp"] = self.timestamp
     event_data["which"] = event.which
 
-    if event.type == app.event.EventType._JOYSTICK_ADDED:
+    if event.type == event_system.EventType._JOYSTICK_ADDED:
         if event.which > 65536:
             raise ValueError("EventManager: cannot support more than 65536 joysticks at once")
         SDL_NumJoysticks()
         joy = SDL_JoystickOpen(event.which)
-        app.event.joysticks[event.which] = joy
-    elif event.type == app.event.EventType._JOYSTICK_REMOVED:
-        joy = app.event.joysticks[event.which]
+        event_system.joysticks[event.which] = joy
+    elif event.type == event_system.EventType._JOYSTICK_REMOVED:
+        joy = event_system.joysticks[event.which]
         SDL_JoystickClose(joy)
-        app.event.joysticks[event.which] = NULL
+        event_system.joysticks[event.which] = NULL
 
 cdef void c_keyboard_event(uint16_t event_type, SDL_Event *event_ptr, PyObject *event_data_ptr) except *:
     cdef:

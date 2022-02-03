@@ -28,6 +28,10 @@ ctypedef struct CameraC:
     CameraProjInfoC proj_info
     Mat4C proj_mat
 
+cdef CameraC *c_camera_get_ptr(Handle handle) except *
+cdef Handle c_camera_create() except *
+cdef void c_camera_delete(Handle handle) except *
+
 cdef class Camera(HandleObject):
     @staticmethod
     cdef Camera c_from_handle(Handle handle)

@@ -47,6 +47,10 @@ ctypedef struct VertexLayoutC:
     bgfx_vertex_layout_t bgfx_id
     char[MAX_ATTRIBUTES * 2 + 1] format_
 
+cdef VertexLayoutC *c_vertex_layout_get_ptr(Handle handle) except *
+cdef Handle c_vertex_layout_create() except *
+cdef void c_vertex_layout_delete(Handle handle) except *
+
 cdef class VertexLayout(HandleObject):
     @staticmethod
     cdef VertexLayout c_from_handle(Handle handle)

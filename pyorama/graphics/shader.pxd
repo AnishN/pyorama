@@ -1,6 +1,8 @@
+from pyorama.app cimport *
+from pyorama.asset.shader_loader cimport *
 from pyorama.core.handle cimport *
 from pyorama.graphics.graphics_system cimport *
-from pyorama.asset.shader_loader cimport *
+from pyorama.libs.bgfx cimport *
 
 cpdef enum ShaderType:
     SHADER_TYPE_VERTEX
@@ -11,6 +13,10 @@ ctypedef struct ShaderC:
     Handle handle
     ShaderType type_
     bgfx_shader_handle_t bgfx_id
+
+cdef ShaderC *c_shader_get_ptr(Handle handle) except *
+cdef Handle c_shader_create() except *
+cdef void c_shader_delete(Handle handle) except *
 
 cdef class Shader(HandleObject):
     @staticmethod

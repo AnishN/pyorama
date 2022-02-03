@@ -1,4 +1,17 @@
-from cython cimport view
+cdef SpriteBatchC *c_sprite_batch_get_ptr(Handle handle) except *:
+    cdef:
+        SpriteBatchC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.sprite_batches, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_sprite_batch_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.sprite_batches, &handle))
+    return handle
+
+cdef void c_sprite_batch_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.sprite_batches, handle)
 
 cdef class SpriteBatch(HandleObject):
 
@@ -12,7 +25,7 @@ cdef class SpriteBatch(HandleObject):
         return obj
 
     cdef SpriteBatchC *c_get_ptr(self) except *:
-        return <SpriteBatchC *>graphics.slots.c_get_ptr(self.handle)
+        return c_sprite_batch_get_ptr(self.handle)
 
     @staticmethod
     def init_create():
@@ -33,14 +46,14 @@ cdef class SpriteBatch(HandleObject):
             IndexLayout i_layout
             IndexBuffer i_buffer
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_SPRITE_BATCH)
+        self.handle = c_sprite_batch_create()
         sprite_batch_ptr = self.c_get_ptr()
         sprites_ptr = &sprite_batch_ptr.sprites
         CHECK_ERROR(vector_init(sprites_ptr, sizeof(Handle)))
         sorted_sprites_ptr = &sprite_batch_ptr.sorted_sprites
         CHECK_ERROR(vector_init(sorted_sprites_ptr, sizeof(Handle)))
 
-        v_layout = graphics.sprite_vertex_layout
+        v_layout = graphics_system.sprite_vertex_layout
         v_buffer = VertexBuffer.init_create_dynamic_resizable(v_layout)
         sprite_batch_ptr.vertex_buffer = v_buffer.handle
         i_layout = INDEX_LAYOUT_U32
@@ -54,7 +67,7 @@ cdef class SpriteBatch(HandleObject):
         sprite_batch_ptr = self.c_get_ptr()
         vector_free(&sprite_batch_ptr.sprites)
         vector_free(&sprite_batch_ptr.sorted_sprites)
-        graphics.slots.c_delete(self.handle)
+        c_sprite_batch_delete(self.handle)
         self.handle = 0
     
     cpdef void set_sprites(self, list sprites) except *:
@@ -155,7 +168,7 @@ cdef class SpriteBatch(HandleObject):
         indices_ptr = &i_buffer_ptr.data.resizable
         
         for i in range(num_sprites):
-            sprite.handle = (<Handle *>vector_c_get_ptr_unsafe(sprites_ptr, i))[0]
+            sprite.handle = (<Handle *>vector_get_ptr_unsafe(sprites_ptr, i))[0]
             sprite_ptr = sprite.c_get_ptr()
             t = sprite_ptr.texcoord_xywh
             texcoords = [
@@ -166,7 +179,7 @@ cdef class SpriteBatch(HandleObject):
             ]
             for j in range(4):
                 index = 4 * i + j
-                v_ptr = <SpriteVertexC *>vector_c_get_ptr_unsafe(vertices_ptr, index)
+                v_ptr = <SpriteVertexC *>vector_get_ptr_unsafe(vertices_ptr, index)
                 v_ptr.position = sprite_ptr.position
                 v_ptr.rotation = sprite_ptr.rotation
                 v_ptr.scale = sprite_ptr.scale
@@ -184,7 +197,7 @@ cdef class SpriteBatch(HandleObject):
 
         for i in range(num_sprites):
             for j in range(6):
-                index_ptr = <uint32_t *>vector_c_get_ptr_unsafe(indices_ptr, 6 * i + j)
+                index_ptr = <uint32_t *>vector_get_ptr_unsafe(indices_ptr, 6 * i + j)
                 index_ptr[0] = i * 4 + quad_indices[j]
         
         v_buffer.update()

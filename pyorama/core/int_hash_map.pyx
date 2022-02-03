@@ -1,13 +1,7 @@
-cdef float HASH_MAP_GROWTH_RATE = 2.0#same as vector
-cdef float HASH_MAP_SHRINK_RATE = 0.5#same as vector
-cdef float HASH_MAP_LOAD_FACTOR = 0.7
-cdef float HASH_MAP_UNLOAD_FACTOR = 0.1
-
-#Internal struct
-ctypedef struct ItemC:
-    uint64_t key
-    uint64_t value
-    bint used
+DEF HASH_MAP_GROWTH_RATE = 2.0#same as vector
+DEF HASH_MAP_SHRINK_RATE = 0.5#same as vector
+DEF HASH_MAP_LOAD_FACTOR = 0.7
+DEF HASH_MAP_UNLOAD_FACTOR = 0.1
 
 cdef Error int_hash_map_init(IntHashMapC *hash_map) nogil:
     cdef:
@@ -22,51 +16,62 @@ cdef void int_hash_map_free(IntHashMapC *hash_map) nogil:
     vector_free(&hash_map.items)
     hash_map.num_items = 0
 
-cdef void int_hash_map_insert(IntHashMapC *hash_map, uint64_t key, uint64_t value) nogil:
+cdef Error int_hash_map_insert(IntHashMapC *hash_map, uint64_t key, uint64_t value) nogil:
     cdef:
+        Error error
         size_t i
         uint64_t hashed_key
         size_t index
         ItemC *item_ptr
     
-    int_hash_map_grow_if_needed(hash_map)
+    error = int_hash_map_grow_if_needed(hash_map)
+    if error != NO_ERROR:
+        return error
     hashed_key = int_hash_map_hash(key)
-
     for i in range(hash_map.items.max_items):
         index = (hashed_key + i) & (hash_map.items.max_items - 1)
         item_ptr = <ItemC *>(hash_map.items.items + (hash_map.items.item_size * index))
         if item_ptr.used:
             if item_ptr.key == key:
                 item_ptr.value = value
-                return
+                return NO_ERROR
         else:
             item_ptr.key = key
             item_ptr.value = value
             item_ptr.used = True
             hash_map.num_items += 1
-            return
+            return NO_ERROR
+    return INVALID_KEY_ERROR
 
-cdef void int_hash_map_remove(IntHashMapC *hash_map, uint64_t key) nogil:
+cdef Error int_hash_map_remove(IntHashMapC *hash_map, uint64_t key) nogil:
     cdef:
+        Error error
         size_t index
         ItemC *item_ptr
     
-    int_hash_map_shrink_if_needed(hash_map)
-    int_hash_map_get_index(hash_map, key, &index)
+    error = int_hash_map_shrink_if_needed(hash_map)
+    if error != NO_ERROR:
+        return error
+    error = int_hash_map_get_index(hash_map, key, &index)
+    if error != NO_ERROR:
+        return error
     item_ptr = <ItemC *>(hash_map.items.items + (hash_map.items.item_size * index))
     item_ptr.key = 0
     item_ptr.value = 0
     item_ptr.used = False
     hash_map.num_items -= 1
 
-cdef uint64_t int_hash_map_get(IntHashMapC *hash_map, uint64_t key) nogil:
+cdef Error int_hash_map_get(IntHashMapC *hash_map, uint64_t key, uint64_t *value) nogil:
     cdef:
+        Error error
         size_t index
         ItemC *item_ptr
         
-    int_hash_map_get_index(hash_map, key, &index)
+    error = int_hash_map_get_index(hash_map, key, &index)
+    if error != NO_ERROR:
+        return error
     item_ptr = <ItemC *>(hash_map.items.items + (hash_map.items.item_size * index))
-    return item_ptr.value
+    value[0] = item_ptr.value
 
 cdef Error int_hash_map_get_index(IntHashMapC *hash_map, uint64_t key, size_t *index_ptr) nogil:
     cdef:
@@ -82,6 +87,7 @@ cdef Error int_hash_map_get_index(IntHashMapC *hash_map, uint64_t key, size_t *i
         if item_ptr.used:
             if item_ptr.key == key:
                 index_ptr[0] = index
+                return NO_ERROR
     return INVALID_KEY_ERROR
 
 cdef uint64_t int_hash_map_hash(uint64_t key) nogil:
@@ -110,17 +116,21 @@ cdef bint int_hash_map_contains(IntHashMapC *hash_map, uint64_t key) nogil:
                 return True
     return False
 
-cdef void int_hash_map_grow_if_needed(IntHashMapC *hash_map) nogil:
-    cdef size_t new_max_items
+cdef Error int_hash_map_grow_if_needed(IntHashMapC *hash_map) nogil:
+    cdef:
+        size_t new_max_items
+
     if hash_map.num_items >= hash_map.items.max_items * HASH_MAP_LOAD_FACTOR:
         new_max_items = <size_t>(hash_map.items.max_items * HASH_MAP_GROWTH_RATE)
-        int_hash_map_resize(hash_map, new_max_items)
+        return int_hash_map_resize(hash_map, new_max_items)
 
-cdef void int_hash_map_shrink_if_needed(IntHashMapC *hash_map) nogil:
-    cdef size_t new_max_items
+cdef Error int_hash_map_shrink_if_needed(IntHashMapC *hash_map) nogil:
+    cdef:
+        size_t new_max_items
+
     if hash_map.num_items <= hash_map.items.max_items * HASH_MAP_UNLOAD_FACTOR:
         new_max_items = <size_t>(hash_map.items.max_items * HASH_MAP_SHRINK_RATE)
-        int_hash_map_resize(hash_map, new_max_items)
+        return int_hash_map_resize(hash_map, new_max_items)
 
 cdef Error int_hash_map_resize(IntHashMapC *hash_map, size_t new_max_items) nogil: 
     cdef:

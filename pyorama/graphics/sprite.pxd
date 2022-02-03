@@ -17,6 +17,10 @@ ctypedef struct SpriteC:
     Vec3C tint
     float alpha
 
+cdef SpriteC *c_sprite_get_ptr(Handle handle) except *
+cdef Handle c_sprite_create() except *
+cdef void c_sprite_delete(Handle handle) except *
+
 cdef class Sprite(HandleObject):
     @staticmethod
     cdef Sprite c_from_handle(Handle handle)

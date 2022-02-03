@@ -1,3 +1,18 @@
+cdef IndexBufferC *c_index_buffer_get_ptr(Handle handle) except *:
+    cdef:
+        IndexBufferC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.index_buffers, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_index_buffer_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.index_buffers, &handle))
+    return handle
+
+cdef void c_index_buffer_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.index_buffers, handle)
+
 cdef class IndexBuffer(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class IndexBuffer(HandleObject):
         return obj
 
     cdef IndexBufferC *c_get_ptr(self) except *:
-        return <IndexBufferC *>graphics.slots.c_get_ptr(self.handle)
+        return c_index_buffer_get_ptr(self.handle)
 
     @staticmethod
     def init_create_static(IndexLayout layout, list indices):
@@ -72,7 +87,7 @@ cdef class IndexBuffer(HandleObject):
             bgfx_index_buffer_handle_t bgfx_id
             char[2] format_
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_INDEX_BUFFER)
+        self.handle = c_index_buffer_create()
         index_buffer_ptr = self.c_get_ptr()
         if layout == INDEX_LAYOUT_U16:
             index_size = sizeof(uint16_t)
@@ -120,7 +135,7 @@ cdef class IndexBuffer(HandleObject):
             bgfx_dynamic_index_buffer_handle_t bgfx_id
             char[2] format_
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_INDEX_BUFFER)
+        self.handle = c_index_buffer_create()
         index_buffer_ptr = self.c_get_ptr()
         if layout == INDEX_LAYOUT_U16:
             index_size = sizeof(uint16_t)
@@ -161,7 +176,7 @@ cdef class IndexBuffer(HandleObject):
             bgfx_dynamic_index_buffer_handle_t bgfx_id
             char[2] format_
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_INDEX_BUFFER)
+        self.handle = c_index_buffer_create()
         index_buffer_ptr = self.c_get_ptr()
         if layout == INDEX_LAYOUT_U16:
             index_size = sizeof(uint16_t)
@@ -195,7 +210,7 @@ cdef class IndexBuffer(HandleObject):
             bgfx_destroy_dynamic_index_buffer(index_buffer_ptr.bgfx_id.dynamic)
         elif index_buffer_ptr.type_ == INDEX_BUFFER_TYPE_TRANSIENT:
             pass
-        graphics.slots.c_delete(self.handle)
+        c_index_buffer_delete(self.handle)
         self.handle = 0
 
     cpdef void update(self) except *:

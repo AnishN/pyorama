@@ -46,6 +46,11 @@ ctypedef struct LightC:
     LightType type_
     LightDataC data
 
+cdef LightC *c_light_get_ptr(Handle handle) except *
+cdef Handle c_light_create() except *
+cdef void c_light_delete(Handle handle) except *
+
+"""
 cdef LightC *light_c_get_ptr(Handle light) except *
 cpdef Handle light_create(LightType type_, dict params) except *
 cpdef Handle light_create_point(Vec3 position, float range_, uint32_t color, float intensity) except *
@@ -53,3 +58,4 @@ cpdef Handle light_create_spot(Vec3 position, Vec3 direction, float outer_angle,
 cpdef Handle light_create_direction(Vec3 direction, uint32_t color, float intensity) except *
 cpdef Handle light_create_ambient(uint32_t color, float intensity) except *
 cpdef void light_delete(Handle light) except *
+"""

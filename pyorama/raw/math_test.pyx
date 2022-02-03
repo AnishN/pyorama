@@ -8,7 +8,7 @@ print("math_test")
 #print(GLM_HERMITE_MAT)
 #print(CGLM_DECASTEL_EPS, CGLM_DECASTEL_MAX, CGLM_DECASTEL_SMALL)
 
-cdef int testing(int renderer_type=graphics.renderer_type) nogil:
+cdef int testing(int renderer_type=graphics_system.renderer_type) nogil:
     return renderer_type
 
 cdef:

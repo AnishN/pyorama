@@ -1,3 +1,18 @@
+cdef ListenerC *c_listener_get_ptr(Handle handle) except *:
+    cdef:
+        ListenerC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&event_system.listeners, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_listener_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&event_system.listeners, &handle))
+    return handle
+
+cdef void c_listener_delete(Handle handle) except *:
+    slot_map_delete(&event_system.listeners, handle)
+
 cdef class Listener(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class Listener(HandleObject):
         return obj
 
     cdef ListenerC *c_get_ptr(self) except *:
-        return <ListenerC *>event.slots.c_get_ptr(self.handle)
+        return c_listener_get_ptr(self.handle)
 
     @staticmethod
     def init_create(bytes event_type_name, object callback, list args=None, dict kwargs=None):
@@ -27,10 +42,10 @@ cdef class Listener(HandleObject):
             ListenerC *listener_ptr
             VectorC *handles_ptr
         
-        event_type = app.event.event_type_get_id(event_type_name)
+        event_type = event_system.event_type_get_id(event_type_name)
         if args == None: args = []
         if kwargs == None: kwargs = {}
-        self.handle = event.slots.c_create(EVENT_SLOT_LISTENER)
+        self.handle = c_listener_create()
         listener_ptr = self.c_get_ptr()
         listener_ptr.event_type = event_type
         listener_ptr.callback = <PyObject *>callback
@@ -39,7 +54,7 @@ cdef class Listener(HandleObject):
         Py_XINCREF(listener_ptr.callback)
         Py_XINCREF(listener_ptr.args)
         Py_XINCREF(listener_ptr.kwargs)
-        handles_ptr = &event.listener_handles[event_type]
+        handles_ptr = &event_system.listener_handles[event_type]
         vector_push(handles_ptr, &self.handle)
 
     cpdef void delete(self) except *:
@@ -49,7 +64,7 @@ cdef class Listener(HandleObject):
             size_t handle_index
         
         listener_ptr = self.c_get_ptr()
-        handles_ptr = &event.listener_handles[listener_ptr.event_type]
+        handles_ptr = &event_system.listener_handles[listener_ptr.event_type]
         vector_find(handles_ptr, &self.handle, &handle_index)
         vector_remove_empty(handles_ptr, handle_index)
         Py_XDECREF(listener_ptr.callback)
@@ -59,5 +74,5 @@ cdef class Listener(HandleObject):
         listener_ptr.callback = NULL
         listener_ptr.args = NULL
         listener_ptr.kwargs = NULL
-        event.slots.c_delete(self.handle)
+        c_listener_delete(self.handle)
         self.handle = 0

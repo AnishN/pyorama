@@ -1,3 +1,18 @@
+cdef VertexBufferC *c_vertex_buffer_get_ptr(Handle handle) except *:
+    cdef:
+        VertexBufferC *ptr
+    CHECK_ERROR(slot_map_get_ptr(&graphics_system.vertex_buffers, handle, <void **>&ptr))
+    return ptr
+
+cdef Handle c_vertex_buffer_create() except *:
+    cdef:
+        Handle handle
+    CHECK_ERROR(slot_map_create(&graphics_system.vertex_buffers, &handle))
+    return handle
+
+cdef void c_vertex_buffer_delete(Handle handle) except *:
+    slot_map_delete(&graphics_system.vertex_buffers, handle)
+
 cdef class VertexBuffer(HandleObject):
 
     @staticmethod
@@ -10,7 +25,7 @@ cdef class VertexBuffer(HandleObject):
         return obj
 
     cdef VertexBufferC *c_get_ptr(self) except *:
-        return <VertexBufferC *>graphics.slots.c_get_ptr(self.handle)
+        return c_vertex_buffer_get_ptr(self.handle)
 
     @staticmethod
     def init_create_static(VertexLayout layout, list vertices):
@@ -89,7 +104,7 @@ cdef class VertexBuffer(HandleObject):
             ArrayC data
             bgfx_vertex_buffer_handle_t bgfx_id
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VERTEX_BUFFER)
+        self.handle = c_vertex_buffer_create()
         vertex_buffer_ptr = self.c_get_ptr()
         layout_ptr = layout.c_get_ptr()
         vertex_size = layout_ptr.vertex_size
@@ -130,7 +145,7 @@ cdef class VertexBuffer(HandleObject):
             ArrayC data
             bgfx_dynamic_vertex_buffer_handle_t bgfx_id
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VERTEX_BUFFER)
+        self.handle = c_vertex_buffer_create()
         vertex_buffer_ptr = self.c_get_ptr()
         layout_ptr = layout.c_get_ptr()
         vertex_size = layout_ptr.vertex_size
@@ -164,7 +179,7 @@ cdef class VertexBuffer(HandleObject):
             VectorC data
             bgfx_dynamic_vertex_buffer_handle_t bgfx_id
 
-        self.handle = graphics.slots.c_create(GRAPHICS_SLOT_VERTEX_BUFFER)
+        self.handle = c_vertex_buffer_create()
         vertex_buffer_ptr = self.c_get_ptr()
         layout_ptr = layout.c_get_ptr()
         vertex_size = layout_ptr.vertex_size
@@ -189,7 +204,7 @@ cdef class VertexBuffer(HandleObject):
             bgfx_destroy_dynamic_vertex_buffer(vertex_buffer_ptr.bgfx_id.dynamic)
         elif vertex_buffer_ptr.type_ == VERTEX_BUFFER_TYPE_TRANSIENT:
             pass
-        graphics.slots.c_delete(self.handle)
+        c_vertex_buffer_delete(self.handle)
         self.handle = 0
 
     cpdef void update(self) except *:
@@ -229,7 +244,7 @@ cdef class VertexBuffer(HandleObject):
             VertexLayoutC *vertex_layout_ptr
         
         vertex_buffer_ptr = self.c_get_ptr()
-        vertex_layout_ptr = <VertexLayoutC *>graphics.slots.c_get_ptr(vertex_buffer_ptr.layout)
+        vertex_layout_ptr = c_vertex_layout_get_ptr(vertex_buffer_ptr.layout)
         return vertex_layout_ptr.vertex_size
 
     cdef char *c_get_vertex_format(self) except *:
@@ -238,7 +253,7 @@ cdef class VertexBuffer(HandleObject):
             VertexLayoutC *vertex_layout_ptr
         
         vertex_buffer_ptr = self.c_get_ptr()
-        vertex_layout_ptr = <VertexLayoutC *>graphics.slots.c_get_ptr(vertex_buffer_ptr.layout)
+        vertex_layout_ptr = c_vertex_layout_get_ptr(vertex_buffer_ptr.layout)
         return vertex_layout_ptr.format_
 
     cpdef bytes get_vertex_format(self):

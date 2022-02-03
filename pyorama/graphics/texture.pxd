@@ -18,6 +18,10 @@ ctypedef struct TextureC:
     #TextureFlags texture_flags
     #TextureSamplerFlags sampler_flags
 
+cdef TextureC *c_texture_get_ptr(Handle handle) except *
+cdef Handle c_texture_create() except *
+cdef void c_texture_delete(Handle handle) except *
+
 cdef class Texture(HandleObject):
     @staticmethod
     cdef Texture c_from_handle(Handle handle)

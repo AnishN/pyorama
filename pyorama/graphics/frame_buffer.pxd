@@ -12,6 +12,10 @@ ctypedef struct FrameBufferC:
     char *name
     size_t name_length
 
+cdef FrameBufferC *c_frame_buffer_get_ptr(Handle handle) except *
+cdef Handle c_frame_buffer_create() except *
+cdef void c_frame_buffer_delete(Handle handle) except *
+
 cdef class FrameBuffer(HandleObject):
     @staticmethod
     cdef FrameBuffer c_from_handle(Handle handle)

@@ -3,17 +3,6 @@ from pyorama.core.vector cimport *
 from pyorama.libs.c cimport *
 from pyorama.libs.xxhash cimport *
 
-"""
-This is a (less) faster alternative to dict. It makes several optimizations/assumptions:
-* Forces keys to be char * with specified length and values to be of uint64_t type (or something that can be cast to it...)
-* Uses open addressing rather than chaining (to avoid linked list traversal)
-* Requires comparision by hashed_key value, then by key_len, and then by key memcmp (so matches are more expensive).
-* Given that Vector only uses power-of-two sizes, replaced expensive modulo (%) with bitwise and (&) operation
-* Robin hood hashing was attempted previously
-    * But in combination with backwards shifting was slower on insert/delete
-    * Equivalent on get (maybe slightly faster)
-"""
-
 ctypedef struct StrHashMapC:
     VectorC items
     size_t num_items
@@ -24,6 +13,10 @@ ctypedef struct StrHashMapItemC:
     uint64_t hashed_key
     uint64_t value
     bint used
+
+#internal convenience function
+cdef bint item_match(StrHashMapItemC *item_ptr, char *key, size_t key_len, uint64_t hashed_key) nogil
+cdef void item_set(StrHashMapItemC *item_ptr, char *key, size_t key_len, uint64_t hashed_key, uint64_t value, bint used) nogil
 
 cdef Error str_hash_map_init(StrHashMapC *hash_map) nogil
 cdef void str_hash_map_free(StrHashMapC *hash_map) nogil

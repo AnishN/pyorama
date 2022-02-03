@@ -1,12 +1,12 @@
 import platform
 import time
 
-graphics = GraphicsSystem("graphics")
-audio = UserSystem("audio")
-event = EventSystem("event")
-physics = UserSystem("physics")
+graphics_system = GraphicsSystem("graphics_system")
+#audio = UserSystem("audio")
+event_system = EventSystem("event_system")
+#physics = UserSystem("physics")
 #debug_ui = DebugUISystem("debug_ui")
-asset = AssetSystem("asset")
+asset_system = AssetSystem("asset_system")
 
 def init(dict config=None):
     global target_fps, num_frame_times, use_vsync, use_sleep#need global when assigning variable
@@ -41,23 +41,23 @@ def init(dict config=None):
     else:
         random_set_seed_from_time()
 
-    graphics.init(config.get("graphics", None))
-    audio.init(config.get("audio", None))
-    event.init(config.get("event", None))
-    physics.init(config.get("physics", None))
+    graphics_system.init(config.get("graphics_system", None))
+    #audio.init(config.get("audio", None))
+    event_system.init(config.get("event_system", None))
+    #physics.init(config.get("physics", None))
     #debug_ui.init(config.get("debug_ui", None))
-    asset.init(config.get("asset", None))
+    asset_system.init(config.get("asset_system", None))
 
-    graphics.bind_events()
-    event.bind_events()
+    graphics_system.bind_events()
+    event_system.bind_events()
 
 def quit():
-    asset.quit()
+    asset_system.quit()
     #debug_ui.quit()
-    physics.quit()
-    event.quit()
-    audio.quit()
-    graphics.quit()
+    #physics.quit()
+    event_system.quit()
+    #audio.quit()
+    graphics_system.quit()
     #print("app quit")
 
 def run():
@@ -112,12 +112,12 @@ def step():
     frame_index = frame_count % num_frame_times
     frame_time = curr_time - prev_time
     PyErr_CheckSignals()
-    event.event_type_emit(b"enter_frame")
-    event.update(curr_time)
+    event_system.event_type_emit(b"enter_frame")
+    event_system.update(curr_time)
     #physics.update(1.0 / target_fps)
-    asset.update()
+    asset_system.update()
     #debug_ui.update()
-    graphics.update()
+    graphics_system.update()
     frame_times[frame_index] = frame_time
     frame_count += 1
 
@@ -141,13 +141,3 @@ cdef double c_get_current_time() nogil:
 
 cdef PlatformOS c_get_platform_os() nogil:
     return platform_os
-
-cpdef AssetSystem get_asset_system():
-    return asset
-
-#cpdef DebugUISystem get_debug_ui_system()
-cpdef EventSystem get_event_system():
-    return event
-
-cpdef GraphicsSystem get_graphics_system():
-    return graphics
