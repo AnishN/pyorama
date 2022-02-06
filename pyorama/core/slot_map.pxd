@@ -16,12 +16,6 @@ Items in SlotMap each now contain a handle member as the first member of their s
 This member is set in the c_create function and is cleared (with the rest of the struct) in c_delete.
 """
 
-"""
-NOTE: 
-Items in SlotMap each now contain a handle member as the first member of their struct.
-This member is set in the c_create function and is cleared (with the rest of the struct) in c_delete.
-"""
-
 cdef inline Error slot_map_init(SlotMapC *slot_map, uint8_t slot_type, size_t slot_size) nogil:
     cdef:
         Error error
@@ -83,7 +77,6 @@ cdef inline Error slot_map_create(SlotMapC *slot_map, Handle *handle_ptr) nogil:
     if error != NO_ERROR:
         return error
     handle_ptr[0] = outer_id
-    #printf(b"sm_create %d %d %d %lld\n", outer_id, inner_id, outer_index, handle_ptr[0])
 
 cdef inline Error slot_map_delete(SlotMapC *slot_map, Handle handle) nogil:
     cdef:
@@ -135,15 +128,25 @@ cdef inline void *slot_map_get_ptr_unsafe(SlotMapC *slot_map, Handle handle) nog
     return item_ptr
 
 cdef inline Error slot_map_get_ptr(SlotMapC *slot_map, Handle handle, void **item_ptr) nogil:
-    #cdef:
-    #    Handle inner_id
-    #    Error error
+    """
     if not slot_map_is_handle_valid(slot_map, handle):
         return INVALID_HANDLE_ERROR
     else:
         item_ptr[0] = slot_map_get_ptr_unsafe(slot_map, handle)
         #slot_map.indices.c_get(handle_get_index(&handle), &inner_id)
         #item_ptr[0] = slot_map.items.c_get_ptr(handle_get_index(&inner_id))
+    """
+    cdef:
+        Error error
+        Handle *inner_id
+    if handle_get_type(&handle) != slot_map.slot_type:
+        return INVALID_HANDLE_ERROR
+    error = vector_get_ptr(&slot_map.indices, handle_get_index(&handle), <void **>&inner_id)
+    if error != NO_ERROR:
+        return error
+    error = vector_get_ptr(&slot_map.items, handle_get_index(inner_id), item_ptr)
+    if error != NO_ERROR:
+        return error
 
 cdef inline bint slot_map_is_free_list_empty(SlotMapC *slot_map) nogil:
     return slot_map.free_list_front == <uint32_t>0xFFFFFFFF

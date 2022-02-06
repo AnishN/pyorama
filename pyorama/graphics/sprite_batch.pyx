@@ -215,4 +215,3 @@ cdef class SpriteBatch(HandleObject):
         sprites_ptr = &sprite_batch_ptr.sprites
         sorted_sprites_ptr = &sprite_batch_ptr.sorted_sprites
         num_sprites = sprite_batch_ptr.sprites.num_items
-        

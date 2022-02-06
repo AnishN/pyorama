@@ -100,12 +100,12 @@ cdef class Scene2D(HandleObject):
             SpriteC *back_ptr
             bint front_alpha
             bint back_alpha
-
+        
         scene_ptr = self.c_get_ptr()
         sprites_ptr = &scene_ptr.sprites
         o_index = 0
         a_index = sprites_ptr.num_items - 1
-
+        
         while o_index < a_index:
             vector_get(sprites_ptr, o_index, &front)
             front_ptr = c_sprite_get_ptr(front)
@@ -120,3 +120,19 @@ cdef class Scene2D(HandleObject):
                         break
                     a_index -= 1
             o_index += 1
+
+        """
+        while o_index < a_index:
+            vector_get_ptr(&graphics_system.sprites.items, o_index, <void **>&front_ptr)
+            front_alpha = front_ptr.alpha != 1
+            if front_alpha:
+                while a_index > o_index:
+                    vector_get_ptr(&graphics_system.sprites.items, a_index, <void **>&back_ptr)
+                    back_alpha = back_ptr.alpha != 1
+                    if not back_alpha:
+                        vector_swap(sprites_ptr, o_index, a_index)
+                        break
+                    a_index -= 1
+            o_index += 1
+            o_index += 1
+        """
