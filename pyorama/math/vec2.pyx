@@ -279,8 +279,8 @@ cdef class Vec2:
     
     @staticmethod
     cdef void c_random(Vec2C *out) nogil:
-        out.x = random_get_float()
-        out.y = random_get_float()
+        out.x = c_random_get_f32()
+        out.y = c_random_get_f32()
 
     @staticmethod
     def random(Vec2 out):

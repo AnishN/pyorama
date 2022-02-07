@@ -37,9 +37,9 @@ def init(dict config=None):
     start_time = c_get_current_time()
 
     if "random_seed" in config:
-        random_set_seed(<uint64_t>config["random_seed"])
+        c_random_set_seed(<uint64_t>config["random_seed"])
     else:
-        random_set_seed_from_time()
+        c_random_set_seed_from_time()
 
     graphics_system.init(config.get("graphics_system", None))
     #audio.init(config.get("audio", None))

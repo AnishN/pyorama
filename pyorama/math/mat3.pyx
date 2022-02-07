@@ -109,15 +109,15 @@ cdef class Mat3:
 
     @staticmethod
     cdef void c_random(Mat3C *out) nogil:
-        out.m00 = random_get_float()
-        out.m01 = random_get_float()
-        out.m02 = random_get_float()
-        out.m10 = random_get_float()
-        out.m11 = random_get_float()
-        out.m12 = random_get_float()
-        out.m20 = random_get_float()
-        out.m21 = random_get_float()
-        out.m22 = random_get_float()
+        out.m00 = c_random_get_f32()
+        out.m01 = c_random_get_f32()
+        out.m02 = c_random_get_f32()
+        out.m10 = c_random_get_f32()
+        out.m11 = c_random_get_f32()
+        out.m12 = c_random_get_f32()
+        out.m20 = c_random_get_f32()
+        out.m21 = c_random_get_f32()
+        out.m22 = c_random_get_f32()
 
     @staticmethod
     def random(Mat3 out):

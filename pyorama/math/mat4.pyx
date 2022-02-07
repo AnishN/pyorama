@@ -156,22 +156,22 @@ cdef class Mat4:
 
     @staticmethod
     cdef void c_random(Mat4C *out) nogil:
-        out.m00 = random_get_float()
-        out.m01 = random_get_float()
-        out.m02 = random_get_float()
-        out.m03 = random_get_float()
-        out.m10 = random_get_float()
-        out.m11 = random_get_float()
-        out.m12 = random_get_float()
-        out.m13 = random_get_float()
-        out.m20 = random_get_float()
-        out.m21 = random_get_float()
-        out.m22 = random_get_float()
-        out.m23 = random_get_float()
-        out.m30 = random_get_float()
-        out.m31 = random_get_float()
-        out.m32 = random_get_float()
-        out.m33 = random_get_float()
+        out.m00 = c_random_get_f32()
+        out.m01 = c_random_get_f32()
+        out.m02 = c_random_get_f32()
+        out.m03 = c_random_get_f32()
+        out.m10 = c_random_get_f32()
+        out.m11 = c_random_get_f32()
+        out.m12 = c_random_get_f32()
+        out.m13 = c_random_get_f32()
+        out.m20 = c_random_get_f32()
+        out.m21 = c_random_get_f32()
+        out.m22 = c_random_get_f32()
+        out.m23 = c_random_get_f32()
+        out.m30 = c_random_get_f32()
+        out.m31 = c_random_get_f32()
+        out.m32 = c_random_get_f32()
+        out.m33 = c_random_get_f32()
 
     @staticmethod
     def random(Mat4 out):

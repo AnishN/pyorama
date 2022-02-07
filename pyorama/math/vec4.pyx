@@ -295,10 +295,10 @@ cdef class Vec4:
 
     @staticmethod
     cdef void c_random(Vec4C *out) nogil:
-        out.x = random_get_float()
-        out.y = random_get_float()
-        out.z = random_get_float()
-        out.w = random_get_float()
+        out.x = c_random_get_f32()
+        out.y = c_random_get_f32()
+        out.z = c_random_get_f32()
+        out.w = c_random_get_f32()
 
     @staticmethod
     def random(Vec4 out):

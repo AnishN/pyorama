@@ -74,10 +74,10 @@ cdef class Mat2:
 
     @staticmethod
     cdef void c_random(Mat2C *out) nogil:
-        out.m00 = random_get_float()
-        out.m01 = random_get_float()
-        out.m10 = random_get_float()
-        out.m11 = random_get_float()
+        out.m00 = c_random_get_f32()
+        out.m01 = c_random_get_f32()
+        out.m10 = c_random_get_f32()
+        out.m11 = c_random_get_f32()
 
     @staticmethod
     def random(Mat2 out):

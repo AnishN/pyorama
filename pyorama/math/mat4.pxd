@@ -2,7 +2,7 @@ cimport cython
 from pyorama.libs.c cimport *
 from pyorama.libs.cglm cimport *
 from pyorama.math.common cimport *
-from pyorama.math.utils cimport *
+from pyorama.math.random cimport *
 
 @cython.final
 cdef class Mat4:

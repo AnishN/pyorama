@@ -1,6 +1,19 @@
 from pyorama.libs.c cimport *
 
-cdef void c_radix_sort_u8(uint8_t *items, size_t num_items) nogil
+cpdef enum RadixSortType:
+    RADIX_SORT_TYPE_U8
+    RADIX_SORT_TYPE_I8
+    RADIX_SORT_TYPE_U16
+    RADIX_SORT_TYPE_I16
+    RADIX_SORT_TYPE_U32
+    RADIX_SORT_TYPE_I32
+    RADIX_SORT_TYPE_U64
+    RADIX_SORT_TYPE_I64
+
+ctypedef uint8_t (* RadixKeyFuncC)(void *item) nogil
+
+cdef void c_radix_sort(void *items, size_t num_items, RadixSortType type_, size_t item_size=*, RadixKeyFuncC key_func=*) nogil
+
 """
 cdef void c_radix_sort_bool
 cdef void c_radix_sort_u8

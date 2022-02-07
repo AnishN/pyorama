@@ -14,10 +14,12 @@ cdef extern from "stdarg.h":
     void va_end(va_list)
     fake_type int_type "int"
 
+ctypedef int (* cmp_func_t)(void *, void *) nogil
+
 cdef extern from "stdlib.h" nogil:
     char *itoa(int value, char *str_, int base)
-    ctypedef int (*compare_func_t)(void *, void *)
-    void qsort(void *ptr, size_t count, size_t size, compare_func_t compare)
+    #void qsort(void *ptr, size_t count, size_t size, int (*cmp_func)(const void *, const void *))
+    void qsort(void *ptr, size_t count, size_t size, cmp_func_t cmp_func)
 
 cdef extern from "math.h" nogil:
     double d_round "round" (double x)
