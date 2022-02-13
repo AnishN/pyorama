@@ -9,11 +9,14 @@ cpdef enum RadixSortType:
     RADIX_SORT_TYPE_I32
     RADIX_SORT_TYPE_U64
     RADIX_SORT_TYPE_I64
+    RADIX_SORT_TYPE_F32
+    RADIX_SORT_TYPE_F64
+    RADIX_SORT_TYPE_STR
 
-#ctypedef void (* RadixKeyFuncC)(void *item, void *key_item) nogil
+#ctypedef void (* RadixKeyFuncC)(void *item, void *key_item) except *
 ctypedef cmp_func_t BackupCmpFuncC
-ctypedef uint8_t (* RadixKeyFuncC)(void *item, size_t byte_offset) nogil
-cdef void c_radix_sort(void *items, size_t item_size, size_t start, size_t end, RadixSortType type_, RadixKeyFuncC key_func=*) nogil
+ctypedef uint8_t (* RadixKeyFuncC)(void *item, size_t byte_offset) except *
+cdef void c_radix_sort(void *items, size_t item_size, size_t start, size_t end, size_t start_offset, RadixSortType type_, RadixKeyFuncC key_func=*) except *
 
 """
 cdef void c_radix_sort_u8
